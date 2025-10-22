@@ -151,9 +151,9 @@ public class AccountsManagementService implements AccountsManagementInterface {
         // Close
         messageEmail.append(messageSource.getMessage(
             "email_closing", null, locale)
-        ).append("<br>").append(applicationTitle);
+        ).append("<br>").append(applicationTitle.toUpperCase());
 
-        String subject = "[ " + applicationTitle + " ] - " + messageSource.
+        String subject = "[ " + applicationTitle.toUpperCase() + " ] - " + messageSource.
             getMessage(
                 "email_subject_account", null, locale
             );
