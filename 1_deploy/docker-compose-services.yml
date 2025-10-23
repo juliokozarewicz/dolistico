@@ -114,6 +114,11 @@ services:
       - "${ACCOUNTS_PORT}:${ACCOUNTS_PORT}"
     networks:
       - spring_net
+    depends_on:
+      - accounts_database
+      - accounts_redis
+      - kafka
+      - email_management_service
 
   tasks:
     container_name: tasks
@@ -124,6 +129,9 @@ services:
       - "${TASKS_PORT}:${TASKS_PORT}"
     networks:
       - spring_net
+    depends_on:
+      - accounts_database
+      - accounts
 
 volumes:
   postgres_data:
