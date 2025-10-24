@@ -9,18 +9,13 @@ public class DocumentationJson {
     @Value("${APPLICATION_TITLE}")
     private String applicationTitle;
 
-    // Title function
-    public static String capitalizeFirstOnly(String input) {
-        if (input == null || input.isEmpty()) return input;
-        return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
-    }
-
     public String documentationText() {
 
         String docs = new StringBuilder()
 
             .append(
                 """
+                # ==============================================================
                 {
                 "openapi":"3.0.0",
                 "info": {
@@ -105,7 +100,6 @@ public class DocumentationJson {
                         }
                     }
                 },
-                # ==============================================================
                 """
             )
 
@@ -1000,7 +994,6 @@ public class DocumentationJson {
                         }
                     }
                 },
-                # ==============================================================
                 """
             )
 
@@ -1662,7 +1655,6 @@ public class DocumentationJson {
                         }
                     }
                 },
-                # ==============================================================
                 """
             )
 
@@ -1973,7 +1965,6 @@ public class DocumentationJson {
                         }
                     }
                 },
-                # ==============================================================
                 """
             )
 
@@ -2053,12 +2044,16 @@ public class DocumentationJson {
                         }
                     }
                 },
-                # ==============================================================
                 """
             )
 
-            .append("}}")
-            .toString().formatted(capitalizeFirstOnly(applicationTitle));
+            .append(
+                """
+                }}
+                # ==============================================================
+                """
+            )
+            .toString().formatted(applicationTitle.toUpperCase());
 
         return docs;
 
