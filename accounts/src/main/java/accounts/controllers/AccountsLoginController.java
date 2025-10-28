@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsLoginController {
 
@@ -37,7 +37,7 @@ class AccountsLoginController {
 
     }
 
-    @PostMapping("${ACCOUNTS_BASE_URL}/login")
+    @PostMapping("/${ACCOUNTS_BASE_URL}/login")
     public ResponseEntity handle(
 
         // dtos errors

@@ -47,14 +47,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     // Public Endpoints
     // -------------------------------------------------------------------------
     private final List<String> publicPaths = Arrays.asList(
-        "/accounts/signup",
-        "/accounts/activate-account",
-        "/accounts/update-password-link",
-        "/accounts/update-password",
-        "/accounts/login",
-        "/accounts/static/public/**",
-        // "/accounts/static/uploads/avatar/**", Remove in production
-        "/accounts/refresh-login"
+        "/api/v1/accounts/signup",
+        "/api/v1/accounts/activate-account",
+        "/api/v1/accounts/update-password-link",
+        "/api/v1/accounts/update-password",
+        "/api/v1/accounts/login",
+        "/api/v1/accounts/static/public/**",
+        // "/api/v1/accounts/static/uploads/avatar/**", Remove in production
+        "/api/v1/accounts/refresh-login"
     );
 
     public List<String> getPublicPaths() {

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsRefreshLoginController {
 
@@ -37,7 +37,7 @@ class AccountsRefreshLoginController {
 
     }
 
-    @PostMapping("${ACCOUNTS_BASE_URL}/refresh-login")
+    @PostMapping("/${ACCOUNTS_BASE_URL}/refresh-login")
     public ResponseEntity handle(
 
         // dtos errors

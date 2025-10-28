@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsLinkUpdatePasswordController {
 
@@ -28,7 +28,7 @@ class AccountsLinkUpdatePasswordController {
             accountsLinkUpdatePasswordService;
     }
 
-    @PostMapping("${ACCOUNTS_BASE_URL}/update-password-link")
+    @PostMapping("/${ACCOUNTS_BASE_URL}/update-password-link")
     public ResponseEntity handle(
 
         // dtos errors

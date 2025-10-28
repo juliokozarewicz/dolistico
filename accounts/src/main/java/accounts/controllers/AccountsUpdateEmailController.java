@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsUpdateEmailController {
 
@@ -38,7 +38,7 @@ class AccountsUpdateEmailController {
 
     }
 
-    @PatchMapping("${ACCOUNTS_BASE_URL}/update-email")
+    @PatchMapping("/${ACCOUNTS_BASE_URL}/update-email")
     @SuppressWarnings("unchecked")
     public ResponseEntity handle(
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsCreateController {
 
@@ -26,7 +26,7 @@ class AccountsCreateController {
         this.accountsCreateService = accountsCreateService;
     }
 
-    @PostMapping("${ACCOUNTS_BASE_URL}/signup")
+    @PostMapping("/${ACCOUNTS_BASE_URL}/signup")
     public ResponseEntity handle(
 
         // dtos errors

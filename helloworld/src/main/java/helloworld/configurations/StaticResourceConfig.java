@@ -13,7 +13,7 @@ public class StaticResourceConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/" + baseURL + "/static/**")
+        registry.addResourceHandler("/api/v1/" + baseURL + "/static/**")
             .addResourceLocations("file:static/");
     }
 

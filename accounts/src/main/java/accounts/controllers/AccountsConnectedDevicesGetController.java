@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsConnectedDevicesGetController {
 
@@ -30,7 +30,7 @@ class AccountsConnectedDevicesGetController {
 
     }
 
-    @GetMapping("${ACCOUNTS_BASE_URL}/connected-devices")
+    @GetMapping("/${ACCOUNTS_BASE_URL}/connected-devices")
     @SuppressWarnings("unchecked")
     public ResponseEntity handle(
 

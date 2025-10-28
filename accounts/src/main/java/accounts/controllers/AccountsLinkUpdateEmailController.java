@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsLinkUpdateEmailController {
 
@@ -33,7 +33,7 @@ class AccountsLinkUpdateEmailController {
 
     }
 
-    @PostMapping("${ACCOUNTS_BASE_URL}/update-email-link")
+    @PostMapping("/${ACCOUNTS_BASE_URL}/update-email-link")
     @SuppressWarnings("unchecked")
     public ResponseEntity handle(
 

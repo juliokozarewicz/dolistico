@@ -10,11 +10,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsUpdatePasswordController {
 
@@ -35,7 +37,7 @@ class AccountsUpdatePasswordController {
 
     }
 
-    @PatchMapping("${ACCOUNTS_BASE_URL}/update-password")
+    @PatchMapping("/${ACCOUNTS_BASE_URL}/update-password")
     public ResponseEntity handle(
 
         // dtos errors

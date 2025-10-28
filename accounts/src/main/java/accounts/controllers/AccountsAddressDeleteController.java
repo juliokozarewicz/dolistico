@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsAddressDeleteController {
 
@@ -33,7 +33,7 @@ class AccountsAddressDeleteController {
 
     }
 
-    @DeleteMapping("${ACCOUNTS_BASE_URL}/delete-address")
+    @DeleteMapping("//${ACCOUNTS_BASE_URL}/delete-address")
     @SuppressWarnings("unchecked")
     public ResponseEntity handle(
 

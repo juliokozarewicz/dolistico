@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsProfileController {
 
@@ -29,7 +29,7 @@ class AccountsProfileController {
 
     }
 
-    @GetMapping("${ACCOUNTS_BASE_URL}/get-profile")
+    @GetMapping("/${ACCOUNTS_BASE_URL}/get-profile")
     @SuppressWarnings("unchecked")
     public ResponseEntity handle(
 

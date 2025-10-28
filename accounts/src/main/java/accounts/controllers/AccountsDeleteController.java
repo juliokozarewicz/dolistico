@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsDeleteController {
 
@@ -35,7 +35,7 @@ class AccountsDeleteController {
 
     }
 
-    @DeleteMapping("${ACCOUNTS_BASE_URL}/delete")
+    @DeleteMapping("/${ACCOUNTS_BASE_URL}/delete")
     @SuppressWarnings("unchecked")
     public ResponseEntity handle(
 

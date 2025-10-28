@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 @Validated
 class AccountsAddressCreateController {
 
@@ -33,7 +33,7 @@ class AccountsAddressCreateController {
 
     }
 
-    @PostMapping("${ACCOUNTS_BASE_URL}/create-address")
+    @PostMapping("/${ACCOUNTS_BASE_URL}/create-address")
     @SuppressWarnings("unchecked")
     public ResponseEntity handle(
 

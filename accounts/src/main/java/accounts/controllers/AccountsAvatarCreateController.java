@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/api/v1/")
 public class AccountsAvatarCreateController {
 
     private final AccountsAvatarCreateService accountsAvatarCreateService;
@@ -27,7 +27,7 @@ public class AccountsAvatarCreateController {
 
     }
 
-    @PostMapping("${ACCOUNTS_BASE_URL}/upload-avatar")
+    @PostMapping("/${ACCOUNTS_BASE_URL}/upload-avatar")
     @SuppressWarnings("unchecked")
     public ResponseEntity handle(
 

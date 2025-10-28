@@ -30,7 +30,7 @@ class DocumentationController {
     }
 
     @GetMapping(
-        value = "/${DOCUMENTATION_BASE_URL}/v1/json",
+        value = "api/v1/${DOCUMENTATION_BASE_URL}/json",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> handle() {
@@ -42,7 +42,7 @@ class DocumentationController {
             .body(docs);
     }
 
-    @GetMapping("/${DOCUMENTATION_BASE_URL}/v1")
+    @GetMapping("api/v1/${DOCUMENTATION_BASE_URL}")
     public String getElementsUi() {
         return "<html>\n" +
             "<head>\n" +
@@ -70,7 +70,7 @@ class DocumentationController {
             "<body>\n" +
             "<elements-api\n" +
             "  id='elements-container'\n" +
-            "  apiDescriptionUrl='/documentation/v1/json'\n" +
+            "  apiDescriptionUrl='/api/v1/documentation/json'\n" +
             "  router='hash'\n" +
             "  layout='sidebar'\n" +
             "/>\n" +
@@ -78,7 +78,7 @@ class DocumentationController {
             "</html>";
     }
 
-    @GetMapping("/${DOCUMENTATION_BASE_URL}/v1/swagger")
+    @GetMapping("api/v1/${DOCUMENTATION_BASE_URL}/swagger")
     public String getSwaggerUi() {
         return "<html>\n" +
             "<head>\n" +
@@ -97,7 +97,7 @@ class DocumentationController {
             "<div id='swagger-ui'></div>\n" +
             "<script>\n" +
             "  const ui = SwaggerUIBundle({\n" +
-            "    url: '/documentation/v1/json',\n" +
+            "    url: '/api/v1/documentation/json',\n" +
             "    dom_id: '#swagger-ui',\n" +
             "    deepLinking: true,\n" +
             "    presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.presets.sdk],\n" +
@@ -108,7 +108,7 @@ class DocumentationController {
             "</html>";
     }
 
-    @GetMapping("/${DOCUMENTATION_BASE_URL}/v1/redocly")
+    @GetMapping("api/v1/${DOCUMENTATION_BASE_URL}/redocly")
     public String getRedocUi() {
         return "<html>\n" +
             "<head>\n" +
@@ -128,7 +128,7 @@ class DocumentationController {
             "<body>\n" +
             "<div id='redoc-container'></div>\n" +
             "<script>\n" +
-            "  Redoc.init('/documentation/v1/json', {\n" +
+            "  Redoc.init('/api/v1/documentation/json', {\n" +
             "    theme: {\n" +
             "      typography: {\n" +
             "        fontSize: '12px', \n" +
