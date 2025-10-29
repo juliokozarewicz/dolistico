@@ -16,7 +16,7 @@ Dolistico is a lightweight and scalable microservice for managing to-do tasks, b
 - **Kafka**: Messaging system for asynchronous communication between microservices.
 - **Logs**: Logging system for monitoring and tracing the application.
 - **Error Handler**: Robust error management for stability and reliability.
-- **Documentation**: The service is documented via **Swagger** and **Redocly**, allowing API interactivity.
+- **Documentation**: The service is documented via **Elements**, **Swagger** and **Redocly**, allowing API interactivity.
 - **Input Validation**: Server-side validation to ensure data integrity.
 - **Docker**: Containerization of the application for easy deployment and consistent environments.
 - **Docker Compose**: Orchestration of multiple containers, simplifying service execution.
