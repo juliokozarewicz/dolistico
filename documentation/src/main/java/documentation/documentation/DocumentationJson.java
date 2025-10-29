@@ -2052,8 +2052,7 @@ public class DocumentationJson {
                 }}
                 # ==============================================================
                 """
-            )
-            .toString().formatted(applicationTitle.toUpperCase());
+            ).toString().formatted(applicationTitle.toUpperCase());
 
         return docs;
 
