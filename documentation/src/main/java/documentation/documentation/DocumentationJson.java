@@ -6,8 +6,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class DocumentationJson {
 
+    // Env
+    // -------------------------------------------------------------------------
     @Value("${APPLICATION_TITLE}")
     private String applicationTitle;
+
+    @Value("${PUBLIC_DOMAIN}")
+    private String publicDomain;
+
+    @Value("${HELLOWORLD_BASE_URL}")
+    private String helloworldBaseURL;
+
+    @Value("${ACCOUNTS_BASE_URL}")
+    private String accountsBaseURL;
+    // -------------------------------------------------------------------------
+
 
     public String documentationText() {
 
@@ -19,9 +32,9 @@ public class DocumentationJson {
                 {
                 "openapi":"3.0.0",
                 "info": {
-                    "title": "%s",
+                    "title": "TITLE_REPLACE",
                     "version": "1.0",
-                    "description": "Dolistico is a lightweight and scalable microservice for managing to-do tasks, built with Java and Spring. Designed to integrate seamlessly into a microservices architecture, it allows users to create, update, delete, and organize personal tasks and agendas securely. With support for JWT authentication, user account management, and features like due dates, categorization, and ownership enforcement, Dolistico ensures that task management is both secure and efficient. \\n\\n ## Localization (Translation) \\n\\n Any response containing the \\"message\\" field in the body will have its message translated server-side, based on the language specified in the request header, for the supported languages. \\n\\n ## Common responses from services \\n\\n **Authentication Error (401):** If the user is not authenticated (e.g., missing or invalid token), the response will be: \\n\\n ```json\\n{\\n    \\"status\\" : 401, \\n    \\"statusMessage\\" : \\"error\\", \\n    \\"message\\" : \\"Invalid credentials.\\" \\n }\\n``` \\n\\n **Form field validation error (422):** If there are validation errors in the form fields, the response will include the fields and their respective error messages: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 422, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"fieldErrors\\": [ \\n        { \\n            \\"field\\": \\"field name\\", \\n            \\"message\\": \\"This field is required.\\" \\n        }, \\n        { \\n            \\"field\\": \\"field name\\", \\n            \\"message\\": \\"This field is required.\\" \\n        }\\n    ] \\n }\\n``` \\n\\n **Bad request (400):** If the request is malformed or invalid, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 400, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"message\\": \\"The request has an error, check.\\" \\n}\\n``` \\n ## API Gateway Errors (No translation support) \\n\\n **Service Unavailable (503):** The service is temporarily unavailable, often due to maintenance or overload. The response will include the error details: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 503, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Service Unavailable (API Gateway)\\" \\n}\\n``` \\n\\n **Rate limit exceeded (429):** If the user exceeds the allowed number of requests, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 429, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Access blocked by rate limiter (API Gateway)\\" \\n}\\n``` \\n\\n **Bad request (400):** If the request is malformed or invalid, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 400, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Bad request (API Gateway)\\" \\n}\\n``` \\n\\n **Internal server error (500):** If there's an unexpected condition preventing the server from fulfilling the request, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 500, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Server error (API Gateway)\\" \\n}\\n```"
+                    "description": "Dolistico is a lightweight and scalable microservice for managing to-do tasks, built with Java and Spring. Designed to integrate seamlessly into a microservices architecture, it allows users to create, update, delete, and organize personal tasks and agendas securely. With support for JWT authentication, user account management, and features like due dates, categorization, and ownership enforcement, Dolistico ensures that task management is both secure and efficient. \\n\\n ## Base URL \\n\\n ```text\\n https://PUBLIC_DOMAIN_REPLACE \\n``` \\n\\n ## Localization (Translation) \\n\\n Any response containing the \\"message\\" field in the body will have its message translated server-side, based on the language specified in the request header, for the supported languages. \\n\\n ## Common responses from services \\n\\n **Authentication Error (401):** If the user is not authenticated (e.g., missing or invalid token), the response will be: \\n\\n ```json\\n{\\n    \\"status\\" : 401, \\n    \\"statusMessage\\" : \\"error\\", \\n    \\"message\\" : \\"Invalid credentials.\\" \\n }\\n``` \\n\\n **Form field validation error (422):** If there are validation errors in the form fields, the response will include the fields and their respective error messages: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 422, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"fieldErrors\\": [ \\n        { \\n            \\"field\\": \\"field name\\", \\n            \\"message\\": \\"This field is required.\\" \\n        }, \\n        { \\n            \\"field\\": \\"field name\\", \\n            \\"message\\": \\"This field is required.\\" \\n        }\\n    ] \\n }\\n``` \\n\\n **Bad request (400):** If the request is malformed or invalid, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 400, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"message\\": \\"The request has an error, check.\\" \\n}\\n``` \\n ## API Gateway Errors (No translation support) \\n\\n **Service Unavailable (503):** The service is temporarily unavailable, often due to maintenance or overload. The response will include the error details: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 503, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Service Unavailable (API Gateway)\\" \\n}\\n``` \\n\\n **Rate limit exceeded (429):** If the user exceeds the allowed number of requests, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 429, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Access blocked by rate limiter (API Gateway)\\" \\n}\\n``` \\n\\n **Bad request (400):** If the request is malformed or invalid, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 400, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Bad request (API Gateway)\\" \\n}\\n``` \\n\\n **Internal server error (500):** If there's an unexpected condition preventing the server from fulfilling the request, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 500, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Server error (API Gateway)\\" \\n}\\n```"
                 },
                 "components":{
                     "securitySchemes":{
@@ -40,7 +53,7 @@ public class DocumentationJson {
                 """
                 # HELLOWORLD
                 # ==============================================================
-                "/api/v1/helloworld/helloworld":{
+                "/HELLOWORLD_BASE_URL_REPLACE/helloworld":{
                     "get":{
                         "summary":"Get hello world message",
                         "description":"Retrieves a hello world message. You can optionally provide a custom message via query parameter.",
@@ -84,11 +97,11 @@ public class DocumentationJson {
                                                     "properties":{
                                                         "self":{
                                                             "type":"string",
-                                                            "example":"/api/v1/helloworld/helloworld"
+                                                            "example":"/HELLOWORLD_BASE_URL_REPLACE/helloworld"
                                                         },
                                                         "next":{
                                                             "type":"string",
-                                                            "example":"/documentation/swagger"
+                                                            "example":"/HELLOWORLD_BASE_URL_REPLACE/swagger"
                                                         }
                                                     }
                                                 }
@@ -107,7 +120,7 @@ public class DocumentationJson {
                 """
                 # ACCOUNTS
                 # ==============================================================
-                "/api/v1/accounts/signup": {
+                "/ACCOUNTS_BASE_URL_REPLACE/signup": {
                     "post": {
                         "summary": "Create a new user account",
                         "description": "Creates a new user account with the provided details such as name, email, password, and link. An activation email is sent after account creation.",
@@ -177,11 +190,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/signup"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/signup"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/activate-email"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/activate-email"
                                                         }
                                                     }
                                                 }
@@ -199,7 +212,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/activate-account": {
+                "/ACCOUNTS_BASE_URL_REPLACE/activate-account": {
                     "post": {
                         "summary": "Activate a user account",
                         "description": "Activates a user account using an email and token. The token must be valid and match the email provided.",
@@ -257,11 +270,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/activate-email"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/activate-email"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/login"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/login"
                                                         }
                                                     }
                                                 }
@@ -303,7 +316,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/update-password-link": {
+                "/ACCOUNTS_BASE_URL_REPLACE/update-password-link": {
                     "post": {
                         "summary": "Send password update link to the user",
                         "description": "Sends an email to the user with a password update link. The email must be valid and the link must be properly formatted.",
@@ -361,11 +374,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/update-password-link"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/update-password-link"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/update-password"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/update-password"
                                                         }
                                                     }
                                                 }
@@ -383,7 +396,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/update-password": {
+                "/ACCOUNTS_BASE_URL_REPLACE/update-password": {
                     "patch": {
                         "summary": "Update user password",
                         "description": "This endpoint allows the user to update their password. The user must provide a valid email, token, and a new password. The token should correspond to the one generated for password update purposes. If successful, the password will be updated.",
@@ -447,11 +460,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/update-password"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/update-password"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/login"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/login"
                                                         }
                                                     }
                                                 }
@@ -493,7 +506,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/login": {
+                "/ACCOUNTS_BASE_URL_REPLACE/login": {
                     "post": {
                         "summary": "Authenticate user login",
                         "description": "This endpoint allows users to log in using their email and password. If the credentials are valid and the account is active, access and refresh tokens are returned. Otherwise, an appropriate error is returned based on the account status.",
@@ -564,11 +577,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/login"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/login"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/get-profile"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/get-profile"
                                                         }
                                                     }
                                                 }
@@ -634,7 +647,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/refresh-login": {
+                "/ACCOUNTS_BASE_URL_REPLACE/refresh-login": {
                     "post": {
                         "summary": "Refresh user access credentials",
                         "description": "This endpoint allows users to obtain new access and refresh tokens by providing a valid refresh token. If the token is valid and associated with an active account, the system generates new tokens. Errors are returned if the token is invalid, the account is banned, or the account is deactivated.",
@@ -699,11 +712,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/refresh-login"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/refresh-login"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/get-profile"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/get-profile"
                                                         }
                                                     }
                                                 }
@@ -745,7 +758,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/get-profile": {
+                "/ACCOUNTS_BASE_URL_REPLACE/get-profile": {
                     "get": {
                         "summary": "Retrieve user profile information",
                         "description": "This endpoint returns the authenticated user's profile information, including personal details and language preferences. The request must include a valid Bearer access token in the Authorization header.",
@@ -819,11 +832,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/get-profile"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/get-profile"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/update-profile"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/update-profile"
                                                         }
                                                     }
                                                 }
@@ -841,7 +854,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/upload-avatar": {
+                "/ACCOUNTS_BASE_URL_REPLACE/upload-avatar": {
                     "post": {
                         "summary": "Upload or remove profile image (avatar)",
                         "description": "This endpoint allows authenticated users to upload a profile image (avatar) or remove it. If no image is sent in the request, the existing avatar will be deleted. If an image is sent, it replaces the current one or sets a new avatar if none exists. Only one image is allowed and must be JPEG or PNG format with a maximum size of 1MB.",
@@ -898,11 +911,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/upload-avatar"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/upload-avatar"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/get-avatar"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/get-avatar"
                                                         }
                                                     }
                                                 }
@@ -923,8 +936,8 @@ public class DocumentationJson {
                                                         "statusMessage": "success",
                                                         "message": "Profile image changed successfully.",
                                                         "links": {
-                                                            "self": "/api/v1/accounts/upload-avatar",
-                                                            "next": "/api/v1/accounts/get-avatar"
+                                                            "self": "/ACCOUNTS_BASE_URL_REPLACE/upload-avatar",
+                                                            "next": "/ACCOUNTS_BASE_URL_REPLACE/get-avatar"
                                                         }
                                                     }
                                                 }
@@ -1000,7 +1013,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/update-profile": {
+                "/ACCOUNTS_BASE_URL_REPLACE/update-profile": {
                     "put": {
                         "summary": "Update user profile information",
                         "description": "This endpoint allows authenticated users to update their profile details such as name, phone, identity document, gender, birthdate, biography, and language. The fields are not required, but if provided in the request body, they must contain valid non-empty values. A valid Bearer token must be provided in the Authorization header.",
@@ -1090,11 +1103,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/update-profile"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/update-profile"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/get-profile"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/get-profile"
                                                         }
                                                     }
                                                 }
@@ -1112,7 +1125,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/create-address": {
+                "/ACCOUNTS_BASE_URL_REPLACE/create-address": {
                     "post": {
                         "summary": "Create a new address for the user",
                         "description": "This endpoint allows authenticated users to create a new address entry. The user can provide various address details including address name, zip code, street, neighborhood, city, state, country, and more. The address will be associated with the user, and if the address is marked as 'primary', any existing primary address will be set to 'secondary'. The user can store up to 5 addresses.",
@@ -1244,11 +1257,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/create-address"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/create-address"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/get-address"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/get-address"
                                                         }
                                                     }
                                                 }
@@ -1314,7 +1327,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/get-address": {
+                "/ACCOUNTS_BASE_URL_REPLACE/get-address": {
                     "get": {
                         "summary": "Retrieve all addresses associated with the user",
                         "description": "This endpoint allows authenticated users to retrieve a list of their saved addresses. It returns all the addresses associated with the user's account, including information such as street, number, city, state, country, and whether the address is marked as primary. Cached data may be used to improve performance. Users can maintain a maximum of five (5) addresses. It is not possible to edit existing addresses, they must be deleted and recreated if changes are needed.",
@@ -1448,11 +1461,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/get-address"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/get-address"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/create-address"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/create-address"
                                                         }
                                                     }
                                                 }
@@ -1470,7 +1483,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/delete-address": {
+                "/ACCOUNTS_BASE_URL_REPLACE/delete-address": {
                     "delete": {
                         "summary": "Delete an address associated with the user",
                         "description": "This endpoint allows authenticated users to delete an address from their account. The user must provide a valid address ID (UUID format). Only addresses that belong to the authenticated user can be deleted.",
@@ -1528,11 +1541,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/delete-address"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/delete-address"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/get-address"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/get-address"
                                                         }
                                                     }
                                                 }
@@ -1574,7 +1587,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/update-email-link": {
+                "/ACCOUNTS_BASE_URL_REPLACE/update-email-link": {
                     "post": {
                         "summary": "Send verification link and PIN for email update",
                         "description": "This endpoint allows authenticated users to request an email change. A verification PIN will be sent to the new email address, and a verification link containing a token will be sent to the current email address. Both must be validated in order to complete the email update process.",
@@ -1639,11 +1652,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/update-email-link"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/update-email-link"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/update-email"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/update-email"
                                                         }
                                                     }
                                                 }
@@ -1661,7 +1674,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/update-email": {
+                "/ACCOUNTS_BASE_URL_REPLACE/update-email": {
                     "patch": {
                         "summary": "Complete email update process",
                         "description": "This endpoint allows authenticated users to complete the process of updating their email address. The user must provide their current password, a valid PIN sent to the new email, and a token sent to the current email. Only after verifying all information, the email will be updated.",
@@ -1725,11 +1738,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/update-email"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/update-email"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/login"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/login"
                                                         }
                                                     }
                                                 }
@@ -1795,7 +1808,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/connected-devices": {
+                "/ACCOUNTS_BASE_URL_REPLACE/connected-devices": {
                     "get": {
                         "summary": "List connected devices",
                         "description": "Returns a list of devices that have active sessions for the authenticated user. It also attempts to enrich the response with geolocation data based on IP. Some fields may be null if the corresponding data could not be retrieved.",
@@ -1869,11 +1882,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/connected-devices"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/connected-devices"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/profile-get"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/profile-get"
                                                         }
                                                     }
                                                 }
@@ -1891,7 +1904,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/delete-account-link": {
+                "/ACCOUNTS_BASE_URL_REPLACE/delete-account-link": {
                     "post": {
                         "summary": "Send account deletion confirmation link",
                         "description": "This endpoint allows authenticated users to request a confirmation link to delete their account. The system will send a unique token to the user's email. Clicking the link will initiate the account deletion process.",
@@ -1949,11 +1962,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/delete-account-link"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/delete-account-link"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/delete-account"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/delete-account"
                                                         }
                                                     }
                                                 }
@@ -1971,7 +1984,7 @@ public class DocumentationJson {
             .append(
                 """
                 # ==============================================================
-                "/api/v1/accounts/delete": {
+                "/ACCOUNTS_BASE_URL_REPLACE/delete": {
                     "delete": {
                         "summary": "Delete account",
                         "description": "Deletes the authenticated user's account after verifying the provided deletion token. Upon successful request, the account is deactivated and enters a 30-day grace period before permanent deletion. During this time, the user can reactivate the account by changing their password. All active sessions and tokens are revoked immediately. A confirmation email is sent upon successful deactivation.",
@@ -2028,11 +2041,11 @@ public class DocumentationJson {
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/delete"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/delete"
                                                         },
                                                         "next": {
                                                             "type": "string",
-                                                            "example": "/api/v1/accounts/signup"
+                                                            "example": "/ACCOUNTS_BASE_URL_REPLACE/signup"
                                                         }
                                                     }
                                                 }
@@ -2052,9 +2065,16 @@ public class DocumentationJson {
                 }}
                 # ==============================================================
                 """
-            ).toString().formatted(applicationTitle.toUpperCase());
+            ).toString();
 
-        return docs;
+        // Replace strings
+        // ---------------------------------------------------------------------
+        return docs
+            .replace("TITLE_REPLACE", applicationTitle.toUpperCase())
+            .replace("PUBLIC_DOMAIN_REPLACE", publicDomain.split(",")[0].trim())
+            .replace("HELLOWORLD_BASE_URL_REPLACE", helloworldBaseURL)
+            .replace("ACCOUNTS_BASE_URL_REPLACE", accountsBaseURL);
+        // ---------------------------------------------------------------------
 
     }
 
