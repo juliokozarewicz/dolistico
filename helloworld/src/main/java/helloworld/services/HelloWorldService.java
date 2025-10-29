@@ -17,6 +17,8 @@ public class HelloWorldService {
 
     // Env
     // -------------------------------------------------------------------------
+    @Value("${HELLOWORLD_BASE_URL}")
+    private String helloWorldBaseURL;
     // -------------------------------------------------------------------------
 
     private final MessageSource messageSource;
@@ -38,8 +40,7 @@ public class HelloWorldService {
 
         // response (links)
         Map<String, String> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", "/helloworld/helloworld");
-        customLinks.put("next", "/documentation/swagger");
+        customLinks.put("self", "/" + helloWorldBaseURL + "/helloworld");
 
         StandardResponseService response = new StandardResponseService.Builder()
             .statusCode(200)

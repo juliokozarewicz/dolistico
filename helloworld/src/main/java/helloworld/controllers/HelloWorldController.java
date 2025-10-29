@@ -31,7 +31,7 @@ class HelloWorldController {
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${HELLOWORLD_BASE_URL}/helloworld")
+    @GetMapping("/${HELLOWORLD_BASE_URL}")
     public ResponseEntity handle(
 
         // dtos errors

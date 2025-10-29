@@ -53,7 +53,7 @@ public class DocumentationJson {
                 """
                 # HELLOWORLD
                 # ==============================================================
-                "/HELLOWORLD_BASE_URL_REPLACE/helloworld":{
+                "/HELLOWORLD_BASE_URL_REPLACE":{
                     "get":{
                         "summary":"Get hello world message",
                         "description":"Retrieves a hello world message. You can optionally provide a custom message via query parameter.",
@@ -97,11 +97,7 @@ public class DocumentationJson {
                                                     "properties":{
                                                         "self":{
                                                             "type":"string",
-                                                            "example":"/HELLOWORLD_BASE_URL_REPLACE/helloworld"
-                                                        },
-                                                        "next":{
-                                                            "type":"string",
-                                                            "example":"/HELLOWORLD_BASE_URL_REPLACE/swagger"
+                                                            "example":"/HELLOWORLD_BASE_URL_REPLACE"
                                                         }
                                                     }
                                                 }
