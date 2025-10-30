@@ -31,7 +31,7 @@ public class TasksService {
 
         // response (links)
         Map<String, String> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", "/tasks/tasks");
+        customLinks.put("self", "/tasks/create");
         customLinks.put("next", "/documentation/swagger");
 
         StandardResponseService response = new StandardResponseService.Builder()

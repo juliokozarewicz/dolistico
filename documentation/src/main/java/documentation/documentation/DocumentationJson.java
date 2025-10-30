@@ -1,5 +1,6 @@
 package documentation.documentation;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,20 +22,120 @@ public class DocumentationJson {
     private String accountsBaseURL;
     // -------------------------------------------------------------------------
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private String descriptionText() {
+        return """
+            Dolistico is a lightweight and scalable microservice for managing to-do tasks, built with Java and Spring. Designed to integrate seamlessly into a microservices architecture, it allows users to create, update, delete, and organize personal tasks and agendas securely. With support for JWT authentication, user account management, and features like due dates, categorization, and ownership enforcement, Dolistico ensures that task management is both secure and efficient.
+
+            ## Base URL
+
+            ```
+            https://PUBLIC_DOMAIN_REPLACE
+            ```
+
+            ## Localization (Translation)
+
+            Any response containing the "message" field in the body will have 
+            its message translated server-side, based on the language specified 
+            in the request header, for the supported languages.
+
+            ## Common responses from services
+
+            **Authentication Error (401):**
+            If the user is not authenticated (e.g., missing or invalid token), the response will be:
+
+            ```json
+            {
+                "status": 401,
+                "statusMessage": "error",
+                "message": "Invalid credentials."
+            }
+            ```
+
+            **Form field validation error (422):**
+            If there are validation errors in the form fields, the response will include the fields and their respective error messages:
+
+            ```json
+            {
+                "statusCode": 422,
+                "statusMessage": "error",
+                "fieldErrors": [
+                    { "field": "field name", "message": "This field is required." },
+                    { "field": "field name", "message": "This field is required." }
+                ]
+            }
+            ```
+
+            **Bad request (400):**
+            If the request is malformed or invalid, the response will be:
+
+            ```json
+            {
+                "statusCode": 400,
+                "statusMessage": "error",
+                "message": "The request has an error, check."
+            }
+            ```
+
+            ## API Gateway Errors (No translation support)
+
+            **Service Unavailable (503):**
+            The service is temporarily unavailable, often due to maintenance or overload.
+
+            ```json
+            {
+                "statusCode": 503,
+                "statusMessage": "error",
+                "detail": "Service Unavailable (API Gateway)"
+            }
+            ```
+
+            **Rate limit exceeded (429):**
+            If the user exceeds the allowed number of requests, the response will be:
+
+            ```json
+            {
+                "statusCode": 429,
+                "statusMessage": "error",
+                "detail": "Access blocked by rate limiter (API Gateway)"
+            }
+            ```
+
+            **Internal server error (500):**
+            If there's an unexpected condition preventing the server from fulfilling the request:
+
+            ```json
+            {
+                "statusCode": 500,
+                "statusMessage": "error",
+                "detail": "Server error (API Gateway)"
+            }
+            ```
+            """;
+    }
 
     public String documentationText() {
+
+        String safeDescription = mapper.valueToTree(descriptionText()).toString();
 
         String docs = new StringBuilder()
 
             .append(
                 """
-                # ==============================================================
                 {
                 "openapi":"3.0.0",
                 "info": {
                     "title": "TITLE_REPLACE",
                     "version": "1.0",
-                    "description": "Dolistico is a lightweight and scalable microservice for managing to-do tasks, built with Java and Spring. Designed to integrate seamlessly into a microservices architecture, it allows users to create, update, delete, and organize personal tasks and agendas securely. With support for JWT authentication, user account management, and features like due dates, categorization, and ownership enforcement, Dolistico ensures that task management is both secure and efficient. \\n\\n ## Base URL \\n\\n ```text\\n https://PUBLIC_DOMAIN_REPLACE \\n``` \\n\\n ## Localization (Translation) \\n\\n Any response containing the \\"message\\" field in the body will have its message translated server-side, based on the language specified in the request header, for the supported languages. \\n\\n ## Common responses from services \\n\\n **Authentication Error (401):** If the user is not authenticated (e.g., missing or invalid token), the response will be: \\n\\n ```json\\n{\\n    \\"status\\" : 401, \\n    \\"statusMessage\\" : \\"error\\", \\n    \\"message\\" : \\"Invalid credentials.\\" \\n }\\n``` \\n\\n **Form field validation error (422):** If there are validation errors in the form fields, the response will include the fields and their respective error messages: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 422, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"fieldErrors\\": [ \\n        { \\n            \\"field\\": \\"field name\\", \\n            \\"message\\": \\"This field is required.\\" \\n        }, \\n        { \\n            \\"field\\": \\"field name\\", \\n            \\"message\\": \\"This field is required.\\" \\n        }\\n    ] \\n }\\n``` \\n\\n **Bad request (400):** If the request is malformed or invalid, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 400, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"message\\": \\"The request has an error, check.\\" \\n}\\n``` \\n ## API Gateway Errors (No translation support) \\n\\n **Service Unavailable (503):** The service is temporarily unavailable, often due to maintenance or overload. The response will include the error details: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 503, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Service Unavailable (API Gateway)\\" \\n}\\n``` \\n\\n **Rate limit exceeded (429):** If the user exceeds the allowed number of requests, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 429, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Access blocked by rate limiter (API Gateway)\\" \\n}\\n``` \\n\\n **Bad request (400):** If the request is malformed or invalid, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 400, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Bad request (API Gateway)\\" \\n}\\n``` \\n\\n **Internal server error (500):** If there's an unexpected condition preventing the server from fulfilling the request, the response will be: \\n\\n ```json\\n{ \\n    \\"statusCode\\": 500, \\n    \\"statusMessage\\": \\"error\\", \\n    \\"detail\\": \\"Server error (API Gateway)\\" \\n}\\n```"
+                    "description":
+                """
+            )
+
+            .append(safeDescription)
+
+            .append(
+                """
                 },
                 "components":{
                     "securitySchemes":{
