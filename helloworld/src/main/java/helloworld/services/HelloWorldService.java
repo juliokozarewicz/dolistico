@@ -40,7 +40,7 @@ public class HelloWorldService {
 
         // response (links)
         Map<String, String> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", "/" + helloWorldBaseURL + "/helloworld");
+        customLinks.put("self", "/" + helloWorldBaseURL);
 
         StandardResponseService response = new StandardResponseService.Builder()
             .statusCode(200)

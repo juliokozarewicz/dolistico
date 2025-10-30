@@ -1,14 +1,14 @@
 package tasks.controllers;
 
-import tasks.dtos.TasksDTO;
-import tasks.services.TasksService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tasks.dtos.TasksCreateDTO;
+import tasks.services.TasksCreateService;
 
 @RestController
 @RequestMapping()
@@ -16,29 +16,29 @@ import org.springframework.web.bind.annotation.RestController;
 class TasksController {
 
     // Service
-    private final TasksService tasksService;
+    private final TasksCreateService tasksCreateService;
 
     // constructor
     public TasksController(
-        TasksService tasksService
+        TasksCreateService tasksCreateService
     ) {
-        this.tasksService = tasksService;
+        this.tasksCreateService = tasksCreateService;
     }
 
-    @GetMapping("${TASKS_BASE_URL}/tasks")
+    @PostMapping("/${TASKS_BASE_URL}/create")
     public ResponseEntity handle(
 
         // dtos errors
-        @Valid TasksDTO tasksDTO,
+        @Valid TasksCreateDTO tasksCreateDTO,
         BindingResult bindingResult
 
     ) {
 
         // message
-        String message = tasksDTO.message() != null ?
-            tasksDTO.message() : "Hello World!";
+        String message = tasksCreateDTO.message() != null ?
+            tasksCreateDTO.message() : "Hello World!";
 
-        return tasksService.execute(message);
+        return tasksCreateService.execute(message);
 
     }
 

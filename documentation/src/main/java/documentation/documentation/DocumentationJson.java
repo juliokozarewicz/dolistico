@@ -16,7 +16,7 @@ public class DocumentationJson {
     private String publicDomain;
 
     @Value("${HELLOWORLD_BASE_URL}")
-    private String helloworldBaseURL;
+    private String helloWorldBaseURL;
 
     @Value("${ACCOUNTS_BASE_URL}")
     private String accountsBaseURL;
@@ -2170,7 +2170,7 @@ public class DocumentationJson {
         return docs
             .replace("TITLE_REPLACE", applicationTitle.toUpperCase())
             .replace("PUBLIC_DOMAIN_REPLACE", publicDomain.split(",")[0].trim())
-            .replace("HELLOWORLD_BASE_URL_REPLACE", helloworldBaseURL)
+            .replace("HELLOWORLD_BASE_URL_REPLACE", helloWorldBaseURL)
             .replace("ACCOUNTS_BASE_URL_REPLACE", accountsBaseURL);
         // ---------------------------------------------------------------------
 

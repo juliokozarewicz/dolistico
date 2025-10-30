@@ -86,9 +86,25 @@ public class AccountsUpdatePasswordService {
         Locale locale = LocaleContextHolder.getLocale();
 
         // Decrypted email
-        String decryptedEmail = encryptionService.decrypt(
-            accountsUpdatePasswordDTO.email()
-        );
+        String decryptedEmail = "";
+
+        try {
+
+            decryptedEmail = encryptionService.decrypt(
+                accountsUpdatePasswordDTO.email()
+            );
+
+        } catch (Exception e) {
+
+            // call custom error
+            errorHandler.customErrorThrow(
+                404,
+                messageSource.getMessage(
+                    "response_update_password_error", null, locale
+                )
+            );
+
+        }
 
         // find user
         Optional<AccountsEntity> findUser =  accountsRepository.findByEmail(

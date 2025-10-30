@@ -81,9 +81,25 @@ public class AccountsActivateService {
         Locale locale = LocaleContextHolder.getLocale();
 
         // Decrypted email
-        String decryptedEmail = encryptionService.decrypt(
-            accountsActivateDTO.email()
-        );
+        String decryptedEmail = "";
+
+        try {
+
+            decryptedEmail = encryptionService.decrypt(
+                accountsActivateDTO.email()
+            );
+
+        } catch (Exception e) {
+
+            // call custom error
+            errorHandler.customErrorThrow(
+                404,
+                messageSource.getMessage(
+                    "response_activate_account_error", null, locale
+                )
+            );
+
+        }
 
         // find user
         Optional<AccountsEntity> findUser =  accountsRepository.findByEmail(
