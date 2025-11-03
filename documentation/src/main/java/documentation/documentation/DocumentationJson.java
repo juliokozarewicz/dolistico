@@ -922,6 +922,10 @@ public class DocumentationJson {
                                                         "language": {
                                                             "type": "string",
                                                             "example": "en"
+                                                        },
+                                                        "theme": {
+                                                            "type": "string",
+                                                            "example": "dark mode"
                                                         }
                                                     }
                                                 },
@@ -1170,6 +1174,12 @@ public class DocumentationJson {
                                                 "maxLength": 50,
                                                 "description": "Language code in ISO 639-1 format (e.g., en, pt-BR).",
                                                 "example": "en"
+                                            },
+                                            "theme": {
+                                                "type": "string",
+                                                "maxLength": 100,
+                                                "description": "The theme name, which represents the colors and fonts chosen by the user.",
+                                                "example": "dark mode"
                                             }
                                         }
                                     }
