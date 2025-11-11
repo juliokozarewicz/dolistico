@@ -10,16 +10,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka-ui
-    ports:
-      - "9080:9080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${PRIVATE_DOMAIN}:9092
-      # KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://localhost:8081
-
   accounts_database:
     container_name: accounts_database
     image: postgres:latest
@@ -55,46 +45,29 @@ services:
     networks:
       - spring_net
 
-  kafka:
-    image: apache/kafka:latest
-    container_name: kafka
-    env_file:
-      - .env
+  redpanda:
+    image: redpandadata/redpanda
+    container_name: redpanda
+    command:
+      - redpanda start
+      - --overprovisioned
+      - --smp 1
+      - --memory 1G
+      - --reserve-memory 0M
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092,SASL_PLAINTEXT://0.0.0.0:9093
+      - --advertise-kafka-addr PLAINTEXT://redpanda:9092,SASL_PLAINTEXT://redpanda:9093
+      - --pandaproxy-addr 0.0.0.0:8082
+      - --advertise-pandaproxy-addr redpanda:8082
+      - --set redpanda.enable_sasl=true
+      - --set redpanda.superusers=["admin"]
     ports:
-      - 9092:9092
-      - 29093:29093
+      - "9092:9092"    # Kafka API (PLAINTEXT)
+      - "9093:9093"    # Kafka API (SASL)
+      - "8082:8082"    # Pandaproxy (HTTP REST)
     environment:
-      # Cluster Configuration
-      KAFKA_NODE_ID: 1
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
-      CLUSTER_ID: ${KAFKA_KRAFT_CLUSTER_ID}
-
-      # Listeners Configuration
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-
-      # Security Configuration - SASL/PLAIN
-      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
-      KAFKA_LISTENER_NAME_SASL_PLAINTEXT_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_ADMIN_USER}" password="${KAFKA_ADMIN_PASSWORD}" ";
-      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "false"
-
-      # Broker Settings
-      KAFKA_BROKER_ID: 1
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
-
-    volumes:
-      - kafka_data:/var/lib/kafka/data
-    networks:
-      - spring_net
+      - REDPANDA_AUTO_CREATE_TOPICS=false
+      - REDPANDA_ENABLE_SASL=true
 
   helloworld:
     container_name: helloworld
@@ -138,7 +111,7 @@ services:
     depends_on:
       - accounts_database
       - accounts_redis
-      - kafka
+      - redpanda
       - email_management_service
 
   tasks:
@@ -157,7 +130,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
-  kafka_data:
+  redpanda_data:
 
 networks:
   spring_net:
