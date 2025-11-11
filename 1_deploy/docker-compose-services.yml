@@ -62,12 +62,12 @@ services:
       - --set redpanda.enable_sasl=true
       - --set redpanda.superusers=["admin"]
     ports:
-      - "9092:9092"    # Kafka API (PLAINTEXT)
       - "9093:9093"    # Kafka API (SASL)
-      - "8082:8082"    # Pandaproxy (HTTP REST)
     environment:
       - REDPANDA_AUTO_CREATE_TOPICS=false
       - REDPANDA_ENABLE_SASL=true
+    networks:
+      - spring_net
 
   helloworld:
     container_name: helloworld

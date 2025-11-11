@@ -38,7 +38,7 @@ public class AccountsKafkaService {
 
         } catch (Exception e) {
 
-            throw new InternalError("Error creating message for kafka in account " +
+            throw new InternalError("Error creating message for broker in account " +
                 "service [ AccountsKafkaService.sendSimpleEmailMessage() ]: " + e);
 
         }

@@ -39,11 +39,13 @@ public class EmailManagementKafkaService {
 
     // consumer
     @KafkaListener(
+
         topics = KafkaTopicEnum.SEND_SIMPLE_EMAIL,
         groupId = KafkaGroupEnum.EMAIL_MANAGEMENT_SERVICE,
         properties = {
             "spring.json.value.default.type=email_management_service.dtos.SendEmailDataDTO"
         }
+
     )
     public void sendSimpleEmailConsumer(
 
@@ -55,16 +57,18 @@ public class EmailManagementKafkaService {
         try {
 
             executeEmailService.sendSimpleEmail(
+
                 sendEmailDataDTO.recipient(),
                 sendEmailDataDTO.subject(),
                 sendEmailDataDTO.message()
+
             );
 
             ack.acknowledge();
 
         } catch (Exception e) {
 
-            throw new InternalError("Error consuming kafka message in email " +
+            throw new InternalError("Error consuming broker message in email " +
                 "sending service [ EmailManagementKafkaService" +
                 ".sendSimpleEmailConsumer() ]: " + e);
 
