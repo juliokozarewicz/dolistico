@@ -48,33 +48,22 @@ services:
     networks:
       - spring_net
 
-  kafka:
-    image: confluentinc/cp-kafka:8.1.0
-    container_name: kafka
-    hostname: kafka
+  redpanda:
+    image: redpandadata/redpanda
+    container_name: redpanda
+    command:
+      - redpanda start
+      - --overprovisioned
+      - --smp 1
+      - --memory 1G
+      - --reserve-memory 0M
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:9092
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
     ports:
       - "9092:9092"
-    environment:
-
-      # Cluster
-      KAFKA_NODE_ID: 1
-      CLUSTER_ID: ${KAFKA_KRAFT_CLUSTER_ID}
-      KAFKA_KRAFT_MODE: "true"
-      KAFKA_PROCESS_ROLES: "broker,controller"
-      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_BROKER_ID: 1
-      KAFKA_NUM_PARTITIONS: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
-
-    volumes:
-      - kafka_data:/var/lib/kafka/data
     networks:
       - spring_net
 
@@ -124,7 +113,7 @@ services:
     depends_on:
       - accounts_database
       - accounts_redis
-      - kafka
+      - redpanda
       - email_management_service
 
   tasks:
@@ -140,11 +129,13 @@ services:
     depends_on:
       - accounts_database
       - accounts
+      - redpanda
+      - email_management_service
 
 volumes:
   postgres_data:
   redis_data:
-  kafka_data:
+  redpanda_data:
 
 networks:
   spring_net:
