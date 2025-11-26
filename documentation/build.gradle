@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-core'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {

@@ -1,0 +1,362 @@
+worker_processes auto;
+worker_rlimit_nofile 65536;
+
+events {
+    use epoll;
+    worker_connections 10240;
+}
+
+http {
+
+    # keep alive
+    keepalive_timeout 65;
+    tcp_nopush on;
+    tcp_nodelay on;
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    # ---------------------------------------------------------- (load balancer init)
+    upstream documentation_backend {
+        server documentation:${DOCUMENTATION_PORT};
+    }
+
+    upstream helloworld_backend {
+        server helloworld:${HELLOWORLD_PORT};
+    }
+
+    upstream accounts_backend {
+        server accounts:${ACCOUNTS_PORT};
+    }
+
+    upstream tasks_backend {
+        server tasks:${TASKS_PORT};
+    }
+    # ----------------------------------------------------------- (load balancer end)
+
+    # ------------------------------------------ (rate limiting and bots config init)
+    limit_req_zone binary_remote_addr zone=critical_zone:100m rate=5r/m;
+    limit_req_zone binary_remote_addr zone=general_zone:150m rate=20r/m;
+    limit_req_zone binary_remote_addr zone=almost_free_zone:200m rate=100r/m;
+    limit_conn_zone binary_remote_addr zone=conn_limit_zone:100m;
+    limit_conn conn_limit_zone 10;
+    limit_req_status 429;
+
+    # Blocking due to suspicious User-Agent (bots, scanners, etc.)
+    # Blocking due to suspicious User-Agent (bots, scanners, etc.)
+        map $http_user_agent $bad_ua {
+            default 0;
+            "~*(curl|wget|python-requests|masscan|nmap|nikto|sqlmap|bot|scraper)" 1;
+            "~*Docker-Healthcheck" 0;
+        }
+
+    # Special log for DDOS attacks or limits reached
+    log_format ddos '$remote_addr - $http_host "$request" $status [$time_local] '
+                    '"$http_user_agent" "$http_referer" '
+                    'req_time=$request_time upstream_time=$upstream_response_time';
+    access_log /var/log/nginx/ddos.log ddos;
+    # ------------------------------------------- (rate limiting and bots config end)
+
+    # ---------------------------------------------------------- (proxy configs init)
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Port $server_port;
+
+    # Cache for static routes (DDoS protection)
+    proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=static_cache:10m max_size=200m inactive=10m use_temp_path=off;
+    proxy_cache_key "$scheme$request_method$host$request_uri";
+    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+    # ----------------------------------------------------------- (proxy configs end)
+
+    server {
+
+        listen 80;
+        server_name $PUBLIC_DOMAIN www.$PUBLIC_DOMAIN;
+
+        # ------------------------------------------------------------- (health init)
+        location /nginx-status {
+            stub_status on;
+            access_log off;
+            allow 127.0.0.1;
+            allow 172.18.0.0/16;
+            deny all;
+            break;
+        }
+        # -------------------------------------------------------------- (health end)
+
+        # ----------------------------------------------------------- (init security)
+        proxy_connect_timeout 30s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
+
+        # size request limit
+        client_max_body_size 10M;
+
+        # buffer
+        proxy_buffering off;
+        proxy_request_buffering off;
+
+        # Block suspicious agents
+        if ($bad_ua) {
+            return 403;
+        }
+
+        # Timeout for requests from slow clients
+        client_body_timeout 10s;
+        client_header_timeout 10s;
+        send_timeout 10s;
+
+        # Improve HTTPS performance with session resumption
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 5m;
+
+        # Enable server-side protection against BEAST attacks
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+
+        # Disable SSLv3
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        # Enable OCSP stapling (http://blog.mozilla.org/security/2013/07/29/ocsp-stapling-in-firefox)
+        ssl_stapling on;
+        ssl_stapling_verify on;
+        resolver 8.8.8.8 8.8.4.4 valid=300s;
+        resolver_timeout 5s;
+
+        location ~ /\.ht {
+            deny all;
+        }
+
+        location ~ /\. {
+            access_log off;
+            log_not_found off;
+            deny all;
+        }
+
+        gzip on;
+        gzip_disable "msie6";
+
+        gzip_comp_level 6;
+        gzip_min_length 1100;
+        gzip_buffers 4 32k;
+        gzip_proxied any;
+        gzip_types
+            text/plain
+            text/css
+            text/js
+            text/xml
+            text/javascript
+            application/javascript
+            application/x-javascript
+            application/json
+            application/xml
+            application/rss+xml
+            image/svg+xml;
+        # ------------------------------------------------------------ (end security)
+
+        # ------------------------------------------------------------- (init errors)
+        error_page 429 = @to_many_request;
+        error_page 502 503 504 = @service_unavailable;
+
+        error_page
+            400 401 402 403 404 405 406 407 408
+            409 410 411 412 413 414 415 416 417
+            418 426 428 431 444 449 451
+        = @bad_request;
+
+        error_page
+            500 501 505 506 507 508 510
+        = @server_error;
+
+        location @to_many_request {
+            default_type application/json;
+            return 429 '{"statusCode": 429, "statusMessage":"error", "detail": "Access blocked by rate limiter (API Gateway)"}';
+        }
+
+        location @bad_request {
+            default_type application/json;
+            return 400 '{"statusCode": 400, "statusMessage":"error", "detail": "Bad request (API Gateway)"}';
+        }
+
+        location @server_error {
+            default_type application/json;
+            return 500 '{"statusCode": 500, "statusMessage":"error", "detail": "Server error (API Gateway)"}';
+        }
+
+        location @service_unavailable {
+            default_type application/json;
+            return 503 '{"statusCode": 503, "statusMessage":"error", "detail": "Service Unavailable (API Gateway)."}';
+        }
+        # -------------------------------------------------------------- (end errors)
+
+        # ------------------------------------------------------ (init documentation)
+        # [ DOCUMENTATION - Static Files ]
+        location /${DOCUMENTATION_BASE_URL}/static {
+            proxy_pass http://documentation_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ DOCUMENTATION - Stoplight Elements ]
+        location /${DOCUMENTATION_BASE_URL} {
+            proxy_pass http://documentation_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ DOCUMENTATION - Swagger ]
+        location /${DOCUMENTATION_BASE_URL}/swagger {
+            proxy_pass http://documentation_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ DOCUMENTATION - JSON ]
+        location /${DOCUMENTATION_BASE_URL}/json {
+            proxy_pass http://documentation_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ DOCUMENTATION - Redocly ]
+        location /${DOCUMENTATION_BASE_URL}/redocly {
+            proxy_pass http://documentation_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+        # ------------------------------------------------------- (end documentation)
+
+        # -------------------------------------------------------- (init hello world)
+
+        # [ HELLO WORLD - Static Files ]
+        location /${HELLOWORLD_BASE_URL}/static {
+            proxy_pass http://helloworld_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ HELLO WORLD - Helloworld ]
+        location /${HELLOWORLD_BASE_URL} {
+            proxy_pass http://helloworld_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+        # --------------------------------------------------------- (end hello world)
+
+        # ----------------------------------------------------------- (init accounts)
+        # [ ACCOUNTS - Static Files ]
+        location /${ACCOUNTS_BASE_URL}/static {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Signup ]
+        location /${ACCOUNTS_BASE_URL}/signup {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Activate Account ]
+        location /${ACCOUNTS_BASE_URL}/activate-account {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Update Password Validation ]
+        location /${ACCOUNTS_BASE_URL}/update-password-link {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Update Password ]
+        location /${ACCOUNTS_BASE_URL}/update-password {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Login ]
+        location /${ACCOUNTS_BASE_URL}/login {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Refresh Login ]
+        location /${ACCOUNTS_BASE_URL}/refresh-login {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Get Profile ]
+        location /${ACCOUNTS_BASE_URL}/get-profile {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Update Profile ]
+        location /${ACCOUNTS_BASE_URL}/update-profile {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Create Address ]
+        location /${ACCOUNTS_BASE_URL}/create-address {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Get Address ]
+        location /${ACCOUNTS_BASE_URL}/get-address {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Delete Address ]
+        location /${ACCOUNTS_BASE_URL}/delete-address {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Update Email Link ]
+        location /${ACCOUNTS_BASE_URL}/update-email-link {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Update Email ]
+        location /${ACCOUNTS_BASE_URL}/update-email {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Get Connected Devices ]
+        location /${ACCOUNTS_BASE_URL}/connected-devices {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Delete Account Link ]
+        location /${ACCOUNTS_BASE_URL}/delete-account-link {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Delete Account ]
+        location /${ACCOUNTS_BASE_URL}/delete {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Upload Avatar ]
+        location /${ACCOUNTS_BASE_URL}/upload-avatar {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+        # ------------------------------------------------------------ (end accounts)
+
+        # -------------------------------------------------------------- (init tasks)
+        # [ TASKS - Create ]
+        location /${TASKS_BASE_URL}/create {
+            proxy_pass http://tasks_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+        # --------------------------------------------------------------- (end tasks)
+
+    }
+
+}

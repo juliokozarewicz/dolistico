@@ -1,36 +1,74 @@
 services:
 
+  # ------------------------------------------------------------- (aux services init)
+  vault:
+    image: hashicorp/vault:1.15.2
+    container_name: vault
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_ADDR: "http://vault:8200"
+      VAULT_API_ADDR: "http://vault:8200"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - spring_net
+    volumes:
+      - vault_data:/vault/data
+    command: >
+      sh -c '
+      echo "storage \"file\" { path = \"/vault/data\" }
+      listener \"tcp\" { address = \"0.0.0.0:8200\" tls_disable = 1 }
+      disable_mlock = true
+      ui = true" > /vault/config/vault.hcl
+      && vault server -config=/vault/config/vault.hcl
+      '
+
   nginx:
+    build: ../nginx
     container_name: nginx
-    hostname: nginx
-    build: ../infra-nginx-dockerized
+    env_file:
+      - .env
     ports:
       - "80:80"
     networks:
       - spring_net
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    depends_on:
+      - documentation
+      - helloworld
+      - accounts
+      - tasks
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "-A", "Docker-Healthcheck", "http://nginx/nginx-status" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
 
-  accounts_database:
-    container_name: accounts_database
-    hostname: accounts_database
-    image: postgres:latest
+  database:
+    container_name: database
     env_file:
       - .env
+    image: postgres:17
     environment:
-      POSTGRES_USER: ${ACCOUNTS_DATABASE_USER}
-      POSTGRES_PASSWORD: ${ACCOUNTS_DATABASE_PASSWORD}
-      POSTGRES_DB: ${ACCOUNTS_DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_ADMIN_USER}
+      POSTGRES_PASSWORD: ${DATABASE_ADMIN_PASSWORD}
+      POSTGRES_DB: ${DATABASE_ADMIN_NAME}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     networks:
       - spring_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_ADMIN_USER} -d ${DATABASE_ADMIN_NAME}" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
 
-  accounts_redis:
-    container_name: accounts_redis
-    hostname: accounts_redis
+  cachemanager:
+    container_name: cachemanager
     env_file:
       - .env
     image: redis:latest
@@ -38,19 +76,25 @@ services:
       "redis-server",
       "--port", "6379",
       "--requirepass",
-      "${ACCOUNTS_REDIS_PASSWORD}",
+      "${CACHEMANAGER_PASSWORD}",
       "--notify-keyspace-events", "Ex"
     ]
     volumes:
-      - redis_data:/data
-    ports:
-      - "6379:6379"
+      - cachemanager_data:/data
+    expose:
+      - "6379"
     networks:
       - spring_net
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a ${CACHEMANAGER_PASSWORD} PING | grep PONG" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
 
-  redpanda:
+  datastreaming:
+    container_name: datastreaming
     image: redpandadata/redpanda
-    container_name: redpanda
     command:
       - redpanda start
       - --overprovisioned
@@ -59,83 +103,125 @@ services:
       - --reserve-memory 0M
       - --node-id 0
       - --kafka-addr PLAINTEXT://0.0.0.0:9092
-      - --advertise-kafka-addr PLAINTEXT://redpanda:9092
+      - --advertise-kafka-addr PLAINTEXT://datastreaming:9092
     volumes:
-      - redpanda_data:/var/lib/redpanda/data
+      - datastreaming_data:/var/lib/redpanda/data
     ports:
       - "9092:9092"
     networks:
       - spring_net
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'echo > /dev/tcp/datastreaming/9092'" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+
+  emailservice:
+    container_name: emailservice
+    build: ../emailservice
+    env_file:
+      - .env
+    expose:
+      - "${EMAILSERVICE_PORT}"
+    networks:
+      - spring_net
+    depends_on:
+      - database
+      - cachemanager
+      - datastreaming
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://emailservice:${EMAILSERVICE_PORT}/actuator/health" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+  # ------------------------------------------------------------- (aux services end)
+
+  # ----------------------------------------------------------- ( main services init)
+  documentation:
+    container_name: documentation
+    build: ../documentation
+    env_file:
+      - .env
+    expose:
+      - "${DOCUMENTATION_PORT}"
+    networks:
+      - spring_net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://documentation:${DOCUMENTATION_PORT}/actuator/health" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
 
   helloworld:
     container_name: helloworld
-    hostname: helloworld
-    build: ../helloworld
     env_file:
       - .env
+    build: ../helloworld
     ports:
       - "${HELLOWORLD_PORT}:${HELLOWORLD_PORT}"
     networks:
       - spring_net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://helloworld:${HELLOWORLD_PORT}/actuator/health" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
 
-  documentation:
-    container_name: documentation
-    hostname: documentation
-    build: ../documentation
-    env_file:
-      - .env
-    ports:
-      - "${DOCUMENTATION_PORT}:${DOCUMENTATION_PORT}"
-    networks:
-      - spring_net
-
-  email_management_service:
-    container_name: email_management_service
-    hostname: email_management_service
-    build: ../email_management_service
-    env_file:
-      - .env
-    ports:
-      - "${EMAIL_SERVICE_PORT}:${EMAIL_SERVICE_PORT}"
-    networks:
-      - spring_net
-
+  # #####
   accounts:
     container_name: accounts
-    hostname: accounts
     build: ../accounts
     env_file:
       - .env
-    ports:
-      - "${ACCOUNTS_PORT}:${ACCOUNTS_PORT}"
+    expose:
+      - "${ACCOUNTS_PORT}"
     networks:
       - spring_net
     depends_on:
-      - accounts_database
-      - accounts_redis
-      - redpanda
-      - email_management_service
+      - database
+      - cachemanager
+      - datastreaming
+      - emailservice
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://accounts:${ACCOUNTS_PORT}/actuator/health" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
 
+  # #####
   tasks:
     container_name: tasks
-    hostname: tasks
     build: ../tasks
     env_file:
       - .env
-    ports:
-      - "${TASKS_PORT}:${TASKS_PORT}"
+    expose:
+      - "${TASKS_PORT}"
     networks:
       - spring_net
     depends_on:
-      - accounts_database
-      - accounts
-      - redpanda
-      - email_management_service
+      - database
+      - cachemanager
+      - datastreaming
+      - emailservice
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://tasks:${TASKS_PORT}/actuator/health" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+
+  # ------------------------------------------------------------ ( main services end)
 
 volumes:
+  vault_data:
   postgres_data:
-  redis_data:
-  redpanda_data:
+  cachemanager_data:
+  datastreaming_data:
 
 networks:
   spring_net:

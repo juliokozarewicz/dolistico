@@ -1,0 +1,48 @@
+package juliokozarewicz.accounts.services;
+
+import juliokozarewicz.accounts.dtos.SendEmailDataDTO;
+import juliokozarewicz.accounts.enums.KafkaTopicEnum;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AccountsKafkaService {
+
+    // ==================================================== ( constructor init )
+    private final KafkaTemplate<String, SendEmailDataDTO> kafkaTemplate;
+
+    public AccountsKafkaService(
+
+        KafkaTemplate<String, SendEmailDataDTO> kafkaTemplate
+
+    ) {
+
+        this.kafkaTemplate = kafkaTemplate;
+
+    }
+    // ===================================================== ( constructor end )
+
+    // producer
+    public void sendSimpleEmailMessage(
+
+        SendEmailDataDTO sendEmailDataDTO
+
+    ) {
+
+        try {
+
+            kafkaTemplate.send(
+                KafkaTopicEnum.SEND_SIMPLE_EMAIL,
+                sendEmailDataDTO
+            );
+
+        } catch (Exception e) {
+
+            throw new InternalError("Error creating message for broker in account " +
+                "service [ AccountsKafkaService.sendSimpleEmailMessage() ]: " + e);
+
+        }
+
+    }
+
+}

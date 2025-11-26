@@ -5,5 +5,6 @@ RUN gradle clean build --no-daemon -x test
 
 FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
+RUN apk update && apk add --no-cache curl jq
 COPY --from=build /app/build/libs/*.jar /app/application.jar
 ENTRYPOINT ["java", "-jar", "application.jar"]
