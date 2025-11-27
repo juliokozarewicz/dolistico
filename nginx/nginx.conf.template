@@ -85,7 +85,7 @@ http {
             stub_status on;
             access_log off;
             allow 127.0.0.1;
-            allow 172.18.0.0/16;
+            allow 172.16.0.0/12;
             deny all;
             break;
         }
