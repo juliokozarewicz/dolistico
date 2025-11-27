@@ -156,7 +156,8 @@ services:
     networks:
       - spring_net
     depends_on:
-      - datastreaming
+      datastreaming:
+          condition: service_healthy
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://emailservice:${EMAILSERVICE_PORT}/actuator/health" ]
       interval: 30s
@@ -174,10 +175,14 @@ services:
     networks:
       - spring_net
     depends_on:
-      - database
-      - cachemanager
-      - datastreaming
-      - emailservice
+      database:
+        condition: service_healthy
+      cachemanager:
+        condition: service_healthy
+      datastreaming:
+        condition: service_healthy
+      emailservice:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://accounts:${ACCOUNTS_PORT}/actuator/health" ]
       interval: 30s
@@ -196,10 +201,14 @@ services:
     networks:
       - spring_net
     depends_on:
-      - database
-      - cachemanager
-      - datastreaming
-      - emailservice
+      database:
+        condition: service_healthy
+      cachemanager:
+        condition: service_healthy
+      datastreaming:
+        condition: service_healthy
+      emailservice:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://tasks:${TASKS_PORT}/actuator/health" ]
       interval: 30s
