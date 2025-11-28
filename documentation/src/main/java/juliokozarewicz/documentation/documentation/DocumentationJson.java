@@ -16,6 +16,9 @@ public class DocumentationJson {
     @Value("${PUBLIC_DOMAIN}")
     private String publicDomain;
 
+    @Value("${DOCUMENTATION_BASE_URL}")
+    private String documentationBaseURL;
+
     @Value("${HELLOWORLD_BASE_URL}")
     private String helloWorldBaseURL;
 
@@ -27,7 +30,14 @@ public class DocumentationJson {
 
     private String descriptionText() {
         return """
-            Dolistico is a lightweight and scalable microservice for managing to-do tasks, built with Java and Spring. Designed to integrate seamlessly into a microservices architecture, it allows users to create, update, delete, and organize personal tasks and agendas securely. With support for JWT authentication, user account management, and features like due dates, categorization, and ownership enforcement, Dolistico ensures that task management is both secure and efficient.
+            Dolistico is a lightweight and scalable microservice for managing 
+            to-do tasks, built with Java and Spring. Designed to integrate 
+            seamlessly into a microservices architecture, it allows users to 
+            create, update, delete, and organize personal tasks and agendas 
+            securely. With support for JWT authentication, user account 
+            management, and features like due dates, categorization, and 
+            ownership enforcement, Dolistico ensures that 
+            task management is both secure and efficient.
 
             
             
@@ -36,7 +46,32 @@ public class DocumentationJson {
             ```
             https://PUBLIC_DOMAIN_REPLACE
             ```
-
+            
+            
+            
+            ## Additional templates you might find useful
+            You can also access the documentation via other graphical 
+            interfaces, which provide interactive ways to explore the API and 
+            understand its capabilities.
+            
+            ### Swagger:
+            Swagger offers a user-friendly, interactive interface where you 
+            can test API endpoints directly from your browser. It's ideal for 
+            quickly exploring requests, responses, and available operations.
+            Access it here:
+            ```
+            https://PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
+            ```
+            
+            ### Redocli:
+            Redocly provides a clean, well-structured view of the API 
+            documentation, making it easier to read and navigate through 
+            endpoints, schemas, and examples.
+            Access it here:
+            ```
+            https://PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/redocly
+            ```
+            
             
             
             ## Localization (Translation)
@@ -2189,6 +2224,7 @@ public class DocumentationJson {
         return docs
             .replace("TITLE_REPLACE", applicationTitle.toUpperCase())
             .replace("PUBLIC_DOMAIN_REPLACE", publicDomain.split(",")[0].trim())
+            .replace("DOCUMENTATION_REPLACE", documentationBaseURL)
             .replace("HELLOWORLD_BASE_URL_REPLACE", helloWorldBaseURL)
             .replace("ACCOUNTS_BASE_URL_REPLACE", accountsBaseURL);
         // ---------------------------------------------------------------------
