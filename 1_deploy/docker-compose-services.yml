@@ -87,8 +87,8 @@ services:
       start_period: 10s
       timeout: 10s
 
-  datastreaming:
-    container_name: datastreaming
+  streamingmanager:
+    container_name: streamingmanager
     image: redpandadata/redpanda
     command:
       - redpanda start
@@ -97,16 +97,17 @@ services:
       - --memory 1G
       - --reserve-memory 0M
       - --node-id 0
-      - --kafka-addr PLAINTEXT://0.0.0.0:9092
-      - --advertise-kafka-addr PLAINTEXT://datastreaming:9092
+      - --kafka-addr PLAINTEXT://0.0.0.0:${STRAMINGMANAGER_PORT}
+      - --advertise-kafka-addr PLAINTEXT://streamingmanager:${STRAMINGMANAGER_PORT}
+      - --set redpanda.enable_auto_topic_creation=true
     volumes:
-      - datastreaming_data:/var/lib/redpanda/data
+      - streamingmanager_data:/var/lib/redpanda/data
     expose:
-      - "${DATASTRAMING_PORT}"
+      - "${STRAMINGMANAGER_PORT}"
     networks:
       - spring_net
     healthcheck:
-      test: [ "CMD-SHELL", "bash -c 'echo > /dev/tcp/datastreaming/9092'" ]
+      test: [ "CMD-SHELL", "bash -c 'echo > /dev/tcp/streamingmanager/${STRAMINGMANAGER_PORT}'" ]
       interval: 30s
       retries: 5
       start_period: 10s
@@ -156,7 +157,7 @@ services:
     networks:
       - spring_net
     depends_on:
-      datastreaming:
+      streamingmanager:
           condition: service_healthy
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://emailservice:${EMAILSERVICE_PORT}/actuator/health" ]
@@ -179,7 +180,7 @@ services:
         condition: service_healthy
       cachemanager:
         condition: service_healthy
-      datastreaming:
+      streamingmanager:
         condition: service_healthy
       emailservice:
         condition: service_healthy
@@ -205,7 +206,7 @@ services:
         condition: service_healthy
       cachemanager:
         condition: service_healthy
-      datastreaming:
+      streamingmanager:
         condition: service_healthy
       emailservice:
         condition: service_healthy
@@ -222,7 +223,7 @@ volumes:
   vault_data:
   database_data:
   cachemanager_data:
-  datastreaming_data:
+  streamingmanager_data:
 
 networks:
   spring_net:
