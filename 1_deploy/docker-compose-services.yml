@@ -124,6 +124,8 @@ services:
       - "${DOCUMENTATION_PORT}"
     networks:
       - spring_net
+    deploy:
+      replicas: 1
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://documentation:${DOCUMENTATION_PORT}/actuator/health" ]
       interval: 30s
@@ -140,6 +142,8 @@ services:
       - "${HELLOWORLD_PORT}:${HELLOWORLD_PORT}"
     networks:
       - spring_net
+    deploy:
+      replicas: 1
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://helloworld:${HELLOWORLD_PORT}/actuator/health" ]
       interval: 30s
@@ -159,6 +163,8 @@ services:
     depends_on:
       streamingmanager:
           condition: service_healthy
+    deploy:
+      replicas: 1
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://emailservice:${EMAILSERVICE_PORT}/actuator/health" ]
       interval: 30s
@@ -184,6 +190,8 @@ services:
         condition: service_healthy
       emailservice:
         condition: service_healthy
+    deploy:
+      replicas: 1
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://accounts:${ACCOUNTS_PORT}/actuator/health" ]
       interval: 30s
@@ -210,6 +218,8 @@ services:
         condition: service_healthy
       emailservice:
         condition: service_healthy
+    deploy:
+      replicas: 1
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://tasks:${TASKS_PORT}/actuator/health" ]
       interval: 30s
