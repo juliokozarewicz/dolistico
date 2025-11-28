@@ -1,29 +1,9 @@
 services:
 
-  # ------------------------------------------------------------- (aux services init)
-  vault:
-    image: hashicorp/vault:1.15.2
-    container_name: vault
-    ports:
-      - "${VAULT_PORT}:${VAULT_PORT}"
-    environment:
-      VAULT_ADDR: "http://vault:${VAULT_PORT}"
-      VAULT_API_ADDR: "http://vault:${VAULT_PORT}"
-    cap_add:
-      - IPC_LOCK
-    networks:
-      - spring_net
-    volumes:
-      - vault_data:/vault/data
-    command: >
-      sh -c '
-      echo "storage \"file\" { path = \"/vault/data\" }
-      listener \"tcp\" { address = \"0.0.0.0:8200\" tls_disable = 1 }
-      disable_mlock = true
-      ui = true" > /vault/config/vault.hcl
-      && vault server -config=/vault/config/vault.hcl
-      '
+  # First, create the Docker network.
+  # $ docker network create spring_net
 
+  # ------------------------------------------------------------- (aux services init)
   nginx:
     build: ../nginx
     container_name: nginx
@@ -97,17 +77,16 @@ services:
       - --memory 1G
       - --reserve-memory 0M
       - --node-id 0
-      - --kafka-addr PLAINTEXT://0.0.0.0:${STRAMINGMANAGER_PORT}
-      - --advertise-kafka-addr PLAINTEXT://streamingmanager:${STRAMINGMANAGER_PORT}
-      - --set redpanda.enable_auto_topic_creation=true
+      - --kafka-addr PLAINTEXT://0.0.0.0:${STREAMINGMANAGER_PORT}
+      - --advertise-kafka-addr PLAINTEXT://streamingmanager:${STREAMINGMANAGER_PORT}
     volumes:
       - streamingmanager_data:/var/lib/redpanda/data
     expose:
-      - "${STRAMINGMANAGER_PORT}"
+      - "${STREAMINGMANAGER_PORT}"
     networks:
       - spring_net
     healthcheck:
-      test: [ "CMD-SHELL", "bash -c 'echo > /dev/tcp/streamingmanager/${STRAMINGMANAGER_PORT}'" ]
+      test: [ "CMD-SHELL", "bash -c 'echo > /dev/tcp/streamingmanager/${STREAMINGMANAGER_PORT}'" ]
       interval: 30s
       retries: 5
       start_period: 10s
@@ -237,4 +216,5 @@ volumes:
 
 networks:
   spring_net:
-    driver: bridge
+    # driver: bridge
+    external: true

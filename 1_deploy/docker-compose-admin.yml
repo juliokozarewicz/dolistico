@@ -1,0 +1,35 @@
+services:
+
+  # First, create the Docker network.
+  # $ docker network create spring_net
+
+  vault:
+    image: hashicorp/vault:1.15.2
+    container_name: vault
+    ports:
+      - "${VAULT_PORT}:${VAULT_PORT}"
+    environment:
+      VAULT_ADDR: "http://vault:${VAULT_PORT}"
+      VAULT_API_ADDR: "http://vault:${VAULT_PORT}"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - spring_net
+    volumes:
+      - vault_data:/vault/data
+    command: >
+      sh -c '
+      echo "storage \"file\" { path = \"/vault/data\" }
+      listener \"tcp\" { address = \"0.0.0.0:${VAULT_PORT}\" tls_disable = 1 }
+      disable_mlock = true
+      ui = true" > /vault/config/vault.hcl
+      && vault server -config=/vault/config/vault.hcl
+      '
+
+volumes:
+  vault_data:
+
+networks:
+  spring_net:
+    # driver: bridge
+    external: true
