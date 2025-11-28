@@ -50,9 +50,17 @@ public class DocumentationJson {
             
             
             ## Additional templates you might find useful
-            You can also access the documentation via other graphical 
-            interfaces, which provide interactive ways to explore the API and 
-            understand its capabilities.
+            The official API documentation provides all the information you 
+            need to understand, integrate, and test the available endpoints. 
+            It includes details about authentication, parameters, request and 
+            response examples, and explanations of the data models used.
+            Access it here:
+            ```
+            https://PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE
+            ```
+            
+            In addition to direct access to the official documentation, 
+            you can explore the API in another way using two popular interfaces:
             
             ### Swagger:
             Swagger offers a user-friendly, interactive interface where you 
@@ -63,7 +71,7 @@ public class DocumentationJson {
             https://PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
             ```
             
-            ### Redocli:
+            ### Redocly:
             Redocly provides a clean, well-structured view of the API 
             documentation, making it easier to read and navigate through 
             endpoints, schemas, and examples.
