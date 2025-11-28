@@ -49,36 +49,35 @@ class DocumentationController {
 
     @GetMapping("/${DOCUMENTATION_BASE_URL}")
     public String getElementsUi() {
+        String publicDomainUrl = "http://" + publicDomain.split(",")[0].trim();
         return "<html>\n" +
             "<head>\n" +
             "<title>" + applicationTitle.toUpperCase() + "</title>\n" +
-            "<link rel='icon' type='image/x-icon' href='" + publicDomain.split(",")[0].trim() + "/" +  documentationBaseURL + "/static/public/favicon.ico' />\n" +
+            "<link rel='icon' type='image/x-icon' href='" + publicDomainUrl + "/" + documentationBaseURL + "/static/public/favicon.ico' />\n" +
             "<script src='https://unpkg.com/@stoplight/elements/web-components.min.js'></script>\n" +
             "<link rel='stylesheet' href='https://unpkg.com/@stoplight/elements/styles.min.css' />\n" +
             "<style>\n" +
-            "  body {\n" +
-            "    margin: 0;\n" +
-            "    padding: 0;\n" +
-            "    font-family: sans-serif;\n" +
-            "    background-color: #f9f9f9;\n" +
-            "  }\n" +
-            "  #elements-container {\n" +
-            "    height: 100vh;\n" +
-            "    width: 100%;\n" +
-            "  }\n" +
-            "  a[href*='stoplight.io'][target='_blank'] {\n" +
-            "    display: none !important;\n" +
-            "    visibility: hidden !important;\n" +
-            "  }\n" +
+            "  body { margin: 0; padding: 0; font-family: sans-serif; background-color: #f9f9f9; }\n" +
+            "  #elements-container { height: 100vh; width: 100%; }\n" +
+            "  a[href*='stoplight.io'][target='_blank'] { display: none !important; visibility: hidden !important; }\n" +
             "</style>\n" +
             "</head>\n" +
             "<body>\n" +
             "<elements-api\n" +
             "  id='elements-container'\n" +
-            "  apiDescriptionUrl='/" + documentationBaseURL + "/json'\n" +
+            "  apiDescriptionUrl='" + publicDomainUrl + "/" + documentationBaseURL + "/json'\n" +
             "  router='hash'\n" +
             "  layout='sidebar'\n" +
             "/>\n" +
+            "<script>\n" +
+            "  const observer = new MutationObserver(() => {\n" +
+            "    const overviewEl = document.querySelector('.sl-flex-1.sl-items-center.sl-text-base.sl-truncate');\n" +
+            "    if (overviewEl && overviewEl.textContent.trim() === 'Overview') {\n" +
+            "      overviewEl.textContent = 'DESCRIPTION';\n" +
+            "    }\n" +
+            "  });\n" +
+            "  observer.observe(document.body, { childList: true, subtree: true });\n" +
+            "</script>\n" +
             "</body>\n" +
             "</html>";
     }
@@ -88,7 +87,7 @@ class DocumentationController {
         return "<html>\n" +
             "<head>\n" +
             "<title>" + applicationTitle.toUpperCase() + "</title>\n" +
-            "<link rel='icon' type='image/x-icon' href='" + publicDomain.split(",")[0].trim() + "/" + documentationBaseURL + "/static/public/favicon.ico' />\n" +
+            "<link rel='icon' type='image/x-icon' href='" + "http://" + publicDomain.split(",")[0].trim() + "/" + documentationBaseURL + "/static/public/favicon.ico' />\n" +
             "<script src='https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.5/swagger-ui-bundle.js'></script>\n" +
             "<link rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.5/swagger-ui.css' />\n" +
             "<style>\n" +
@@ -102,7 +101,7 @@ class DocumentationController {
             "<div id='swagger-ui'></div>\n" +
             "<script>\n" +
             "  const ui = SwaggerUIBundle({\n" +
-            "    url: '/" + documentationBaseURL + "/json',\n" +
+            "    url: 'http://" + publicDomain.split(",")[0].trim() + "/" + documentationBaseURL + "/json',\n" +
             "    dom_id: '#swagger-ui',\n" +
             "    deepLinking: true,\n" +
             "    presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.presets.sdk],\n" +
@@ -118,8 +117,8 @@ class DocumentationController {
         return "<html>\n" +
             "<head>\n" +
             "<title>" + applicationTitle.toUpperCase() + "</title>\n" +
-            "<link rel='icon' type='image/x-icon' href='" + publicDomain.split(",")[0].trim() + "/" + documentationBaseURL + "/static/public/favicon.ico' />\n" +
-            "<script src='https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js'></script>\n" +
+            "<link rel='icon' type='image/x-icon' href='" + "http://" + publicDomain.split(",")[0].trim() + "/" + documentationBaseURL + "/static/public/favicon.ico' />\n" +
+            "<script src='https://cdn.jsdelivr.net/npm/redoc@2.1.4/bundles/redoc.standalone.js'></script>\n" +
             "<style>\n" +
             "  #redoc-container {\n" +
             "    max-width: 100%;\n" +
@@ -133,7 +132,7 @@ class DocumentationController {
             "<body>\n" +
             "<div id='redoc-container'></div>\n" +
             "<script>\n" +
-            "  Redoc.init('/" + documentationBaseURL + "/json', {\n" +
+            "  Redoc.init('http://" + publicDomain.split(",")[0].trim() + "/" + documentationBaseURL + "/json', {\n" +
             "    theme: {\n" +
             "      typography: {\n" +
             "        fontSize: '12px', \n" +
