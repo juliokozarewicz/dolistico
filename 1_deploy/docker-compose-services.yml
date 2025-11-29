@@ -118,7 +118,7 @@ services:
       - .env
     build: ../helloworld
     expose:
-      - "${HELLOWORLD_PORT}:${HELLOWORLD_PORT}"
+      - "${HELLOWORLD_PORT}"
     networks:
       - spring_net
     deploy:
