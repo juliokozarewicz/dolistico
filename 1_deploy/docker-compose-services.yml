@@ -48,13 +48,14 @@ services:
     env_file:
       - .env
     image: redis:latest
-    command: >
-      bash -c "
+    command: |
+      bash -c '
         redis-server --port 6379 --notify-keyspace-events Ex &
-        sleep 3 &&
-        /docker-entrypoint-initdb.d/init.sh &&
-        wait
-      "
+        REDIS_PID=$!
+        sleep 2
+        /docker-entrypoint-initdb.d/init.sh
+        wait $REDIS_PID
+      '
     volumes:
       - cachemanager_data:/data
       - ./config/cachemanager/init.sh:/docker-entrypoint-initdb.d/init.sh
@@ -63,7 +64,7 @@ services:
     networks:
       - spring_net
     healthcheck:
-      test: [ "CMD-SHELL", "redis-cli PING | grep PONG" ]
+      test: [ "CMD-SHELL", "redis-cli -a ${CACHEMANAGER_ADMIN_PASSWORD} PING | grep PONG" ]
       interval: 30s
       retries: 5
       start_period: 10s

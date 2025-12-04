@@ -42,8 +42,7 @@ fi
 # ===================================================================== ( tasks end )
 
 # ============================================================= ( default user init )
-echo "[CACHEMANAGER INIT] Desativando usuário default..."
-$REDIS_CLI ACL SETUSER default off
+$REDIS_CLI ACL SETUSER default on ">$CACHEMANAGER_ADMIN_PASSWORD"
 
 echo "[CACHEMANAGER INIT] Finalizado com sucesso"
 # ============================================================= ( default user end )
