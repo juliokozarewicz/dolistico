@@ -12,25 +12,21 @@ if [ -n "$ACCOUNTS_CACHEMANAGER_USER" ] && [ -n "$ACCOUNTS_CACHEMANAGER_PASSWORD
   $REDIS_CLI ACL SETUSER "$ACCOUNTS_CACHEMANAGER_USER" on \
       ">$ACCOUNTS_CACHEMANAGER_PASSWORD" \
       resetkeys resetchannels \
-      +publish +subscribe +psubscribe +@keyevent \
+      +publish +subscribe +psubscribe \
       +@read +@write \
-      "~${ACCOUNTS_CHANNEL_INIT}" \
-      "~${ACCOUNTS_CHANNEL_INIT}:*" \
-      "~__keyevent@0__:*"
+      "~*"
 fi
 # ================================================================== ( accounts end )
 
 # ==================================================================== ( tasks init )
 if [ -n "$TASKS_CACHEMANAGER_USER" ] && [ -n "$TASKS_CACHEMANAGER_PASSWORD" ]; then
-  echo "[CACHEMANAGER INIT] Creating Tasks user..."
+  echo "[CACHEMANAGER INIT] Creating Accounts user..."
   $REDIS_CLI ACL SETUSER "$TASKS_CACHEMANAGER_USER" on \
       ">$TASKS_CACHEMANAGER_PASSWORD" \
       resetkeys resetchannels \
-      +publish +subscribe +psubscribe +@keyevent \
+      +publish +subscribe +psubscribe \
       +@read +@write \
-      "~${TASKS_CHANNEL_INIT}" \
-      "~${TASKS_CHANNEL_INIT}:*" \
-      "~__keyevent@0__:*"
+      "~*"
 fi
 # ===================================================================== ( tasks end )
 
