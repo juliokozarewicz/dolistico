@@ -48,7 +48,7 @@ public class RedisCacheConfig {
         // Default cache configuration (2 minutes TTL)
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration
             .defaultCacheConfig()
-            .entryTtl(Duration.ofMinutes(2)) // Set default expiration time
+            .entryTtl(Duration.ofMinutes(5)) // Set default expiration time
             .disableCachingNullValues()      // Don't cache null values
             .serializeValuesWith(serializationPair); // Use JSON serialization
 
@@ -94,7 +94,7 @@ public class RedisCacheConfig {
         // Not activated account cache configuration
         RedisCacheConfiguration notActivatedAccountConfig = RedisCacheConfiguration
             .defaultCacheConfig()
-            .entryTtl(Duration.ofMinutes(90))
+            .entryTtl(Duration.ofDays(3))
             .disableCachingNullValues()
             .serializeValuesWith(serializationPair);
 
@@ -107,14 +107,14 @@ public class RedisCacheConfig {
 
         // Create cache configurations map for specific caches
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
-        cacheConfigs.put("profileCache", profileCacheConfig);
-        cacheConfigs.put("addressCache", addressCacheConfig);
-        cacheConfigs.put("refreshLoginCache", refreshLoginCacheConfig);
-        cacheConfigs.put("pinVerificationCache", pinVerificationCacheConfig);
-        cacheConfigs.put("ArrayLoginsCache", ArrayLoginsCacheConfig);
-        cacheConfigs.put("verificationCache", verificationCacheConfig);
-        cacheConfigs.put("notActivatedAccountCache", notActivatedAccountConfig);
-        cacheConfigs.put("deletedAccountByUserCache", deletedAccountByUserConfig);
+        cacheConfigs.put("accounts-profileCache", profileCacheConfig);
+        cacheConfigs.put("accounts-addressCache", addressCacheConfig);
+        cacheConfigs.put("accounts-refreshLoginCache", refreshLoginCacheConfig);
+        cacheConfigs.put("accounts-pinVerificationCache", pinVerificationCacheConfig);
+        cacheConfigs.put("accounts-ArrayLoginsCache", ArrayLoginsCacheConfig);
+        cacheConfigs.put("accounts-verificationCache", verificationCacheConfig);
+        cacheConfigs.put("accounts-notActivatedAccountCache", notActivatedAccountConfig);
+        cacheConfigs.put("accounts-deletedAccountByUserCache", deletedAccountByUserConfig);
 
         // Build and return the CacheManager instance
         return RedisCacheManager.builder(redisConnectionFactory)
