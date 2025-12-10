@@ -5,6 +5,7 @@ set -e
 REDIS_CLI="redis-cli"
 echo "[CACHEMANAGER INIT] Testing connection..."
 $REDIS_CLI PING || { echo "Redis not accessible"; exit 1; }
+
 echo "[CACHEMANAGER INIT] Setting password for default user..."
 $REDIS_CLI ACL SETUSER default on ">$CACHEMANAGER_ADMIN_PASSWORD"
 export REDISCLI_AUTH="$CACHEMANAGER_ADMIN_PASSWORD"
@@ -14,26 +15,30 @@ redis-cli PING
 # ================================================================= ( accounts init )
 if [ -n "$ACCOUNTS_CACHEMANAGER_USER" ] && [ -n "$ACCOUNTS_CACHEMANAGER_PASSWORD" ]; then
   echo "[CACHEMANAGER INIT] Creating Accounts user..."
+
   redis-cli ACL SETUSER "$ACCOUNTS_CACHEMANAGER_USER" on \
       ">$ACCOUNTS_CACHEMANAGER_PASSWORD" \
       resetkeys resetchannels \
-      +publish +subscribe +psubscribe \
+      ~accounts-* \
       +@read +@write \
-      "~*" \
-      "&__keyevent@0__:expired"
+      +publish +subscribe +psubscribe \
+      "&__keyevent@0__:expired" \
+      -scan -keys -type -ttl -pttl -@dangerous -@admin
 fi
 # ================================================================== ( accounts end )
 
 # ==================================================================== ( tasks init )
 if [ -n "$TASKS_CACHEMANAGER_USER" ] && [ -n "$TASKS_CACHEMANAGER_PASSWORD" ]; then
   echo "[CACHEMANAGER INIT] Creating Tasks user..."
+
   redis-cli ACL SETUSER "$TASKS_CACHEMANAGER_USER" on \
       ">$TASKS_CACHEMANAGER_PASSWORD" \
       resetkeys resetchannels \
-      +publish +subscribe +psubscribe \
+      ~tasks-* \
       +@read +@write \
-      "~*" \
-      "&__keyevent@0__:expired"
+      +publish +subscribe +psubscribe \
+      "&__keyevent@0__:expired" \
+      -scan -keys -type -ttl -pttl -@dangerous -@admin
 fi
 # ===================================================================== ( tasks end )
 
