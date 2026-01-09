@@ -1,9 +1,7 @@
 #!/bin/bash
 set -e
 
-# --------------------------------------
-# ACCOUNTS MICROSERVICE
-# --------------------------------------
+# ================================================================= ( accounts init )
 
 # 1) USER e DATABASE
 psql -v ON_ERROR_STOP=1 --username "${DATABASE_ADMIN_USER}" --dbname postgres <<-EOF
@@ -59,10 +57,9 @@ ALTER ROLE "${ACCOUNTS_DATABASE_USER}"
 SET search_path = "${ACCOUNTS_DATABASE_SCHEMA}";
 
 EOF
+# ================================================================== ( accounts end )
 
-# --------------------------------------
-# TASKS MICROSERVICE
-# --------------------------------------
+# ==================================================================== ( tasks init )
 
 # 1) USER and DATABASE
 psql -v ON_ERROR_STOP=1 --username "${DATABASE_ADMIN_USER}" --dbname postgres <<-EOF
@@ -118,3 +115,4 @@ ALTER ROLE "${TASKS_DATABASE_USER}"
 SET search_path = "${TASKS_DATABASE_SCHEMA}";
 
 EOF
+# ===================================================================== ( tasks end )
