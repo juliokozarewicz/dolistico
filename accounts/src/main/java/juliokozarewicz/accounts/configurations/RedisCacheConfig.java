@@ -55,12 +55,14 @@ public class RedisCacheConfig {
         // Profile cache configuration
         RedisCacheConfiguration profileCacheConfig = RedisCacheConfiguration
             .defaultCacheConfig()
+            .entryTtl(Duration.ofDays(180)) // Set default expiration time
             .disableCachingNullValues()
             .serializeValuesWith(serializationPair);
 
         // Address cache configuration
         RedisCacheConfiguration addressCacheConfig = RedisCacheConfiguration
             .defaultCacheConfig()
+            .entryTtl(Duration.ofDays(180)) // Set default expiration time
             .disableCachingNullValues()
             .serializeValuesWith(serializationPair);
 

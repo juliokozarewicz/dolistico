@@ -2067,7 +2067,7 @@ public class DocumentationJson {
                 "/ACCOUNTS_BASE_URL_REPLACE/delete-account-link": {
                     "post": {
                         "summary": "Send account deletion confirmation link",
-                        "description": "This endpoint allows authenticated users to request a confirmation link to delete their account. The system will send a unique token to the user's email. Clicking the link will initiate the account deletion process.",
+                        "description": "This endpoint allows authenticated users to request a confirmation link to delete their account. The system will send a unique token to the user's email. Clicking the link will initiate the account deletion process. Additionally, all login refresh tokens will be revoked.",
                         "tags": [
                             "ACCOUNTS"
                         ],
@@ -2147,7 +2147,7 @@ public class DocumentationJson {
                 "/ACCOUNTS_BASE_URL_REPLACE/delete": {
                     "delete": {
                         "summary": "Delete account",
-                        "description": "Deletes the authenticated user's account after verifying the provided deletion token. Upon successful request, the account is deactivated and enters a 30-day grace period before permanent deletion. During this time, the user can reactivate the account by changing their password. All active sessions and tokens are revoked immediately. A confirmation email is sent upon successful deactivation.",
+                        "description": "This endpoint completes the user account deactivation process by verifying a token sent to the current email. A new login is required, as the credentials were revoked in the previous step. Once the request is successful, the account is deactivated and enters a 30-day grace period before permanent deletion. During this period, the user can reactivate the account by changing their password. All active sessions and tokens are revoked immediately. A confirmation email is sent once the deactivation is successfully completed.",
                         "tags": [
                             "ACCOUNTS"
                         ],
