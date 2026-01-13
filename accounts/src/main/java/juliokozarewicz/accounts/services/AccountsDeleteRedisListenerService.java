@@ -55,7 +55,7 @@ public class AccountsDeleteRedisListenerService implements MessageListener {
         String expiredKey  = new String(message.getBody());
         UUID idUser = UUID.fromString(expiredKey.substring(expiredKey.indexOf("::") + 2));
 
-        if (expiredKey.startsWith("deletedAccountByUserCache")) {
+        if (expiredKey.startsWith("accounts-deletedAccountByUserCache")) {
 
             // Get user account
             Optional<AccountsEntity> findUser =  accountsRepository.findById(
@@ -85,7 +85,7 @@ public class AccountsDeleteRedisListenerService implements MessageListener {
         }
 
         // Delete account not activated
-        if (expiredKey.startsWith("notActivatedAccountCache")) {
+        if (expiredKey.startsWith("accounts-notActivatedAccountCache")) {
 
             // Get user account
             Optional<AccountsEntity> findUser =  accountsRepository.findById(
