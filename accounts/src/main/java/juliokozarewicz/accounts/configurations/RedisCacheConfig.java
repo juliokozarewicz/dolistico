@@ -64,7 +64,7 @@ public class RedisCacheConfig {
             .disableCachingNullValues()
             .serializeValuesWith(serializationPair);
 
-        // Refresh login verification cache configuration
+        // Array login tokens cache configuration
         RedisCacheConfiguration ArrayLoginsCacheConfig = RedisCacheConfiguration
             .defaultCacheConfig()
             .disableCachingNullValues()
