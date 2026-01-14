@@ -54,8 +54,19 @@ class DocumentationController {
             "<head>\n" +
             "<title>" + applicationTitle.toUpperCase() + "</title>\n" +
             "<link rel='icon' type='image/x-icon' href='" + publicDomainUrl + "/" + documentationBaseURL + "/static/public/favicon.ico' />\n" +
-            "<script src='https://unpkg.com/@stoplight/elements/web-components.min.js'></script>\n" +
-            "<link rel='stylesheet' href='https://unpkg.com/@stoplight/elements/styles.min.css' />\n" +
+
+            // From web
+            // -----------------------------------------------------------------
+            //"<script src='https://unpkg.com/@stoplight/elements/web-components.min.js'></script>\n" +
+            //"<link rel='stylesheet' href='https://unpkg.com/@stoplight/elements/styles.min.css' />\n" +
+            // -----------------------------------------------------------------
+
+            // From local
+            // -----------------------------------------------------------------
+            "<script src='" + "http://" + publicDomain.split(",")[0].trim() + "/" + documentationBaseURL + "/static/public/stoplight/web-components.min.js'></script>\n" +
+            "<link rel='stylesheet' href='" + "http://" + publicDomain.split(",")[0].trim() + "/" + documentationBaseURL + "/static/public/stoplight/styles.min.css' />\n" +
+            // -----------------------------------------------------------------
+
             "<style>\n" +
             "  body { margin: 0; padding: 0; font-family: sans-serif; background-color: #f9f9f9; }\n" +
             "  #elements-container { height: 100vh; width: 100%; }\n" +
