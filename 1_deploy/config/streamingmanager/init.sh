@@ -69,6 +69,31 @@ rpk acl create \
 
 # Service topics
 # -----------------------------------------------------------------------------------
+# Allow full control over own topics (accounts.*)
+rpk acl create \
+  --allow-principal "User:${ACCOUNTS_STREAMINGMANAGER_USER}" \
+  --operation ALL \
+  --topic "accounts." \
+  --resource-pattern-type prefixed || true
+
+# Allow consumer group usage for own groups (accounts.*)
+rpk acl create \
+  --allow-principal "User:${ACCOUNTS_STREAMINGMANAGER_USER}" \
+  --operation READ \
+  --group "accounts." \
+  --resource-pattern-type prefixed || true
+
+rpk acl create \
+  --allow-principal "User:${ACCOUNTS_STREAMINGMANAGER_USER}" \
+  --operation DESCRIBE \
+  --group "accounts." \
+  --resource-pattern-type prefixed || true
+
+# Allow topic creation (only names are still restricted by topic ACLs)
+rpk acl create \
+  --allow-principal "User:${ACCOUNTS_STREAMINGMANAGER_USER}" \
+  --operation CREATE \
+  --cluster || true
 # -----------------------------------------------------------------------------------
 
 ############################################################### ( Accounts user end )
