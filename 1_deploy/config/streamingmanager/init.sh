@@ -1,20 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-######################################################### ( Required variables init )
-: "${STREAMINGMANAGER_PORT:?Missing STREAMINGMANAGER_PORT}"
-: "${STREAMINGMANAGER_ADMIN_PASSWORD:?Missing STREAMINGMANAGER_ADMIN_PASSWORD}"
-: "${ACCOUNTS_STREAMINGMANAGER_PASSWORD:?Missing ACCOUNTS_STREAMINGMANAGER_PASSWORD}"
-########################################################## ( Required variables end )
-
 ############################################################# ( Start Redpanda init )
+: "${STREAMINGMANAGER_PORT:?Missing STREAMINGMANAGER_PORT}"
+
 DATA_DIR=/var/lib/redpanda
 
 unset RPK_SASL_MECHANISM
 unset RPK_SASL_USERNAME
 unset RPK_SASL_PASSWORD
-
-echo ">> Starting Redpanda WITHOUT SASL"
 
 rpk redpanda start \
   --overprovisioned \
@@ -33,50 +27,53 @@ export RPK_BROKERS=streamingmanager:${STREAMINGMANAGER_PORT}
 ############################################################## ( Start Redpanda end )
 
 ################################################################# ( Admin user init )
+: "${STREAMINGMANAGER_ADMIN_USER:?Missing STREAMINGMANAGER_ADMIN_USER}"
+: "${STREAMINGMANAGER_ADMIN_PASSWORD:?Missing STREAMINGMANAGER_ADMIN_PASSWORD}"
 
-# Create user
-# -----------------------------------------------------------------------------------
-rpk acl user create admin \
+rpk acl user create "${STREAMINGMANAGER_ADMIN_USER}" \
   --password "${STREAMINGMANAGER_ADMIN_PASSWORD}" \
-  --mechanism SCRAM-SHA-256
-# -----------------------------------------------------------------------------------
-
-# Creating required topics
-rpk topic create send.simple.email.v1
-
+  --mechanism SCRAM-SHA-256 || true
 ################################################################## ( Admin user end )
+
+##################################################################### ( Topics init )
+# Creating required topics
+rpk topic create send.simple.email.v1 --if-not-exists
+###################################################################### ( Topics end )
 
 ############################################################## ( Accounts user init )
 
 # Create user
 # -----------------------------------------------------------------------------------
-rpk acl user create accountsuser \
+: "${ACCOUNTS_STREAMINGMANAGER_USER:?Missing ACCOUNTS_STREAMINGMANAGER_USER}"
+: "${ACCOUNTS_STREAMINGMANAGER_PASSWORD:?Missing ACCOUNTS_STREAMINGMANAGER_PASSWORD}"
+
+rpk acl user create "${ACCOUNTS_STREAMINGMANAGER_USER}" \
   --password "${ACCOUNTS_STREAMINGMANAGER_PASSWORD}" \
-  --mechanism SCRAM-SHA-256
+  --mechanism SCRAM-SHA-256 || true
 # -----------------------------------------------------------------------------------
 
 rpk acl create \
-  --allow-principal User:accountsuser \
+  --allow-principal "User:${ACCOUNTS_STREAMINGMANAGER_USER}" \
   --operation ALL \
   --topic "*" \
-  --resource-pattern-type literal
+  --resource-pattern-type literal || true
 
 rpk acl create \
-  --allow-principal User:accountsuser \
+  --allow-principal "User:${ACCOUNTS_STREAMINGMANAGER_USER}" \
   --operation ALL \
   --group "*" \
-  --resource-pattern-type literal
+  --resource-pattern-type literal || true
 
 ############################################################### ( Accounts user end )
 
 ################################################################# ( Apply  SASL init)
 rpk cluster config set enable_sasl true
-rpk cluster config set superusers '["admin"]'
+rpk cluster config set superusers "[\"${STREAMINGMANAGER_ADMIN_USER}\"]"
 kill "${REDPANDA_PID}"
 wait "${REDPANDA_PID}" || true
 sleep 5
 export RPK_SASL_MECHANISM=SCRAM-SHA-256
-export RPK_SASL_USERNAME=admin
+export RPK_SASL_USERNAME="${STREAMINGMANAGER_ADMIN_USER}"
 export RPK_SASL_PASSWORD="${STREAMINGMANAGER_ADMIN_PASSWORD}"
 
 exec rpk redpanda start \
