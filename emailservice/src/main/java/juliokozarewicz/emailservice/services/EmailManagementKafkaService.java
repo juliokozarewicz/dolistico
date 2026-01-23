@@ -68,9 +68,11 @@ public class EmailManagementKafkaService {
 
         } catch (Exception e) {
 
-            throw new InternalError("Error consuming broker message in email " +
+            throw new InternalError(
+                "Error consuming broker message in email " +
                 "sending service [ EmailManagementKafkaService" +
-                ".sendSimpleEmailConsumer() ]: " + e);
+                ".sendSimpleEmailConsumer() ]: " + e
+            );
 
         }
 

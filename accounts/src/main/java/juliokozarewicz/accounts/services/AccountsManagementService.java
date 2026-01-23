@@ -152,24 +152,35 @@ public class AccountsManagementService implements AccountsManagementInterface {
         // add link if exist
         if (link != null && !link.isEmpty()) {
             boolean isUrl = link.startsWith("http://") || link.startsWith("https://");
-            messageEmail.append("<b>").append(
+            messageEmail.append("<br>b>").append(
 
                 isUrl ?
 
-                    "<a href=\"" + link + "\" target=\"_blank\" " +
-                    "style=\"display:inline-block;" +
-                    "background-color:#000000;" +
-                    "color:#ffffff;" +
-                    "padding:12px 20px;" +
-                    "text-decoration:none;" +
-                    "border-radius:8px;" +
-                    "border:3px solid #ffffff;" +
-                    "font-weight:bold;" +
-                    "font-family:Arial, sans-serif;\">" +
+                    "<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">" +
+                    "    <tr>" +
+                    "        <td bgcolor=\"#000000\" " +
+                    "            style=\"" +
+                    "                padding:12px 20px;" +
+                    "                text-align:center;" +
+                    "                border-radius:8px;" +
+                    "                border:3px solid #ffffff;" +
+                    "            \">" +
+                    "            <a href=\"" + link + "\" " +
+                    "               style=\"" +
+                    "                   width:100%;" +
+                    "                   color:#ffffff;" +
+                    "                   text-decoration:none;" +
+                    "                   padding:12px 20px;" +
+                    "                   font-weight:bold;" +
+                    "                   font-family:Arial, sans-serif;" +
+                    "               \">" +
                     messageSource.getMessage(
                         "email_click_here_link", null, locale
                     ) +
-                    "</a>"
+                    "            </a>" +
+                    "        </td>" +
+                    "    </tr>" +
+                    "</table>"
 
                 : link
 
