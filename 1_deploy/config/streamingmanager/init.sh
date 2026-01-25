@@ -123,4 +123,5 @@ if ! rpk cluster config get enable_sasl 2>/dev/null | grep -q true; then
     --advertise-kafka-addr PLAINTEXT://streamingmanager:${STREAMINGMANAGER_PORT}
   ################################################################## ( Apply  SASL end)
 fi
+
 wait "$REDPANDA_PID"
