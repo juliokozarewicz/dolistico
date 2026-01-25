@@ -3,6 +3,7 @@ package juliokozarewicz.accounts.enums;
 public final class EmailResponsesEnum {
 
     public static final String ACTIVATE_ACCOUNT_SUCCESS = "email_activate_account_click";
+    public static final String LOGIN_PIN = "email_login_pin";
     public static final String ACCOUNT_EXIST_ACTIVATED_ERROR = "email_account_exist_activated_error";
     public static final String ACCOUNT_EXIST_DEACTIVATED_ERROR = "email_account_exist_deactivated_error";
     public static final String ACCOUNT_BANNED_ERROR = "email_account_banned_error";
