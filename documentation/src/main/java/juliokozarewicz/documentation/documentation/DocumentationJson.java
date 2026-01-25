@@ -87,9 +87,23 @@ public class DocumentationJson {
             Any response containing the "message" field in the body will have 
             its message translated server-side, based on the language specified 
             in the request header, for the supported languages.
+            
+            
+            
+            ## User Login and Access Token Renewal Process
+            The user must first log in, receiving an access token (JWT) and a 
+            refresh token. The access token is valid for 5 minutes, while the  
+            refresh token lasts 15 days, after which the user will need to log 
+            in again. On the frontend, the authentication flow works as follows: 
+            when making a request, the access token is used. If the request 
+            fails, the frontend should renew the access token using the refresh 
+            token and retry the request with the new access token. If the 
+            refresh token is invalid during the renewal, the frontend must 
+            prompt the user to log in again and then retry the request with 
+            the new access token.
 
             
-            
+
             ## Common responses from services
 
             **Authentication Error (401):**
