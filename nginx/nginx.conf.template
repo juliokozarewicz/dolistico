@@ -244,11 +244,6 @@ http {
         # --------------------------------------------------------- (end hello world)
 
         # ----------------------------------------------------------- (init accounts)
-        # [ ACCOUNTS - Static Files ]
-        location /${ACCOUNTS_BASE_URL}/static {
-            proxy_pass http://accounts_backend;
-            limit_req zone=general_zone burst=5 nodelay;
-        }
 
         # [ ACCOUNTS - Signup ]
         location /${ACCOUNTS_BASE_URL}/signup {
@@ -290,6 +285,12 @@ http {
         location /${ACCOUNTS_BASE_URL}/get-profile {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
+        }
+
+        # [ ACCOUNTS - Avatar ]
+        location /${ACCOUNTS_BASE_URL}/static/uploads/avatar/ {
+            alias /static/uploads/avatar/;
+            add_header Cache-Control "public";
         }
 
         # [ ACCOUNTS - Update Profile ]
