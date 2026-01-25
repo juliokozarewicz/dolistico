@@ -30,6 +30,7 @@ export RPK_BROKERS=streamingmanager:${STREAMINGMANAGER_PORT}
 ############################################################## ( Start Redpanda end )
 
 if ! rpk cluster config get enable_sasl 2>/dev/null | grep -q true; then
+
   ################################################################# ( Admin user init )
   : "${STREAMINGMANAGER_ADMIN_USER:?Missing STREAMINGMANAGER_ADMIN_USER}"
   : "${STREAMINGMANAGER_ADMIN_PASSWORD:?Missing STREAMINGMANAGER_ADMIN_PASSWORD}"
@@ -122,6 +123,7 @@ if ! rpk cluster config get enable_sasl 2>/dev/null | grep -q true; then
     --kafka-addr PLAINTEXT://0.0.0.0:${STREAMINGMANAGER_PORT} \
     --advertise-kafka-addr PLAINTEXT://streamingmanager:${STREAMINGMANAGER_PORT}
   ################################################################## ( Apply  SASL end)
+
 fi
 
 wait "$REDPANDA_PID"
