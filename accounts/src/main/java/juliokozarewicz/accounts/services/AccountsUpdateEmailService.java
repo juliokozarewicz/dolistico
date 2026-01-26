@@ -191,11 +191,6 @@ public class AccountsUpdateEmailService {
             findOldUser.get().getId()
         );
 
-        // Delete current pin
-        accountsManagementService.deletePinByIdUser(
-            findOldUser.get().getId()
-        );
-
         // Delete all verification tokens
         accountsManagementService.deleteAllVerificationTokenByIdUserNewTransaction(
             findOldUser.get().getId()

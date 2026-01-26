@@ -11,8 +11,6 @@ public interface AccountsManagementInterface {
 
     String createVerificationPin(UUID idUser, String reason, Object meta);
 
-    void deletePinByIdUser(UUID idUser);
-
     void deleteAllVerificationTokenByIdUserNewTransaction(UUID idUser);
 
     String createCredentialJWT(String email);

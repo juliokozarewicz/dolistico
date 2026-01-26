@@ -237,13 +237,15 @@ public class AccountsManagementService implements AccountsManagementInterface {
 
     @Override
     public String createVerificationPin(
+
         UUID idUser,
         String reason,
         Object meta
+
     ) {
 
-        // Clean all old pin's
-        pinVerificationCache.evict(idUser);
+        // Cache key
+        String cacheKeyName = idUser + "::" + reason;
 
         // Create pin
         int pin = new Random().nextInt(900000) + 100000;
@@ -256,17 +258,12 @@ public class AccountsManagementService implements AccountsManagementInterface {
             pinDTO.setMeta(meta);
 
         pinVerificationCache.put(
-            idUser,
+            cacheKeyName,
             pinDTO
-            );
+        );
 
         return pinCode;
 
-    }
-
-    @Override
-    public void deletePinByIdUser(UUID idUser) {
-        pinVerificationCache.evict(idUser);
     }
 
     @Override
