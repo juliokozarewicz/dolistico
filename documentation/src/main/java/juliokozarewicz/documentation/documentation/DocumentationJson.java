@@ -91,16 +91,16 @@ public class DocumentationJson {
             
             
             ## User Login and Access Token Renewal Process
-            The user must first log in, receiving an access token (JWT) and a 
-            refresh token. The access token is valid for 5 minutes, while the  
-            refresh token lasts 15 days, after which the user will need to log 
-            in again. On the frontend, the authentication flow works as follows: 
-            when making a request, the access token is used. If the request 
-            fails, the frontend should renew the access token using the refresh 
-            token and retry the request with the new access token. If the 
-            refresh token is invalid during the renewal, the frontend must 
-            prompt the user to log in again and then retry the request with 
-            the new access token.
+            The login process is carried out in two steps. First, the user sends 
+            their email and password to the endpoint "/api/v1/accounts/login". 
+            If the credentials are valid and the account is active, a temporary 
+            "userLoginToken" is generated and returned in the response, along with 
+            a numeric PIN, which is sent to the user's email. Next, the user 
+            sends the "userLoginToken" and the PIN received to the endpoint 
+            "/api/v1/accounts/login-confirmation". If both are valid, the system 
+            returns an access token and a refresh token, which can be used to access 
+            protected resources in the application. If any of the tokens or the 
+            PIN are invalid, an appropriate error will be returned.
 
             
 
