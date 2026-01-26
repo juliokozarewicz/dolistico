@@ -275,6 +275,12 @@ http {
             limit_req zone=general_zone burst=5 nodelay;
         }
 
+        # [ ACCOUNTS - Login Pin ]
+        location /${ACCOUNTS_BASE_URL}/login-pin {
+            proxy_pass http://accounts_backend;
+            limit_req zone=general_zone burst=5 nodelay;
+        }
+
         # [ ACCOUNTS - Refresh Login ]
         location /${ACCOUNTS_BASE_URL}/refresh-login {
             proxy_pass http://accounts_backend;

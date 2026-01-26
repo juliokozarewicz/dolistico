@@ -98,7 +98,7 @@ public class AccountsPinLoginService {
             .statusMessage("success")
             .message(
                 messageSource.getMessage(
-                    "response_update_email_sent_success",
+                    "response_pin_login_sent_success",
                     null,
                     locale
                 )

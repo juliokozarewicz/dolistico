@@ -73,6 +73,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             "/" + accountsBaseURL + "/activate-account",
             "/" + accountsBaseURL + "/update-password-link",
             "/" + accountsBaseURL + "/update-password",
+            "/" + accountsBaseURL + "/login-pin",
             "/" + accountsBaseURL + "/login",
             "/" + accountsBaseURL + "/refresh-login"
         );

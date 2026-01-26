@@ -7,7 +7,7 @@ set -euo pipefail
 DATA_DIR=/var/lib/redpanda
 SASL_FLAG="${DATA_DIR}/.sasl_enabled"
 
-if rpk cluster config get enable_sasl 2>/dev/null | grep -q true; then
+if rpk cluster config get enable_sasl 2>/dev/null | grep -q true || false; then
   export RPK_SASL_MECHANISM=SCRAM-SHA-256
   export RPK_SASL_USERNAME="${STREAMINGMANAGER_ADMIN_USER}"
   export RPK_SASL_PASSWORD="${STREAMINGMANAGER_ADMIN_PASSWORD}"
