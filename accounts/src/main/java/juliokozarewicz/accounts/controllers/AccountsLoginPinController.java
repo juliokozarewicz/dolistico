@@ -1,8 +1,8 @@
 package juliokozarewicz.accounts.controllers;
 
 import jakarta.validation.Valid;
-import juliokozarewicz.accounts.dtos.AccountsPinLoginDTO;
-import juliokozarewicz.accounts.services.AccountsPinLoginService;
+import juliokozarewicz.accounts.dtos.AccountsLoginPinDTO;
+import juliokozarewicz.accounts.services.AccountsLoginPinService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-class AccountsPinLoginController {
+class AccountsLoginPinController {
 
     // ==================================================== ( constructor init )
 
-    private final AccountsPinLoginService accountsPinLoginService;
+    private final AccountsLoginPinService accountsLoginPinService;
 
-    public AccountsPinLoginController(
-        AccountsPinLoginService accountsPinLoginService
+    public AccountsLoginPinController(
+        AccountsLoginPinService accountsLoginPinService
     ) {
-        this.accountsPinLoginService = accountsPinLoginService;
+        this.accountsLoginPinService = accountsLoginPinService;
     }
     // ===================================================== ( constructor end )
 
@@ -30,14 +30,14 @@ class AccountsPinLoginController {
 
         // dtos errors
         @Valid @RequestBody
-        AccountsPinLoginDTO accountsPinLoginDTO,
+        AccountsLoginPinDTO accountsLoginPinDTO,
 
         BindingResult bindingResult
 
     ) {
 
-        return accountsPinLoginService.execute(
-            accountsPinLoginDTO
+        return accountsLoginPinService.execute(
+            accountsLoginPinDTO
         );
 
     }

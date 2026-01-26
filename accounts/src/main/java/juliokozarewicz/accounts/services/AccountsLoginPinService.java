@@ -1,7 +1,7 @@
 package juliokozarewicz.accounts.services;
 
 import jakarta.transaction.Transactional;
-import juliokozarewicz.accounts.dtos.AccountsPinLoginDTO;
+import juliokozarewicz.accounts.dtos.AccountsLoginPinDTO;
 import juliokozarewicz.accounts.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.enums.EmailResponsesEnum;
 import juliokozarewicz.accounts.exceptions.ErrorHandler;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class AccountsPinLoginService {
+public class AccountsLoginPinService {
 
     // ==================================================== ( constructor init )
 
@@ -34,7 +34,7 @@ public class AccountsPinLoginService {
     private final AccountsManagementService accountsManagementService;
     private final AccountsRepository accountsRepository;
 
-    public AccountsPinLoginService(
+    public AccountsLoginPinService(
 
         MessageSource messageSource,
         ErrorHandler errorHandler,
@@ -55,7 +55,7 @@ public class AccountsPinLoginService {
     @Transactional
     public ResponseEntity execute(
 
-        AccountsPinLoginDTO accountsPinLoginDTO
+        AccountsLoginPinDTO accountsLoginPinDTO
 
     ) {
 
@@ -64,7 +64,7 @@ public class AccountsPinLoginService {
 
         // find user
         Optional<AccountsEntity> findUser =  accountsRepository.findByEmail(
-            accountsPinLoginDTO.email()
+            accountsLoginPinDTO.email()
         );
 
         if (findUser.isPresent()) {
@@ -73,12 +73,12 @@ public class AccountsPinLoginService {
             String pinGenerated = accountsManagementService.createVerificationPin(
                 findUser.get().getId(),
                 AccountsUpdateEnum.LOGIN_ACCOUNT,
-                accountsPinLoginDTO.email()
+                accountsLoginPinDTO.email()
             );
 
             // Send pin to email
             accountsManagementService.sendEmailStandard(
-                accountsPinLoginDTO.email().toLowerCase(),
+                accountsLoginPinDTO.email().toLowerCase(),
                 EmailResponsesEnum.LOGIN_PIN,
                 pinGenerated
             );

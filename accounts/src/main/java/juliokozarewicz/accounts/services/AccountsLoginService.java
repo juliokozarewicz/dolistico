@@ -1,6 +1,7 @@
 package juliokozarewicz.accounts.services;
 
 import juliokozarewicz.accounts.dtos.AccountsLoginDTO;
+import juliokozarewicz.accounts.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.enums.EmailResponsesEnum;
 import juliokozarewicz.accounts.exceptions.ErrorHandler;
 import juliokozarewicz.accounts.persistence.entities.AccountsEntity;
@@ -165,26 +166,11 @@ public class AccountsLoginService {
         }
         // ---------------------------------------------------------------------
 
-        // Create JWT
+        // Create user login token
         // ---------------------------------------------------------------------
-        String AccessCredential = accountsManagementService.createCredentialJWT(
-            accountsLoginDTO.email().toLowerCase()
-        );
-        // ---------------------------------------------------------------------
-
-        // Create refresh token
-        // ---------------------------------------------------------------------
-
-        // Clean old tokens
-        accountsManagementService.deleteExpiredRefreshTokensListById(
-            findUser.get().getId()
-        );
-
-        String RefreshToken=  accountsManagementService.createRefreshLogin(
+        String userLoginToken=  accountsManagementService.createVerificationToken(
             findUser.get().getId(),
-            userIp,
-            userAgent,
-            null
+            AccountsUpdateEnum.LOGIN_ACCOUNT
         );
         // ---------------------------------------------------------------------
 
@@ -194,23 +180,15 @@ public class AccountsLoginService {
         // Links
         Map<String, String> customLinks = new LinkedHashMap<>();
         customLinks.put("self", "/" + accountsBaseURL + "/login");
-        customLinks.put("next", "/" + accountsBaseURL + "/profile-get");
+        customLinks.put("next", "/" + accountsBaseURL + "/login-pin");
 
         // Tokens data
         Map<String, String> tokensData = new LinkedHashMap<>();
-        tokensData.put("access", AccessCredential);
-        tokensData.put("refresh", RefreshToken);
+        tokensData.put("userLoginToken", userLoginToken);
 
         StandardResponseService response = new StandardResponseService.Builder()
             .statusCode(200)
             .statusMessage("success")
-            .message(
-                messageSource.getMessage(
-                    "response_login_success",
-                    null,
-                    locale
-                )
-            )
             .data(tokensData)
             .links(customLinks)
             .build();
