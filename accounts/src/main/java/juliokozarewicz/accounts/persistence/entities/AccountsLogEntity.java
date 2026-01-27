@@ -29,9 +29,6 @@ public class AccountsLogEntity {
     @Column(length = 256, nullable = false)
     private String ipAddress;
 
-    @Column(updatable = false, nullable = false)
-    private UUID idUser;
-
     @Column(length = 512, nullable = false)
     private String agent;
 
@@ -43,5 +40,9 @@ public class AccountsLogEntity {
 
     @Column(nullable = false)
     private String newValue;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", nullable = false)
+    private AccountsEntity user;
 
 }

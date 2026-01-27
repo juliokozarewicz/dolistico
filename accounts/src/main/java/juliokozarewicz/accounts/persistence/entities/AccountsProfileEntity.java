@@ -56,4 +56,12 @@ public class AccountsProfileEntity {
     @Column(length = 100, nullable = true)
     private String theme;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "id_user",
+        nullable = false,
+        unique = true
+    )
+    private AccountsEntity user;
+
 }

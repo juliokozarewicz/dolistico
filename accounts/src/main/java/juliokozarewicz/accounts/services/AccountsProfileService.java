@@ -76,8 +76,7 @@ public class AccountsProfileService {
         if (cached == null) {
 
             // If the cache does not exist, do a hard query
-            Optional<AccountsProfileEntity> findProfileUser = accountsProfileRepository
-                .findById(idUser);
+            Optional<AccountsProfileEntity> findProfileUser = accountsProfileRepository.findByUser_Id(idUser);
 
             // Invalid user
             if (findProfileUser.isEmpty()) {

@@ -59,10 +59,7 @@ public class AccountsProfileUpdateService {
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // find user
-        Optional<AccountsProfileEntity> findProfile =  accountsProfileRepository
-        .findById(
-            idUser
-        );
+        Optional<AccountsProfileEntity> findProfile = accountsProfileRepository.findByUser_Id(idUser);
 
         // Invalid user
         if ( findProfile.isEmpty() ) {

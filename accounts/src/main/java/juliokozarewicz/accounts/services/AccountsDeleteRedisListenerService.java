@@ -62,17 +62,25 @@ public class AccountsDeleteRedisListenerService implements MessageListener {
                 idUser
             );
 
+            // Find the user
+            AccountsEntity user = accountsRepository.findById(idUser)
+                .orElseThrow(() -> new RuntimeException() );
+
             if (findUser.isPresent()) {
+
+                // Create id
+                UUID idCreated = accountsManagementService.createUniqueId();
 
                 // Create deleted account (id user for id and email)
                 AccountsDeletedEntity newDeletedAccount = new AccountsDeletedEntity();
                 newDeletedAccount.setCreatedAt(ZonedDateTime.now(ZoneOffset.UTC).toInstant());
-                newDeletedAccount.setId(findUser.get().getId());
+                newDeletedAccount.setId(idCreated);
                 newDeletedAccount.setEmail(findUser.get().getEmail());
+                newDeletedAccount.setUser(user);
                 accountsDeletedRepository.save(newDeletedAccount);
 
                 // Change email for user id
-                findUser.get().setEmail("deleted-" + findUser.get().getId().toString());
+                findUser.get().setEmail("deleted-" + idCreated);
                 findUser.get().setPassword(
                     encryptionService.hashPassword(
                         accountsManagementService.createUniqueId().toString()

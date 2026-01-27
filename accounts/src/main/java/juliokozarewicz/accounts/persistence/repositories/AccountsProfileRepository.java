@@ -7,13 +7,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface AccountsProfileRepository extends
+public interface AccountsProfileRepository
+    extends JpaRepository<AccountsProfileEntity, UUID> {
 
-    JpaRepository<AccountsProfileEntity, UUID>
-
-{
-
-    // Get profile by id
-    Optional<AccountsProfileEntity> findById(UUID idUser);
+    // Get profile by user id (FK)
+    Optional<AccountsProfileEntity> findByUser_Id(UUID idUser);
 
 }

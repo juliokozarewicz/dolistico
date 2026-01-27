@@ -65,7 +65,7 @@ public class AccountsAddressCreateService {
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // Find address
-        List<AccountsAddressEntity> findAddress =  accountsAddressRepository.findByIdUser(
+        List<AccountsAddressEntity> findAddress =  accountsAddressRepository.findByUserId(
             idUser
         );
 
@@ -121,7 +121,6 @@ public class AccountsAddressCreateService {
         newAddress.setAddressType(accountsAddressCreateDTO.addressType());
         newAddress.setIsPrimary(accountsAddressCreateDTO.isPrimary());
         newAddress.setLandmark(accountsAddressCreateDTO.landmark());
-        newAddress.setIdUser(idUser);
 
         // Set primary address
         if ( newAddress.getIsPrimary() ) {

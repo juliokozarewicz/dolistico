@@ -62,6 +62,8 @@ public class AccountsAddressEntity {
     @Column(length = 256, nullable = true)
     private String landmark;
 
-    @Column(updatable = false, nullable = false)
-    private UUID idUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user", nullable = false)
+    private AccountsEntity user;
+
 }

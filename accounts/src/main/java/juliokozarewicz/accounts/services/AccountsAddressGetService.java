@@ -79,7 +79,7 @@ public class AccountsAddressGetService {
         if ( cached == null ) {
 
             List<AccountsAddressEntity> findAddress = accountsAddressRepository
-                .findByIdUser(idUser);
+                .findByUserId(idUser);
 
             for (AccountsAddressEntity entity : findAddress) {
 

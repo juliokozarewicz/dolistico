@@ -28,4 +28,12 @@ public class AccountsDeletedEntity {
     @Column(nullable = false, length = 256)
     private String email;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "id_user",
+        nullable = false,
+        unique = true
+    )
+    private AccountsEntity user;
+
 }

@@ -77,9 +77,7 @@ public class AccountsAvatarCreateService {
 
             // Find user
             // ---------------------------------------------------------------------
-            Optional<AccountsProfileEntity> findProfileUser = accountsProfileRepository.findById(
-                idUser
-            );
+            Optional<AccountsProfileEntity> findProfileUser = accountsProfileRepository.findByUser_Id(idUser);
             // ---------------------------------------------------------------------
 
             // Invalid user

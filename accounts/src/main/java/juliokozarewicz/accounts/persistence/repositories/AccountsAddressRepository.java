@@ -16,11 +16,9 @@ public interface AccountsAddressRepository extends
 {
 
     // Get address by user id
-    List<AccountsAddressEntity> findByIdUser(UUID idUser);
+    List<AccountsAddressEntity> findByUserId(UUID idUser);
 
     // Get address by id and user id
-    Optional<AccountsAddressEntity> findByIdAndIdUser(
-        UUID addressId, UUID idUser
-    );
+    Optional<AccountsAddressEntity> findByIdAndUserId(UUID addressId, UUID userId);
 
 }

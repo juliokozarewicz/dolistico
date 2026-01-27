@@ -14,7 +14,14 @@ CREATE TABLE IF NOT EXISTS accounts.user_account (
 CREATE TABLE IF NOT EXISTS accounts.user_deleted_account (
     id UUID PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
-    email VARCHAR(256) NOT NULL
+    email VARCHAR(256) NOT NULL,
+
+    id_user UUID NOT NULL UNIQUE,
+
+    CONSTRAINT fk_deleted_account_user
+        FOREIGN KEY (id_user)
+        REFERENCES accounts.user_account (id)
+        ON DELETE CASCADE
 );
 
 -- PROFILE
@@ -30,7 +37,14 @@ CREATE TABLE IF NOT EXISTS accounts.user_profile (
     biography VARCHAR(256),
     profile_image VARCHAR(555),
     language VARCHAR(50),
-    theme VARCHAR(100)
+    theme VARCHAR(100),
+
+    id_user UUID NOT NULL UNIQUE,
+
+    CONSTRAINT fk_profile_user
+        FOREIGN KEY (id_user)
+        REFERENCES accounts.user_account (id)
+        ON DELETE CASCADE
 );
 
 -- USER LOGS
@@ -38,11 +52,17 @@ CREATE TABLE IF NOT EXISTS accounts.user_log (
     id UUID PRIMARY KEY,
     created_at TIMESTAMPTZ NOT NULL,
     ip_address VARCHAR(256) NOT NULL,
-    id_user UUID NOT NULL,
     agent VARCHAR(512) NOT NULL,
     update_type VARCHAR(256) NOT NULL,
     old_value TEXT NOT NULL,
-    new_value TEXT NOT NULL
+    new_value TEXT NOT NULL,
+
+    id_user UUID NOT NULL,
+
+    CONSTRAINT fk_user_log_user
+        FOREIGN KEY (id_user)
+        REFERENCES accounts.user_account (id)
+        ON DELETE CASCADE
 );
 
 -- USER ADDRESS
@@ -61,5 +81,11 @@ CREATE TABLE IF NOT EXISTS accounts.user_address (
     address_type VARCHAR(256) NOT NULL,
     is_primary BOOLEAN NOT NULL,
     landmark VARCHAR(256),
-    id_user UUID NOT NULL
+
+    id_user UUID NOT NULL,
+
+    CONSTRAINT fk_user_address_user
+        FOREIGN KEY (id_user)
+        REFERENCES accounts.user_account (id)
+        ON DELETE CASCADE
 );

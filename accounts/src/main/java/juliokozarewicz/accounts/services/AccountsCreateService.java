@@ -198,9 +198,10 @@ public class AccountsCreateService {
 
             // Create profile
             AccountsProfileEntity newProfile = new AccountsProfileEntity();
-            newProfile.setId(generatedUniqueId);
+            newProfile.setId(accountsManagementService.createUniqueId());
             newProfile.setCreatedAt(nowUtc);
             newProfile.setUpdatedAt(nowUtc);
+            newProfile.setUser(newAccount);
             newProfile.setName(accountsCreateDTO.name());
             accountsProfileRepository.save(newProfile);
 

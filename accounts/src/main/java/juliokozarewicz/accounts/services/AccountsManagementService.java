@@ -312,19 +312,22 @@ public class AccountsManagementService implements AccountsManagementInterface {
     ) {
 
         // ID and Timestamp
-        UUID generatedUniqueId = createUniqueId();
         Instant nowUtc = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+
+        // Find the user
+        AccountsEntity user = accountsRepository.findById(idUser)
+            .orElseThrow(() -> new RuntimeException() );
 
         // Create log
         AccountsLogEntity newUserLog = new AccountsLogEntity();
-        newUserLog.setId(generatedUniqueId);
+        newUserLog.setId(createUniqueId());
         newUserLog.setCreatedAt(nowUtc);
         newUserLog.setIpAddress(ipAddress);
-        newUserLog.setIdUser(idUser);
         newUserLog.setAgent(agent);
         newUserLog.setUpdateType(updateType);
         newUserLog.setOldValue(oldValue);
         newUserLog.setNewValue(newValue);
+        newUserLog.setUser(user);
         accountsLogRepository.save(newUserLog);
 
     }
