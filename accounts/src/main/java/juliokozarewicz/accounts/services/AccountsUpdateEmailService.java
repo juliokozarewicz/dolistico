@@ -132,14 +132,27 @@ public class AccountsUpdateEmailService {
             .orElse(null);
 
 
-        // If token or email not found return error
-        if ( pinDTO == null || findOldEmailAndToken == null ) {
+        // If token not found return error
+        if ( findOldEmailAndToken == null ) {
+
+            // call custom error
+            errorHandler.customErrorThrow(
+                401,
+                messageSource.getMessage(
+                    "response_update_email_fail", null, locale
+                )
+            );
+
+        }
+
+        // If pin not found return error
+        if ( pinDTO == null ) {
 
             // call custom error
             errorHandler.customErrorThrow(
                 404,
                 messageSource.getMessage(
-                    "response_update_email_fail", null, locale
+                    "response_login_pin_error", null, locale
                 )
             );
 

@@ -2066,8 +2066,32 @@ public class DocumentationJson {
                                     }
                                 }
                             },
+                            "401": {
+                                "description": "Invalid token, password, or user not found.",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "statusCode": {
+                                                    "type": "integer",
+                                                    "example": 401
+                                                },
+                                                "statusMessage": {
+                                                    "type": "string",
+                                                    "example": "error"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Unable to change your email address."
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
                             "404": {
-                                "description": "Invalid token, PIN, password, or user not found.",
+                                "description": "Invalid PIN.",
                                 "content": {
                                     "application/json": {
                                         "schema": {
@@ -2083,7 +2107,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "Unable to change your email address."
+                                                    "example": "The entered PIN is invalid or has expired. Please try again."
                                                 }
                                             }
                                         }

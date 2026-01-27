@@ -101,8 +101,7 @@ public class AccountsDeleteRedisListenerService implements MessageListener {
             );
 
             // Get user profile
-            Optional<AccountsProfileEntity> findProfile = accountsProfileRepository
-                .findById(idUser);
+            Optional<AccountsProfileEntity> findProfile = accountsProfileRepository.findByUser_Id(idUser);
 
             if ( findUser.isPresent() && findProfile.isPresent() ) {
 
