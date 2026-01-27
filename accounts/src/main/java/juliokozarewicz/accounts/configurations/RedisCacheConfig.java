@@ -119,7 +119,7 @@ public class RedisCacheConfig {
         cacheConfigs.put("accounts-addressCache", addressCacheConfig);
         cacheConfigs.put("accounts-refreshLoginCache", refreshLoginCacheConfig);
         cacheConfigs.put("accounts-pinVerificationCache", pinVerificationCacheConfig);
-        cacheConfigs.put("accounts-ArrayLoginsCache", ArrayLoginsCacheConfig);
+        cacheConfigs.put("accounts-arrayLoginsCache", ArrayLoginsCacheConfig);
         cacheConfigs.put("accounts-verificationCache", verificationCacheConfig);
         cacheConfigs.put("accounts-loginCache", loginCacheConfig);
         cacheConfigs.put("accounts-notActivatedAccountCache", notActivatedAccountConfig);

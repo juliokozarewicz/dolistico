@@ -28,7 +28,7 @@ public class AccountsConnectedDevicesGetService {
     private final MessageSource messageSource;
     private final ErrorHandler errorHandler;
     private final CacheManager cacheManager;
-    private final Cache ArrayLoginsCache;
+    private final Cache arrayLoginsCache;
     private final Cache refreshLoginCache;
     private final RestTemplate restTemplate;
     private final AccountsManagementService accountsManagementService;
@@ -46,7 +46,7 @@ public class AccountsConnectedDevicesGetService {
         this.messageSource = messageSource;
         this.errorHandler = errorHandler;
         this.cacheManager = cacheManager;
-        this.ArrayLoginsCache = cacheManager.getCache("accounts-ArrayLoginsCache");
+        this.arrayLoginsCache = cacheManager.getCache("accounts-arrayLoginsCache");
         this.refreshLoginCache = cacheManager.getCache("accounts-refreshLoginCache");
         this.restTemplate = restTemplate;
         this.accountsManagementService = accountsManagementService;
@@ -77,7 +77,7 @@ public class AccountsConnectedDevicesGetService {
         // =================================================================
 
         // Get cache
-        Cache.ValueWrapper arrayLoginsCache = ArrayLoginsCache.get(idUser);
+        Cache.ValueWrapper arrayLoginsWrapper = arrayLoginsCache.get(idUser);
 
         // Connected devices
         List<Map<String, String>> connectedDevices = new ArrayList<>();
@@ -85,8 +85,9 @@ public class AccountsConnectedDevicesGetService {
         // Iterate tokens
         try {
 
-            Object value = arrayLoginsCache.get();
+            Object value = arrayLoginsWrapper.get();
             AccountsCacheRefreshTokensListDTO dto = (AccountsCacheRefreshTokensListDTO) value;
+
             List<AccountsCacheRefreshTokensListMetaDTO> metaList = dto.getRefreshTokensActive();
 
             for (AccountsCacheRefreshTokensListMetaDTO token : metaList) {
@@ -149,9 +150,6 @@ public class AccountsConnectedDevicesGetService {
             }
 
         } catch (Exception e) {
-
-            // #####
-            System.out.println(e);
 
             // call custom error
             errorHandler.customErrorThrow(
