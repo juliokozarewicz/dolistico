@@ -137,7 +137,7 @@ public class AccountsDeleteService {
         // Create user log
         accountsManagementService.createUserLog(
             userIp,
-            findUser.get().getId(),
+            findUser.get(),
             userAgent,
             AccountsUpdateEnum.DELETE_ACCOUNT,
             "activated",

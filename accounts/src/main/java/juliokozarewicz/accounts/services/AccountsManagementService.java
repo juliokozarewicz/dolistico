@@ -304,7 +304,7 @@ public class AccountsManagementService implements AccountsManagementInterface {
     @Override
     public void createUserLog(
         String ipAddress,
-        UUID idUser,
+        AccountsEntity user,
         String agent,
         String updateType,
         String oldValue,
@@ -313,10 +313,6 @@ public class AccountsManagementService implements AccountsManagementInterface {
 
         // ID and Timestamp
         Instant nowUtc = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
-
-        // Find the user
-        AccountsEntity user = accountsRepository.findById(idUser)
-            .orElseThrow(() -> new RuntimeException() );
 
         // Create log
         AccountsLogEntity newUserLog = new AccountsLogEntity();

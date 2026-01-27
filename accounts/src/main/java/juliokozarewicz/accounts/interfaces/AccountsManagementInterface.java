@@ -1,5 +1,7 @@
 package juliokozarewicz.accounts.interfaces;
 
+import juliokozarewicz.accounts.persistence.entities.AccountsEntity;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -34,7 +36,7 @@ public interface AccountsManagementInterface {
 
     void createUserLog(
         String ipAddress,
-        UUID idUser,
+        AccountsEntity idUser,
         String agent,
         String updateType,
         String oldValue,

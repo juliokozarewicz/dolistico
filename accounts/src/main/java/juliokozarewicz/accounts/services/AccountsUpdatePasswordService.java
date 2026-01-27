@@ -162,7 +162,7 @@ public class AccountsUpdatePasswordService {
             // Update user log
             accountsManagementService.createUserLog(
                 userIp,
-                findUser.get().getId(),
+                findUser.get(),
                 userAgent,
                 AccountsUpdateEnum.UPDATE_PASSWORD,
                 findUser.get().getPassword(),

@@ -181,7 +181,7 @@ public class AccountsUpdateEmailService {
         // Create user log
         accountsManagementService.createUserLog(
             userIp,
-            findOldUser.get().getId(),
+            findOldUser.get(),
             userAgent,
             AccountsUpdateEnum.UPDATE_EMAIL,
             findOldUser.get().getEmail(),
