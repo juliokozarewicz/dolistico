@@ -76,6 +76,9 @@ public class AccountsUpdateEmailService {
         // language
         Locale locale = LocaleContextHolder.getLocale();
 
+        // Timestamp
+        Instant nowUtc = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
+
         // Credentials
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
@@ -86,9 +89,6 @@ public class AccountsUpdateEmailService {
         Optional<AccountsEntity> findOldUser =  accountsRepository.findById(
             idUser
         );
-
-        // Timestamp
-        Instant nowUtc = ZonedDateTime.now(ZoneOffset.UTC).toInstant();
 
         if ( findOldUser.isEmpty() ) {
 

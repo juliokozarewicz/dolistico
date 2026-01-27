@@ -3,7 +3,9 @@ package juliokozarewicz.accounts.services;
 import juliokozarewicz.accounts.dtos.AccountsAddressCreateDTO;
 import juliokozarewicz.accounts.exceptions.ErrorHandler;
 import juliokozarewicz.accounts.persistence.entities.AccountsAddressEntity;
+import juliokozarewicz.accounts.persistence.entities.AccountsEntity;
 import juliokozarewicz.accounts.persistence.repositories.AccountsAddressRepository;
+import juliokozarewicz.accounts.persistence.repositories.AccountsRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.MessageSource;
@@ -31,13 +33,15 @@ public class AccountsAddressCreateService {
     private final AccountsAddressRepository accountsAddressRepository;
     private final ErrorHandler errorHandler;
     private final AccountsManagementService accountsManagementService;
+    private final AccountsRepository accountsRepository;
 
     public AccountsAddressCreateService (
 
         MessageSource messageSource,
         AccountsAddressRepository accountsAddressRepository,
         ErrorHandler errorHandler,
-        AccountsManagementService accountsManagementService
+        AccountsManagementService accountsManagementService,
+        AccountsRepository accountsRepository
 
     ) {
 
@@ -45,6 +49,7 @@ public class AccountsAddressCreateService {
         this.accountsAddressRepository = accountsAddressRepository;
         this.errorHandler = errorHandler;
         this.accountsManagementService = accountsManagementService;
+        this.accountsRepository = accountsRepository;
 
     }
 
@@ -68,6 +73,21 @@ public class AccountsAddressCreateService {
         List<AccountsAddressEntity> findAddress =  accountsAddressRepository.findByUserId(
             idUser
         );
+
+        // find user
+        Optional<AccountsEntity> findUser = accountsRepository.findById(idUser);
+
+        if ( findUser.isEmpty() ) {
+
+            // call custom error
+            errorHandler.customErrorThrow(
+                401,
+                messageSource.getMessage(
+                    "response_invalid_credentials", null, locale
+                )
+            );
+
+        }
 
         // Keep five address
         if ( findAddress.size() >= 5 ) {
@@ -121,6 +141,7 @@ public class AccountsAddressCreateService {
         newAddress.setAddressType(accountsAddressCreateDTO.addressType());
         newAddress.setIsPrimary(accountsAddressCreateDTO.isPrimary());
         newAddress.setLandmark(accountsAddressCreateDTO.landmark());
+        newAddress.setUser(findUser.get());
 
         // Set primary address
         if ( newAddress.getIsPrimary() ) {
