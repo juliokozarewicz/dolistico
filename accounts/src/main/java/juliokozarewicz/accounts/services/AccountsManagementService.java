@@ -15,6 +15,9 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.util.Arrays;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -516,6 +519,65 @@ public class AccountsManagementService implements AccountsManagementInterface {
             new AccountsCacheRefreshTokensListDTO(tokensList);
 
         arrayLoginsCache.put(idUser, updatedDTO);
+
+    }
+
+    @Override
+    public boolean isAllowedUrl(String rawLink, String publicDomain) {
+
+        try {
+            if (rawLink == null || rawLink.isBlank()) return false;
+
+            String link = rawLink.trim();
+            if (!link.startsWith("http://") && !link.startsWith("https://")) {
+                link = "https://" + link;
+            }
+
+            URI uri = new URI(link);
+
+            if (!"https".equalsIgnoreCase(uri.getScheme())) return false;
+            if (uri.getFragment() != null) return false;
+
+            String host = uri.getHost();
+            if (host == null) return false;
+            final String finalHost = host.toLowerCase();
+
+            String query = uri.getQuery();
+            if (query != null) {
+                String q = query.toLowerCase();
+                if (
+                    q.contains("redirect=") ||
+                        q.contains("next=") ||
+                        q.contains("url=") ||
+                        q.contains("return=") ||
+                        q.contains("continue=") ||
+                        q.contains("target=")
+                ) return false;
+            }
+
+            boolean allowed = Arrays.stream(publicDomain.split(","))
+                .map(String::trim)
+                .map(d -> d.startsWith("http") ? d : "https://" + d)
+                .map(d -> {
+                    try { return new URI(d).getHost(); }
+                    catch (Exception e) { return null; }
+                })
+                .anyMatch(h -> h != null && h.equalsIgnoreCase(finalHost));
+
+            if (!allowed) return false;
+
+            HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
+            conn.setInstanceFollowRedirects(false);
+            conn.setRequestMethod("HEAD");
+            conn.setConnectTimeout(3000);
+            conn.setReadTimeout(3000);
+
+            int status = conn.getResponseCode();
+            return status < 300 || status >= 400;
+
+        } catch (Exception e) {
+            return false;
+        }
 
     }
 

@@ -71,104 +71,12 @@ public class AccountsLinkUpdateEmailService {
         Locale locale = LocaleContextHolder.getLocale();
 
         ////////////////////////////////////// ( Verify and authorize URL INIT )
-        boolean isAllowedURL = false;
-
-        try {
-
-            String linkRaw = accountsLinkUpdateEmailDTO.link().trim();
-
-            // Ensure scheme exists (default to HTTPS)
-            if (!linkRaw.startsWith("http://") && !linkRaw.startsWith("https://")) {
-                linkRaw = "https://" + linkRaw;
-            }
-
-            URI linkUri = new URI(linkRaw);
-
-            // Enforce HTTPS only
-            if (!"https".equalsIgnoreCase(linkUri.getScheme())) {
-                isAllowedURL = false;
-            } else if (linkUri.getFragment() != null) {
-                // Reject fragments (#)
-                isAllowedURL = false;
-            } else {
-
-                String linkHost = linkUri.getHost();
-
-                if (linkHost == null) {
-                    isAllowedURL = false;
-                } else {
-
-                    linkHost = linkHost.toLowerCase();
-
-                    // Block common redirect-related query parameters
-                    String query = linkUri.getQuery();
-                    if (query != null) {
-                        String q = query.toLowerCase();
-                        if (
-                            q.contains("redirect=") ||
-                                q.contains("next=") ||
-                                q.contains("url=") ||
-                                q.contains("return=") ||
-                                q.contains("continue=") ||
-                                q.contains("target=")
-                        ) {
-                            isAllowedURL = false;
-                        }
-                    }
-
-                    // Validate against allowed domains (exact match only)
-                    String[] allowedOrigins = publicDomain.split(",");
-
-                    for (String origin : allowedOrigins) {
-
-                        String originTrimmed = origin.trim();
-
-                        if (!originTrimmed.startsWith("http://") && !originTrimmed.startsWith("https://")) {
-                            originTrimmed = "https://" + originTrimmed;
-                        }
-
-                        URI originUri = new URI(originTrimmed);
-                        String originHost = originUri.getHost();
-
-                        if (originHost != null &&
-                            linkHost.equalsIgnoreCase(originHost)) {
-
-                            isAllowedURL = true;
-                            break;
-                        }
-                    }
-
-                    // Optional: detect real HTTP redirects (3xx)
-                    if (isAllowedURL) {
-                        try {
-                            HttpURLConnection connection =
-                                (HttpURLConnection) linkUri.toURL().openConnection();
-
-                            connection.setInstanceFollowRedirects(false);
-                            connection.setRequestMethod("HEAD");
-                            connection.setConnectTimeout(3000);
-                            connection.setReadTimeout(3000);
-
-                            int status = connection.getResponseCode();
-                            if (status >= 300 && status < 400) {
-                                isAllowedURL = false;
-                            }
-                        } catch (Exception ignored) {
-                            // Any access error invalidates the URL
-                            isAllowedURL = false;
-                        }
-                    }
-                }
-            }
-
-        } catch (Exception ignored) {
-            // Any parsing or unexpected error invalidates the URL
-            isAllowedURL = false;
-        }
+        boolean isAllowedURL = accountsManagementService.isAllowedUrl(
+            accountsLinkUpdateEmailDTO.link(),
+            publicDomain
+        );
 
         if (!isAllowedURL) {
-
-            // Single and consistent error response
             errorHandler.customErrorThrow(
                 403,
                 messageSource.getMessage(

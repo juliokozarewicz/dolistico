@@ -47,4 +47,6 @@ public interface AccountsManagementInterface {
 
     void disableAccount(UUID idUser);
 
+    boolean isAllowedUrl(String rawLink, String publicDomain);
+
 }
