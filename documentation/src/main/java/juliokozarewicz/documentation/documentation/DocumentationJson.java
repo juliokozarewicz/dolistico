@@ -874,7 +874,7 @@ public class DocumentationJson {
                                 }
                             },
                             "401": {
-                                "description": "Invalid login token or credentials.",
+                                "description": "The token has expired. Please sign in again.",
                                 "content": {
                                     "application/json": {
                                         "schema": {
