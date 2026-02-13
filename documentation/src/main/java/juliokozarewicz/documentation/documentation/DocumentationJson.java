@@ -622,7 +622,7 @@ public class DocumentationJson {
                                 }
                             },
                             "404": {
-                                "description": "An error occurred while changing your password.",
+                                "description": "Invalid token. An error occurred while changing your password.",
                                 "content": {
                                     "application/json": {
                                         "schema": {
@@ -750,7 +750,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "The token has expired. Please sign in again."
+                                                    "example": "Invalid credentials."
                                                 }
                                             }
                                         }
@@ -874,7 +874,7 @@ public class DocumentationJson {
                                 }
                             },
                             "401": {
-                                "description": "The token has expired. Please sign in again.",
+                                "description": "Invalid login token or credentials.",
                                 "content": {
                                     "application/json": {
                                         "schema": {
@@ -890,7 +890,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "Invalid credentials."
+                                                    "example": "The token has expired. Please sign in again."
                                                 }
                                             }
                                         }
@@ -2093,7 +2093,7 @@ public class DocumentationJson {
                                 }
                             },
                             "401": {
-                                "description": "Invalid token, password, or user not found.",
+                                "description": "Invalid token or user not found.",
                                 "content": {
                                     "application/json": {
                                         "schema": {
