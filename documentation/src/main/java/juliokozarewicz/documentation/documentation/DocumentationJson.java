@@ -459,7 +459,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "An error occurred while trying to activate your account, please try the process again."
+                                                    "example": "The link has expired. Please go through the process again."
                                                 }
                                             }
                                         }
@@ -638,7 +638,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "An error occurred while changing your password. Please try the process again."
+                                                    "example": "The link has expired. Please go through the process again."
                                                 }
                                             }
                                         }
@@ -750,7 +750,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "Invalid credentials."
+                                                    "example": "The token has expired. Please sign in again."
                                                 }
                                             }
                                         }
@@ -2004,7 +2004,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "Unable to change your email address."
+                                                    "example": "This email address is already associated with an account."
                                                 }
                                             }
                                         }
@@ -2109,7 +2109,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "Unable to change your email address."
+                                                    "example": "The link has expired. Your email address could not be changed."
                                                 }
                                             }
                                         }
@@ -2157,7 +2157,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "Unable to change your email address."
+                                                    "example": "This email address is already associated with an account."
                                                 }
                                             }
                                         }
@@ -2413,7 +2413,7 @@ public class DocumentationJson {
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "It was not possible to delete your account. Please try again."
+                                                    "example": "The link has expired. Please go through the process again."
                                                 }
                                             }
                                         }

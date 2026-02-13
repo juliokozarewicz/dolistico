@@ -3,10 +3,8 @@ package juliokozarewicz.accounts.services;
 import jakarta.transaction.Transactional;
 import juliokozarewicz.accounts.dtos.AccountsCacheLoginConfirmationMetaDTO;
 import juliokozarewicz.accounts.dtos.AccountsCacheVerificationPinMetaDTO;
-import juliokozarewicz.accounts.dtos.AccountsCacheVerificationTokenMetaDTO;
 import juliokozarewicz.accounts.dtos.AccountsLoginConfirmationDTO;
 import juliokozarewicz.accounts.enums.AccountsUpdateEnum;
-import juliokozarewicz.accounts.enums.EmailResponsesEnum;
 import juliokozarewicz.accounts.exceptions.ErrorHandler;
 import juliokozarewicz.accounts.persistence.entities.AccountsEntity;
 import juliokozarewicz.accounts.persistence.repositories.AccountsRepository;
@@ -84,7 +82,7 @@ public class AccountsLoginConfirmationService {
             errorHandler.customErrorThrow(
                 401,
                 messageSource.getMessage(
-                    "response_invalid_credentials", null, locale
+                    "response_invalid_login_token", null, locale
                 )
             );
         }
@@ -99,7 +97,7 @@ public class AccountsLoginConfirmationService {
             errorHandler.customErrorThrow(
                 401,
                 messageSource.getMessage(
-                    "response_invalid_credentials", null, locale
+                    "response_invalid_login_token", null, locale
                 )
             );
         }
@@ -123,7 +121,7 @@ public class AccountsLoginConfirmationService {
             errorHandler.customErrorThrow(
                 404,
                 messageSource.getMessage(
-                    "response_login_pin_error", null, locale
+                    "response_pin_error", null, locale
                 )
             );
         }

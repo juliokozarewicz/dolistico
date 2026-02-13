@@ -141,7 +141,7 @@ public class AccountsUpdateEmailService {
             errorHandler.customErrorThrow(
                 404,
                 messageSource.getMessage(
-                    "response_login_pin_error", null, locale
+                    "response_pin_error", null, locale
                 )
             );
 
@@ -179,7 +179,7 @@ public class AccountsUpdateEmailService {
             errorHandler.customErrorThrow(
                 409,
                 messageSource.getMessage(
-                    "response_update_email_fail", null, locale
+                    "response_update_email_user_exist", null, locale
                 )
             );
 

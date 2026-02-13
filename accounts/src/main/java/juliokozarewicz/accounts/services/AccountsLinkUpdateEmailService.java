@@ -82,7 +82,7 @@ public class AccountsLinkUpdateEmailService {
             errorHandler.customErrorThrow(
                 409,
                 messageSource.getMessage(
-                    "response_update_email_sent_fail", null, locale
+                    "response_update_email_user_exist", null, locale
                 )
             );
 

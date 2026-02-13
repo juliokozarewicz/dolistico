@@ -358,6 +358,15 @@ http {
             limit_req zone=critical_zone burst=1 nodelay;
         }
 
+        # [ ACCOUNTS - Update Email *** STATIC *** ]
+        location /${ACCOUNTS_BASE_URL}/static/update-email/ {
+            alias /static/public/update-email/;
+            index index.html;
+            try_files $uri /index.html;
+            add_header Cache-Control "public";
+            limit_req zone=general_zone burst=50 nodelay;
+        }
+
         # [ ACCOUNTS - Update Email ]
         location /${ACCOUNTS_BASE_URL}/update-email {
             proxy_pass http://accounts_backend;
