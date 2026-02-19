@@ -146,7 +146,7 @@ input#email.emailError {
 }
 
 #pinBox input {
-    height: 3rem;
+    height: 3.2rem;
     width: 2.2rem;
     border: 2px solid var(--gray3);
     border-radius: 6px;
@@ -331,6 +331,17 @@ body.success-background {
         background-position: center;
         background-size: contain;
         background-size: auto 50%;
+    }
+
+    #pinBox input {
+        height: 4rem;
+        width: 2.5rem;
+        border: 2px solid var(--gray3);
+        border-radius: 6px;
+        text-align: center;
+        font-size: 20px;
+        outline: none;
+        font-weight: bold;
     }
 
 
