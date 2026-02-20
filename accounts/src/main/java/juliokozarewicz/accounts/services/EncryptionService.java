@@ -1,13 +1,10 @@
 package juliokozarewicz.accounts.services;
 
-import juliokozarewicz.accounts.exceptions.ErrorHandler;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
@@ -37,22 +34,10 @@ public class EncryptionService {
         6                // iterations
     );
 
-    private final MessageSource messageSource;
-    private final ErrorHandler errorHandler;
     private static final SecureRandom secureRandom = new SecureRandom();
     private SecretKey aesKey;
 
-    public EncryptionService(
-
-        MessageSource messageSource,
-        ErrorHandler errorHandler
-
-    ) {
-
-        this.messageSource = messageSource;
-        this.errorHandler = errorHandler;
-
-    }
+    public EncryptionService() {}
 
     // ======================================================= (Constructor end)
 
