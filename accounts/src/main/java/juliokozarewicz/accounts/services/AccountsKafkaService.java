@@ -3,7 +3,10 @@ package juliokozarewicz.accounts.services;
 import juliokozarewicz.accounts.dtos.SendEmailDataDTO;
 import juliokozarewicz.accounts.enums.KafkaTopicEnum;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class AccountsKafkaService {
@@ -31,10 +34,8 @@ public class AccountsKafkaService {
 
         try {
 
-            kafkaTemplate.send(
-                KafkaTopicEnum.SEND_SIMPLE_EMAIL,
-                sendEmailDataDTO
-            );
+            kafkaTemplate.send(KafkaTopicEnum.SEND_SIMPLE_EMAIL, sendEmailDataDTO)
+                .get(10, TimeUnit.SECONDS);
 
         } catch (Exception e) {
 
