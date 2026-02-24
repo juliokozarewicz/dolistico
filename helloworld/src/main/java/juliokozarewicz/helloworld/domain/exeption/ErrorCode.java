@@ -15,4 +15,5 @@ public enum ErrorCode {
     public int getHttpStatus() {
         return httpStatus;
     }
+
 }

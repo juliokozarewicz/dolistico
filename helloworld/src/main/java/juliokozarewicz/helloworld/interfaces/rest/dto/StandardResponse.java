@@ -10,7 +10,7 @@ public record StandardResponse(
 
 ) {
 
-    public static StandardResponse of(String errorCode, int status ) {
+    public static StandardResponse of( String errorCode, int status ) {
 
         return new StandardResponse(
             LocalDateTime.now(),
