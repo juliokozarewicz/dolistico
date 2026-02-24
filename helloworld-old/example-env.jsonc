@@ -1,0 +1,17 @@
+[
+
+  // common
+  {
+    "APPLICATION_TITLE": "",
+    "PUBLIC_DOMAIN": "",
+
+    // server
+    "HELLOWORLD_PORT": "",
+    "HELLOWORLD_BASE_URL": ""
+  },
+
+  // helloworld-service
+  {
+  }
+
+]
