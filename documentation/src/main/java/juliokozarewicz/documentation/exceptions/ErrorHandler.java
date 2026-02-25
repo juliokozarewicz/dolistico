@@ -48,7 +48,7 @@ public class ErrorHandler {
     }
     // ===================================================== ( error throw end )
 
-    // ========================================== ( handle all exceptions init )
+    // ========================================== ( handle all exception init )
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleAllExceptions(
 
@@ -165,6 +165,6 @@ public class ErrorHandler {
             .body(fallbackResponse);
 
     }
-    // =========================================== ( handle all exceptions end )
+    // =========================================== ( handle all exception end )
 
 }

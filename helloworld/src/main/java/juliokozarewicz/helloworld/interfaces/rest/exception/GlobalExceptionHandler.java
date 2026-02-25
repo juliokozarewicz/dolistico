@@ -1,6 +1,5 @@
 package juliokozarewicz.helloworld.interfaces.rest.exception;
 
-import juliokozarewicz.helloworld.domain.exeption.BusinessException;
 import juliokozarewicz.helloworld.interfaces.rest.dto.StandardResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,19 +16,24 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger =
-        LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        GlobalExceptionHandler.class);
 
     // ======================================================= ( business INIT )
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<StandardResponse> handleBusiness(BusinessException ex) {
+    @ExceptionHandler({juliokozarewicz.helloworld.domain.exception.DomainException.class})
+    public ResponseEntity<StandardResponse> handleDomainException(
+        juliokozarewicz.helloworld.domain.exception.DomainException ex) {
+
+        GlobalErrorEnum restError = GlobalErrorEnum.fromDomainError(ex.getError());
 
         return ResponseEntity
-            .status(ex.getErrorCode().getHttpStatus())
-            .body(StandardResponse.of(
-                ex.getErrorCode().name(),
-                ex.getErrorCode().getHttpStatus()
-            ));
+            .status(restError.statusCode)
+            .body(
+                new StandardResponse.Builder()
+                    .statusCode(restError.statusCode)
+                    .messageCode(restError.statusMessage)
+                    .build()
+            );
     }
     // ======================================================== ( business END )
 
@@ -46,10 +50,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(StandardResponse.of(
-                "BAD_REQUEST",
-                400
-            ));
+            .body(
+                new StandardResponse.Builder()
+                    .statusCode(GlobalErrorEnum.BAD_REQUEST.statusCode)
+                    .messageCode(GlobalErrorEnum.BAD_REQUEST.statusMessage)
+                    .build()
+            );
+
     }
     // ===================================================== ( bad request END )
 
@@ -62,10 +69,12 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(StandardResponse.of(
-                "UNEXPECTED_ERROR",
-                500
-            ));
+            .body(
+                new StandardResponse.Builder()
+                    .statusCode(GlobalErrorEnum.INTERNAL_SERVER_ERROR.statusCode)
+                    .messageCode(GlobalErrorEnum.INTERNAL_SERVER_ERROR.statusMessage)
+                    .build()
+            );
 
     }
     // ==================================================== ( fallback 500 END )
