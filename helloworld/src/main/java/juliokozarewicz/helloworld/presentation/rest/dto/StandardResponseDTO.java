@@ -3,12 +3,14 @@ package juliokozarewicz.helloworld.presentation.rest.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+    "createdAt",
     "statusCode",
     "messageCode",
     "fieldErrors",
@@ -18,6 +20,7 @@ import java.util.Map;
 })
 public class StandardResponseDTO {
 
+    private final Instant createdAt;
     private final int statusCode;
     private final String messageCode;
     private List<Map<String, String>> fieldErrors;
@@ -26,12 +29,17 @@ public class StandardResponseDTO {
     private final Map<String, String> links;
 
     private StandardResponseDTO(Builder builder) {
+        this.createdAt = builder.createdAt;
         this.statusCode = builder.statusCode;
         this.messageCode = builder.messageCode;
         this.fieldErrors = builder.fieldErrors;
         this.data = builder.data;
         this.meta = builder.meta.isEmpty() ? null : builder.meta;
         this.links = builder.links.isEmpty() ? null : builder.links;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
     public int getStatusCode () {
@@ -60,12 +68,18 @@ public class StandardResponseDTO {
 
     public static class Builder {
 
+        private Instant createdAt;
         private int statusCode;
         private String messageCode;
         private List<Map<String, String>> fieldErrors;
         private Object data;
         private Map<String, Object> meta = new HashMap<>();
         private Map<String, String> links = new HashMap<>();
+
+        public Builder createdAt(Instant createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
 
         public Builder statusCode(int statusCode) {
             this.statusCode = statusCode;

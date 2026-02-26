@@ -10,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
+
 @RestController
 @Validated
 public class HelloWorldController {
@@ -45,11 +47,13 @@ public class HelloWorldController {
         // Standard response
         return ResponseEntity
         .status(200)
+
         .body(
             new StandardResponseDTO.Builder()
+            .createdAt(Instant.now())
             .statusCode(200)
             .messageCode("HELLO_WORLD_SUCCESS")
-                .data(result)
+            .data(result)
             .build()
         );
 
