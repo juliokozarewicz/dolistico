@@ -1,16 +1,17 @@
-package juliokozarewicz.helloworld.present.rest.dto;
+package juliokozarewicz.helloworld.presentation.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "statusCode",
     "messageCode",
-    "field",
+    "fieldErrors",
     "data",
     "meta",
     "links"
@@ -19,7 +20,7 @@ public class StandardResponseDTO {
 
     private final int statusCode;
     private final String messageCode;
-    private final String field;
+    private List<Map<String, String>> fieldErrors;
     private final Object data;
     private final Map<String, Object> meta;
     private final Map<String, String> links;
@@ -27,7 +28,7 @@ public class StandardResponseDTO {
     private StandardResponseDTO(Builder builder) {
         this.statusCode = builder.statusCode;
         this.messageCode = builder.messageCode;
-        this.field = builder.field.isEmpty() ? null : builder.field;
+        this.fieldErrors = builder.fieldErrors;
         this.data = builder.data;
         this.meta = builder.meta.isEmpty() ? null : builder.meta;
         this.links = builder.links.isEmpty() ? null : builder.links;
@@ -41,8 +42,8 @@ public class StandardResponseDTO {
         return messageCode;
     }
 
-    public String getField() {
-        return field;
+    public List<Map<String, String>> getFieldErrors() {
+        return fieldErrors;
     }
 
     public Object getData() {
@@ -61,7 +62,7 @@ public class StandardResponseDTO {
 
         private int statusCode;
         private String messageCode;
-        private String field = "";
+        private List<Map<String, String>> fieldErrors;
         private Object data;
         private Map<String, Object> meta = new HashMap<>();
         private Map<String, String> links = new HashMap<>();
@@ -76,8 +77,8 @@ public class StandardResponseDTO {
             return this;
         }
 
-        public Builder field(String field) {
-            this.field = field != null ? field : "";
+        public Builder fieldErrors(List<Map<String, String>> fieldErrors) {
+            this.fieldErrors = fieldErrors;
             return this;
         }
 

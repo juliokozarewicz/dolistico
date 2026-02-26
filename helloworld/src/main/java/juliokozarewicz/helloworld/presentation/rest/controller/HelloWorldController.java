@@ -1,11 +1,9 @@
-package juliokozarewicz.helloworld.present.rest.controller;
+package juliokozarewicz.helloworld.presentation.rest.controller;
 
 import jakarta.validation.Valid;
 import juliokozarewicz.helloworld.domain.usecase.HelloWorldUseCase;
-import juliokozarewicz.helloworld.present.rest.dto.HelloWorldDTO;
-import juliokozarewicz.helloworld.present.rest.dto.StandardResponseDTO;
-import juliokozarewicz.helloworld.present.rest.exception.GlobalExceptionEnum;
-import org.springframework.http.HttpStatus;
+import juliokozarewicz.helloworld.presentation.rest.dto.HelloWorldDTO;
+import juliokozarewicz.helloworld.presentation.rest.dto.StandardResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;

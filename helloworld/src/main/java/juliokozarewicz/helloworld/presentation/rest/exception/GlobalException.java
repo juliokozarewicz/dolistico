@@ -1,13 +1,11 @@
-package juliokozarewicz.helloworld.present.rest.exception;
+package juliokozarewicz.helloworld.presentation.rest.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import juliokozarewicz.helloworld.present.rest.dto.StandardResponseDTO;
+import juliokozarewicz.helloworld.presentation.rest.dto.StandardResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -58,7 +56,7 @@ public class GlobalException {
 
             Map<String, String> item = new LinkedHashMap<>();
             item.put("field", field);
-            item.put("message", violation.getMessage());
+            item.put("fieldMessageCode", violation.getMessage());
             fieldErrors.add(item);
         });
 
@@ -68,8 +66,8 @@ public class GlobalException {
             new StandardResponseDTO.Builder()
                 .statusCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
                 .messageCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusMessage)
-                .meta(Map.of("fieldErrors", fieldErrors))
-                .build()
+                .fieldErrors(fieldErrors)
+            .build()
         );
 
     }
