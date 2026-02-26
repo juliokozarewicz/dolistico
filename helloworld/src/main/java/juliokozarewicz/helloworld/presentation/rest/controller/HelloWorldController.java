@@ -50,7 +50,7 @@ public class HelloWorldController {
         .status(200)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(200)
             .messageCode("HELLO_WORLD_SUCCESS")
             .data(result)

@@ -37,7 +37,7 @@ public class GlobalException {
         .status(restError.statusCode)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(restError.statusCode)
             .messageCode(restError.statusMessage)
             .build()
@@ -67,7 +67,7 @@ public class GlobalException {
         .status(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
         .body(
             new StandardResponseDTO.Builder()
-                .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+                .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
                 .statusCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
                 .messageCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusMessage)
                 .fieldErrors(fieldErrors)
@@ -92,7 +92,7 @@ public class GlobalException {
         .status(GlobalExceptionEnum.BAD_REQUEST.statusCode)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalExceptionEnum.BAD_REQUEST.statusCode)
             .messageCode(GlobalExceptionEnum.BAD_REQUEST.statusMessage)
             .build()
@@ -112,7 +112,7 @@ public class GlobalException {
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
             .messageCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusMessage)
             .build()
