@@ -71,6 +71,7 @@ public class GlobalException {
                 .meta(Map.of("fieldErrors", fieldErrors))
                 .build()
         );
+
     }
     // ==================================================== ( DTO validation END )
 
