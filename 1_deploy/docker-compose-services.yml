@@ -124,7 +124,7 @@ services:
     container_name: helloworld
     env_file:
       - .env
-    build: ../helloworld-old
+    build: ../helloworld
     expose:
       - "${HELLOWORLD_PORT}"
     networks:
