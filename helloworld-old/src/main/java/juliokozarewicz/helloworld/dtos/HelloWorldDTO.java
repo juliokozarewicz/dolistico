@@ -8,5 +8,4 @@ public record HelloWorldDTO(
     @Size(max = 5000, message = "{validation_many_characters}")
     String message
 
-) {
-}
+) {}

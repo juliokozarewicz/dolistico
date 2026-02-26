@@ -1,6 +1,6 @@
 package juliokozarewicz.helloworld.domain.exception;
 
-public enum DomainErrorEnum {
+public enum DomainExceptionEnum {
     INVALID_CREDENTIALS,
     USER_NOT_FOUND;
 }

@@ -1,4 +1,4 @@
-package juliokozarewicz.helloworld.interfaces.rest.dto;
+package juliokozarewicz.helloworld.present.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -15,7 +15,7 @@ import java.util.Map;
     "meta",
     "links"
 })
-public class StandardResponse {
+public class StandardResponseDTO {
 
     private final int statusCode;
     private final String messageCode;
@@ -24,7 +24,7 @@ public class StandardResponse {
     private final Map<String, Object> meta;
     private final Map<String, String> links;
 
-    private StandardResponse(Builder builder) {
+    private StandardResponseDTO(Builder builder) {
         this.statusCode = builder.statusCode;
         this.messageCode = builder.messageCode;
         this.field = builder.field.isEmpty() ? null : builder.field;
@@ -96,8 +96,8 @@ public class StandardResponse {
             return this;
         }
 
-        public StandardResponse build() {
-            return new StandardResponse(this);
+        public StandardResponseDTO build() {
+            return new StandardResponseDTO(this);
         }
 
     }
