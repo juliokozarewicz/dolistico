@@ -43,7 +43,7 @@ public class GlobalException {
     }
     // ======================================================== ( business END )
 
-    // ==================================================== ( DTO validation INIT )
+    // ============================================= ( validation [ DTO ] INIT )
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<StandardResponseDTO> handleConstraintViolation(ConstraintViolationException ex) {
 
@@ -71,7 +71,7 @@ public class GlobalException {
         );
 
     }
-    // ==================================================== ( DTO validation END )
+    // ============================================== ( validation [ DTO ] END )
 
     // ==================================================== ( bad request INIT )
     @ExceptionHandler({
