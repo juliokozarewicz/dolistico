@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import juliokozarewicz.helloworld.domain.usecase.HelloWorldUseCase;
 import juliokozarewicz.helloworld.presentation.rest.dto.HelloWorldDTO;
 import juliokozarewicz.helloworld.presentation.rest.dto.StandardResponseDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -21,6 +24,11 @@ public class HelloWorldController {
 
     // Env
     // -------------------------------------------------------------------------
+    @Value("${HELLOWORLD_BASE_URL}")
+    private String helloWorldBaseURL;
+
+    @Value("${DOCUMENTATION_BASE_URL}")
+    private String documentationBaseURL;
     // -------------------------------------------------------------------------
 
     private final HelloWorldUseCase helloWorldUseCase;
@@ -45,6 +53,16 @@ public class HelloWorldController {
         // Call use case
         String result = helloWorldUseCase.execute(helloWorldDTO.message());
 
+        // Message
+        Map<String, Object> metaData = new LinkedHashMap<>();
+        metaData.put("message", result);
+
+        // Links
+        Map<String, String> customLinks = new LinkedHashMap<>();
+        customLinks.put("self", "/" + helloWorldBaseURL);
+        customLinks.put("documentation", "/" + documentationBaseURL);
+        customLinks.put("swaggerDocumentation", "/" + documentationBaseURL + "/swagger");
+
         // Standard response
         return ResponseEntity
         .status(200)
@@ -53,7 +71,8 @@ public class HelloWorldController {
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(200)
             .messageCode("HELLO_WORLD_SUCCESS")
-            .data(result)
+            .meta(metaData)
+            .links(customLinks)
             .build()
         );
 
