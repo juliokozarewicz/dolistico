@@ -47,7 +47,6 @@ public class HelloWorldController {
         // Standard response
         return ResponseEntity
         .status(200)
-
         .body(
             new StandardResponseDTO.Builder()
             .createdAt(Instant.now())
