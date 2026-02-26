@@ -14,6 +14,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class GlobalException {
         .status(restError.statusCode)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now())
+            .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
             .statusCode(restError.statusCode)
             .messageCode(restError.statusMessage)
             .build()
@@ -66,7 +67,7 @@ public class GlobalException {
         .status(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
         .body(
             new StandardResponseDTO.Builder()
-                .createdAt(Instant.now())
+                .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
                 .statusCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
                 .messageCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusMessage)
                 .fieldErrors(fieldErrors)
@@ -91,7 +92,7 @@ public class GlobalException {
         .status(GlobalExceptionEnum.BAD_REQUEST.statusCode)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now())
+            .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
             .statusCode(GlobalExceptionEnum.BAD_REQUEST.statusCode)
             .messageCode(GlobalExceptionEnum.BAD_REQUEST.statusMessage)
             .build()
@@ -111,7 +112,7 @@ public class GlobalException {
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now())
+            .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
             .statusCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
             .messageCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusMessage)
             .build()

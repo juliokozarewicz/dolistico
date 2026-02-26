@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @RestController
 @Validated
@@ -49,7 +50,7 @@ public class HelloWorldController {
         .status(200)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now())
+            .createdAt(Instant.now().truncatedTo(ChronoUnit.MILLIS))
             .statusCode(200)
             .messageCode("HELLO_WORLD_SUCCESS")
             .data(result)

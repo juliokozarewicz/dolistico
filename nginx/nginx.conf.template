@@ -172,7 +172,7 @@ http {
         # ------------------------------------------------------------ (end security)
 
         # ------------------------------------------------------------- (init errors)
-        error_page 429 = @to_many_request;
+        error_page 429 = @too_many_request;
         error_page 502 503 504 = @service_unavailable;
 
         error_page
@@ -185,28 +185,28 @@ http {
             500 501 505 506 507 508 510
         = @server_error;
 
-        location @to_many_request {
+        location @too_many_request {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 429 '{"statusCode": 429, "statusMessage":"error", "detail": "Access blocked by rate limiter (API Gateway)."}';
+            return 429 '{"createdAt":"$time_iso8601", "statusCode": 429, "messageCode":"TOO_MANY_REQUESTS"}';
         }
 
         location @bad_request {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 400 '{"statusCode": 400, "messageCode":"BAD_REQUEST"}';
+            return 400 '{"createdAt":"$time_iso8601", "statusCode": 400, "messageCode":"BAD_REQUEST"}';
         }
 
         location @server_error {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 500 '{"statusCode": 500, "messageCode":"INTERNAL_SERVER_ERROR"}';
+            return 500 '{"createdAt":"$time_iso8601", "statusCode": 500, "messageCode":"INTERNAL_SERVER_ERROR"}';
         }
 
         location @service_unavailable {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 503 '{"statusCode": 503, "messageCode":"SERVICE_UNAVAILABLE"}';
+            return 503 '{"createdAt":"$time_iso8601", "statusCode": 503, "messageCode":"SERVICE_UNAVAILABLE"}';
         }
         # -------------------------------------------------------------- (end errors)
 
