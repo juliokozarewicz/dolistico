@@ -164,6 +164,11 @@ http {
             application/xml
             application/rss+xml
             image/svg+xml;
+
+        # Malformed URL
+        if ($request_uri ~* "\\x5C") {
+            return 400;
+        }
         # ------------------------------------------------------------ (end security)
 
         # ------------------------------------------------------------- (init errors)
@@ -189,19 +194,19 @@ http {
         location @bad_request {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 400 '{"statusCode": 400, "statusMessage":"error", "detail": "Bad request (API Gateway)."}';
+            return 400 '{"statusCode": 400, "messageCode":"BAD_REQUEST"}';
         }
 
         location @server_error {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 500 '{"statusCode": 500, "statusMessage":"error", "detail": "Server error (API Gateway)."}';
+            return 500 '{"statusCode": 500, "messageCode":"INTERNAL_SERVER_ERROR"}';
         }
 
         location @service_unavailable {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 503 '{"statusCode": 503, "statusMessage":"error", "detail": "Service Unavailable (API Gateway)."}';
+            return 503 '{"statusCode": 503, "messageCode":"SERVICE_UNAVAILABLE"}';
         }
         # -------------------------------------------------------------- (end errors)
 
