@@ -74,7 +74,7 @@ public class HelloWorldController {
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(200)
             .messageCode("HELLO_WORLD_SUCCESS")
-            .meta(metaData)
+            .data(metaData)
             .links(customLinks)
             .build()
         );
