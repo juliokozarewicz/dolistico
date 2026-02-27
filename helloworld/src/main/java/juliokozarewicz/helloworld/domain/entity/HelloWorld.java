@@ -31,7 +31,7 @@ public class HelloWorld {
 
         String finalMessage = !trimmedMessage.isEmpty() ? trimmedMessage : "Hello World!";
 
-        if (finalMessage.equals("bad-message")) {
+        if (finalMessage.equalsIgnoreCase("bad-message")) {
             throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
         }
 
