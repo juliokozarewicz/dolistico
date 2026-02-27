@@ -29,96 +29,62 @@ info:
         Access it here:
         ```
         PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
-        ```        
-        
-        ## Localization (Translation)
+        ```
 
-        Any response containing the "message" field in the body will have 
-        its message translated server-side, based on the language specified 
-        in the request header, for the supported languages.
-        
-        
-        
         ## User Login and Access Token Renewal Process
         The login process is carried out in two steps. First, the user sends 
-        their email and password to the endpoint `/api/v1/accounts/login`. 
+        their email and password to the endpoint `PUBLIC_DOMAIN_REPLACE/accounts/login`. 
         If the credentials are valid and the account is active, a temporary 
         `userLoginToken` is generated and returned in the response, along with 
         a numeric PIN, which is sent to the user's email. Next, the user 
         sends the "userLoginToken" and the PIN received to the endpoint 
-        `/api/v1/accounts/login-confirmation`. If both are valid, the system 
+        `PUBLIC_DOMAIN_REPLACE/accounts/login-confirmation`. If both are valid, the system 
         returns an access token and a refresh token, which can be used to access 
         protected resources in the application. If any of the tokens or the 
         PIN are invalid, an appropriate error will be returned.
-        
-        
-
-        ## Common responses from services
 
         **Authentication Error (401):**
         If the user is not authenticated (e.g., missing or invalid token), the response will be:
 
         ```json
         {
-            "status": 401,
-            "statusMessage": "error",
-            "message": "Invalid credentials."
+            "createdAt": "2026-02-27T19:53:14Z",
+            "statusCode": 401,
+            "messageCode": "INVALID_CREDENTIALS"
         }
-        ```
+        ```        
 
-        **Form field validation error (422):**
-        If there are validation errors in the form fields, the response will include the fields and their respective error messages:
-
-        ```json
-        {
-            "statusCode": 422,
-            "statusMessage": "error",
-            "message": "The request contains empty or incorrect fields.",
-            "fieldErrors": [
-                { "field": "field name", "message": "This field is required." },
-                { "field": "field name", "message": "This field is required." }
-            ]
-        }
-        ```
+        ## Common responses
 
         **Bad request (400):**
         If the request is malformed or invalid, the response will be:
 
         ```json
         {
+            "createdAt": "2026-02-27T20:00:02Z",
             "statusCode": 400,
-            "statusMessage": "error",
-            "message": "The request has an error, check."
+            "messageCode": "BAD_REQUEST"
         }
         ```
         
-        **Server error (500):**
-        The error occurs only on the requested endpoint. The service is 
-        online, but this specific endpoint is returning an error. In contrast, 
-        the API Gateway error represents a general service-level error. 
-        Another difference is that this endpoint error includes the message 
-        field, which allows for message translation. The response will be:
+        **Form field validation error (422):**
+        If there are validation errors in the input fields, the response will include the fields and their respective error codes.
 
         ```json
         {
-            "statusCode": 500,
-            "statusMessage": "error",
-            "message": "An unexpected error occurred, please try again later."
-        }
-        ```
-        
-        
-        
-        ## API Gateway Errors (No translation support)
-
-        **Service Unavailable (503):**
-        The service is temporarily unavailable, often due to maintenance or overload.
-
-        ```json
-        {
-            "statusCode": 503,
-            "statusMessage": "error",
-            "detail": "Service Unavailable (API Gateway)"
+            "createdAt": "2026-02-27T19:55:12Z",
+            "statusCode": 422,
+            "messageCode": "UNPROCESSABLE_ENTITY",
+            "fieldErrors": [
+                {
+                    "field": "subject",
+                    "fieldMessageCode": "FIELD_CANNOT_REMAIN_EMPTY"
+                },
+                {
+                    "field": "message",
+                    "fieldMessageCode": "FIELD_CANNOT_REMAIN_EMPTY"
+                }
+            ]
         }
         ```
 
@@ -127,20 +93,31 @@ info:
 
         ```json
         {
+            "createdAt": "2026-02-27T20:01:34+00:00",
             "statusCode": 429,
-            "statusMessage": "error",
-            "detail": "Access blocked by rate limiter (API Gateway)"
+            "messageCode": "TOO_MANY_REQUESTS"
         }
         ```
-
-        **Internal server error (500):**
-        If there's an unexpected condition preventing the server from fulfilling the request:
+        
+        **Server error (500):**
+        The service is online, but this specific endpoint is returning an error. The response will be:
 
         ```json
         {
+            "createdAt": "2026-02-27T20:01:34+00:00",
             "statusCode": 500,
-            "statusMessage": "error",
-            "detail": "Server error (API Gateway)"
+            "messageCode": "INTERNAL_SERVER_ERROR"
+        }
+        ```
+
+        **Service Unavailable (503):**
+        The service is temporarily unavailable, often due to maintenance or overload.
+
+        ```json
+        {
+            "createdAt": "2026-02-27T20:01:34+00:00",
+            "statusCode": 503,
+            "messageCode": "SERVICE_UNAVAILABLE"
         }
         ```
 
@@ -160,41 +137,76 @@ paths:
         get:
             summary: Get hello world message
             description: >-
-                Retrieves a hello world message. You can optionally provide a custom
-                message via query parameter.
+                Retrieves a hello world message. If the message parameter is not
+                provided or is empty, the default value "Hello World!" will be returned.
+                If the message equals "bad-message", a business rule error will be triggered.
             tags:
                 - HELLO WORLD
             parameters:
                 - name: message
                   in: query
                   required: false
-                  description: Custom message to be returned.
+                  description: Custom message to be validated and returned.
                   schema:
                       type: string
+                      maxLength: 256
                       example: Hello from the API!
             responses:
                 "200":
-                    description: Successful response with hello world message.
+                    description: Successful response with validated hello world message.
                     content:
                         application/json:
                             schema:
                                 type: object
                                 properties:
+                                    createdAt:
+                                        type: string
+                                        format: date-time
+                                        example: 2026-02-27T20:10:15Z
                                     statusCode:
                                         type: integer
                                         example: 200
-                                    statusMessage:
+                                    messageCode:
                                         type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: "Data received successfully. (Hello World!)"
+                                        example: HELLO_WORLD_SUCCESS
+                                    data:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: Hello from the API!
                                     links:
                                         type: object
                                         properties:
                                             self:
                                                 type: string
                                                 example: /HELLOWORLD_BASE_URL_REPLACE
+                                            documentation:
+                                                type: string
+                                                example: /DOCUMENTATION_REPLACE
+                                            swaggerDocumentation:
+                                                type: string
+                                                example: /DOCUMENTATION_REPLACE/swagger
+
+                "401":
+                    description: >-
+                        Business rule violation. Triggered when the provided
+                        message equals "bad-message".
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    createdAt:
+                                        type: string
+                                        format: date-time
+                                        example: 2026-02-27T19:53:14Z
+                                    statusCode:
+                                        type: integer
+                                        example: 401
+                                    messageCode:
+                                        type: string
+                                        example: INVALID_CREDENTIALS
 
     ######################################################################
 

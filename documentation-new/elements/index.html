@@ -22,53 +22,30 @@
 
         <script>
 
-            // ============================================================
-            //  Variables
-            // ============================================================
-            const REPLACE_MAP = {
-                "PUBLIC_DOMAIN_REPLACE": "https://request.juliokozarewicz.com/api/v1",
-                "DOCUMENTATION_REPLACE": "documentation",
-                "HELLOWORLD_BASE_URL_REPLACE": "helloworld",
-                "ACCOUNTS_BASE_URL_REPLACE": "accounts",
-            };
-            // ============================================================
-
-
-            // ============================================================
-            //  Load and replace the YAML
-            // ============================================================
             document.addEventListener('DOMContentLoaded', async () => {
 
+                // Load config.json
+                const configResponse = await fetch('./config.json');
+                const REPLACE_MAP = await configResponse.json();
+
+                // Load YAML
                 const response = await fetch('./documentation.yaml');
                 let yamlText = await response.text();
 
+                // Apply replacements
                 Object.entries(REPLACE_MAP).forEach(([key, value]) => {
                     const regex = new RegExp(key, "g");
                     yamlText = yamlText.replace(regex, value);
                 });
 
+                // Create blob URL
                 const blob = new Blob([yamlText], { type: "text/yaml" });
                 const yamlURL = URL.createObjectURL(blob);
 
                 const apiEl = document.getElementById("elements-container");
                 apiEl.apiDescriptionUrl = yamlURL;
+
             });
-            // ============================================================
-
-
-
-            // ============================================================
-            //  Rename "Overview"
-            // ============================================================
-            const observer = new MutationObserver(() => {
-                const overviewEl = document.querySelector('.sl-flex-1.sl-items-center.sl-text-base.sl-truncate');
-                if (overviewEl && overviewEl.textContent.trim() === 'Overview') {
-                    overviewEl.textContent = 'DESCRIPTION';
-                }
-            });
-
-            observer.observe(document.body, { childList: true, subtree: true });
-            // ============================================================
 
         </script>
 
