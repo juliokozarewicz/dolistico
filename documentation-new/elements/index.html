@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <title>APPLICATION_TITLE_UPPERCASE</title>
+        <link rel="icon" type="image/x-icon" href="./src/assets/favicon.ico" />
+
+        <script src="./src/js/web-components.min.js"></script>
+        <link rel="stylesheet" href="./src/css/styles.min.css" />
+
+        <style>
+            body { margin: 0; padding: 0; font-family: sans-serif; background-color: #f9f9f9; }
+            #elements-container { height: 100vh; width: 100%; }
+            a[href*='stoplight.io'][target='_blank'] { display: none !important; visibility: hidden !important; }
+        </style>
+    </head>
+    <body>
+
+        <elements-api
+            id="elements-container"
+            router="hash"
+            layout="sidebar">
+        </elements-api>
+
+        <script>
+
+            // ============================================================
+            //  Variables
+            // ============================================================
+            const REPLACE_MAP = {
+                "PUBLIC_DOMAIN_REPLACE": "https://request.juliokozarewicz.com/api/v1",
+                "DOCUMENTATION_REPLACE": "documentation",
+                "HELLOWORLD_BASE_URL_REPLACE": "helloworld",
+                "ACCOUNTS_BASE_URL_REPLACE": "accounts",
+            };
+            // ============================================================
+
+
+            // ============================================================
+            //  Load and replace the YAML
+            // ============================================================
+            document.addEventListener('DOMContentLoaded', async () => {
+
+                const response = await fetch('./documentation.yaml');
+                let yamlText = await response.text();
+
+                Object.entries(REPLACE_MAP).forEach(([key, value]) => {
+                    const regex = new RegExp(key, "g");
+                    yamlText = yamlText.replace(regex, value);
+                });
+
+                const blob = new Blob([yamlText], { type: "text/yaml" });
+                const yamlURL = URL.createObjectURL(blob);
+
+                const apiEl = document.getElementById("elements-container");
+                apiEl.apiDescriptionUrl = yamlURL;
+            });
+            // ============================================================
+
+
+
+            // ============================================================
+            //  Rename "Overview"
+            // ============================================================
+            const observer = new MutationObserver(() => {
+                const overviewEl = document.querySelector('.sl-flex-1.sl-items-center.sl-text-base.sl-truncate');
+                if (overviewEl && overviewEl.textContent.trim() === 'Overview') {
+                    overviewEl.textContent = 'DESCRIPTION';
+                }
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+            // ============================================================
+
+        </script>
+
+    </body>
+</html>
