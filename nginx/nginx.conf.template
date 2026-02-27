@@ -221,15 +221,6 @@ http {
             limit_req zone=general_zone burst=50 nodelay;
         }
 
-        # [ DOCUMENTATION - Swagger ]
-        location /${DOCUMENTATION_BASE_URL}/swagger {
-            alias /static/public/documentation/swagger/;
-            index index.html;
-            try_files $uri /index.html;
-            add_header Cache-Control "public";
-            limit_req zone=general_zone burst=50 nodelay;
-        }
-
         # ------------------------------------------------------- (end documentation)
 
         # -------------------------------------------------------- (init hello world)
