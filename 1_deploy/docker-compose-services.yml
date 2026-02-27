@@ -44,8 +44,8 @@ services:
       start_period: 10s
       timeout: 10s
 
-  cachemanager:
-    container_name: cachemanager
+  cache:
+    container_name: cache
     env_file:
       - .env
     image: redis:latest
@@ -56,7 +56,7 @@ services:
         chmod +x /init/init.sh
 
         echo "[CACHE MANAGER] Starting Redis...";
-        redis-server --port ${CACHEMANAGER_PORT} --notify-keyspace-events Ex &
+        redis-server --port ${CACHE_PORT} --notify-keyspace-events Ex &
 
         REDIS_PID=$!
         sleep 2
@@ -67,34 +67,34 @@ services:
         wait $REDIS_PID
       '
     volumes:
-      - cachemanager_data:/data
-      - ./config/cachemanager:/init
+      - cache_data:/data
+      - ./config/cache:/init
     expose:
-      - "${CACHEMANAGER_PORT}"
+      - "${CACHE_PORT}"
     networks:
       - spring_net
     healthcheck:
-      test: [ "CMD-SHELL", "redis-cli -a ${CACHEMANAGER_ADMIN_PASSWORD} PING | grep PONG" ]
+      test: [ "CMD-SHELL", "redis-cli -a ${CACHE_ADMIN_PASSWORD} PING | grep PONG" ]
       interval: 30s
       retries: 5
       start_period: 10s
       timeout: 10s
 
-  streamingmanager:
-    container_name: streamingmanager
+  messaging:
+    container_name: messaging
     env_file:
       - .env
     image: redpandadata/redpanda
-    entrypoint: ["bash", "/config/streamingmanager/init.sh"]
+    entrypoint: ["bash", "/config/messaging/init.sh"]
     volumes:
-      - streamingmanager_data:/var/lib/redpanda/data
-      - ./config/streamingmanager/init.sh:/config/streamingmanager/init.sh
+      - messaging_data:/var/lib/redpanda/data
+      - ./config/messaging/init.sh:/config/messaging/init.sh
     expose:
-      - "${STREAMINGMANAGER_PORT}"
+      - "${MESSAGING_PORT}"
     networks:
       - spring_net
     healthcheck:
-      test: [ "CMD-SHELL", "bash -c 'echo > /dev/tcp/streamingmanager/${STREAMINGMANAGER_PORT}'" ]
+      test: [ "CMD-SHELL", "bash -c 'echo > /dev/tcp/messaging/${MESSAGING_PORT}'" ]
       interval: 30s
       retries: 5
       start_period: 10s
@@ -148,7 +148,7 @@ services:
     networks:
       - spring_net
     depends_on:
-      streamingmanager:
+      messaging:
           condition: service_healthy
     deploy:
       replicas: 1
@@ -173,9 +173,9 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      cachemanager:
+      cache:
         condition: service_healthy
-      streamingmanager:
+      messaging:
         condition: service_healthy
       emailservice:
         condition: service_healthy
@@ -200,9 +200,9 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      cachemanager:
+      cache:
         condition: service_healthy
-      streamingmanager:
+      messaging:
         condition: service_healthy
       emailservice:
         condition: service_healthy
@@ -219,8 +219,8 @@ services:
 volumes:
   vault_data:
   database_data:
-  cachemanager_data:
-  streamingmanager_data:
+  cache_data:
+  messaging_data:
   accounts_static_files:
 
 networks:
