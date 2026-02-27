@@ -1,4 +1,4 @@
-package juliokozarewicz.helloworld.presentation.rest.exception;
+package juliokozarewicz.helloworld.web.rest.exception;
 
 import juliokozarewicz.helloworld.domain.exception.DomainExceptionEnum;
 

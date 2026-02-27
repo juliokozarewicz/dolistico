@@ -1,4 +1,4 @@
-package juliokozarewicz.helloworld.presentation.rest.dto;
+package juliokozarewicz.helloworld.web.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

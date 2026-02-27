@@ -1,9 +1,9 @@
-package juliokozarewicz.helloworld.presentation.rest.controller;
+package juliokozarewicz.helloworld.web.rest.controller;
 
 import jakarta.validation.Valid;
-import juliokozarewicz.helloworld.domain.usecase.HelloWorldUseCase;
-import juliokozarewicz.helloworld.presentation.rest.dto.HelloWorldDTO;
-import juliokozarewicz.helloworld.presentation.rest.dto.StandardResponseDTO;
+import juliokozarewicz.helloworld.application.usecase.CreateHelloWorldUseCase;
+import juliokozarewicz.helloworld.web.rest.dto.HelloWorldDTO;
+import juliokozarewicz.helloworld.web.rest.dto.StandardResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,12 +31,16 @@ public class HelloWorldController {
     private String documentationBaseURL;
     // -------------------------------------------------------------------------
 
-    private final HelloWorldUseCase helloWorldUseCase;
+    private final CreateHelloWorldUseCase createHelloWorldUseCase;
 
     public HelloWorldController(
-        HelloWorldUseCase helloWorldUseCase
+
+        CreateHelloWorldUseCase createHelloWorldUseCase
+
     ) {
-        this.helloWorldUseCase = helloWorldUseCase;
+
+        this.createHelloWorldUseCase = createHelloWorldUseCase;
+
     }
 
     // ===================================================== ( constructor end )
@@ -51,11 +55,11 @@ public class HelloWorldController {
     ) {
 
         // Call use case
-        String result = helloWorldUseCase.execute(helloWorldDTO.message());
+        String validatedMessage = createHelloWorldUseCase.execute(helloWorldDTO.message());
 
         // Message
         Map<String, Object> metaData = new LinkedHashMap<>();
-        metaData.put("message", result);
+        metaData.put("message", validatedMessage);
 
         // Links
         Map<String, String> customLinks = new LinkedHashMap<>();
@@ -64,8 +68,7 @@ public class HelloWorldController {
         customLinks.put("swaggerDocumentation", "/" + documentationBaseURL + "/swagger");
 
         // Standard response
-        return ResponseEntity
-        .status(200)
+        return ResponseEntity.status(200)
         .body(
             new StandardResponseDTO.Builder()
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))

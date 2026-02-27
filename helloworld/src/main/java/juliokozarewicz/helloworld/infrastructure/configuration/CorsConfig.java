@@ -1,4 +1,4 @@
-package juliokozarewicz.helloworld.configuration;
+package juliokozarewicz.helloworld.infrastructure.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

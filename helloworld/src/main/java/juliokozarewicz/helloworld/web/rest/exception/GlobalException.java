@@ -1,7 +1,7 @@
-package juliokozarewicz.helloworld.presentation.rest.exception;
+package juliokozarewicz.helloworld.web.rest.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import juliokozarewicz.helloworld.presentation.rest.dto.StandardResponseDTO;
+import juliokozarewicz.helloworld.web.rest.dto.StandardResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +33,7 @@ public class GlobalException {
 
         GlobalExceptionEnum restError = GlobalExceptionEnum.fromDomainError(ex.getError());
 
-        return ResponseEntity
-        .status(restError.statusCode)
+        return ResponseEntity.status(restError.statusCode)
         .body(
             new StandardResponseDTO.Builder()
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
@@ -63,8 +62,7 @@ public class GlobalException {
             fieldErrors.add(item);
         });
 
-        return ResponseEntity
-        .status(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
+        return ResponseEntity.status(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
         .body(
             new StandardResponseDTO.Builder()
                 .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
@@ -88,8 +86,7 @@ public class GlobalException {
     })
     public ResponseEntity<StandardResponseDTO> handleBadRequest(Exception ex) {
 
-        return ResponseEntity
-        .status(GlobalExceptionEnum.BAD_REQUEST.statusCode)
+        return ResponseEntity.status(GlobalExceptionEnum.BAD_REQUEST.statusCode)
         .body(
             new StandardResponseDTO.Builder()
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
@@ -108,8 +105,7 @@ public class GlobalException {
         // logs
         logger.error(ex.toString());
 
-        return ResponseEntity
-        .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
+        return ResponseEntity.status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
         .body(
             new StandardResponseDTO.Builder()
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
