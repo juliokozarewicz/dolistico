@@ -213,13 +213,13 @@ http {
         # ------------------------------------------------------ (init documentation)
 
         # [ DOCUMENTATION - Stoplight Elements ]
-        location /${DOCUMENTATION_BASE_URL} {
-            alias /static/public/documentation/elements/;
-            index index.html;
-            try_files $uri /index.html;
-            add_header Cache-Control "public";
-            limit_req zone=general_zone burst=50 nodelay;
-        }
+            location /${DOCUMENTATION_BASE_URL} {
+                alias /static/public/documentation/elements/;
+                index index.html;
+                try_files $uri /index.html;
+                add_header Cache-Control "public";
+                limit_req zone=general_zone burst=50 nodelay;
+            }
 
         # ------------------------------------------------------- (end documentation)
 
