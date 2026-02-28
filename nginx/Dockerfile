@@ -2,8 +2,8 @@ FROM nginx:latest
 RUN apt-get update && apt-get install -y gettext-base
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
 
-# Documentation
-COPY documentation /static/public/documentation
+# Statics
+COPY static /static/public
 
 RUN mkdir -p /var/log/nginx /tmp/nginx_cache
 CMD envsubst ' \
