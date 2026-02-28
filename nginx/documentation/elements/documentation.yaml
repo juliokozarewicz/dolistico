@@ -14,13 +14,16 @@ info:
         ownership enforcement, Dolistico ensures that 
         task management is both secure and efficient.
         
-        ## Additional templates you might find useful
-        The official API documentation provides all the information you 
-        need to understand, integrate, and test the available endpoints. 
-        It includes details about authentication, parameters, request and 
-        response examples, and explanations of the data models used. In addition
-        to direct access to the official documentation, you can 
-        explore the API in another way by using a different interface.
+        ### Additional templates you might find useful
+        The official API documentation contains everything you need to 
+        understand, integrate, and test the available endpoints. It provides 
+        details on authentication, parameters, request and response examples, 
+        as well as explanations of the data models used. Access it here:
+        ```
+        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/index.html
+        ```
+        
+        Besides direct access to the official documentation, you can also explore the API through an alternative interface.
         
         ### Swagger:
         Swagger offers a user-friendly, interactive interface where you 
@@ -28,10 +31,10 @@ info:
         quickly exploring requests, responses, and available operations.
         Access it here:
         ```
-        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
+        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger/index.html
         ```
 
-        ## User Login and Access Token Renewal Process
+        ### User Login and Access Token Renewal Process
         The login process is carried out in two steps. First, the user sends 
         their email and password to the endpoint `PUBLIC_DOMAIN_REPLACE/accounts/login`. 
         If the credentials are valid and the account is active, a temporary 
@@ -43,7 +46,7 @@ info:
         protected resources in the application. If any of the tokens or the 
         PIN are invalid, an appropriate error will be returned.
 
-        ## Common responses
+        ### Common responses
 
         **Bad request (400):**
         If the request is malformed or invalid, the response will be:
