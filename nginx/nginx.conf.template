@@ -232,6 +232,18 @@ http {
         # [ DOCUMENTATION - Swagger ]
         # ===========================================================================
 
+        location = /${DOCUMENTATION_BASE_URL}/swagger {
+            return 301 /${DOCUMENTATION_BASE_URL}/swagger/;
+        }
+
+        location /${DOCUMENTATION_BASE_URL}/swagger {
+            alias /static/public/documentation/swagger/;
+            index index.html;
+            try_files $uri $uri/ /index.html;
+            add_header Cache-Control "public";
+            limit_req zone=general_zone burst=50 nodelay;
+        }
+
         # ------------------------------------------------------- (end documentation)
 
         # -------------------------------------------------------- (init hello world)

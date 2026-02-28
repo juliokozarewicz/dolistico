@@ -21,7 +21,7 @@ info:
         as well as explanations of the data models used. Access it here:
         ```
         PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE
-        ```
+        ```  
         
         Besides direct access to the official documentation, you can also explore the API through an alternative interface.
         
@@ -1238,31 +1238,32 @@ paths:
                                                     example: Near Rodeo Drive
                                         example:
                                             - addressId: f53d0ad4-a4fe-456a-b586-c930025233ce
-                                            addressName: home
-                                            zipCode: 90210
-                                            street: Sunset Boulevard
-                                            number: "123"
-                                            addressLineTwo: Apt 4B
-                                            neighborhood: Beverly Hills
-                                            city: Los Angeles
-                                            state: California
-                                            country: USA
-                                            addressType: Home
-                                            isPrimary: false
-                                            landmark: Near Rodeo Drive
+                                              addressName: home
+                                              zipCode: 90210
+                                              street: Sunset Boulevard
+                                              number: "123"
+                                              addressLineTwo: Apt 4B
+                                              neighborhood: Beverly Hills
+                                              city: Los Angeles
+                                              state: California
+                                              country: USA
+                                              addressType: Home
+                                              isPrimary: false
+                                              landmark: Near Rodeo Drive
+
                                             - addressId: 7ab67274-54c5-4625-8e9e-825749290c8e
-                                            addressName: home
-                                            zipCode: 90210
-                                            street: Sunset Boulevard
-                                            number: "123"
-                                            addressLineTwo: Apt 4B
-                                            neighborhood: Beverly Hills
-                                            city: Los Angeles
-                                            state: California
-                                            country: USA
-                                            addressType: Home
-                                            isPrimary: true
-                                            landmark: Near Rodeo Drive
+                                              addressName: home
+                                              zipCode: 90210
+                                              street: Sunset Boulevard
+                                              number: "123"
+                                              addressLineTwo: Apt 4B
+                                              neighborhood: Beverly Hills
+                                              city: Los Angeles
+                                              state: California
+                                              country: USA
+                                              addressType: Home
+                                              isPrimary: true
+                                              landmark: Near Rodeo Drive
                                     meta:
                                         type: object
                                         properties:
@@ -1296,10 +1297,10 @@ paths:
                 - BearerAuth: []
             parameters:
                 - name: id
-                in: path
-                required: true
-                description: UUID of the address to be deleted.
-                schema:
+                  in: path
+                  required: true
+                  description: UUID of the address to be deleted.
+                  schema:
                     type: string
                     format: uuid
                     example: 550e8400-e29b-41d4-a716-446655440000
