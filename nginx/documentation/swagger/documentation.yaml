@@ -5,6 +5,7 @@ info:
     title: DOLISTICO
     version: "1.0"
     description: |-
+
         Dolistico is a lightweight and scalable microservice for managing 
         to-do tasks, built with Java and Spring. Designed to integrate 
         seamlessly into a microservices architecture, it allows users to 
@@ -13,19 +14,23 @@ info:
         management, and features like due dates, categorization, and 
         ownership enforcement, Dolistico ensures that 
         task management is both secure and efficient.
+
+        <br>
         
-        ### Additional templates you might find useful
+        #### Additional templates you might find useful
         The official API documentation contains everything you need to 
         understand, integrate, and test the available endpoints. It provides 
         details on authentication, parameters, request and response examples, 
         as well as explanations of the data models used. Access it here:
         ```
         PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE
-        ```  
+        ```
         
+        <br>
+
         Besides direct access to the official documentation, you can also explore the API through an alternative interface.
         
-        ### Swagger:
+        ##### Swagger:
         Swagger offers a user-friendly, interactive interface where you 
         can test API endpoints directly from your browser. It's ideal for 
         quickly exploring requests, responses, and available operations.
@@ -34,7 +39,9 @@ info:
         PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
         ```
 
-        ### User Login and Access Token Renewal Process
+        <br>
+
+        #### User Login and Access Token Renewal Process
         The login process is carried out in two steps. First, the user sends 
         their email and password to the endpoint `PUBLIC_DOMAIN_REPLACE/accounts/login`. 
         If the credentials are valid and the account is active, a temporary 
@@ -46,7 +53,9 @@ info:
         protected resources in the application. If any of the tokens or the 
         PIN are invalid, an appropriate error will be returned.
 
-        ### Common responses
+        <br>
+
+        #### Common responses
 
         **Bad request (400):**
         If the request is malformed or invalid, the response will be:
@@ -59,6 +68,8 @@ info:
         }
         ```
 
+        <br>
+
         **Authentication Error (401):**
         If the user is not authenticated (e.g., missing or invalid token), the response will be:
 
@@ -69,6 +80,8 @@ info:
             "messageCode": "INVALID_CREDENTIALS"
         }
         ```
+
+        <br>
         
         **Form field validation error (422):**
         If there are validation errors in the input fields, the response will include the fields and their respective error codes.
@@ -91,6 +104,8 @@ info:
         }
         ```
 
+        <br>
+
         **Rate limit exceeded (429):**
         If the user exceeds the allowed number of requests, the response will be:
 
@@ -101,6 +116,8 @@ info:
             "messageCode": "TOO_MANY_REQUESTS"
         }
         ```
+
+        <br>
         
         **Server error (500):**
         The service is online, but this specific endpoint is returning an error. The response will be:
@@ -112,6 +129,8 @@ info:
             "messageCode": "INTERNAL_SERVER_ERROR"
         }
         ```
+
+        <br>
 
         **Service Unavailable (503):**
         The service is temporarily unavailable, often due to maintenance or overload.
@@ -165,7 +184,7 @@ paths:
                                     createdAt:
                                         type: string
                                         format: date-time
-                                        example: 2026-02-27T20:10:15Z
+                                        example: "2026-02-27T20:10:15Z"
                                     statusCode:
                                         type: integer
                                         example: 200
@@ -203,7 +222,7 @@ paths:
                                     createdAt:
                                         type: string
                                         format: date-time
-                                        example: 2026-02-27T19:53:14Z
+                                        example: "2026-02-27T19:53:14Z"
                                     statusCode:
                                         type: integer
                                         example: 403
