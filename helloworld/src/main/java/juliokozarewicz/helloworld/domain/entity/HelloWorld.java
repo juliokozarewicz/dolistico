@@ -32,7 +32,7 @@ public class HelloWorld {
         String finalMessage = !trimmedMessage.isEmpty() ? trimmedMessage : "Hello World!";
 
         if (finalMessage.equalsIgnoreCase("bad-message")) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
         }
 
         return finalMessage;

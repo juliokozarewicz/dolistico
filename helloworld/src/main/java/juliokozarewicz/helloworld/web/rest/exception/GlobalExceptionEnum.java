@@ -5,8 +5,10 @@ import juliokozarewicz.helloworld.domain.exception.DomainExceptionEnum;
 public enum GlobalExceptionEnum {
 
     // Domain error code
-    USER_NOT_FOUND(404, "USER_NOT_FOUND", DomainExceptionEnum.USER_NOT_FOUND),
     INVALID_CREDENTIALS(401, "INVALID_CREDENTIALS", DomainExceptionEnum.INVALID_CREDENTIALS),
+    PAYMENT_REQUIRED(402, "PAYMENT_REQUIRED", DomainExceptionEnum.PAYMENT_REQUIRED),
+    NO_PERMISSION_TO_ACCESS(403, "NO_PERMISSION_TO_ACCESS", DomainExceptionEnum.NO_PERMISSION_TO_ACCESS),
+    USER_NOT_FOUND(404, "USER_NOT_FOUND", DomainExceptionEnum.USER_NOT_FOUND),
 
     // Rest error code
     SERVICE_UNAVAILABLE(503, "SERVICE_UNAVAILABLE", null),

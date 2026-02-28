@@ -20,7 +20,7 @@ info:
         details on authentication, parameters, request and response examples, 
         as well as explanations of the data models used. Access it here:
         ```
-        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/index.html
+        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE
         ```
         
         Besides direct access to the official documentation, you can also explore the API through an alternative interface.
@@ -31,7 +31,7 @@ info:
         quickly exploring requests, responses, and available operations.
         Access it here:
         ```
-        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger/index.html
+        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
         ```
 
         ### User Login and Access Token Renewal Process
@@ -191,7 +191,7 @@ paths:
                                                 type: string
                                                 example: /DOCUMENTATION_REPLACE/swagger
 
-                "401":
+                "403":
                     description: >-
                         Business rule violation. Triggered when the provided
                         message equals "bad-message".
@@ -206,10 +206,10 @@ paths:
                                         example: 2026-02-27T19:53:14Z
                                     statusCode:
                                         type: integer
-                                        example: 401
+                                        example: 403
                                     messageCode:
                                         type: string
-                                        example: INVALID_CREDENTIALS
+                                        example: NO_PERMISSION_TO_ACCESS
 
     ######################################################################
 

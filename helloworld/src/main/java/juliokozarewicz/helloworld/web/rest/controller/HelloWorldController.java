@@ -5,6 +5,7 @@ import juliokozarewicz.helloworld.application.usecase.CreateHelloWorldUseCase;
 import juliokozarewicz.helloworld.web.rest.dto.HelloWorldDTO;
 import juliokozarewicz.helloworld.web.rest.dto.StandardResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -68,7 +69,9 @@ public class HelloWorldController {
         customLinks.put("swaggerDocumentation", "/" + documentationBaseURL + "/swagger");
 
         // Standard response
-        return ResponseEntity.status(200)
+        return ResponseEntity
+        .status(200)
+        .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
