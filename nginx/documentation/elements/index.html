@@ -1,5 +1,5 @@
+<html lang="en-US">
 <!DOCTYPE html>
-<html lang="en-us">
 
 <head>
     <meta charset="UTF-8">
@@ -60,6 +60,10 @@
                 let yamlText = await response.text();
 
                 // Apply replacements
+                if (REPLACE_MAP.APPLICATION_TITLE_REPLACE) {
+		    document.title = REPLACE_MAP.APPLICATION_TITLE_REPLACE.toUpperCase();
+		}
+            
                 Object.entries(REPLACE_MAP).forEach(([key, value]) => {
                     const regex = new RegExp(key, "g");
                     yamlText = yamlText.replace(regex, value);
