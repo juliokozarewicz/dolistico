@@ -2,7 +2,7 @@
 FROM nginx:latest
 
 # Clean default files
-RUN rm -f /etc/nginx/conf.d/default.conf /etc/nginx/nginx.conf
+RUN rm -f /etc/nginx/conf.d/*
 
 # Nginx confs
 COPY nginx.conf /etc/nginx
