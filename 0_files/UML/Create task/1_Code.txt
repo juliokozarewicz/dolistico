@@ -1,3 +1,4 @@
+######################################################################
 @startuml
 skinparam pageSize A4
 
@@ -8,180 +9,173 @@ actor User
 User -> NGINX : POST /api/v1/tasks\nAuthorization: Bearer <jwt>
 NGINX -> TasksCreateController : forward request
 
-TasksCreateController -> TasksCreateUseCase : execute(dto)
+TasksCreateController -> TasksCreateUseCase : execute(input)
 
-TasksCreateUseCase -> TasksCreateModel : new model from DTO
-TasksCreateUseCase -> TasksCreateModel : validateBusinessRules()
+TasksCreateUseCase -> TasksCreateInput : new input from DTO
+TasksCreateUseCase -> TasksEntity : validateBusinessRules(input)
 
 alt Invalid business rule
-    TasksCreateModel --> TasksCreateUseCase : throw DomainException
+    TasksEntity --> TasksCreateUseCase : throw DomainException
     TasksCreateUseCase --> TasksCreateController : 400 Bad Request
     TasksCreateController --> User : error response
     return
 end
 
-TasksCreateUseCase -> TasksEntity : convert Model → Entity
+TasksCreateUseCase -> TasksModel : convert Entity → Model
 
 TasksCreateUseCase -> TasksEventProducer : publish(task.created)
 TasksEventProducer -> Kafka : send message
 
 Kafka -> TasksEventConsumer : deliver event
 
-TasksEventConsumer -> TasksEntity : toEntity(event)
-TasksEventConsumer -> TasksRepositoryImpl : save(entity)
+TasksEventConsumer -> TasksModel : toModel(event)
+TasksEventConsumer -> TasksRepositoryImpl : save(model)
 TasksRepositoryImpl -> Database : INSERT task
 
 TasksCreateUseCase --> TasksCreateController : StandardResponseDTO
 TasksCreateController --> User : 201 Created
 
 @enduml
+######################################################################
 
-
-
-
-
+######################################################################
 @startuml
 skinparam pageSize A4
 title Class Diagram - POST /api/v1/tasks
 
 package "adapter.rest.controller" {
     class TasksCreateController {
-        +create(dto: TasksCreateDTO)
+        +create(input: TasksCreateInput)
     }
 }
 
 package "adapter.rest.dto" {
-    class TasksCreateDTO {
-        +taskName: String
-        +description: String
-        +category: String
-        +color: String
-        +priority: int
-        +startTime: LocalDateTime
-        +endTime: LocalDateTime
-        +location: String
-        +allDay: boolean
-        +reminderTime: LocalDateTime
-        +notify: boolean
-        +status: String
-        +dueDate: LocalDate
+    class StandardResponseDTO
+}
+
+package "application.input" {
+    class TasksCreateInput {
+        +taskName
+        +description
+        +category
+        +color
+        +priority
+        +startTime
+        +endTime
+        +location
+        +allDay
+        +reminderTime
+        +notify
+        +status
+        +dueDate
     }
 }
 
 package "application.usecase" {
     class TasksCreateUseCase {
-        -repository: TasksCreateRepository
+        -repository: TasksRepository
         -producer: TasksEventProducer
-        +execute(dto: TasksCreateDTO)
+        +execute(input: TasksCreateInput)
     }
 }
 
-package "domain.model" {
-    class TasksCreateModel {
+package "domain.entity" {
+    class TasksEntity {
         +validateBusinessRules()
+        +create(...)
+        +update(...)
     }
 }
 
-package "domain.exceptions" {
+package "domain.exception" {
     class DomainException
     enum DomainExceptionEnum {
-        INVALID_NAME
-        DUPLICATED_TASK
-        INVALID_DATES
-        INVALID_PRIORITY
         REQUIRED_FIELD
+        INVALID_NAME
+        INVALID_PRIORITY
+        INVALID_DATES
+        DUPLICATED_TASK
+        INVALID_ALLDAY
+        INVALID_REMINDER
     }
 }
 
 package "domain.repository" {
-    interface TasksCreateRepository {
-        +existsByNameAndDate(name: String, date: LocalDate)
-        +save(entity: TasksEntity)
+    interface TasksRepository {
+        +existsByNameAndDate(name, date)
+        +save(model: TasksModel)
     }
 }
 
-package "infrastructure.persistence.entity" {
-    class TasksEntity {
-        +id: UUID
-        +taskName: String
-        +description: String
-        +category: String
-        +color: String
-        +priority: int
-        +startTime: LocalDateTime
-        +endTime: LocalDateTime
-        +location: String
-        +allDay: boolean
-        +reminderTime: LocalDateTime
-        +notify: boolean
-        +status: String
-        +dueDate: LocalDate
-        +createdAt: LocalDateTime
-        +updatedAt: LocalDateTime
-        +static create(...)
-        +update(...)
+package "infrastructure.persistence.model" {
+    class TasksModel {
+        +id
+        +taskName
+        +dueDate
+        +createdAt
+        +updatedAt
     }
 }
 
 package "infrastructure.persistence.repositoryimpl" {
     class TasksRepositoryImpl {
-        +save(entity: TasksEntity)
-        +existsByNameAndDate(name: String, date: LocalDate)
+        +save(model: TasksModel)
+        +existsByNameAndDate(name, date)
     }
 }
 
 package "infrastructure.messaging.producer" {
     class TasksEventProducer {
-        +publish(event: TaskCreatedEvent)
+        +publish(event)
     }
 }
 
 package "infrastructure.messaging.consumer" {
     class TasksEventConsumer {
-        +listen(event: TaskCreatedEvent)
+        +listen(event)
     }
 }
 
-TasksCreateController --> TasksCreateDTO
+TasksCreateController --> TasksCreateInput
 TasksCreateController --> TasksCreateUseCase
-TasksCreateUseCase --> TasksCreateModel
-TasksCreateModel --> DomainException
 TasksCreateUseCase --> TasksEntity
-TasksCreateUseCase --> TasksCreateRepository
-TasksCreateRepository <|.. TasksRepositoryImpl
+TasksEntity --> DomainException
+TasksCreateUseCase --> TasksModel
+TasksCreateUseCase --> TasksRepository
+TasksRepository <|.. TasksRepositoryImpl
 TasksCreateUseCase --> TasksEventProducer
 TasksEventProducer --> TasksEventConsumer
 TasksEventConsumer --> TasksRepositoryImpl
 
 @enduml
+######################################################################
 
-
-
-
+######################################################################
 @startuml
 skinparam pageSize A4
 skinparam activity {
     BackgroundColor #eef
     BorderColor #333
 }
+
 title Activity Diagram - Create Task (Business Rules)
 
 start
 
 partition "Controller" {
-    :Receive TasksCreateDTO;
+    :Receive TasksCreateInput;
 }
 
 -->
 
 partition "UseCase" {
-    :execute(dto);
-    :Map DTO → TasksCreateModel;
+    :execute(input);
+    :Map input → TasksEntity;
 }
 
 -->
 
-partition "Domain Model" {
+partition "Domain (Business Rules)" {
 
     :validateBusinessRules();
 
@@ -195,28 +189,43 @@ partition "Domain Model" {
         stop
     endif
 
+    if (priority < 1 or > 5?) then (yes)
+        :throw DomainException(INVALID_PRIORITY);
+        stop
+    endif
+
     if (endTime < startTime?) then (yes)
         :throw DomainException(INVALID_DATES);
         stop
     endif
 
-    if (priority < 1 or priority > 5?) then (yes)
-        :throw DomainException(INVALID_PRIORITY);
+    if (dueDate < today?) then (yes)
+        :throw DomainException(INVALID_DATES);
         stop
     endif
 
-    if (Task exists with same name\non same dueDate?) then (yes)
+    if (allDay = true AND (startTime or endTime not null)?) then (yes)
+        :throw DomainException(INVALID_ALLDAY);
+        stop
+    endif
+
+    if (reminderTime after dueDate or endTime?) then (yes)
+        :throw DomainException(INVALID_REMINDER);
+        stop
+    endif
+
+    if (Task exists same name + same date?) then (yes)
         :throw DomainException(DUPLICATED_TASK);
         stop
     endif
 
-    :Rules Approved;
+    :All rules approved;
 }
 
 -->
 
 partition "Entity + Producer" {
-    :Model → TasksEntity.create();
+    :TasksEntity.create();
     :Publish task.created event;
 }
 
@@ -225,10 +234,11 @@ partition "Entity + Producer" {
 partition "Messaging + Consumer" {
     :Kafka stores event;
     :TasksEventConsumer receives event;
-    :Convert to TasksEntity;
-    :Repository.save(entity);
+    :Convert → TasksModel;
+    :TasksRepositoryImpl.save(model);
 }
 
 stop
 
 @enduml
+######################################################################
