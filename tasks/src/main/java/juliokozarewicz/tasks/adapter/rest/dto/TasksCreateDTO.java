@@ -1,6 +1,6 @@
 package juliokozarewicz.tasks.adapter.rest.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import juliokozarewicz.tasks.adapter.rest.exception.GlobalExceptionEnum;
@@ -9,59 +9,64 @@ import java.time.LocalDateTime;
 
 public record TasksCreateDTO(
 
-    @NotNull
-    @Size(min = 1, max = 255)
+    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
     )
     String taskName,
 
-    @Size(max = 1000)
+    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @Size(max = 1000, message = GlobalExceptionEnum.MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
     )
     String description,
 
-    @Size(max = 255)
+    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
     )
     String category,
 
-    @Size(max = 20)
+    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @Size(max = 20, message = GlobalExceptionEnum.MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
     )
     String color,
 
-    @NotNull
+    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @Size(max = 1, message = GlobalExceptionEnum.MANY_CHARACTERS)
     Integer priority,
 
     LocalDateTime startTime,
 
     LocalDateTime endTime,
 
-    @Size(max = 255)
+    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
     )
     String location,
 
-    @NotNull
+    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
     Boolean allDay,
 
     LocalDateTime reminderTime,
 
-    @NotNull
+    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
     Boolean notifyActive,
 
-    @NotNull
-    @Size(min = 1, max = 255)
+    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
