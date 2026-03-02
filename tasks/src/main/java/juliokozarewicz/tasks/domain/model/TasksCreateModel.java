@@ -19,13 +19,13 @@ public class TasksCreateModel {
 
     ) {
 
-        this.messageValidated = validateMessage(messageValidated);
+        this.messageValidated = validateBusinessRules(messageValidated);
 
     }
 
     // ===================================================== ( constructor end )
 
-    private String validateMessage (String messageRaw) {
+    private String validateBusinessRules (String messageRaw) {
 
         String trimmedMessage = messageRaw == null ? "" : messageRaw.trim();
 

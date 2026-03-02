@@ -25,11 +25,8 @@ public class TasksCreateController {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${HELLOWORLD_BASE_URL}")
-    private String helloWorldBaseURL;
-
-    @Value("${DOCUMENTATION_BASE_URL}")
-    private String documentationBaseURL;
+    @Value("${TASKS_BASE_URL}")
+    private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
     private final TasksCreateUseCase tasksCreateUseCase;
@@ -46,8 +43,8 @@ public class TasksCreateController {
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${HELLOWORLD_BASE_URL}")
-    public ResponseEntity handle (
+    @GetMapping("/${TASKS_BASE_URL}")
+    public ResponseEntity create (
 
         // DTO error
         @Valid TasksCreateDTO tasksCreateDTO,
@@ -58,26 +55,19 @@ public class TasksCreateController {
         // Call use case
         String validatedMessage = tasksCreateUseCase.execute(tasksCreateDTO.message());
 
-        // Message
-        Map<String, Object> metaData = new LinkedHashMap<>();
-        metaData.put("message", validatedMessage);
-
         // Links
         Map<String, String> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", "/" + helloWorldBaseURL);
-        customLinks.put("documentation", "/" + documentationBaseURL);
-        customLinks.put("swaggerDocumentation", "/" + documentationBaseURL + "/swagger");
+        customLinks.put("self", "/" + tasksBaseURL);
 
         // Standard response
         return ResponseEntity
-        .status(200)
+        .status(201)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(200)
-            .messageCode("HELLO_WORLD_SUCCESS")
-            .data(metaData)
+            .statusCode(201)
+            .messageCode("TASKS_CREATE_SUCCESS")
             .links(customLinks)
             .build()
         );
