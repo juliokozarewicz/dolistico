@@ -72,7 +72,7 @@ public class TasksCreateController {
             tasksCreateDTO.dueDate()
         );
 
-        // Call usecase
+        // Call use case
         tasksCreateUseCase.execute(tasksCreateInput);
 
         // Links
