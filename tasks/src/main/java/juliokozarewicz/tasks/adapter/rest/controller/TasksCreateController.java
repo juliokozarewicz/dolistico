@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import juliokozarewicz.tasks.application.usecase.TasksCreateUseCase;
 import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
-import juliokozarewicz.tasks.application.command.TasksCreateCommand;
+import juliokozarewicz.tasks.application.input.TasksCreateInput;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +54,7 @@ public class TasksCreateController {
     ) {
 
         // Call use case
-        TasksCreateCommand command = new TasksCreateCommand(
+        TasksCreateInput command = new TasksCreateInput(
             tasksCreateDTO.taskName(),
             tasksCreateDTO.description(),
             tasksCreateDTO.category(),

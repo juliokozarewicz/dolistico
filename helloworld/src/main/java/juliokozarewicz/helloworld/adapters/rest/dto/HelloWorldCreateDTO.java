@@ -1,8 +1,8 @@
-package juliokozarewicz.helloworld.adapter.rest.dto;
+package juliokozarewicz.helloworld.adapters.rest.dto;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import juliokozarewicz.helloworld.adapter.rest.exception.GlobalExceptionEnum;
+import juliokozarewicz.helloworld.adapters.rest.exception.GlobalExceptionEnum;
 
 public record HelloWorldCreateDTO(
 

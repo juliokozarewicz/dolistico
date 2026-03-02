@@ -1,9 +1,9 @@
-package juliokozarewicz.helloworld.adapter.rest.controller;
+package juliokozarewicz.helloworld.adapters.rest.controller;
 
 import jakarta.validation.Valid;
 import juliokozarewicz.helloworld.application.usecase.HelloWorldCreateUseCase;
-import juliokozarewicz.helloworld.adapter.rest.dto.HelloWorldCreateDTO;
-import juliokozarewicz.helloworld.adapter.rest.dto.StandardResponseDTO;
+import juliokozarewicz.helloworld.adapters.rest.dto.HelloWorldCreateDTO;
+import juliokozarewicz.helloworld.adapters.rest.dto.StandardResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

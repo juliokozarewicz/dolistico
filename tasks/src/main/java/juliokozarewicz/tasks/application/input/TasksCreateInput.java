@@ -1,9 +1,9 @@
-package juliokozarewicz.tasks.application.command;
+package juliokozarewicz.tasks.application.input;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record TasksCreateCommand (
+public record TasksCreateInput (
 
     String taskName,
     String description,

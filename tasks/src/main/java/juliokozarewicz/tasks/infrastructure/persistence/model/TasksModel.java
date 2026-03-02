@@ -1,4 +1,4 @@
-package juliokozarewicz.tasks.infrastructure.persistence.entity;
+package juliokozarewicz.tasks.infrastructure.persistence.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class TasksEntity {
+public class TasksModel {
 
     @Id
     @Column(updatable = false, nullable = false)
@@ -68,7 +68,7 @@ public class TasksEntity {
     @Column(name = "due_date")
     private LocalDate dueDate;
 
-    public static TasksEntity create(
+    public static TasksModel create(
 
         UUID id,
         String taskName,
@@ -87,7 +87,7 @@ public class TasksEntity {
 
     ) {
 
-        TasksEntity entity = new TasksEntity();
+        TasksModel entity = new TasksModel();
         entity.id = id;
         entity.createdAt = LocalDateTime.now();
         entity.updatedAt = LocalDateTime.now();

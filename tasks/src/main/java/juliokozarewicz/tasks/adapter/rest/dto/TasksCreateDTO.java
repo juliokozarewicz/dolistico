@@ -39,22 +39,10 @@ public record TasksCreateDTO(
     String color,
 
     @NotNull
-    @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
-    )
     Integer priority,
 
-    @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
-    )
     LocalDateTime startTime,
 
-    @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
-    )
     LocalDateTime endTime,
 
     @Size(max = 255)
@@ -65,23 +53,11 @@ public record TasksCreateDTO(
     String location,
 
     @NotNull
-    @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
-    )
     Boolean allDay,
 
-    @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
-    )
     LocalDateTime reminderTime,
 
     @NotNull
-    @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
-    )
     Boolean notifyActive,
 
     @NotNull
@@ -92,10 +68,6 @@ public record TasksCreateDTO(
     )
     String status,
 
-    @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
-    )
     LocalDate dueDate
 
 ) {}

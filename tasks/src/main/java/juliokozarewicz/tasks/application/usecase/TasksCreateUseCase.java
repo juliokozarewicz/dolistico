@@ -1,15 +1,19 @@
 package juliokozarewicz.tasks.application.usecase;
 
-import juliokozarewicz.tasks.application.command.TasksCreateCommand;
-import juliokozarewicz.tasks.domain.model.TasksCreateModel;
+import juliokozarewicz.tasks.application.input.TasksCreateInput;
+import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TasksCreateUseCase {
 
-    public String execute(TasksCreateCommand tasksCreateCommand) {
+    public String execute(
 
-        TasksCreateModel approvedRules = new TasksCreateModel(tasksCreateCommand.taskName());
+        TasksCreateInput tasksCreateInput
+
+    ) {
+
+        TasksEntity approvedRules = new TasksEntity(tasksCreateInput.taskName());
         return approvedRules.getMessage();
 
     }

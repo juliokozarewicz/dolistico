@@ -1,9 +1,9 @@
-package juliokozarewicz.tasks.domain.model;
+package juliokozarewicz.helloworld.domain.entity;
 
-import juliokozarewicz.tasks.domain.exception.DomainException;
-import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.helloworld.domain.exception.DomainException;
+import juliokozarewicz.helloworld.domain.exception.DomainExceptionEnum;
 
-public class TasksCreateModel {
+public class HelloWorldEntity {
 
     // ==================================================== ( constructor init )
 
@@ -11,21 +11,21 @@ public class TasksCreateModel {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final String createTaskValidated;
+    private final String messageValidated;
 
-    public TasksCreateModel(
+    public HelloWorldEntity(
 
-        String createTaskValidated
+        String messageValidated
 
     ) {
 
-        this.createTaskValidated = validateBusinessRules(createTaskValidated);
+        this.messageValidated = validateMessage(messageValidated);
 
     }
 
     // ===================================================== ( constructor end )
 
-    private String validateBusinessRules (String messageRaw) {
+    private String validateMessage (String messageRaw) {
 
         String trimmedMessage = messageRaw == null ? "" : messageRaw.trim();
 
@@ -40,7 +40,7 @@ public class TasksCreateModel {
     }
 
     public String getMessage() {
-        return createTaskValidated;
+        return messageValidated;
     }
 
 }

@@ -1,7 +1,7 @@
-package juliokozarewicz.helloworld.adapter.rest.exception;
+package juliokozarewicz.helloworld.adapters.rest.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import juliokozarewicz.helloworld.adapter.rest.dto.StandardResponseDTO;
+import juliokozarewicz.helloworld.adapters.rest.dto.StandardResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
