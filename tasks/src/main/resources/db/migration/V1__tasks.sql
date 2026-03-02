@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS tasks.tasks (
     location VARCHAR(255),
     is_all_day BOOLEAN NOT NULL DEFAULT FALSE,
     reminder_time TIMESTAMPTZ,
-    notify BOOLEAN NOT NULL DEFAULT FALSE,
+    notify_active BOOLEAN NOT NULL DEFAULT FALSE,
     status VARCHAR(255) NOT NULL,
     due_date DATE
 );

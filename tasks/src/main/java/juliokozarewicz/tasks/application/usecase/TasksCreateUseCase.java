@@ -1,15 +1,16 @@
 package juliokozarewicz.tasks.application.usecase;
 
+import juliokozarewicz.tasks.application.usecase.command.TasksCreateCommand;
 import juliokozarewicz.tasks.domain.model.TasksCreateModel;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TasksCreateUseCase {
 
-    public String execute(String message) {
+    public String execute(TasksCreateCommand tasksCreateCommand) {
 
-        TasksCreateModel finalMessage = new TasksCreateModel(message);
-        return finalMessage.getMessage();
+        TasksCreateModel approvedRules = new TasksCreateModel(tasksCreateCommand.taskName());
+        return approvedRules.getMessage();
 
     }
 

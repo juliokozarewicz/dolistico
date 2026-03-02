@@ -11,15 +11,15 @@ public class TasksCreateModel {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final String messageValidated;
+    private final String createTaskValidated;
 
     public TasksCreateModel(
 
-        String messageValidated
+        String createTaskValidated
 
     ) {
 
-        this.messageValidated = validateBusinessRules(messageValidated);
+        this.createTaskValidated = validateBusinessRules(createTaskValidated);
 
     }
 
@@ -40,7 +40,7 @@ public class TasksCreateModel {
     }
 
     public String getMessage() {
-        return messageValidated;
+        return createTaskValidated;
     }
 
 }

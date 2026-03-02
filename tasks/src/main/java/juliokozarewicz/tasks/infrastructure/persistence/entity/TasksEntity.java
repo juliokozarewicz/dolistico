@@ -59,8 +59,8 @@ public class TasksEntity {
     @Column(name = "reminder_time")
     private LocalDateTime reminderTime;
 
-    @Column(name = "notify", nullable = false)
-    private boolean notify;
+    @Column(name = "notify_active", nullable = false)
+    private boolean notifyActive;
 
     @Column(name = "status", nullable = false, length = 255)
     private String status;
@@ -81,7 +81,7 @@ public class TasksEntity {
         String location,
         boolean allDay,
         LocalDateTime reminderTime,
-        boolean notify,
+        boolean notifyActive,
         String status,
         LocalDate dueDate
 
@@ -101,7 +101,7 @@ public class TasksEntity {
         entity.location = location;
         entity.allDay = allDay;
         entity.reminderTime = reminderTime;
-        entity.notify = notify;
+        entity.notifyActive = notifyActive;
         entity.status = status;
         entity.dueDate = dueDate;
 
@@ -121,7 +121,7 @@ public class TasksEntity {
         String location,
         boolean allDay,
         LocalDateTime reminderTime,
-        boolean notify,
+        boolean notifyActive,
         String status,
         LocalDate dueDate
 
@@ -137,7 +137,7 @@ public class TasksEntity {
         this.location = location;
         this.allDay = allDay;
         this.reminderTime = reminderTime;
-        this.notify = notify;
+        this.notifyActive = notifyActive;
         this.status = status;
         this.dueDate = dueDate;
         this.updatedAt = LocalDateTime.now();
