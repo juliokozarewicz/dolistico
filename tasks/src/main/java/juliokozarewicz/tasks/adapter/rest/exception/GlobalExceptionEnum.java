@@ -20,6 +20,7 @@ public enum GlobalExceptionEnum {
     // DTO error code
     public static final String FIELD_CANNOT_REMAIN_EMPTY = "FIELD_CANNOT_REMAIN_EMPTY";
     public static final String MANY_CHARACTERS = "MANY_CHARACTERS";
+    public static final String FEW_CHARACTERS = "FEW_CHARACTERS";
     public static final String FORBIDDEN_CHARACTERS = "FORBIDDEN_CHARACTERS";
 
     public final int statusCode;

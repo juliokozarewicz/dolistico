@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public record TasksCreateDTO(
 
     @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @Size(min = 3, message = GlobalExceptionEnum.FEW_CHARACTERS)
     @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
