@@ -1,6 +1,6 @@
 package juliokozarewicz.tasks.application.usecase;
 
-import juliokozarewicz.tasks.application.usecase.command.TasksCreateCommand;
+import juliokozarewicz.tasks.application.command.TasksCreateCommand;
 import juliokozarewicz.tasks.domain.model.TasksCreateModel;
 import org.springframework.stereotype.Service;
 

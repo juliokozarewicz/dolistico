@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import juliokozarewicz.tasks.application.usecase.TasksCreateUseCase;
 import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
-import juliokozarewicz.tasks.application.usecase.command.TasksCreateCommand;
+import juliokozarewicz.tasks.application.command.TasksCreateCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

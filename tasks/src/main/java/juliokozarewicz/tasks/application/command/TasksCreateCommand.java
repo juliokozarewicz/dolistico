@@ -1,4 +1,4 @@
-package juliokozarewicz.tasks.application.usecase.command;
+package juliokozarewicz.tasks.application.command;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
