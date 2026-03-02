@@ -11,7 +11,7 @@ COPY 2_configs /etc/nginx/2_configs
 COPY 3_locations /etc/nginx/3_locations
 
 # Statics
-COPY 4_statics /static/public
+COPY 4_statics_files /static/public
 
 # Logs and cache
 RUN mkdir -p /var/log/nginx /tmp/nginx_cache

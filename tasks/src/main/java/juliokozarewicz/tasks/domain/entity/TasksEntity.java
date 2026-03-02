@@ -11,36 +11,34 @@ public class TasksEntity {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final String createTaskValidated;
-
     public TasksEntity(
 
-        String createTaskValidated
+        Integer priority
 
     ) {
 
-        this.createTaskValidated = validateBusinessRules(createTaskValidated);
+        validateBusinessRules(
+            priority
+        );
 
     }
 
     // ===================================================== ( constructor end )
 
-    private String validateBusinessRules (String messageRaw) {
+    private void validateBusinessRules (
 
-        String trimmedMessage = messageRaw == null ? "" : messageRaw.trim();
+        Integer priority
 
-        String finalMessage = !trimmedMessage.isEmpty() ? trimmedMessage : "Hello World!";
+    ) {
 
-        if (finalMessage.equalsIgnoreCase("bad-message")) {
-            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+        if (priority == null) {
+            throw new DomainException(DomainExceptionEnum.INVALID_PRIORITY);
         }
 
-        return finalMessage;
+        if (priority < 0 || priority > 5) {
+            throw new DomainException(DomainExceptionEnum.INVALID_PRIORITY);
+        }
 
-    }
-
-    public String getMessage() {
-        return createTaskValidated;
     }
 
 }

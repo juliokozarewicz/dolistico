@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -44,17 +46,17 @@ public class TasksCreateController {
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${TASKS_BASE_URL}")
+    @PostMapping("/${TASKS_BASE_URL}")
     public ResponseEntity create (
 
         // DTO error
-        @Valid TasksCreateDTO tasksCreateDTO,
+        @Valid @RequestBody TasksCreateDTO tasksCreateDTO,
         BindingResult bindingResult
 
     ) {
 
-        // Call use case
-        TasksCreateInput command = new TasksCreateInput(
+        // DTO -> Input
+        TasksCreateInput tasksCreateInput = new TasksCreateInput(
             tasksCreateDTO.taskName(),
             tasksCreateDTO.description(),
             tasksCreateDTO.category(),
@@ -70,6 +72,9 @@ public class TasksCreateController {
             tasksCreateDTO.dueDate()
         );
 
+        // Call usecase
+        tasksCreateUseCase.execute(tasksCreateInput);
+
         // Links
         Map<String, String> customLinks = new LinkedHashMap<>();
         customLinks.put("self", "/" + tasksBaseURL);
@@ -82,7 +87,7 @@ public class TasksCreateController {
             new StandardResponseDTO.Builder()
             .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(201)
-            .messageCode("TASKS_CREATE_SUCCESS")
+            .messageCode("CREATE_TASK_SUCCESS")
             .links(customLinks)
             .build()
         );

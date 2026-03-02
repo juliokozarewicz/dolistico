@@ -1,8 +1,6 @@
 package juliokozarewicz.tasks.adapter.rest.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import juliokozarewicz.tasks.adapter.rest.exception.GlobalExceptionEnum;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,8 +40,8 @@ public record TasksCreateDTO(
     )
     String color,
 
-    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
-    @Size(max = 1, message = GlobalExceptionEnum.MANY_CHARACTERS)
+    @Min(value = 1, message = GlobalExceptionEnum.FEW_CHARACTERS)
+    @Max(value = 10, message = GlobalExceptionEnum.MANY_CHARACTERS)
     Integer priority,
 
     LocalDateTime startTime,
@@ -58,12 +56,12 @@ public record TasksCreateDTO(
     )
     String location,
 
-    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @NotNull(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
     Boolean allDay,
 
     LocalDateTime reminderTime,
 
-    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
+    @NotNull(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
     Boolean notifyActive,
 
     @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)

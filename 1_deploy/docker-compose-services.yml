@@ -173,8 +173,8 @@ services:
     build: ../tasks
     env_file:
       - .env
-    expose:
-      - "${TASKS_PORT}"
+    ports:
+      - "${TASKS_PORT}:${TASKS_PORT}"
     networks:
       - spring_net
     depends_on:

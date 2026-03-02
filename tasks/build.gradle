@@ -43,6 +43,7 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation "org.flywaydb:flyway-database-postgresql:10.15.0"
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'com.h2database:h2'
 
 }
 

@@ -7,14 +7,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class TasksCreateUseCase {
 
-    public String execute(
+    public void execute(
 
         TasksCreateInput tasksCreateInput
 
     ) {
 
-        TasksEntity approvedRules = new TasksEntity(tasksCreateInput.taskName());
-        return approvedRules.getMessage();
+        new TasksEntity(
+            tasksCreateInput.priority()
+        );
 
     }
 
