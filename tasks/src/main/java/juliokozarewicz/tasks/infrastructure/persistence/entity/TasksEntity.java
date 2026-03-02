@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tasks", schema = "juliokozarewicz")
+@Table(name = "tasks")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
