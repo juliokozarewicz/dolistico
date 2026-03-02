@@ -1,9 +1,9 @@
-package juliokozarewicz.helloworld.adapter.rest.controller;
+package juliokozarewicz.tasks.adapter.rest.controller;
 
 import jakarta.validation.Valid;
-import juliokozarewicz.helloworld.application.usecase.CreateHelloWorldUseCase;
-import juliokozarewicz.helloworld.adapter.rest.dto.HelloWorldDTO;
-import juliokozarewicz.helloworld.adapter.rest.dto.StandardResponseDTO;
+import juliokozarewicz.tasks.application.usecase.TasksCreateUseCase;
+import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateDTO;
+import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-public class HelloWorldController {
+public class TasksCreateController {
 
     // ==================================================== ( constructor init )
 
@@ -32,15 +32,15 @@ public class HelloWorldController {
     private String documentationBaseURL;
     // -------------------------------------------------------------------------
 
-    private final CreateHelloWorldUseCase createHelloWorldUseCase;
+    private final TasksCreateUseCase tasksCreateUseCase;
 
-    public HelloWorldController(
+    public TasksCreateController(
 
-        CreateHelloWorldUseCase createHelloWorldUseCase
+        TasksCreateUseCase tasksCreateUseCase
 
     ) {
 
-        this.createHelloWorldUseCase = createHelloWorldUseCase;
+        this.tasksCreateUseCase = tasksCreateUseCase;
 
     }
 
@@ -50,13 +50,13 @@ public class HelloWorldController {
     public ResponseEntity handle (
 
         // DTO error
-        @Valid HelloWorldDTO helloWorldDTO,
+        @Valid TasksCreateDTO tasksCreateDTO,
         BindingResult bindingResult
 
     ) {
 
         // Call use case
-        String validatedMessage = createHelloWorldUseCase.execute(helloWorldDTO.message());
+        String validatedMessage = tasksCreateUseCase.execute(tasksCreateDTO.message());
 
         // Message
         Map<String, Object> metaData = new LinkedHashMap<>();

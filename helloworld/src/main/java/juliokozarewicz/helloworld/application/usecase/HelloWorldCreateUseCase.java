@@ -1,14 +1,14 @@
 package juliokozarewicz.helloworld.application.usecase;
 
-import juliokozarewicz.helloworld.domain.entity.HelloWorld;
+import juliokozarewicz.helloworld.domain.model.HelloWorldCreateModel;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateHelloWorldUseCase {
+public class HelloWorldCreateUseCase {
 
     public String execute(String message) {
 
-        HelloWorld finalMessage = new HelloWorld(message);
+        HelloWorldCreateModel finalMessage = new HelloWorldCreateModel(message);
         return finalMessage.getMessage();
 
     }

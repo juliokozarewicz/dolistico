@@ -1,0 +1,234 @@
+@startuml
+skinparam pageSize A4
+
+title Sequence Diagram - POST /api/v1/tasks
+
+actor User
+
+User -> NGINX : POST /api/v1/tasks\nAuthorization: Bearer <jwt>
+NGINX -> TasksCreateController : forward request
+
+TasksCreateController -> TasksCreateUseCase : execute(dto)
+
+TasksCreateUseCase -> TasksCreateModel : new model from DTO
+TasksCreateUseCase -> TasksCreateModel : validateBusinessRules()
+
+alt Invalid business rule
+    TasksCreateModel --> TasksCreateUseCase : throw DomainException
+    TasksCreateUseCase --> TasksCreateController : 400 Bad Request
+    TasksCreateController --> User : error response
+    return
+end
+
+TasksCreateUseCase -> TasksEntity : convert Model → Entity
+
+TasksCreateUseCase -> TasksEventProducer : publish(task.created)
+TasksEventProducer -> Kafka : send message
+
+Kafka -> TasksEventConsumer : deliver event
+
+TasksEventConsumer -> TasksEntity : toEntity(event)
+TasksEventConsumer -> TasksRepositoryImpl : save(entity)
+TasksRepositoryImpl -> Database : INSERT task
+
+TasksCreateUseCase --> TasksCreateController : StandardResponseDTO
+TasksCreateController --> User : 201 Created
+
+@enduml
+
+
+
+
+
+@startuml
+skinparam pageSize A4
+title Class Diagram - POST /api/v1/tasks
+
+package "adapter.rest.controller" {
+    class TasksCreateController {
+        +create(dto: TasksCreateDTO)
+    }
+}
+
+package "adapter.rest.dto" {
+    class TasksCreateDTO {
+        +taskName: String
+        +description: String
+        +category: String
+        +color: String
+        +priority: int
+        +startTime: LocalDateTime
+        +endTime: LocalDateTime
+        +location: String
+        +allDay: boolean
+        +reminderTime: LocalDateTime
+        +notify: boolean
+        +status: String
+        +dueDate: LocalDate
+    }
+}
+
+package "application.usecase" {
+    class TasksCreateUseCase {
+        -repository: TasksCreateRepository
+        -producer: TasksEventProducer
+        +execute(dto: TasksCreateDTO)
+    }
+}
+
+package "domain.model" {
+    class TasksCreateModel {
+        +validateBusinessRules()
+    }
+}
+
+package "domain.exceptions" {
+    class DomainException
+    enum DomainExceptionEnum {
+        INVALID_NAME
+        DUPLICATED_TASK
+        INVALID_DATES
+        INVALID_PRIORITY
+        REQUIRED_FIELD
+    }
+}
+
+package "domain.repository" {
+    interface TasksCreateRepository {
+        +existsByNameAndDate(name: String, date: LocalDate)
+        +save(entity: TasksEntity)
+    }
+}
+
+package "infrastructure.persistence.entity" {
+    class TasksEntity {
+        +id: UUID
+        +taskName: String
+        +description: String
+        +category: String
+        +color: String
+        +priority: int
+        +startTime: LocalDateTime
+        +endTime: LocalDateTime
+        +location: String
+        +allDay: boolean
+        +reminderTime: LocalDateTime
+        +notify: boolean
+        +status: String
+        +dueDate: LocalDate
+        +createdAt: LocalDateTime
+        +updatedAt: LocalDateTime
+        +static create(...)
+        +update(...)
+    }
+}
+
+package "infrastructure.persistence.repositoryimpl" {
+    class TasksRepositoryImpl {
+        +save(entity: TasksEntity)
+        +existsByNameAndDate(name: String, date: LocalDate)
+    }
+}
+
+package "infrastructure.messaging.producer" {
+    class TasksEventProducer {
+        +publish(event: TaskCreatedEvent)
+    }
+}
+
+package "infrastructure.messaging.consumer" {
+    class TasksEventConsumer {
+        +listen(event: TaskCreatedEvent)
+    }
+}
+
+TasksCreateController --> TasksCreateDTO
+TasksCreateController --> TasksCreateUseCase
+TasksCreateUseCase --> TasksCreateModel
+TasksCreateModel --> DomainException
+TasksCreateUseCase --> TasksEntity
+TasksCreateUseCase --> TasksCreateRepository
+TasksCreateRepository <|.. TasksRepositoryImpl
+TasksCreateUseCase --> TasksEventProducer
+TasksEventProducer --> TasksEventConsumer
+TasksEventConsumer --> TasksRepositoryImpl
+
+@enduml
+
+
+
+
+@startuml
+skinparam pageSize A4
+skinparam activity {
+    BackgroundColor #eef
+    BorderColor #333
+}
+title Activity Diagram - Create Task (Business Rules)
+
+start
+
+partition "Controller" {
+    :Receive TasksCreateDTO;
+}
+
+-->
+
+partition "UseCase" {
+    :execute(dto);
+    :Map DTO → TasksCreateModel;
+}
+
+-->
+
+partition "Domain Model" {
+
+    :validateBusinessRules();
+
+    if (Missing required fields?) then (yes)
+        :throw DomainException(REQUIRED_FIELD);
+        stop
+    endif
+
+    if (taskName length < 3?) then (yes)
+        :throw DomainException(INVALID_NAME);
+        stop
+    endif
+
+    if (endTime < startTime?) then (yes)
+        :throw DomainException(INVALID_DATES);
+        stop
+    endif
+
+    if (priority < 1 or priority > 5?) then (yes)
+        :throw DomainException(INVALID_PRIORITY);
+        stop
+    endif
+
+    if (Task exists with same name\non same dueDate?) then (yes)
+        :throw DomainException(DUPLICATED_TASK);
+        stop
+    endif
+
+    :Rules Approved;
+}
+
+-->
+
+partition "Entity + Producer" {
+    :Model → TasksEntity.create();
+    :Publish task.created event;
+}
+
+-->
+
+partition "Messaging + Consumer" {
+    :Kafka stores event;
+    :TasksEventConsumer receives event;
+    :Convert to TasksEntity;
+    :Repository.save(entity);
+}
+
+stop
+
+@enduml

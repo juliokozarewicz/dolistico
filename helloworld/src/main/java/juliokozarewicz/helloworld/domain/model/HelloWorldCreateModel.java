@@ -1,9 +1,9 @@
-package juliokozarewicz.helloworld.domain.entity;
+package juliokozarewicz.helloworld.domain.model;
 
 import juliokozarewicz.helloworld.domain.exception.DomainException;
 import juliokozarewicz.helloworld.domain.exception.DomainExceptionEnum;
 
-public class HelloWorld {
+public class HelloWorldCreateModel {
 
     // ==================================================== ( constructor init )
 
@@ -13,7 +13,7 @@ public class HelloWorld {
 
     private final String messageValidated;
 
-    public HelloWorld (
+    public HelloWorldCreateModel(
 
         String messageValidated
 

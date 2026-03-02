@@ -1,10 +1,10 @@
-package juliokozarewicz.helloworld.adapter.rest.dto;
+package juliokozarewicz.tasks.adapter.rest.dto;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import juliokozarewicz.helloworld.adapter.rest.exception.GlobalExceptionEnum;
+import juliokozarewicz.tasks.adapter.rest.exception.GlobalExceptionEnum;
 
-public record HelloWorldDTO (
+public record TasksCreateDTO(
 
     @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
     @Size(max = 256, message = GlobalExceptionEnum.MANY_CHARACTERS)
