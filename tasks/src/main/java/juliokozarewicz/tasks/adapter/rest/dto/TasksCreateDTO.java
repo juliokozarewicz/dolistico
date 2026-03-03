@@ -72,6 +72,6 @@ public record TasksCreateDTO(
     )
     String status,
 
-    LocalDate dueDate
+    LocalDateTime dueDate
 
 ) {}

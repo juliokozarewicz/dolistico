@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS tasks.tasks (
     reminder_time TIMESTAMPTZ,
     notify_active BOOLEAN NOT NULL DEFAULT FALSE,
     status VARCHAR(255) NOT NULL,
-    due_date DATE
+    due_date TIMESTAMPTZ
 );
 
 -- CATEGORY

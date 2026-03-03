@@ -17,6 +17,6 @@ public record TasksCreateInput (
     LocalDateTime reminderTime,
     Boolean notifyActive,
     String status,
-    LocalDate dueDate
+    LocalDateTime dueDate
 
 ) {}

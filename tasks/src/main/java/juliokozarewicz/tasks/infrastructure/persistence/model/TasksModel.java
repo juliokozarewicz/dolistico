@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -66,7 +65,7 @@ public class TasksModel {
     private String status;
 
     @Column(name = "due_date")
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
 
     public static TasksModel create(
 
@@ -83,7 +82,7 @@ public class TasksModel {
         LocalDateTime reminderTime,
         boolean notifyActive,
         String status,
-        LocalDate dueDate
+        LocalDateTime dueDate
 
     ) {
 
@@ -123,7 +122,7 @@ public class TasksModel {
         LocalDateTime reminderTime,
         boolean notifyActive,
         String status,
-        LocalDate dueDate
+        LocalDateTime dueDate
 
     ) {
 

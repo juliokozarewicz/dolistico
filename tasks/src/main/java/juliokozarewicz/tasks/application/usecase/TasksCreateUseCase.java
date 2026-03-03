@@ -16,7 +16,10 @@ public class TasksCreateUseCase {
         new TasksEntity(
             tasksCreateInput.priority(),
             tasksCreateInput.startTime(),
-            tasksCreateInput.endTime()
+            tasksCreateInput.endTime(),
+            tasksCreateInput.allDay(),
+            tasksCreateInput.reminderTime(),
+            tasksCreateInput.dueDate()
         );
 
     }

@@ -17,7 +17,10 @@ public class TasksEntity {
 
         Integer priority,
         LocalDateTime startTime,
-        LocalDateTime endTime
+        LocalDateTime endTime,
+        Boolean allDay,
+        LocalDateTime reminderTime,
+        LocalDateTime dueDate
 
 
     ) {
@@ -25,7 +28,10 @@ public class TasksEntity {
         validateBusinessRules(
             priority,
             startTime,
-            endTime
+            endTime,
+            allDay,
+            reminderTime,
+            dueDate
         );
 
     }
@@ -36,21 +42,43 @@ public class TasksEntity {
 
         Integer priority,
         LocalDateTime startTime,
-        LocalDateTime endTime
+        LocalDateTime endTime,
+        Boolean allDay,
+        LocalDateTime reminderTime,
+        LocalDateTime dueDate
 
     ) {
 
-        if (priority == null || priority < 0 || priority > 5) {
+        //--------------------------------------------- (  priority rules INIT )
+
+        if ( priority == null || priority < 0 || priority > 5 ) {
             throw new DomainException(DomainExceptionEnum.INVALID_PRIORITY);
         }
 
-        if (startTime == null || endTime == null) {
-            throw new DomainException(DomainExceptionEnum.INVALID_DATE);
-        }
+        //---------------------------------------------- (  priority rules END )
 
-        if (startTime.isAfter(endTime)) {
+        //------------------------------------------------------ (  dates INIT )
+
+        if (
+            ( startTime == null && endTime != null ) ||
+            ( startTime != null && endTime == null )
+        ) {
             throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
         }
+
+        if ( startTime != null && startTime.isAfter(endTime) ) {
+            throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+        }
+
+        if ( (allDay == true) && ( startTime != null || endTime != null ) ) {
+            throw new DomainException(DomainExceptionEnum.INVALID_ALLDAY);
+        }
+
+        if ( reminderTime.isAfter(dueDate) ) {
+            throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
+        }
+
+        //------------------------------------------------------- (  dates END )
 
     }
 
