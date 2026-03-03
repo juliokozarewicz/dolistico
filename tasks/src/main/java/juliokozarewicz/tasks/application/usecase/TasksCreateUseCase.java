@@ -33,7 +33,7 @@ public class TasksCreateUseCase {
     // ===================================================== ( constructor end )
 
     @Transactional
-    public TasksEntity execute( TasksCreateInput tasksCreateInput ) {
+    public void execute( TasksCreateInput tasksCreateInput ) {
 
         TasksEntity createNewTask = new TasksEntity(
             UUID.randomUUID(),
@@ -54,7 +54,7 @@ public class TasksCreateUseCase {
             tasksCreateInput.dueDate()
         );
 
-        return tasksRepository.save(createNewTask);
+        tasksRepository.save(createNewTask);
 
     }
 

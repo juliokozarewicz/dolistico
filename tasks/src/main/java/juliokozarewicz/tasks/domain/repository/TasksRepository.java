@@ -7,6 +7,6 @@ import java.time.LocalDate;
 public interface TasksRepository {
 
     boolean existsByTaskNameAndDueDate(String taskName, LocalDate dueDate);
-    TasksEntity save(TasksEntity task);
+    void save(TasksEntity task);
 
 }

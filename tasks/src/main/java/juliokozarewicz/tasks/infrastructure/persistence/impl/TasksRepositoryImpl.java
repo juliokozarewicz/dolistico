@@ -24,7 +24,7 @@ public class TasksRepositoryImpl implements TasksRepository {
     }
 
     @Override
-    public TasksEntity save(TasksEntity tasksEntity) {
+    public void save(TasksEntity tasksEntity) {
 
         // Mapper
         TasksModel createNewTask = new TasksModel();
@@ -47,8 +47,6 @@ public class TasksRepositoryImpl implements TasksRepository {
 
         // Commit
         TasksModel saved = tasksRepositoryJPA.save(createNewTask);
-
-        return tasksEntity;
 
     }
 
