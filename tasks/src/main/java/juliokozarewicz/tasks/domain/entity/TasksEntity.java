@@ -62,7 +62,7 @@ public class TasksEntity {
 
         //------------------------------------------------------- (  date INIT )
 
-        // StartTime and EndTime
+        // StartTime and EndTime validate
         if (
             ( startTime != null && endTime == null ) ||
             ( startTime == null && endTime != null )
