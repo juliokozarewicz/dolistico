@@ -41,7 +41,7 @@ public record TasksCreateDTO(
     String color,
 
     @Min(value = 1, message = GlobalExceptionEnum.FEW_CHARACTERS)
-    @Max(value = 10, message = GlobalExceptionEnum.MANY_CHARACTERS)
+    @Max(value = 5, message = GlobalExceptionEnum.MANY_CHARACTERS)
     Integer priority,
 
     LocalDateTime startTime,
