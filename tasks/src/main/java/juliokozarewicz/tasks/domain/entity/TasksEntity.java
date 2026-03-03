@@ -23,7 +23,6 @@ public class TasksEntity {
         LocalDateTime dueDate,
         String taskName
 
-
     ) {
 
         validateBusinessRules(
