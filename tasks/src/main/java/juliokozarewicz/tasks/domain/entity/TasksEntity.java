@@ -62,22 +62,27 @@ public class TasksEntity {
 
         //------------------------------------------------------ (  dates INIT )
 
-        if (
-            ( startTime == null && endTime != null ) ||
-            ( startTime != null && endTime == null )
-        ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+        if (startTime != null && endTime != null) {
+
+            if (!startTime.toLocalDate().equals(endTime.toLocalDate())) {
+                throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+            }
+
+            if (dueDate != null && !startTime.toLocalDate().equals(dueDate.toLocalDate())) {
+                throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+            }
+
+            if (startTime.isAfter(endTime)) {
+                throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+            }
+
         }
 
-        if ( startTime != null && startTime.isAfter(endTime) ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
-        }
-
-        if ( (allDay == true) && ( startTime != null || endTime != null ) ) {
+        if (Boolean.TRUE.equals(allDay) && (startTime != null || endTime != null)) {
             throw new DomainException(DomainExceptionEnum.INVALID_ALLDAY);
         }
 
-        if ( reminderTime.isAfter(dueDate) ) {
+        if (reminderTime != null && dueDate != null && reminderTime.isAfter(dueDate)) {
             throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
         }
 
