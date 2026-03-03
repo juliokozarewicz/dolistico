@@ -1,14 +1,15 @@
 package juliokozarewicz.tasks.infrastructure.persistence.repositoryimpl;
 
-import juliokozarewicz.tasks.domain.repository.TasksRepository;
+import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.time.LocalDate;
+import java.util.UUID;
 
-public class TasksRepositoryImpl implements TasksRepository {
+@Repository
+public interface TasksRepositoryImpl extends JpaRepository<TasksModel, UUID> {
 
-    @Override
-    public void existsByNameAndDate(String name, LocalDate date) {}
-
-    @Override
-    public void save () {}
+    boolean existsByTaskNameAndDueDate(String taskName, LocalDate dueDate);
 
 }

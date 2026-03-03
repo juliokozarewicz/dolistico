@@ -4,17 +4,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "tasks")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor()
 @ToString
 public class TasksModel {
 
@@ -23,7 +22,7 @@ public class TasksModel {
     private UUID id;
 
     @Column(name = "created_at", updatable = false, nullable = false)
-    private LocalDateTime timestamp;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
@@ -66,81 +65,5 @@ public class TasksModel {
 
     @Column(name = "due_date")
     private LocalDateTime dueDate;
-
-    public static TasksModel create(
-
-        UUID id,
-        String taskName,
-        String description,
-        String category,
-        String color,
-        int priority,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
-        String location,
-        boolean allDay,
-        LocalDateTime reminderTime,
-        boolean notifyActive,
-        String status,
-        LocalDateTime dueDate
-
-    ) {
-
-        TasksModel entity = new TasksModel();
-        entity.id = id;
-        entity.timestamp = LocalDateTime.now();
-        entity.updatedAt = LocalDateTime.now();
-        entity.taskName = taskName;
-        entity.description = description;
-        entity.category = category;
-        entity.color = color;
-        entity.priority = priority;
-        entity.startTime = startTime;
-        entity.endTime = endTime;
-        entity.location = location;
-        entity.allDay = allDay;
-        entity.reminderTime = reminderTime;
-        entity.notifyActive = notifyActive;
-        entity.status = status;
-        entity.dueDate = dueDate;
-
-        return entity;
-
-    }
-
-    public void update(
-
-        String taskName,
-        String description,
-        String category,
-        String color,
-        int priority,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
-        String location,
-        boolean allDay,
-        LocalDateTime reminderTime,
-        boolean notifyActive,
-        String status,
-        LocalDateTime dueDate
-
-    ) {
-
-        this.taskName = taskName;
-        this.description = description;
-        this.category = category;
-        this.color = color;
-        this.priority = priority;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.location = location;
-        this.allDay = allDay;
-        this.reminderTime = reminderTime;
-        this.notifyActive = notifyActive;
-        this.status = status;
-        this.dueDate = dueDate;
-        this.updatedAt = LocalDateTime.now();
-
-    }
 
 }

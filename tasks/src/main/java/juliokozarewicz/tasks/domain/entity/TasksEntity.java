@@ -4,6 +4,7 @@ import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class TasksEntity {
 
@@ -14,14 +15,12 @@ public class TasksEntity {
     // -------------------------------------------------------------------------
 
     public TasksEntity(
-
         Integer priority,
         LocalDateTime startTime,
         LocalDateTime endTime,
         Boolean allDay,
         LocalDateTime reminderTime,
-        LocalDateTime dueDate,
-        String taskName
+        LocalDateTime dueDate
 
     ) {
 
@@ -31,8 +30,7 @@ public class TasksEntity {
             endTime,
             allDay,
             reminderTime,
-            dueDate,
-            taskName
+            dueDate
         );
 
     }
@@ -46,8 +44,7 @@ public class TasksEntity {
         LocalDateTime endTime,
         Boolean allDay,
         LocalDateTime reminderTime,
-        LocalDateTime dueDate,
-        String taskName
+        LocalDateTime dueDate
 
     ) {
 

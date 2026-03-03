@@ -1,17 +1,16 @@
 package juliokozarewicz.tasks.adapter.rest.controller;
 
 import jakarta.validation.Valid;
-import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
-import juliokozarewicz.tasks.application.usecase.TasksCreateUseCase;
-import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
+import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateDTO;
+import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.tasks.application.input.TasksCreateInput;
+import juliokozarewicz.tasks.application.usecase.TasksCreateUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
