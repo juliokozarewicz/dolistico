@@ -93,10 +93,12 @@ public class TasksEntity {
 
         }
 
+        // All day validate
         if (Boolean.TRUE.equals(allDay) && (startTime != null || endTime != null)) {
             throw new DomainException(DomainExceptionEnum.INVALID_ALLDAY);
         }
 
+        // Reminder time validate
         if (reminderTime != null && dueDate != null && reminderTime.isAfter(dueDate)) {
             throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
         }
