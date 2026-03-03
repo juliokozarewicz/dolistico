@@ -2,9 +2,9 @@ package juliokozarewicz.tasks.application.usecase;
 
 import juliokozarewicz.tasks.application.input.TasksCreateInput;
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
-import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
-import juliokozarewicz.tasks.infrastructure.persistence.repositoryimpl.TasksRepositoryImpl;
+import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,52 +18,43 @@ public class TasksCreateUseCase {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final TasksRepositoryImpl tasksRepository;
+    private final TasksRepository tasksRepository;
 
-    public TasksCreateUseCase (
-        TasksRepositoryImpl tasksRepository
+    public TasksCreateUseCase(
+
+        TasksRepository tasksRepository
+
     ) {
+
         this.tasksRepository = tasksRepository;
+
     }
 
     // ===================================================== ( constructor end )
 
-    public void execute(
+    @Transactional
+    public TasksEntity execute( TasksCreateInput tasksCreateInput ) {
 
-        TasksCreateInput tasksCreateInput
-
-    ) {
-
-        // Business rules
-        TasksEntity taskCreate = new TasksEntity(
+        TasksEntity createNewTask = new TasksEntity(
+            UUID.randomUUID(),
+            LocalDateTime.now(),
+            LocalDateTime.now(),
+            tasksCreateInput.taskName(),
+            tasksCreateInput.description(),
+            tasksCreateInput.category(),
+            tasksCreateInput.color(),
             tasksCreateInput.priority(),
             tasksCreateInput.startTime(),
             tasksCreateInput.endTime(),
+            tasksCreateInput.location(),
             tasksCreateInput.allDay(),
             tasksCreateInput.reminderTime(),
+            tasksCreateInput.notifyActive(),
+            tasksCreateInput.status(),
             tasksCreateInput.dueDate()
         );
 
-        // JPA to model
-        TasksModel newTask = new TasksModel();
-        newTask.setId(UUID.randomUUID());
-        newTask.setCreatedAt(LocalDateTime.now());
-        newTask.setUpdatedAt(LocalDateTime.now());
-        newTask.setTaskName(tasksCreateInput.taskName());
-        newTask.setDescription(tasksCreateInput.description());
-        newTask.setCategory(tasksCreateInput.category());
-        newTask.setColor(tasksCreateInput.color());
-        newTask.setPriority(tasksCreateInput.priority());
-        newTask.setStartTime(tasksCreateInput.startTime());
-        newTask.setEndTime(tasksCreateInput.endTime());
-        newTask.setLocation(tasksCreateInput.location());
-        newTask.setAllDay(tasksCreateInput.allDay());
-        newTask.setReminderTime(tasksCreateInput.reminderTime());
-        newTask.setNotifyActive(tasksCreateInput.notifyActive());
-        newTask.setStatus(tasksCreateInput.status());
-        newTask.setDueDate(tasksCreateInput.dueDate());
-
-        tasksRepository.save(newTask);
+        return tasksRepository.save(createNewTask);
 
     }
 

@@ -2,10 +2,12 @@ package juliokozarewicz.tasks.domain.entity;
 
 import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
-
+import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
+@Setter
 public class TasksEntity {
 
     // ==================================================== ( constructor init )
@@ -14,15 +16,60 @@ public class TasksEntity {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
+    private UUID id;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String taskName;
+    private String description;
+    private String category;
+    private String color;
+    private Integer priority;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private String location;
+    private boolean allDay;
+    private LocalDateTime reminderTime;
+    private boolean notifyActive;
+    private String status;
+    private LocalDateTime dueDate;
+
     public TasksEntity(
+
+        UUID id,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
+        String taskName,
+        String description,
+        String category,
+        String color,
         Integer priority,
         LocalDateTime startTime,
         LocalDateTime endTime,
+        String location,
         Boolean allDay,
         LocalDateTime reminderTime,
+        Boolean notifyActive,
+        String status,
         LocalDateTime dueDate
 
     ) {
+
+        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.taskName = taskName;
+        this.description = description;
+        this.category = category;
+        this.color = color;
+        this.priority = priority;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.allDay = allDay;
+        this.reminderTime = reminderTime;
+        this.notifyActive = notifyActive;
+        this.status = status;
+        this.dueDate = dueDate;
 
         validateBusinessRules(
             priority,

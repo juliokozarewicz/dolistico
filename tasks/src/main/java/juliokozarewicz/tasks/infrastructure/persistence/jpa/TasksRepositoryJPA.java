@@ -1,4 +1,4 @@
-package juliokozarewicz.tasks.infrastructure.persistence.repositoryimpl;
+package juliokozarewicz.tasks.infrastructure.persistence.jpa;
 
 import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Repository
-public interface TasksRepositoryImpl extends JpaRepository<TasksModel, UUID> {
+public interface TasksRepositoryJPA extends JpaRepository<TasksModel, UUID> {
 
     boolean existsByTaskNameAndDueDate(String taskName, LocalDate dueDate);
 
