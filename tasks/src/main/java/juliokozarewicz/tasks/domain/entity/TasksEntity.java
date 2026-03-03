@@ -20,7 +20,8 @@ public class TasksEntity {
         LocalDateTime endTime,
         Boolean allDay,
         LocalDateTime reminderTime,
-        LocalDateTime dueDate
+        LocalDateTime dueDate,
+        String taskName
 
 
     ) {
@@ -31,7 +32,8 @@ public class TasksEntity {
             endTime,
             allDay,
             reminderTime,
-            dueDate
+            dueDate,
+            taskName
         );
 
     }
@@ -45,7 +47,8 @@ public class TasksEntity {
         LocalDateTime endTime,
         Boolean allDay,
         LocalDateTime reminderTime,
-        LocalDateTime dueDate
+        LocalDateTime dueDate,
+        String taskName
 
     ) {
 

@@ -19,7 +19,8 @@ public class TasksCreateUseCase {
             tasksCreateInput.endTime(),
             tasksCreateInput.allDay(),
             tasksCreateInput.reminderTime(),
-            tasksCreateInput.dueDate()
+            tasksCreateInput.dueDate(),
+            tasksCreateInput.taskName()
         );
 
     }
