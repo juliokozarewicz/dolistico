@@ -60,18 +60,33 @@ public class TasksEntity {
 
         //---------------------------------------------- (  priority rules END )
 
-        //------------------------------------------------------ (  dates INIT )
+        //------------------------------------------------------- (  date INIT )
 
-        if (startTime != null && endTime != null) {
+        // StartTime and EndTime
+        if (
+            ( startTime != null && endTime == null ) ||
+            ( startTime == null && endTime != null )
+        ) {
+            throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+        }
 
-            if (!startTime.toLocalDate().equals(endTime.toLocalDate())) {
+        if ( startTime != null && endTime != null ) {
+
+            // Check that startTime and endTime are on the same day
+            if ( !startTime.toLocalDate().equals( endTime.toLocalDate() ) ) {
                 throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
             }
 
-            if (dueDate != null && !startTime.toLocalDate().equals(dueDate.toLocalDate())) {
+            // If dueDate exists, startTime and endTime must be on the same day as dueDate
+            if (
+                dueDate != null &&
+                ( !startTime.toLocalDate().equals( dueDate.toLocalDate() ) ||
+                !endTime.toLocalDate().equals(dueDate.toLocalDate()))
+            ){
                 throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
             }
 
+            // Ensure startTime is before endTime
             if (startTime.isAfter(endTime)) {
                 throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
             }
@@ -86,7 +101,7 @@ public class TasksEntity {
             throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
         }
 
-        //------------------------------------------------------- (  dates END )
+        //-------------------------------------------------------- (  date END )
 
     }
 
