@@ -3,6 +3,8 @@ package juliokozarewicz.tasks.domain.entity;
 import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 
+import java.time.LocalDateTime;
+
 public class TasksEntity {
 
     // ==================================================== ( constructor init )
@@ -13,12 +15,17 @@ public class TasksEntity {
 
     public TasksEntity(
 
-        Integer priority
+        Integer priority,
+        LocalDateTime startTime,
+        LocalDateTime endTime
+
 
     ) {
 
         validateBusinessRules(
-            priority
+            priority,
+            startTime,
+            endTime
         );
 
     }
@@ -27,16 +34,22 @@ public class TasksEntity {
 
     private void validateBusinessRules (
 
-        Integer priority
+        Integer priority,
+        LocalDateTime startTime,
+        LocalDateTime endTime
 
     ) {
 
-        if (priority == null) {
+        if (priority == null || priority < 0 || priority > 5) {
             throw new DomainException(DomainExceptionEnum.INVALID_PRIORITY);
         }
 
-        if (priority < 0 || priority > 5) {
-            throw new DomainException(DomainExceptionEnum.INVALID_PRIORITY);
+        if (startTime == null || endTime == null) {
+            throw new DomainException(DomainExceptionEnum.INVALID_DATE);
+        }
+
+        if (startTime.isAfter(endTime)) {
+            throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
         }
 
     }

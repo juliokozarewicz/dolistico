@@ -1,6 +1,7 @@
 package juliokozarewicz.tasks.adapter.rest.controller;
 
 import jakarta.validation.Valid;
+import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.tasks.application.usecase.TasksCreateUseCase;
 import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
@@ -81,13 +82,13 @@ public class TasksCreateController {
 
         // Standard response
         return ResponseEntity
-        .status(201)
+        .status(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(201)
-            .messageCode("CREATE_TASK_SUCCESS")
+            .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
+            .statusCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
+            .messageCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getMessageCode())
             .links(customLinks)
             .build()
         );

@@ -1,4 +1,4 @@
-package juliokozarewicz.helloworld.adapters.rest.exception;
+package juliokozarewicz.helloworld.adapters.rest.enums;
 
 import juliokozarewicz.helloworld.domain.exception.DomainExceptionEnum;
 
@@ -23,16 +23,16 @@ public enum GlobalExceptionEnum {
     public static final String FORBIDDEN_CHARACTERS = "FORBIDDEN_CHARACTERS";
 
     public final int statusCode;
-    public final String statusMessage;
+    public final String messageCode;
     public final DomainExceptionEnum domainError;
 
     GlobalExceptionEnum(
         int statusCode,
-        String statusMessage,
+        String messageCode,
         DomainExceptionEnum domainError
     ) {
         this.statusCode = statusCode;
-        this.statusMessage = statusMessage;
+        this.messageCode = messageCode;
         this.domainError = domainError;
     }
 

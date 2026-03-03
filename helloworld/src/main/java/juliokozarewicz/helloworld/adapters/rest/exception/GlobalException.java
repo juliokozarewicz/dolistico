@@ -2,6 +2,7 @@ package juliokozarewicz.helloworld.adapters.rest.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import juliokozarewicz.helloworld.adapters.rest.dto.StandardResponseDTO;
+import juliokozarewicz.helloworld.adapters.rest.enums.GlobalExceptionEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -39,9 +40,9 @@ public class GlobalException {
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
+            .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(restError.statusCode)
-            .messageCode(restError.statusMessage)
+            .messageCode(restError.messageCode)
             .build()
         );
 
@@ -70,9 +71,9 @@ public class GlobalException {
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
-                .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
+                .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
                 .statusCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
-                .messageCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusMessage)
+                .messageCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.messageCode)
                 .fieldErrors(fieldErrors)
             .build()
         );
@@ -96,9 +97,9 @@ public class GlobalException {
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
+            .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalExceptionEnum.BAD_REQUEST.statusCode)
-            .messageCode(GlobalExceptionEnum.BAD_REQUEST.statusMessage)
+            .messageCode(GlobalExceptionEnum.BAD_REQUEST.messageCode)
             .build()
         );
 
@@ -117,9 +118,9 @@ public class GlobalException {
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
+            .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
-            .messageCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusMessage)
+            .messageCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.messageCode)
             .build()
         );
 

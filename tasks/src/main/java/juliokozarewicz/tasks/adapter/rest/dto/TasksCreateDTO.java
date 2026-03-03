@@ -1,7 +1,7 @@
 package juliokozarewicz.tasks.adapter.rest.dto;
 
 import jakarta.validation.constraints.*;
-import juliokozarewicz.tasks.adapter.rest.exception.GlobalExceptionEnum;
+import juliokozarewicz.tasks.adapter.rest.enums.GlobalExceptionEnum;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

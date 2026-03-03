@@ -1,6 +1,7 @@
 package juliokozarewicz.helloworld.adapters.rest.controller;
 
 import jakarta.validation.Valid;
+import juliokozarewicz.helloworld.adapters.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.helloworld.application.usecase.HelloWorldCreateUseCase;
 import juliokozarewicz.helloworld.adapters.rest.dto.HelloWorldCreateDTO;
 import juliokozarewicz.helloworld.adapters.rest.dto.StandardResponseDTO;
@@ -70,13 +71,13 @@ public class HelloWorldCreateController {
 
         // Standard response
         return ResponseEntity
-        .status(200)
+        .status(GlobalSuccessEnum.HELLO_WORLD_SUCCESS.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
-            .createdAt(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(200)
-            .messageCode("HELLO_WORLD_SUCCESS")
+            .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
+            .statusCode(GlobalSuccessEnum.HELLO_WORLD_SUCCESS.getStatusCode())
+            .messageCode(GlobalSuccessEnum.HELLO_WORLD_SUCCESS.getMessageCode())
             .data(metaData)
             .links(customLinks)
             .build()

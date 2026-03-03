@@ -10,7 +10,7 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "createdAt",
+    "timestamp",
     "statusCode",
     "messageCode",
     "fieldErrors",
@@ -20,7 +20,7 @@ import java.util.Map;
 })
 public class StandardResponseDTO {
 
-    private final Instant createdAt;
+    private final Instant timestamp;
     private final int statusCode;
     private final String messageCode;
     private List<Map<String, String>> fieldErrors;
@@ -29,7 +29,7 @@ public class StandardResponseDTO {
     private final Map<String, String> links;
 
     private StandardResponseDTO(Builder builder) {
-        this.createdAt = builder.createdAt;
+        this.timestamp = builder.timestamp;
         this.statusCode = builder.statusCode;
         this.messageCode = builder.messageCode;
         this.fieldErrors = builder.fieldErrors;
@@ -38,8 +38,8 @@ public class StandardResponseDTO {
         this.links = builder.links.isEmpty() ? null : builder.links;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
+    public Instant getTimestamp() {
+        return timestamp;
     }
 
     public int getStatusCode () {
@@ -68,7 +68,7 @@ public class StandardResponseDTO {
 
     public static class Builder {
 
-        private Instant createdAt;
+        private Instant timestamp;
         private int statusCode;
         private String messageCode;
         private List<Map<String, String>> fieldErrors;
@@ -76,8 +76,8 @@ public class StandardResponseDTO {
         private Map<String, Object> meta = new HashMap<>();
         private Map<String, String> links = new HashMap<>();
 
-        public Builder createdAt(Instant createdAt) {
-            this.createdAt = createdAt;
+        public Builder timestamp(Instant timestamp) {
+            this.timestamp = timestamp;
             return this;
         }
 

@@ -1,4 +1,4 @@
-package juliokozarewicz.tasks.adapter.rest.exception;
+package juliokozarewicz.tasks.adapter.rest.enums;
 
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 
@@ -10,6 +10,8 @@ public enum GlobalExceptionEnum {
     PAYMENT_REQUIRED(402, "PAYMENT_REQUIRED", DomainExceptionEnum.PAYMENT_REQUIRED),
     NO_PERMISSION_TO_ACCESS(403, "NO_PERMISSION_TO_ACCESS", DomainExceptionEnum.NO_PERMISSION_TO_ACCESS),
     USER_NOT_FOUND(404, "USER_NOT_FOUND", DomainExceptionEnum.USER_NOT_FOUND),
+    INVALID_DATE(400, "INVALID_DATE", DomainExceptionEnum.INVALID_DATE),
+    INVALID_DATE_RANGE(400, "INVALID_DATE_RANGE", DomainExceptionEnum.INVALID_DATE_RANGE),
 
     // Rest error code
     SERVICE_UNAVAILABLE(503, "SERVICE_UNAVAILABLE", null),
@@ -25,16 +27,16 @@ public enum GlobalExceptionEnum {
     public static final String FORBIDDEN_CHARACTERS = "FORBIDDEN_CHARACTERS";
 
     public final int statusCode;
-    public final String statusMessage;
+    public final String messageCode;
     public final DomainExceptionEnum domainError;
 
     GlobalExceptionEnum(
         int statusCode,
-        String statusMessage,
+        String messageCode,
         DomainExceptionEnum domainError
     ) {
         this.statusCode = statusCode;
-        this.statusMessage = statusMessage;
+        this.messageCode = messageCode;
         this.domainError = domainError;
     }
 

@@ -62,7 +62,7 @@ info:
 
         ```json
         {
-            "createdAt": "2026-02-27T20:00:02Z",
+            "timestamp": "2026-02-27T20:00:02Z",
             "statusCode": 400,
             "messageCode": "BAD_REQUEST"
         }
@@ -75,7 +75,7 @@ info:
 
         ```json
         {
-            "createdAt": "2026-02-27T19:53:14Z",
+            "timestamp": "2026-02-27T19:53:14Z",
             "statusCode": 401,
             "messageCode": "INVALID_CREDENTIALS"
         }
@@ -88,7 +88,7 @@ info:
 
         ```json
         {
-            "createdAt": "2026-02-27T19:55:12Z",
+            "timestamp": "2026-02-27T19:55:12Z",
             "statusCode": 422,
             "messageCode": "UNPROCESSABLE_ENTITY",
             "fieldErrors": [
@@ -111,7 +111,7 @@ info:
 
         ```json
         {
-            "createdAt": "2026-02-27T20:01:34+00:00",
+            "timestamp": "2026-02-27T20:01:34+00:00",
             "statusCode": 429,
             "messageCode": "TOO_MANY_REQUESTS"
         }
@@ -124,7 +124,7 @@ info:
 
         ```json
         {
-            "createdAt": "2026-02-27T20:01:34+00:00",
+            "timestamp": "2026-02-27T20:01:34+00:00",
             "statusCode": 500,
             "messageCode": "INTERNAL_SERVER_ERROR"
         }
@@ -137,7 +137,7 @@ info:
 
         ```json
         {
-            "createdAt": "2026-02-27T20:01:34+00:00",
+            "timestamp": "2026-02-27T20:01:34+00:00",
             "statusCode": 503,
             "messageCode": "SERVICE_UNAVAILABLE"
         }
@@ -181,7 +181,7 @@ paths:
                             schema:
                                 type: object
                                 properties:
-                                    createdAt:
+                                    timestamp:
                                         type: string
                                         format: date-time
                                         example: "2026-02-27T20:10:15Z"
@@ -219,7 +219,7 @@ paths:
                             schema:
                                 type: object
                                 properties:
-                                    createdAt:
+                                    timestamp:
                                         type: string
                                         format: date-time
                                         example: "2026-02-27T19:53:14Z"

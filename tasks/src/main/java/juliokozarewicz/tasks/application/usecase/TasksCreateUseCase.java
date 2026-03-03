@@ -14,7 +14,9 @@ public class TasksCreateUseCase {
     ) {
 
         new TasksEntity(
-            tasksCreateInput.priority()
+            tasksCreateInput.priority(),
+            tasksCreateInput.startTime(),
+            tasksCreateInput.endTime()
         );
 
     }
