@@ -7,7 +7,6 @@ import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Repository
 public class TasksRepositoryImpl implements TasksRepository {
