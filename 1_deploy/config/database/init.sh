@@ -2,7 +2,6 @@
 set -e
 
 # ================================================================= ( accounts init )
-
 # 1) USER e DATABASE
 psql -v ON_ERROR_STOP=1 --username "${DATABASE_ADMIN_USER}" --dbname postgres <<-EOF
 
@@ -60,8 +59,7 @@ EOF
 # ================================================================== ( accounts end )
 
 # ==================================================================== ( tasks init )
-
-# 1) USER and DATABASE
+# 1) USER e DATABASE
 psql -v ON_ERROR_STOP=1 --username "${DATABASE_ADMIN_USER}" --dbname postgres <<-EOF
 
 DO \$\$

@@ -40,10 +40,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// Database
-    implementation 'org.postgresql:postgresql'
-    implementation "org.flywaydb:flyway-database-postgresql:10.15.0"
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'com.h2database:h2'
+    implementation 'org.postgresql:postgresql'      // driver PostgreSQL
+    implementation 'org.flywaydb:flyway-core'       // Flyway
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA
+    runtimeOnly 'org.postgresql:postgresql' // Postgresql
+    runtimeOnly 'com.h2database:h2' // H2 DB test
 
 }
 
