@@ -33,9 +33,17 @@ public class TasksCreateUseCase {
     // ===================================================== ( constructor end )
 
     @Transactional
-    public void execute( TasksCreateInput tasksCreateInput ) {
+    public String execute( TasksCreateInput tasksCreateInput ) {
 
+        // Create task id
+        UUID createdId = UUID.randomUUID();
+        LocalDateTime timeStamp = LocalDateTime.now();
+
+        // Create entity
         TasksEntity createNewTask = new TasksEntity(
+            createdId,
+            timeStamp,
+            timeStamp,
             tasksCreateInput.taskName(),
             tasksCreateInput.description(),
             tasksCreateInput.category(),
@@ -51,7 +59,11 @@ public class TasksCreateUseCase {
             tasksCreateInput.dueDate()
         );
 
+        // Save in DB
         tasksRepository.save(createNewTask);
+
+        // Return created id
+        return createdId.toString();
 
     }
 

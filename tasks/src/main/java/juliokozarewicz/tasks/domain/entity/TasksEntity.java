@@ -2,7 +2,8 @@ package juliokozarewicz.tasks.domain.entity;
 
 import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
-import lombok.*;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -34,6 +35,9 @@ public class TasksEntity {
 
     public TasksEntity(
 
+        UUID id,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAtAt,
         String taskName,
         String description,
         String category,
@@ -50,9 +54,9 @@ public class TasksEntity {
 
     ) {
 
-        this.id = UUID.randomUUID();
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAtAt;
         this.taskName = taskName;
         this.description = description;
         this.category = category;

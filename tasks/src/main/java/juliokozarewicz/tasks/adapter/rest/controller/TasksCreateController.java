@@ -73,7 +73,11 @@ public class TasksCreateController {
         );
 
         // Call use case
-        tasksCreateUseCase.execute(tasksCreateInput);
+        String createdId = tasksCreateUseCase.execute(tasksCreateInput);
+
+        // data
+        Map<String, String> dataObject = new LinkedHashMap<>();
+        dataObject.put("createdId", createdId);
 
         // Links
         Map<String, String> customLinks = new LinkedHashMap<>();
@@ -88,6 +92,7 @@ public class TasksCreateController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
             .messageCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getMessageCode())
+            .data(dataObject)
             .links(customLinks)
             .build()
         );
