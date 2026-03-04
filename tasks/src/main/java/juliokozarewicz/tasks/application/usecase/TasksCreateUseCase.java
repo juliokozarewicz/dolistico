@@ -35,7 +35,7 @@ public class TasksCreateUseCase {
     @Transactional
     public String execute( TasksCreateInput tasksCreateInput ) {
 
-        // Create task id
+        // Create task id and time stamp
         UUID createdId = UUID.randomUUID();
         LocalDateTime timeStamp = LocalDateTime.now();
 
