@@ -11,10 +11,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tasks")
-@Getter
-@Setter
-@NoArgsConstructor()
-@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class TasksModel {
 
     @Id

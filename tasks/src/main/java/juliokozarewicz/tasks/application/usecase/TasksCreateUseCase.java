@@ -36,9 +36,6 @@ public class TasksCreateUseCase {
     public void execute( TasksCreateInput tasksCreateInput ) {
 
         TasksEntity createNewTask = new TasksEntity(
-            UUID.randomUUID(),
-            LocalDateTime.now(),
-            LocalDateTime.now(),
             tasksCreateInput.taskName(),
             tasksCreateInput.description(),
             tasksCreateInput.category(),

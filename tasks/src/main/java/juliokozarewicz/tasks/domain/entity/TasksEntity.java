@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
-@Setter
 public class TasksEntity {
 
     // ==================================================== ( constructor init )
@@ -35,9 +34,6 @@ public class TasksEntity {
 
     public TasksEntity(
 
-        UUID id,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
         String taskName,
         String description,
         String category,
@@ -54,9 +50,9 @@ public class TasksEntity {
 
     ) {
 
-        this.id = id;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.id = UUID.randomUUID();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
         this.taskName = taskName;
         this.description = description;
         this.category = category;

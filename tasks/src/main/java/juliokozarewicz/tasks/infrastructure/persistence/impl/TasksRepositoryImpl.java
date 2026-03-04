@@ -19,7 +19,7 @@ public class TasksRepositoryImpl implements TasksRepository {
     }
 
     @Override
-    public boolean existsByTaskNameAndDueDate(String taskName, java.time.LocalDate dueDate) {
+    public boolean existsByTaskNameAndDueDate(String taskName, LocalDateTime dueDate) {
         return tasksRepositoryJPA.existsByTaskNameAndDueDate(taskName, dueDate);
     }
 
@@ -27,26 +27,27 @@ public class TasksRepositoryImpl implements TasksRepository {
     public void save(TasksEntity tasksEntity) {
 
         // Mapper
-        TasksModel createNewTask = new TasksModel();
-        createNewTask.setId(tasksEntity.getId() != null ? tasksEntity.getId() : UUID.randomUUID());
-        createNewTask.setTaskName(tasksEntity.getTaskName());
-        createNewTask.setDescription(tasksEntity.getDescription());
-        createNewTask.setCategory(tasksEntity.getCategory());
-        createNewTask.setColor(tasksEntity.getColor());
-        createNewTask.setPriority(tasksEntity.getPriority());
-        createNewTask.setStartTime(tasksEntity.getStartTime());
-        createNewTask.setEndTime(tasksEntity.getEndTime());
-        createNewTask.setLocation(tasksEntity.getLocation());
-        createNewTask.setAllDay(tasksEntity.isAllDay());
-        createNewTask.setReminderTime(tasksEntity.getReminderTime());
-        createNewTask.setNotifyActive(tasksEntity.isNotifyActive());
-        createNewTask.setStatus(tasksEntity.getStatus());
-        createNewTask.setDueDate(tasksEntity.getDueDate());
-        createNewTask.setCreatedAt(tasksEntity.getCreatedAt() != null ? tasksEntity.getCreatedAt() : LocalDateTime.now());
-        createNewTask.setUpdatedAt(LocalDateTime.now());
+        TasksModel model = TasksModel.builder()
+            .id(tasksEntity.getId())
+            .createdAt(tasksEntity.getCreatedAt())
+            .updatedAt(tasksEntity.getUpdatedAt())
+            .taskName(tasksEntity.getTaskName())
+            .description(tasksEntity.getDescription())
+            .category(tasksEntity.getCategory())
+            .color(tasksEntity.getColor())
+            .priority(tasksEntity.getPriority())
+            .startTime(tasksEntity.getStartTime())
+            .endTime(tasksEntity.getEndTime())
+            .location(tasksEntity.getLocation())
+            .allDay(tasksEntity.isAllDay())
+            .reminderTime(tasksEntity.getReminderTime())
+            .notifyActive(tasksEntity.isNotifyActive())
+            .status(tasksEntity.getStatus())
+            .dueDate(tasksEntity.getDueDate())
+            .build();
 
-        // Commit
-        TasksModel saved = tasksRepositoryJPA.save(createNewTask);
+        // Save
+        tasksRepositoryJPA.save(model);
 
     }
 
