@@ -48,9 +48,6 @@ dependencies {
 	implementation 'org.postgresql:postgresql'                             // Postgresql
 	runtimeOnly 'com.h2database:h2'                                        // H2 DB test
 
-
-
-
 }
 
 tasks.named('test') {
