@@ -203,30 +203,30 @@ paths:
                                             self:
                                                 type: object
                                                 properties:
-                                                    method:
-                                                        type: string
-                                                        example: GET
                                                     href:
                                                         type: string
                                                         example: /api/v1/helloworld
+                                                    method:
+                                                        type: string
+                                                        example: GET
                                             documentation:
                                                 type: object
                                                 properties:
-                                                    method:
-                                                        type: string
-                                                        example: GET
                                                     href:
                                                         type: string
                                                         example: /api/v1/documentation
-                                            swaggerDocumentation:
-                                                type: object
-                                                properties:
                                                     method:
                                                         type: string
                                                         example: GET
+                                            swaggerDocumentation:
+                                                type: object
+                                                properties:
                                                     href:
                                                         type: string
                                                         example: /api/v1/documentation/swagger
+                                                    method:
+                                                        type: string
+                                                        example: GET
 
                 "403":
                     description: >-
