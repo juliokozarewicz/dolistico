@@ -81,14 +81,14 @@ public class TasksCreateController {
 
         // Links
         Map<String, Object> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", Map.of(
-            "href", "/" + tasksBaseURL,
-            "method", "POST"
-        ));
-        customLinks.put("next", Map.of(
-            "href", "/" + tasksBaseURL,
-            "method", "GET"
-        ));
+        customLinks.put("self", new LinkedHashMap<>() {{
+            put("href", "/" + tasksBaseURL);
+            put("method", "POST");
+        }});
+        customLinks.put("next", new LinkedHashMap<>() {{
+            put("href", "/" + tasksBaseURL);
+            put("method", "GET");
+        }});
 
         // Standard response
         return ResponseEntity

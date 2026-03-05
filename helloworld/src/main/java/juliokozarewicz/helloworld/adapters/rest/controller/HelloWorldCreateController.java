@@ -65,18 +65,18 @@ public class HelloWorldCreateController {
 
         // Links
         Map<String, Object> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", Map.of(
-            "href", "/" + helloWorldBaseURL,
-            "method", "GET"
-        ));
-        customLinks.put("documentation", Map.of(
-            "href", "/" + documentationBaseURL,
-            "method", "GET"
-        ));
-        customLinks.put("swaggerDocumentation", Map.of(
-            "href", "/" + documentationBaseURL + "/swagger",
-            "method", "GET"
-        ));
+        customLinks.put("self", new LinkedHashMap<>() {{
+            put("href", "/" + helloWorldBaseURL);
+            put("method", "GET");
+        }});
+        customLinks.put("documentation", new LinkedHashMap<>() {{
+            put("href", "/" + documentationBaseURL);
+            put("method", "GET");
+        }});
+        customLinks.put("swaggerDocumentation", new LinkedHashMap<>() {{
+            put("href", "/" + documentationBaseURL + "/swagger");
+            put("method", "GET");
+        }});
 
         // Standard response
         return ResponseEntity
