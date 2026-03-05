@@ -64,10 +64,19 @@ public class HelloWorldCreateController {
         metaData.put("message", validatedMessage);
 
         // Links
-        Map<String, String> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", "/" + helloWorldBaseURL);
-        customLinks.put("documentation", "/" + documentationBaseURL);
-        customLinks.put("swaggerDocumentation", "/" + documentationBaseURL + "/swagger");
+        Map<String, Object> customLinks = new LinkedHashMap<>();
+        customLinks.put("self", Map.of(
+            "href", "/" + helloWorldBaseURL,
+            "method", "GET"
+        ));
+        customLinks.put("documentation", Map.of(
+            "href", "/" + documentationBaseURL,
+            "method", "GET"
+        ));
+        customLinks.put("swaggerDocumentation", Map.of(
+            "href", "/" + documentationBaseURL + "/swagger",
+            "method", "GET"
+        ));
 
         // Standard response
         return ResponseEntity

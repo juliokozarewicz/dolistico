@@ -184,7 +184,7 @@ paths:
                                     timestamp:
                                         type: string
                                         format: date-time
-                                        example: "2026-02-27T20:10:15Z"
+                                        example: "2026-03-05T11:38:17Z"
                                     statusCode:
                                         type: integer
                                         example: 200
@@ -196,19 +196,37 @@ paths:
                                         properties:
                                             message:
                                                 type: string
-                                                example: Hello from the API!
+                                                example: test_message
                                     links:
                                         type: object
                                         properties:
                                             self:
-                                                type: string
-                                                example: /HELLOWORLD_BASE_URL_REPLACE
+                                                type: object
+                                                properties:
+                                                    method:
+                                                        type: string
+                                                        example: GET
+                                                    href:
+                                                        type: string
+                                                        example: /api/v1/helloworld
                                             documentation:
-                                                type: string
-                                                example: /DOCUMENTATION_REPLACE
+                                                type: object
+                                                properties:
+                                                    method:
+                                                        type: string
+                                                        example: GET
+                                                    href:
+                                                        type: string
+                                                        example: /api/v1/documentation
                                             swaggerDocumentation:
-                                                type: string
-                                                example: /DOCUMENTATION_REPLACE/swagger
+                                                type: object
+                                                properties:
+                                                    method:
+                                                        type: string
+                                                        example: GET
+                                                    href:
+                                                        type: string
+                                                        example: /api/v1/documentation/swagger
 
                 "403":
                     description: >-
@@ -222,7 +240,7 @@ paths:
                                     timestamp:
                                         type: string
                                         format: date-time
-                                        example: "2026-02-27T19:53:14Z"
+                                        example: "2026-03-05T11:38:17Z"
                                     statusCode:
                                         type: integer
                                         example: 403

@@ -2,7 +2,6 @@ package juliokozarewicz.tasks.adapter.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,7 @@ public class StandardResponseDTO {
     private List<Map<String, String>> fieldErrors;
     private final Object data;
     private final Map<String, Object> meta;
-    private final Map<String, String> links;
+    private final Map<String, Object> links;
 
     private StandardResponseDTO(Builder builder) {
         this.timestamp = builder.timestamp;
@@ -62,7 +61,7 @@ public class StandardResponseDTO {
         return meta;
     }
 
-    public Map<String, String> getLinks() {
+    public Map<String, Object> getLinks() {
         return links;
     }
 
@@ -74,7 +73,7 @@ public class StandardResponseDTO {
         private List<Map<String, String>> fieldErrors;
         private Object data;
         private Map<String, Object> meta = new HashMap<>();
-        private Map<String, String> links = new HashMap<>();
+        private Map<String, Object> links = new HashMap<>();
 
         public Builder timestamp(Instant timestamp) {
             this.timestamp = timestamp;
@@ -106,7 +105,7 @@ public class StandardResponseDTO {
             return this;
         }
 
-        public Builder links(Map<String, String> links) {
+        public Builder links(Map<String, Object> links) {
             this.links = links != null ? links : new HashMap<>();
             return this;
         }

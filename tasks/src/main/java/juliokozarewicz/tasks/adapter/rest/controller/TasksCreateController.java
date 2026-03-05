@@ -80,8 +80,15 @@ public class TasksCreateController {
         dataObject.put("createdId", createdId);
 
         // Links
-        Map<String, String> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", "/" + tasksBaseURL);
+        Map<String, Object> customLinks = new LinkedHashMap<>();
+        customLinks.put("self", Map.of(
+            "href", "/" + tasksBaseURL,
+            "method", "POST"
+        ));
+        customLinks.put("next", Map.of(
+            "href", "/" + tasksBaseURL,
+            "method", "GET"
+        ));
 
         // Standard response
         return ResponseEntity
