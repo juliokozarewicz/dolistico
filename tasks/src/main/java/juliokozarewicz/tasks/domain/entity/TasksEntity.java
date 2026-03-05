@@ -16,7 +16,7 @@ public class TasksEntity {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID idCreated;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String taskName;
@@ -35,7 +35,7 @@ public class TasksEntity {
 
     public TasksEntity(
 
-        UUID id,
+        UUID idCreated,
         LocalDateTime createdAt,
         LocalDateTime updatedAtAt,
         String taskName,
@@ -54,7 +54,7 @@ public class TasksEntity {
 
     ) {
 
-        this.id = id;
+        this.idCreated = idCreated;
         this.createdAt = createdAt;
         this.updatedAt = updatedAtAt;
         this.taskName = taskName;

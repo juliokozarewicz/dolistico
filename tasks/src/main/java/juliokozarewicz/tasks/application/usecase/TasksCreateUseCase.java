@@ -2,6 +2,8 @@ package juliokozarewicz.tasks.application.usecase;
 
 import juliokozarewicz.tasks.application.input.TasksCreateInput;
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +38,20 @@ public class TasksCreateUseCase {
     public String execute( TasksCreateInput tasksCreateInput ) {
 
         // Create task id and time stamp
-        UUID createdId = UUID.randomUUID();
+        UUID idCreated = UUID.randomUUID();
         LocalDateTime timeStamp = LocalDateTime.now();
+
+        // Duplicated task
+        if ( tasksRepository.existsByTaskNameAndDueDate(
+            tasksCreateInput.taskName(),
+            tasksCreateInput.dueDate()
+        )) {
+            throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
+        }
 
         // Create entity
         TasksEntity createNewTask = new TasksEntity(
-            createdId,
+            idCreated,
             timeStamp,
             timeStamp,
             tasksCreateInput.taskName(),
@@ -63,7 +73,7 @@ public class TasksCreateUseCase {
         tasksRepository.save(createNewTask);
 
         // Return created id
-        return createdId.toString();
+        return idCreated.toString();
 
     }
 

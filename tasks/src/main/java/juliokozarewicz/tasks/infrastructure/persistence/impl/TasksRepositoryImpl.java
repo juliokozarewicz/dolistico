@@ -27,7 +27,7 @@ public class TasksRepositoryImpl implements TasksRepository {
 
         // Mapper
         TasksModel model = TasksModel.builder()
-            .id(tasksEntity.getId())
+            .id(tasksEntity.getIdCreated())
             .createdAt(tasksEntity.getCreatedAt())
             .updatedAt(tasksEntity.getUpdatedAt())
             .taskName(tasksEntity.getTaskName())
