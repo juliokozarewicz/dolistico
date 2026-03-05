@@ -16,22 +16,22 @@ public class TasksEntity {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private UUID idCreated;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String taskName;
-    private String description;
-    private String category;
-    private String color;
-    private Integer priority;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String location;
-    private boolean allDay;
-    private LocalDateTime reminderTime;
-    private boolean notifyActive;
-    private String status;
-    private LocalDateTime dueDate;
+    private final UUID idCreated;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    private final String taskName;
+    private final String description;
+    private final String category;
+    private final String color;
+    private final Integer priority;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
+    private final String location;
+    private final boolean allDay;
+    private final LocalDateTime reminderTime;
+    private final boolean notifyActive;
+    private final String status;
+    private final LocalDateTime dueDate;
 
     public TasksEntity(
 
