@@ -1,10 +1,9 @@
 package juliokozarewicz.tasks.adapter.rest.controller;
 
 import jakarta.validation.Valid;
-import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseRestDTO;
-import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateRestDTO;
+import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
+import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
-import juliokozarewicz.tasks.application.dto.TasksCreateInputAppDTO;
 import juliokozarewicz.tasks.application.usecase.TasksCreateUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -50,30 +49,13 @@ public class TasksCreateController {
     public ResponseEntity create (
 
         // DTO error
-        @Valid @RequestBody TasksCreateRestDTO tasksCreateRestDTO,
+        @Valid @RequestBody TasksCreateDTO tasksCreateDTO,
         BindingResult bindingResult
 
     ) {
 
-        // DTO -> Input
-        TasksCreateInputAppDTO tasksCreateInputAppDTO = new TasksCreateInputAppDTO(
-            tasksCreateRestDTO.taskName(),
-            tasksCreateRestDTO.description(),
-            tasksCreateRestDTO.category(),
-            tasksCreateRestDTO.color(),
-            tasksCreateRestDTO.priority(),
-            tasksCreateRestDTO.startTime(),
-            tasksCreateRestDTO.endTime(),
-            tasksCreateRestDTO.location(),
-            tasksCreateRestDTO.allDay(),
-            tasksCreateRestDTO.reminderTime(),
-            tasksCreateRestDTO.notifyActive(),
-            tasksCreateRestDTO.status(),
-            tasksCreateRestDTO.dueDate()
-        );
-
         // Call use case
-        String idCreated = tasksCreateUseCase.execute(tasksCreateInputAppDTO);
+        String idCreated = tasksCreateUseCase.execute(tasksCreateDTO);
 
         // data
         Map<String, String> dataObject = new LinkedHashMap<>();
@@ -95,7 +77,7 @@ public class TasksCreateController {
         .status(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
-            new StandardResponseRestDTO.Builder()
+            new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
             .messageCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getMessageCode())

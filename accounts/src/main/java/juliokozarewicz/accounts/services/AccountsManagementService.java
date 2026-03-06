@@ -215,7 +215,7 @@ public class AccountsManagementService implements AccountsManagementInterface {
                 "email_subject_account", null, locale
             );
 
-        // send email dto
+        // send email command
         SendEmailDataDTO sendEmailDataDTO = new SendEmailDataDTO(
             email,
             subject,

@@ -180,6 +180,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      messaging:
+        condition: service_healthy
     deploy:
       replicas: 1
     healthcheck:

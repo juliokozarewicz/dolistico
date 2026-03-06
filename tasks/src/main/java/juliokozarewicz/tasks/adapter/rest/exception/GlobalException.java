@@ -1,7 +1,7 @@
 package juliokozarewicz.tasks.adapter.rest.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseRestDTO;
+import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalExceptionEnum;
 import juliokozarewicz.tasks.domain.exception.DomainException;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class GlobalException {
 
     // ======================================================= ( business INIT )
     @ExceptionHandler({DomainException.class})
-    public ResponseEntity<StandardResponseRestDTO> handleDomainException(
+    public ResponseEntity<StandardResponseDTO> handleDomainException(
         DomainException ex) {
 
         GlobalExceptionEnum restError = GlobalExceptionEnum.fromDomainError(ex.getError());
@@ -40,7 +40,7 @@ public class GlobalException {
         .status(restError.statusCode)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
-            new StandardResponseRestDTO.Builder()
+            new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(restError.statusCode)
             .messageCode(restError.messageCode)
@@ -52,7 +52,7 @@ public class GlobalException {
 
     // ============================================= ( validation [ DTO ] INIT )
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<StandardResponseRestDTO> handleConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<StandardResponseDTO> handleConstraintViolation(ConstraintViolationException ex) {
 
         List<Map<String, String>> fieldErrors = new LinkedList<>();
 
@@ -71,7 +71,7 @@ public class GlobalException {
         .status(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
-            new StandardResponseRestDTO.Builder()
+            new StandardResponseDTO.Builder()
                 .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
                 .statusCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
                 .messageCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.messageCode)
@@ -91,13 +91,13 @@ public class GlobalException {
         HttpRequestMethodNotSupportedException.class,
         NoResourceFoundException.class
     })
-    public ResponseEntity<StandardResponseRestDTO> handleBadRequest(Exception ex) {
+    public ResponseEntity<StandardResponseDTO> handleBadRequest(Exception ex) {
 
         return ResponseEntity
         .status(GlobalExceptionEnum.BAD_REQUEST.statusCode)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
-            new StandardResponseRestDTO.Builder()
+            new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalExceptionEnum.BAD_REQUEST.statusCode)
             .messageCode(GlobalExceptionEnum.BAD_REQUEST.messageCode)
@@ -109,7 +109,7 @@ public class GlobalException {
 
     // =================================================== ( fallback 500 INIT )
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardResponseRestDTO> handleGeneric(Exception ex) {
+    public ResponseEntity<StandardResponseDTO> handleGeneric(Exception ex) {
 
         // logs
         logger.error(ex.toString());
@@ -118,7 +118,7 @@ public class GlobalException {
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
-            new StandardResponseRestDTO.Builder()
+            new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
             .messageCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.messageCode)

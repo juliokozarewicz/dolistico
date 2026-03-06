@@ -17,7 +17,7 @@ import java.util.Map;
     "meta",
     "links"
 })
-public class StandardResponseRestDTO {
+public class StandardResponseDTO {
 
     private final Instant timestamp;
     private final int statusCode;
@@ -27,7 +27,7 @@ public class StandardResponseRestDTO {
     private final Map<String, Object> meta;
     private final Map<String, Object> links;
 
-    private StandardResponseRestDTO(Builder builder) {
+    private StandardResponseDTO(Builder builder) {
         this.timestamp = builder.timestamp;
         this.statusCode = builder.statusCode;
         this.messageCode = builder.messageCode;
@@ -110,8 +110,8 @@ public class StandardResponseRestDTO {
             return this;
         }
 
-        public StandardResponseRestDTO build() {
-            return new StandardResponseRestDTO(this);
+        public StandardResponseDTO build() {
+            return new StandardResponseDTO(this);
         }
 
     }

@@ -62,7 +62,7 @@ public class AccountsProfileService {
         // Credentials
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
-        // Init dto profile
+        // Init command profile
         AccountsProfileDTO dtoProfile = new AccountsProfileDTO();
 
         // Redis cache ( get or set )

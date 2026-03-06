@@ -65,7 +65,7 @@ public class AccountsAddressGetService {
         // Credentials
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
-        // Init dto address
+        // Init command address
         List<AccountsAddressGetDTO> dtoAddressList = new ArrayList<>();
 
         // Redis cache ( get or set )

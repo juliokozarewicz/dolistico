@@ -59,7 +59,7 @@ public class ErrorHandler {
         // locale
         Locale locale = LocaleContextHolder.getLocale();
 
-        // dto error
+        // command error
         if (error instanceof ConstraintViolationException) {
 
             var violations = ((ConstraintViolationException) error)

@@ -1,7 +1,6 @@
 package juliokozarewicz.tasks.application.usecase;
 
-import juliokozarewicz.tasks.application.dto.TasksCreateInputAppDTO;
-import juliokozarewicz.tasks.application.mapper.TasksMapper;
+import juliokozarewicz.tasks.application.command.TasksCreateCommand;
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
@@ -23,19 +22,16 @@ public class TasksCreateUseCase {
     // -------------------------------------------------------------------------
 
     private final TasksRepository tasksRepository;
-    private final TasksMapper tasksMapper;
     private final TasksEventProducer tasksEventProducer;
 
     public TasksCreateUseCase(
 
         TasksRepository tasksRepository,
-        TasksMapper tasksMapper,
         TasksEventProducer tasksEventProducer
 
     ) {
 
         this.tasksRepository = tasksRepository;
-        this.tasksMapper = tasksMapper;
         this.tasksEventProducer = tasksEventProducer;
 
     }
@@ -43,12 +39,12 @@ public class TasksCreateUseCase {
     // ===================================================== ( constructor end )
 
     @Transactional
-    public String execute( TasksCreateInputAppDTO tasksCreateInputAppDTO) {
+    public String execute( TasksCreateCommand tasksCreateCommand) {
 
         // Duplicated task
         if ( tasksRepository.existsByTaskNameAndDueDate(
-            tasksCreateInputAppDTO.taskName(),
-            tasksCreateInputAppDTO.dueDate()
+            tasksCreateCommand.taskName(),
+            tasksCreateCommand.dueDate()
         )) {
             throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
         }
@@ -58,17 +54,27 @@ public class TasksCreateUseCase {
         LocalDateTime timeStamp = LocalDateTime.now();
 
         // Create entity
-        TasksEntity createNewTask = TasksMapper.toEntity(
+        TasksEntity createNewTask = new TasksEntity(
             idCreated,
             timeStamp,
             timeStamp,
-            tasksCreateInputAppDTO
+            tasksCreateCommand.taskName(),
+            tasksCreateCommand.description(),
+            tasksCreateCommand.category(),
+            tasksCreateCommand.color(),
+            tasksCreateCommand.priority(),
+            tasksCreateCommand.startTime(),
+            tasksCreateCommand.endTime(),
+            tasksCreateCommand.location(),
+            tasksCreateCommand.allDay(),
+            tasksCreateCommand.reminderTime(),
+            tasksCreateCommand.notifyActive(),
+            tasksCreateCommand.status(),
+            tasksCreateCommand.dueDate()
         );
 
         // Create message
-        tasksEventProducer.publish(
-            tasksMapper.toDto(createNewTask)
-        );
+        tasksEventProducer.publish(createNewTask);
 
         // Return created id
         return idCreated.toString();
