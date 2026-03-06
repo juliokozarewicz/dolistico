@@ -1,7 +1,7 @@
 package juliokozarewicz.tasks.infrastructure.messaging.producer;
 
 
-import juliokozarewicz.tasks.application.output.TasksCreateMessageOutput;
+import juliokozarewicz.tasks.application.dto.TasksCreateMessageAppDTO;
 import juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -12,11 +12,11 @@ import java.util.concurrent.TimeUnit;
 public class TasksEventProducer {
 
     // ==================================================== ( constructor init )
-    private final KafkaTemplate<String, TasksCreateMessageOutput> kafkaTemplate;
+    private final KafkaTemplate<String, TasksCreateMessageAppDTO> kafkaTemplate;
 
     public TasksEventProducer(
 
-        KafkaTemplate<String, TasksCreateMessageOutput> kafkaTemplate
+        KafkaTemplate<String, TasksCreateMessageAppDTO> kafkaTemplate
 
     ) {
 
@@ -28,7 +28,7 @@ public class TasksEventProducer {
     // producer
     public void publish(
 
-        TasksCreateMessageOutput message
+        TasksCreateMessageAppDTO message
 
     ) {
 

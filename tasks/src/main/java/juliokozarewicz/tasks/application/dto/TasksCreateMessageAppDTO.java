@@ -1,4 +1,4 @@
-package juliokozarewicz.tasks.application.output;
+package juliokozarewicz.tasks.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TasksCreateMessageOutput {
+public class TasksCreateMessageAppDTO {
 
     private UUID idCreated;
 

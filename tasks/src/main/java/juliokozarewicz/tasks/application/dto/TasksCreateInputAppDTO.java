@@ -1,9 +1,8 @@
-package juliokozarewicz.tasks.application.input;
+package juliokozarewicz.tasks.application.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record TasksCreateInput (
+public record TasksCreateInputAppDTO(
 
     String taskName,
     String description,

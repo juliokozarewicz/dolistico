@@ -1,6 +1,6 @@
 package juliokozarewicz.tasks.application.usecase;
 
-import juliokozarewicz.tasks.application.input.TasksCreateInput;
+import juliokozarewicz.tasks.application.dto.TasksCreateInputAppDTO;
 import juliokozarewicz.tasks.application.mapper.TasksMapper;
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.exception.DomainException;
@@ -23,16 +23,19 @@ public class TasksCreateUseCase {
     // -------------------------------------------------------------------------
 
     private final TasksRepository tasksRepository;
+    private final TasksMapper tasksMapper;
     private final TasksEventProducer tasksEventProducer;
 
     public TasksCreateUseCase(
 
         TasksRepository tasksRepository,
+        TasksMapper tasksMapper,
         TasksEventProducer tasksEventProducer
 
     ) {
 
         this.tasksRepository = tasksRepository;
+        this.tasksMapper = tasksMapper;
         this.tasksEventProducer = tasksEventProducer;
 
     }
@@ -40,12 +43,12 @@ public class TasksCreateUseCase {
     // ===================================================== ( constructor end )
 
     @Transactional
-    public String execute( TasksCreateInput tasksCreateInput ) {
+    public String execute( TasksCreateInputAppDTO tasksCreateInputAppDTO) {
 
         // Duplicated task
         if ( tasksRepository.existsByTaskNameAndDueDate(
-            tasksCreateInput.taskName(),
-            tasksCreateInput.dueDate()
+            tasksCreateInputAppDTO.taskName(),
+            tasksCreateInputAppDTO.dueDate()
         )) {
             throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
         }
@@ -59,12 +62,12 @@ public class TasksCreateUseCase {
             idCreated,
             timeStamp,
             timeStamp,
-            tasksCreateInput
+            tasksCreateInputAppDTO
         );
 
         // Create message
         tasksEventProducer.publish(
-            TasksMapper.toDto(createNewTask)
+            tasksMapper.toDto(createNewTask)
         );
 
         // Return created id
