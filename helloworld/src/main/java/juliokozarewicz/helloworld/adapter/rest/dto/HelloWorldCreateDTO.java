@@ -1,8 +1,9 @@
-package juliokozarewicz.helloworld.adapters.rest.dto;
+package juliokozarewicz.helloworld.adapter.rest.dto;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import juliokozarewicz.helloworld.adapters.rest.enums.GlobalExceptionEnum;
+import juliokozarewicz.helloworld.adapter.rest.enums.GlobalExceptionEnum;
+import juliokozarewicz.helloworld.application.command.HelloWorldCreateCommand;
 
 public record HelloWorldCreateDTO(
 
@@ -14,4 +15,4 @@ public record HelloWorldCreateDTO(
     )
     String message
 
-) {}
+) implements HelloWorldCreateCommand {}
