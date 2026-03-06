@@ -1,8 +1,10 @@
+CREATE SCHEMA IF NOT EXISTS accounts;
+
 -- ACCOUNTS
 CREATE TABLE IF NOT EXISTS accounts.user_account (
     id UUID PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
     email VARCHAR(256) NOT NULL UNIQUE,
     password VARCHAR(256) NOT NULL,
     level VARCHAR(256) NOT NULL DEFAULT 'user',
@@ -13,7 +15,7 @@ CREATE TABLE IF NOT EXISTS accounts.user_account (
 -- DELETED ACCOUNTS
 CREATE TABLE IF NOT EXISTS accounts.user_deleted_account (
     id UUID PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     email VARCHAR(256) NOT NULL,
 
     id_user UUID NOT NULL UNIQUE,
@@ -27,8 +29,8 @@ CREATE TABLE IF NOT EXISTS accounts.user_deleted_account (
 -- PROFILE
 CREATE TABLE IF NOT EXISTS accounts.user_profile (
     id UUID PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
-    updated_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
     name VARCHAR(256),
     phone VARCHAR(25),
     identity_document VARCHAR(256),
@@ -50,7 +52,7 @@ CREATE TABLE IF NOT EXISTS accounts.user_profile (
 -- USER LOGS
 CREATE TABLE IF NOT EXISTS accounts.user_log (
     id UUID PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     ip_address VARCHAR(256) NOT NULL,
     agent VARCHAR(512) NOT NULL,
     update_type VARCHAR(256) NOT NULL,
@@ -68,7 +70,7 @@ CREATE TABLE IF NOT EXISTS accounts.user_log (
 -- USER ADDRESS
 CREATE TABLE IF NOT EXISTS accounts.user_address (
     id UUID PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     address_name VARCHAR(256) NOT NULL,
     zip_code VARCHAR(50) NOT NULL,
     street VARCHAR(256) NOT NULL,

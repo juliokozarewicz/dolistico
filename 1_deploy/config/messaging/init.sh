@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# =========================================================== ( Start Redpanda init )
+# =========================================================== ( start redpanda init )
 : "${MESSAGING_PORT:?Missing MESSAGING_PORT}"
 
 DATA_DIR=/var/lib/redpanda
@@ -27,25 +27,25 @@ REDPANDA_PID=$!
 sleep 15
 
 export RPK_BROKERS=messaging:${MESSAGING_PORT}
-# ============================================================ ( Start Redpanda end )
+# ============================================================ ( start redpanda end )
 
 if ! rpk cluster config get enable_sasl 2>/dev/null | grep -q true; then
 
-  # ============================================================= ( Admin user init )
+  # ============================================================= ( admin user init )
   : "${MESSAGING_ADMIN_USER:?Missing MESSAGING_ADMIN_USER}"
   : "${MESSAGING_ADMIN_PASSWORD:?Missing MESSAGING_ADMIN_PASSWORD}"
 
   rpk acl user create "${MESSAGING_ADMIN_USER}" \
     --password "${MESSAGING_ADMIN_PASSWORD}" \
     --mechanism SCRAM-SHA-256 || true
-  # ============================================================== ( Admin user end )
+  # ============================================================== ( admin user end )
 
-  # ================================================================= ( Topics init )
+  # ================================================================= ( topics init )
   # Creating required topics
   rpk topic create send.simple.email.v1 --if-not-exists
-  # ================================================================== ( Topics end )
+  # ================================================================== ( topics end )
 
-  # ========================================================== ( Accounts user init )
+  # ========================================================== ( accounts user init )
 
   # Create user
   # ---------------------------------------------------------------------------------
@@ -101,9 +101,67 @@ if ! rpk cluster config get enable_sasl 2>/dev/null | grep -q true; then
     --cluster || true
   # ---------------------------------------------------------------------------------
 
-  # =========================================================== ( Accounts user end )
+  # =========================================================== ( accounts user end )
 
-  # ============================================================= ( Apply  SASL init)
+  # ========================================================== ( tasks user init )
+
+  # Create user
+  # ---------------------------------------------------------------------------------
+  : "${TASKS_MESSAGING_USER:?Missing TASKS_MESSAGING_USER}"
+  : "${TASKS_MESSAGING_PASSWORD:?Missing TASKS_MESSAGING_PASSWORD}"
+
+  rpk acl user create "${TASKS_MESSAGING_USER}" \
+    --password "${TASKS_MESSAGING_PASSWORD}" \
+    --mechanism SCRAM-SHA-256 || true
+  # ---------------------------------------------------------------------------------
+
+  # Common topics
+  # ---------------------------------------------------------------------------------
+  rpk acl create \
+    --allow-principal "User:${TASKS_MESSAGING_USER}" \
+    --operation WRITE \
+    --topic send.simple.email.v1 \
+    --resource-pattern-type literal || true
+
+  rpk acl create \
+    --allow-principal "User:${TASKS_MESSAGING_USER}" \
+    --operation DESCRIBE \
+    --topic send.simple.email.v1 \
+    --resource-pattern-type literal || true
+  # ---------------------------------------------------------------------------------
+
+  # Service topics
+  # ---------------------------------------------------------------------------------
+  # Allow full control over own topics (tasks.*)
+  rpk acl create \
+    --allow-principal "User:${TASKS_MESSAGING_USER}" \
+    --operation ALL \
+    --topic "tasks." \
+    --resource-pattern-type prefixed || true
+
+  # Allow consumer group usage for own groups (tasks.*)
+  rpk acl create \
+    --allow-principal "User:${TASKS_MESSAGING_USER}" \
+    --operation READ \
+    --group "tasks." \
+    --resource-pattern-type prefixed || true
+
+  rpk acl create \
+    --allow-principal "User:${TASKS_MESSAGING_USER}" \
+    --operation DESCRIBE \
+    --group "tasks." \
+    --resource-pattern-type prefixed || true
+
+  # Allow topic creation (only names are still restricted by topic ACLs)
+  rpk acl create \
+    --allow-principal "User:${TASKS_MESSAGING_USER}" \
+    --operation CREATE \
+    --cluster || true
+  # ---------------------------------------------------------------------------------
+
+  # =========================================================== ( tasks user end )
+
+  # ============================================================= ( apply  SASL init)
   rpk cluster config set enable_sasl true
   rpk cluster config set superusers "[\"${MESSAGING_ADMIN_USER}\"]"
   touch "$SASL_FLAG"
@@ -122,7 +180,7 @@ if ! rpk cluster config get enable_sasl 2>/dev/null | grep -q true; then
     --node-id 0 \
     --kafka-addr PLAINTEXT://0.0.0.0:${MESSAGING_PORT} \
     --advertise-kafka-addr PLAINTEXT://messaging:${MESSAGING_PORT}
-  # ============================================================== ( Apply  SASL end)
+  # ============================================================== ( apply  SASL end)
 
 fi
 

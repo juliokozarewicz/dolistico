@@ -1,4 +1,4 @@
-package juliokozarewicz.accounts.configurations;
+package juliokozarewicz.tasks.infrastructure.configuration;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -7,7 +7,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 @Configuration
 public class
-MessageConfig {
+MessagingConfig {
 
     @Bean
     public MessageSource messageSource() {
