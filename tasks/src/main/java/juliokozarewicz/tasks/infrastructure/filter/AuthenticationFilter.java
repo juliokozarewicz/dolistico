@@ -26,6 +26,8 @@ import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class AuthenticationFilter extends OncePerRequestFilter {
@@ -137,13 +139,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private void writeErrorResponse(HttpServletResponse response, int status) throws IOException {
 
-        response.setStatus(status);
+        response.setStatus(status == 401 ?  status : 500);
         response.setContentType("application/json;charset=UTF-8");
 
         Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", Instant.now().truncatedTo(ChronoUnit.SECONDS).toString());
         body.put("statusCode", status);
-        body.put("statusMessage", "error");
-        body.put("message", status == 401 ? "Unauthorized" : "Internal server error");
+        body.put("messageCode", status == 401 ? "INVALID_CREDENTIALS" : "INTERNAL_SERVER_ERROR");
 
         response.getWriter().write(objectMapper.writeValueAsString(body));
 
