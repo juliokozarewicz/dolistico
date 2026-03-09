@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -39,7 +40,12 @@ public class TasksCreateUseCase {
     // ===================================================== ( constructor end )
 
     @Transactional
-    public String execute( TasksCreateCommand tasksCreateCommand) {
+    public String execute(
+
+        Map<String, Object> credentialsData,
+        TasksCreateCommand tasksCreateCommand
+
+    ) {
 
         // Duplicated task
         if ( tasksRepository.existsByTaskNameAndDueDate(

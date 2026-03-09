@@ -1,5 +1,6 @@
 package juliokozarewicz.tasks.adapter.rest.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateDTO;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class TasksCreateController {
 
     // ==================================================== ( constructor init )
+
 
     // Env
     // -------------------------------------------------------------------------
@@ -50,12 +52,23 @@ public class TasksCreateController {
 
         // DTO error
         @Valid @RequestBody TasksCreateDTO tasksCreateDTO,
-        BindingResult bindingResult
+        BindingResult bindingResult,
+
+        // Request for auth
+        HttpServletRequest request
 
     ) {
 
+        // Data for auth
+        Map<String, Object> credentialsData;
+        credentialsData = (Map<String, Object>)
+        request.getAttribute("credentialsData");
+
         // Call use case
-        String idCreated = tasksCreateUseCase.execute(tasksCreateDTO);
+        String idCreated = tasksCreateUseCase.execute(
+            credentialsData,
+            tasksCreateDTO
+        );
 
         // data
         Map<String, String> dataObject = new LinkedHashMap<>();
