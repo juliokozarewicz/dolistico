@@ -1,7 +1,6 @@
 package juliokozarewicz.tasks.infrastructure.messaging.producer;
 
 
-import juliokozarewicz.tasks.application.command.TasksCreateCommand;
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -36,15 +35,15 @@ public class TasksEventProducer {
         try {
 
             kafkaTemplate.send(
-                MessagingTopicEnum.PERSIST_TASK_DATABASE.getTopicName(),
+                MessagingTopicEnum.TASKS_CREATE_PERSIST.getTopicName(),
                 message
             )
                 .get(10, TimeUnit.SECONDS);
 
         } catch (Exception e) {
 
-            throw new InternalError("Error creating message for broker " +
-                "[ TasksEventProducer.TasksEventProducer() ]: " + e);
+            throw new InternalError("Error producing message " +
+                "[ TasksEventProducer.publish() ]: " + e);
 
         }
 

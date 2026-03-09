@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum MessagingTopicEnum {
 
-    PERSIST_TASK_DATABASE("tasks.create.database.v1");
+    TASKS_CREATE_PERSIST("tasks.create.persist.v1");
 
     private final String topicName;
 
