@@ -222,14 +222,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             // ---------------------------------------------- (Claim's map init)
             if (claims.get("id") == null ||
-                claims.get("email") == null ||
                 claims.get("level") == null) {
                 buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
                 return;
             }
 
             Object idUser    = claims.get("id");
-            String emailUser = claims.get("email", String.class);
             String levelUser = claims.get("level", String.class);
             // ----------------------------------------------- (Claim's map end)
 
@@ -238,11 +236,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             );
 
             UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(emailUser, null, authorities);
+                new UsernamePasswordAuthenticationToken(idUser, null, authorities);
 
             Map<String, Object> dataMap = new LinkedHashMap<>();
             dataMap.put("id", idUser);
-            dataMap.put("email", emailUser);
             dataMap.put("level", levelUser);
 
             request.setAttribute("credentialsData", dataMap);

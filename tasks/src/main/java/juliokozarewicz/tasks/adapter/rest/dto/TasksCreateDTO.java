@@ -5,6 +5,7 @@ import juliokozarewicz.tasks.adapter.rest.enums.GlobalExceptionEnum;
 import juliokozarewicz.tasks.application.command.TasksCreateCommand;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record TasksCreateDTO(
 
@@ -25,13 +26,7 @@ public record TasksCreateDTO(
     )
     String description,
 
-    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
-    @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
-    @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
-    )
-    String category,
+    UUID category,
 
     @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
     @Size(max = 20, message = GlobalExceptionEnum.MANY_CHARACTERS)

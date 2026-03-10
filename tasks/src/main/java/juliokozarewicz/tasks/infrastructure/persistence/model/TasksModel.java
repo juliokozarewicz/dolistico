@@ -1,16 +1,17 @@
 package juliokozarewicz.tasks.infrastructure.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "tasks", schema = "tasks")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
@@ -31,9 +32,6 @@ public class TasksModel {
 
     @Column(name = "description", length = 1000)
     private String description;
-
-    @Column(name = "category", length = 255)
-    private String category;
 
     @Column(name = "color", length = 20)
     private String color;
@@ -64,5 +62,14 @@ public class TasksModel {
 
     @Column(name = "due_date")
     private LocalDateTime dueDate;
+
+    // Owner
+    @Column(name = "id_user", updatable = false, nullable = false)
+    private UUID idUser;
+
+    // Relations
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_task_category"))
+    private CategoryModel category;
 
 }

@@ -2,19 +2,31 @@ package juliokozarewicz.tasks.infrastructure.persistence.impl;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
+import juliokozarewicz.tasks.infrastructure.persistence.jpa.TasksCategoryJPA;
 import juliokozarewicz.tasks.infrastructure.persistence.jpa.TasksRepositoryJPA;
+import juliokozarewicz.tasks.infrastructure.persistence.model.CategoryModel;
 import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Repository
 public class TasksRepositoryImpl implements TasksRepository {
 
     private final TasksRepositoryJPA tasksRepositoryJPA;
+    private final TasksCategoryJPA tasksCategoryJPA;
 
-    public TasksRepositoryImpl(TasksRepositoryJPA jpaRepository) {
+    public TasksRepositoryImpl(
+
+        TasksRepositoryJPA jpaRepository,
+        TasksCategoryJPA tasksCategoryJPA
+
+    ) {
+
         this.tasksRepositoryJPA = jpaRepository;
+        this.tasksCategoryJPA = tasksCategoryJPA;
+
     }
 
     @Override
@@ -25,14 +37,24 @@ public class TasksRepositoryImpl implements TasksRepository {
     @Override
     public void save(TasksEntity tasksEntity) {
 
+        // --------------------------------------------------- ( Category init )
+        CategoryModel categoryModel = null;
+
+        if (tasksEntity.getCategory() != null) {
+            categoryModel = tasksCategoryJPA.findById(tasksEntity.getCategory())
+            .orElse(null);
+        }
+        // ---------------------------------------------------- ( Category end )
+
         // Mapper
         TasksModel model = TasksModel.builder()
+            .idUser(tasksEntity.getIdUser())
             .id(tasksEntity.getIdCreated())
             .createdAt(tasksEntity.getCreatedAt())
             .updatedAt(tasksEntity.getUpdatedAt())
             .taskName(tasksEntity.getTaskName())
             .description(tasksEntity.getDescription())
-            .category(tasksEntity.getCategory())
+            .category(categoryModel)
             .color(tasksEntity.getColor())
             .priority(tasksEntity.getPriority())
             .startTime(tasksEntity.getStartTime())

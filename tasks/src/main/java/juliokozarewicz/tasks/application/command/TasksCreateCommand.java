@@ -1,12 +1,13 @@
 package juliokozarewicz.tasks.application.command;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public interface TasksCreateCommand {
 
     String taskName();
     String description();
-    String category();
+    UUID category();
     String color();
     Integer priority();
     LocalDateTime startTime();

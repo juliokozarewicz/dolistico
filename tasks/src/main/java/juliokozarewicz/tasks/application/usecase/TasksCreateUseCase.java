@@ -47,6 +47,10 @@ public class TasksCreateUseCase {
 
     ) {
 
+        // Credentials
+        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
+        // String idLevelUser = credentialsData.get("level").toString();
+
         // Duplicated task
         if ( tasksRepository.existsByTaskNameAndDueDate(
             tasksCreateCommand.taskName().trim(),
@@ -61,6 +65,7 @@ public class TasksCreateUseCase {
 
         // Create entity
         TasksEntity createNewTask = new TasksEntity(
+            idUser,
             idCreated,
             timeStamp,
             timeStamp,

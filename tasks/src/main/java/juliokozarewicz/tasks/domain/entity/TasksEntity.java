@@ -19,6 +19,7 @@ public class TasksEntity {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
+    private  UUID idUser;
     private  UUID idCreated;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -29,7 +30,7 @@ public class TasksEntity {
 
     private  String taskName;
     private  String description;
-    private  String category;
+    private  UUID category;
     private  String color;
     private  Integer priority;
 
@@ -53,12 +54,13 @@ public class TasksEntity {
 
     public TasksEntity(
 
+        UUID idUser,
         UUID idCreated,
         LocalDateTime createdAt,
         LocalDateTime updatedAtAt,
         String taskName,
         String description,
-        String category,
+        UUID category,
         String color,
         Integer priority,
         LocalDateTime startTime,
@@ -72,6 +74,7 @@ public class TasksEntity {
 
     ) {
 
+        this.idUser = idUser;
         this.idCreated = idCreated;
         this.createdAt = createdAt;
         this.updatedAt = updatedAtAt;
@@ -90,6 +93,7 @@ public class TasksEntity {
         this.dueDate = dueDate;
 
         validateBusinessRules(
+            idUser,
             priority,
             startTime,
             endTime,
@@ -104,6 +108,7 @@ public class TasksEntity {
 
     private void validateBusinessRules (
 
+        UUID idUser,
         Integer priority,
         LocalDateTime startTime,
         LocalDateTime endTime,
@@ -112,16 +117,24 @@ public class TasksEntity {
         LocalDateTime dueDate
 
     ) {
+    
+        //------------------------------------------------------- (  user init )
 
-        //--------------------------------------------- (  priority rules INIT )
+        if (idUser == null) {
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
+
+        //-------------------------------------------------------- (  user end )
+
+        //--------------------------------------------- (  priority rules init )
 
         if ( priority == null || priority < 0 || priority > 5 ) {
             throw new DomainException(DomainExceptionEnum.INVALID_PRIORITY);
         }
 
-        //---------------------------------------------- (  priority rules END )
+        //---------------------------------------------- (  priority rules end )
 
-        //------------------------------------------------------- (  date INIT )
+        //------------------------------------------------------- (  date init )
 
         // StartTime and EndTime validate
         if (
@@ -164,7 +177,7 @@ public class TasksEntity {
             throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
         }
 
-        //-------------------------------------------------------- (  date END )
+        //-------------------------------------------------------- (  date end )
 
     }
 
