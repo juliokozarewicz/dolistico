@@ -2,6 +2,7 @@ package juliokozarewicz.tasks.infrastructure.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
@@ -50,17 +51,18 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     public AuthenticationFilter() {}
 
-// ======================================================= (Constructor end)
+// =========================================================== (Constructor end)
 
-// =================================================== (Post construct init)
+// ======================================================= (Post construct init)
 
     @PostConstruct
     private void init() {
 
-        // Public endpoints (no auth)
+        // -------------------------------------------- ( Public endpoints init)
         publicPaths = Arrays.asList(
             "/actuator/**"
         );
+        // --------------------------------------------- ( Public endpoints end)
 
         try {
 
@@ -85,9 +87,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         return new ArrayList<>(publicPaths);
     }
 
-// ==================================================== (Post construct end)
+// ======================================================== (Post construct end)
 
-// ================================================ (Assistant methods init)
+// ==================================================== (Assistant methods init)
 
     public Claims parseAndValidateToken(String token) {
 
@@ -107,6 +109,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             return parsedJwt.getPayload();
 
+        } catch (ExpiredJwtException e) {
+            throw new SecurityException("ACCESS_EXPIRED");
         } catch (Exception e) {
             log.warn("JWT validation failed: {}", e.getMessage());
             throw new SecurityException("Invalid JWT");
@@ -137,27 +141,31 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    private void writeErrorResponse(HttpServletResponse response, int status) throws IOException {
+    private void buildErrorResponse(
 
-        response.setStatus(status == 401 ?  status : 500);
+        HttpServletResponse response, int statusCode, String messageCode
+
+    ) throws IOException {
+
+        response.setStatus(statusCode);
         response.setContentType("application/json;charset=UTF-8");
-
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", Instant.now().truncatedTo(ChronoUnit.SECONDS).toString());
-        body.put("statusCode", status);
-        body.put("messageCode", status == 401 ? "INVALID_CREDENTIALS" : "INTERNAL_SERVER_ERROR");
-
+        body.put("statusCode", statusCode);
+        body.put("messageCode", messageCode);
         response.getWriter().write(objectMapper.writeValueAsString(body));
 
     }
 
-// ================================================= (Assistant methods end)
+// ===================================================== (Assistant methods end)
 
     @Override
     protected void doFilterInternal(
+
         HttpServletRequest request,
         HttpServletResponse response,
         FilterChain filterChain
+
     ) throws RuntimeException, IOException {
 
         try {
@@ -180,8 +188,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 ? accessCredentialRaw.replace("Bearer ", "")
                 : null;
 
-            if (accessCredential == null || accessCredential.isBlank()) {
-                writeErrorResponse(response, 401);
+            if (
+                accessCredential == null ||
+                accessCredential.isBlank() ||
+                accessCredential.length() > 4096
+            ) {
+                buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
                 return;
             }
             // --------------------------------------- (Get jwt from header end)
@@ -189,10 +201,22 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             // --------------------------------------------- (Validate JWT init)
             Claims claims;
             try {
+
                 claims = parseAndValidateToken(decrypt(accessCredential));
-            } catch (Exception e) {
-                writeErrorResponse(response, 401);
+
+            } catch (SecurityException e) {
+
+                if ("ACCESS_EXPIRED".equals(e.getMessage())) {
+                    buildErrorResponse(
+                        response, 401, "ACCESS_EXPIRED"
+                    );
+                } else {
+                    buildErrorResponse(
+                        response, 401, "INVALID_CREDENTIALS"
+                    );
+                }
                 return;
+
             }
             // ---------------------------------------------- (Validate JWT end)
 
@@ -200,7 +224,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             if (claims.get("id") == null ||
                 claims.get("email") == null ||
                 claims.get("level") == null) {
-                writeErrorResponse(response, 401);
+                buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
                 return;
             }
 
@@ -227,7 +251,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             log.error("Unexpected error in AuthenticationFilter", e);
-            writeErrorResponse(response, 500);
+            buildErrorResponse(response, 500, "INTERNAL_SERVER_ERROR");
         }
 
     }
