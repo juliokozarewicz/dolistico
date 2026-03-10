@@ -37,7 +37,7 @@ public class TasksEventConsumer {
         topics = "#{T(juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum).TASKS_CREATE_PERSIST.getTopicName()}",
         groupId = "#{T(juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum).TASKS_CREATE_PERSIST.getTopicName()}"
     )
-    public void consumer(
+    public void consumer (
 
         ConsumerRecord<String, byte[]> record,
         Acknowledgment ack
