@@ -41,21 +41,6 @@ info:
 
         <br>
 
-        #### User Login and Access Token Renewal Process
-        The login process occurs in two steps. First, the user sends their email and 
-        password to `PUBLIC_DOMAIN_REPLACE/accounts/login`. If the credentials are 
-        valid and the account is active, the system returns a temporary `userLoginToken` 
-        and sends a numeric PIN to the user's email.
-        Next, the user sends the `userLoginToken` and the PIN to 
-        `PUBLIC_DOMAIN_REPLACE/accounts/login-confirmation`. If both are valid, the 
-        system returns an access token and a refresh token used to access protected resources.        
-        The access token is valid for a few minutes. When it expires, a new one must 
-        be obtained using the refresh token. The refresh token is valid for 15 days. 
-        After it expires, the user must log in again. If the access token or refresh token 
-        is invalid or expired, the system returns the appropriate error.
-
-        <br>
-
         #### Error Response Pattern
 
         All error responses follow a standard structure to ensure consistency across the API.
