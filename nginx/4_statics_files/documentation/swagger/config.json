@@ -3,5 +3,6 @@
   "PUBLIC_DOMAIN_REPLACE": "https://request.juliokozarewicz.com/api/v1",
   "DOCUMENTATION_REPLACE": "documentation",
   "HELLOWORLD_BASE_URL_REPLACE": "helloworld",
-  "ACCOUNTS_BASE_URL_REPLACE": "accounts"
+  "ACCOUNTS_BASE_URL_REPLACE": "accounts",
+  "TASKS_BASE_URL_REPLACE": "tasks"
 }
