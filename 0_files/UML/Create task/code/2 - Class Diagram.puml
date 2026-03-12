@@ -180,31 +180,32 @@ package "infrastructure.persistence" {
     }
 
     class TasksModel <<@Entity>> {
-        - id           : UUID
-        - createdAt    : LocalDateTime
-        - updatedAt    : LocalDateTime
-        - taskName     : String
-        - description  : String
-        - color        : String
-        - priority     : int
-        - startTime    : LocalDateTime
-        - endTime      : LocalDateTime
-        - location     : String
-        - allDay       : boolean
-        - reminderTime : LocalDateTime
-        - notifyActive : boolean
-        - status       : String
-        - dueDate      : LocalDateTime
-        - idUser       : UUID
-        - category     : CategoryModel
+        - id           : UUID {PK, nullable=false, updatable=false}
+        - createdAt    : LocalDateTime {nullable=false, updatable=false}
+        - updatedAt    : LocalDateTime {nullable=false}
+        - taskName     : String(255) {nullable=false}
+        - description  : String(1000) {nullable=true}
+        - color        : String(20) {nullable=true}
+        - priority     : int {nullable=false}
+        - startTime    : LocalDateTime {nullable=true}
+        - endTime      : LocalDateTime {nullable=true}
+        - location     : String(255) {nullable=true}
+        - allDay       : boolean {nullable=false}
+        - reminderTime : LocalDateTime {nullable=true}
+        - notifyActive : boolean {nullable=false}
+        - status       : String(255) {nullable=false}
+        - dueDate      : LocalDateTime {nullable=true}
+        - idUser       : UUID {nullable=false, updatable=false}
     }
 
     class CategoryModel <<@Entity>> {
-        - id           : UUID
-        - categoryName : String
-        - idUser       : UUID
-        - tasks        : List<TasksModel>
+        - id           : UUID {PK, nullable=false, updatable=false}
+        - createdAt    : LocalDateTime {nullable=false, updatable=false}
+        - updatedAt    : LocalDateTime {nullable=false}
+        - categoryName : String(100) {nullable=false}
+        - idUser       : UUID {nullable=false, updatable=false}
     }
+
 }
 
 package "infrastructure.filters" {
