@@ -22,7 +22,7 @@ participant "TasksRepositoryImpl" as IMPL
 participant "TasksRepositoryJPA\n+ Specification" as JPA
 database    "PostgreSQL"          as DB
 
-CLIENT -> NGINX   : GET /api/v1/tasks\n?page=0&size=20&taskName=x\n&priority=2&category=uuid\n&location=x&dueDate=yyyy-MM-dd
+CLIENT -> NGINX   : GET /api/v1/tasks\n?page=0&size=20&taskName=x\n&priority=2&category=name\n&status=pending&location=x&dueDate=yyyy-MM-dd
 NGINX  -> FILTER  : forward request + JWT header
 
 alt JWT invalid or missing
@@ -48,7 +48,7 @@ else Valid
     UC -> REPO : findAllByUser(\n  userId, filters, pageable)
     REPO -> IMPL : findAllByUser(...)
     IMPL -> JPA  : findAll(\n  Specification, Pageable)
-    JPA  -> DB   : SELECT * FROM tasks.tasks\nWHERE id_user = ?\n[AND task_name ILIKE ?]\n[AND priority = ?]\n[AND category_id = ?]\n[AND location ILIKE ?]\n[AND due_date = ?]\nORDER BY created_at DESC\nLIMIT ? OFFSET ?
+    JPA  -> DB   : SELECT * FROM tasks.tasks\nWHERE id_user = ?\n[AND task_name ILIKE ?]\n[AND priority = ?]\n[AND status = ?]\n[AND category_id = ?]\n[AND location ILIKE ?]\n[AND due_date = ?]\nORDER BY created_at DESC\nLIMIT ? OFFSET ?
     DB   --> JPA  : List<TasksModel> + total count
     JPA  --> IMPL : Page<TasksModel>
     IMPL -> IMPL  : map TasksModel → TasksEntity

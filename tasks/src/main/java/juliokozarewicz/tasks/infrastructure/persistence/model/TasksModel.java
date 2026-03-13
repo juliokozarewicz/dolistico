@@ -1,10 +1,7 @@
 package juliokozarewicz.tasks.infrastructure.persistence.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.UUID;
 @Table(name = "tasks", schema = "tasks")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 @Builder
 public class TasksModel {
 
@@ -68,7 +66,7 @@ public class TasksModel {
     private UUID idUser;
 
     // Relations
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_task_category"))
     private CategoryModel category;
 

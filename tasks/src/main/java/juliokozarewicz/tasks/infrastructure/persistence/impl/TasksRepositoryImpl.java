@@ -9,7 +9,9 @@ import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 public class TasksRepositoryImpl implements TasksRepository {
@@ -74,6 +76,33 @@ public class TasksRepositoryImpl implements TasksRepository {
         // Save
         tasksRepositoryJPA.save(model);
 
+    }
+
+    @Override
+    public List<TasksEntity> findAllByUserId(UUID idUser) {
+
+        return tasksRepositoryJPA.findAllByIdUser(idUser)
+                .stream()
+                .map(model -> new TasksEntity(
+                        model.getIdUser(),
+                        model.getId(),
+                        model.getCreatedAt(),
+                        model.getUpdatedAt(),
+                        model.getTaskName(),
+                        model.getDescription(),
+                        model.getCategory() != null ? model.getCategory().getId() : null,
+                        model.getColor(),
+                        model.getPriority(),
+                        model.getStartTime(),
+                        model.getEndTime(),
+                        model.getLocation(),
+                        model.isAllDay(),
+                        model.getReminderTime(),
+                        model.isNotifyActive(),
+                        model.getStatus(),
+                        model.getDueDate()
+                ))
+                .collect(Collectors.toList());
     }
 
 }

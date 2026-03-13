@@ -1,10 +1,7 @@
 package juliokozarewicz.tasks.infrastructure.persistence.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.UUID;
 @Table(name = "category", schema = "tasks")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 @Builder
 public class CategoryModel {
 

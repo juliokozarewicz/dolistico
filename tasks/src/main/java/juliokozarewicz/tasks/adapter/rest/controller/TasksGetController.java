@@ -6,6 +6,7 @@ import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.TasksGetDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.tasks.application.usecase.TasksGetUseCase;
+import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -63,10 +64,14 @@ public class TasksGetController {
         request.getAttribute("credentialsData");
 
         // Call use case
-        String dataReturn = tasksGetUseCase.execute(
+        List<TasksEntity> dataReturned = tasksGetUseCase.execute(
             credentialsData,
             tasksGetDTO
         );
+
+        // Meta data
+        Map<String, Object> metaData = new LinkedHashMap<>();
+        metaData.put("totalItems", dataReturned.size());
 
         // Links
         Map<String, Object> customLinks = new LinkedHashMap<>();
@@ -88,7 +93,8 @@ public class TasksGetController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
             .messageCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getMessageCode())
-            .data(dataReturn)
+            .data(dataReturned)
+            .meta(metaData)
             .links(customLinks)
             .build()
         );

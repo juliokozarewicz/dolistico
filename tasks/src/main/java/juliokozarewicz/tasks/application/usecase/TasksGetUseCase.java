@@ -1,10 +1,12 @@
 package juliokozarewicz.tasks.application.usecase;
 
 import juliokozarewicz.tasks.application.command.TasksGetCommand;
+import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,7 +34,7 @@ public class TasksGetUseCase {
     // ===================================================== ( constructor end )
 
     @Transactional
-    public String execute (
+    public List<TasksEntity> execute (
 
         Map<String, Object> credentialsData,
         TasksGetCommand tasksGetCommand
@@ -42,7 +44,8 @@ public class TasksGetUseCase {
         // Credentials
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
-        return "##### temp return";
+        // Return all tasks
+        return tasksRepository.findAllByUserId(idUser);
 
     }
 
