@@ -5,6 +5,8 @@ import java.util.UUID;
 
 public interface TasksGetCommand {
 
+    Integer sizePagination();
+    Integer pageNumber();
     String taskName();
     UUID category();
     Integer priority();

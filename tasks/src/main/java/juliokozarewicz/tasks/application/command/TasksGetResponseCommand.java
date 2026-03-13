@@ -24,6 +24,9 @@ public record TasksGetResponseCommand(
 
 ) {
 
-    public record CategoryCommand(UUID id, String categoryName) {}
+    public record CategoryCommand(
+        UUID id,
+        String categoryName
+    ) {}
 
 }

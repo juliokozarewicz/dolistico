@@ -36,21 +36,26 @@ public class TasksRepositoryImpl implements TasksRepository {
         return tasksRepositoryJPA.existsByTaskNameAndDueDate(taskName, dueDate);
     }
 
+    // ------------------------------------------------------- ( Category init )
+    private CategoryModel getCategory(UUID categoryId) {
+        return categoryId == null
+        ? null
+        : tasksCategoryJPA.findById(categoryId).orElse(null);
+    }
+
+    private String getCategoryName(TasksModel model) {
+        return model.getCategory() != null
+        ? model.getCategory().getCategoryName()
+        : null;
+    }
+    // -------------------------------------------------------- ( Category end )
+
     @Override
     public void save(
 
         TasksEntity tasksEntity
 
     ) {
-
-        // --------------------------------------------------- ( Category init )
-        CategoryModel categoryModel = null;
-
-        if (tasksEntity.getCategory() != null) {
-            categoryModel = tasksCategoryJPA.findById(tasksEntity.getCategory())
-            .orElse(null);
-        }
-        // ---------------------------------------------------- ( Category end )
 
         // Mapper
         TasksModel model = TasksModel.builder()
@@ -60,7 +65,7 @@ public class TasksRepositoryImpl implements TasksRepository {
             .updatedAt(tasksEntity.getUpdatedAt())
             .taskName(tasksEntity.getTaskName())
             .description(tasksEntity.getDescription())
-            .category(categoryModel)
+            .category(getCategory(tasksEntity.getCategory()))
             .color(tasksEntity.getColor())
             .priority(tasksEntity.getPriority())
             .startTime(tasksEntity.getStartTime())
@@ -91,7 +96,7 @@ public class TasksRepositoryImpl implements TasksRepository {
                         model.getTaskName(),
                         model.getDescription(),
                         model.getCategory() != null ? model.getCategory().getId() : null,
-                        model.getCategory() != null ? model.getCategory().getCategoryName() : null,
+                        getCategoryName(model),
                         model.getColor(),
                         model.getPriority(),
                         model.getStartTime(),

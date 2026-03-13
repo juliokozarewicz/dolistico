@@ -9,6 +9,9 @@ import java.util.UUID;
 
 public record TasksGetDTO(
 
+    Integer sizePagination,
+    Integer pageNumber,
+
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS

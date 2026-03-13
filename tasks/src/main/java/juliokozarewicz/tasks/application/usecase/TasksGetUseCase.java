@@ -61,7 +61,7 @@ public class TasksGetUseCase {
                     ? new TasksGetResponseCommand.CategoryCommand(
                         entity.getCategory(),
                         entity.getCategoryName()
-                      )
+                    )
                     : null,
                 entity.getColor(),
                 entity.getPriority(),
@@ -80,6 +80,5 @@ public class TasksGetUseCase {
         return dataResponse;
 
     }
-
 
 }
