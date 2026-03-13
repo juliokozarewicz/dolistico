@@ -45,7 +45,7 @@ public class TasksGetUseCase {
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // --------------------------------------------------- (pagination init)
-        int pageNumber = tasksGetCommand.pageNumber() != null
+        int pageNumber = tasksGetCommand.pageNumber() != null &&tasksGetCommand.pageNumber() >= 1
         ? tasksGetCommand.pageNumber()
         : 1;
 
