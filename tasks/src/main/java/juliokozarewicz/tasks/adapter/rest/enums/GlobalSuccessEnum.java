@@ -2,7 +2,8 @@ package juliokozarewicz.tasks.adapter.rest.enums;
 
 public enum GlobalSuccessEnum {
 
-    CREATE_TASK_SUCCESS(201, "CREATE_TASK_SUCCESS");
+    CREATE_TASK_SUCCESS(201, "CREATE_TASK_SUCCESS"),
+    GET_TASKS_SUCCESS(200, "GET_TASKS_SUCCESS");
 
     private final int statusCode;
     private final String messageCode;

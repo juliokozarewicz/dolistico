@@ -88,13 +88,13 @@ public class TasksGetController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
+        .status(GlobalSuccessEnum.GET_TASKS_SUCCESS.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
-            .messageCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getMessageCode())
+            .statusCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getStatusCode())
+            .messageCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getMessageCode())
             .data(dataResponse)
             .meta(metaData)
             .links(customLinks)
