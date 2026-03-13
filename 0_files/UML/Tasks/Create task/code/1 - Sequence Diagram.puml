@@ -1,0 +1,116 @@
+@startuml Sequence_POST_Tasks
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam sequenceArrowThickness 1.5
+skinparam sequenceParticipantBorderThickness 1.5
+skinparam maxMessageSize 120
+skinparam defaultFontSize 11
+
+title POST /api/v1/tasks — Sequence Diagram
+
+actor       "Client"               as CLIENT
+participant "Nginx\n(API Gateway)" as NGINX
+participant "AuthFilter\n(JWT)"    as FILTER
+participant "TasksCreateController" as CTRL
+participant "TasksCreateUseCase"   as UC
+participant "TasksEntity"          as ENTITY
+participant "TasksRepository\n(interface)" as REPO
+participant "TasksRepositoryImpl"  as IMPL
+participant "TasksEventProducer"   as PRODUCER
+participant "Kafka\ntasks.create.persist.v1" as KAFKA
+participant "TasksEventConsumer"   as CONSUMER
+participant "TasksRepositoryJPA"   as JPA
+database    "PostgreSQL"           as DB
+
+CLIENT -> NGINX  : POST /api/v1/tasks\n+ JWT header + JSON body
+
+NGINX  -> FILTER : forward request + JWT
+
+alt JWT missing or invalid
+    FILTER --> NGINX  : 401 INVALID_CREDENTIALS
+    NGINX  --> CLIENT : 401 INVALID_CREDENTIALS
+else JWT valid
+    FILTER -> FILTER  : extract claims (userId, level)
+    FILTER -> CTRL    : request + credentialsData attribute
+end
+
+CTRL -> CTRL : read credentialsData (userId)
+CTRL -> CTRL : @Valid TasksCreateDTO\n(BindingResult)
+
+alt DTO validation failed
+    CTRL --> NGINX  : 422 UNPROCESSABLE_ENTITY + fieldErrors
+    NGINX --> CLIENT : 422 error
+else DTO valid
+    CTRL -> UC : execute(credentialsData, tasksCreateDTO)
+end
+
+UC -> UC : parse userId from credentials
+UC -> REPO : existsByTaskNameAndDueDate(\n  taskName, dueDate)
+REPO -> IMPL : existsByTaskNameAndDueDate(...)
+IMPL -> JPA  : existsByTaskNameAndDueDate(...)
+JPA  -> DB   : SELECT EXISTS(\nWHERE task_name = ?\nAND due_date = ?)
+DB  --> JPA  : true / false
+JPA --> IMPL : boolean
+IMPL --> REPO : boolean
+REPO --> UC  : boolean
+
+alt Task already exists
+    UC --> CTRL  : throws DomainException\nDUPLICATED_TASK
+    CTRL --> NGINX  : 409 DUPLICATED_TASK
+    NGINX --> CLIENT : 409 error
+else Not duplicated
+    UC -> UC : generate idCreated (UUID)\n+ timeStamp (now)
+    UC -> ENTITY : new TasksEntity(\n  idUser, idCreated,\n  timeStamp, timeStamp,\n  ...fields from command)
+    ENTITY -> ENTITY : validateBusinessRules(\n  idUser, priority,\n  startTime, endTime,\n  allDay, reminderTime, dueDate)
+end
+
+alt Business rule violation
+    ENTITY --> UC   : throws DomainException\n(INVALID_PRIORITY /\nINVALID_DATE_RANGE /\nINVALID_ALLDAY /\nINVALID_REMINDER)
+    UC --> CTRL     : propagates exception
+    CTRL --> NGINX  : 400 error
+    NGINX --> CLIENT : 400 error
+else Entity valid
+    ENTITY --> UC   : TasksEntity (valid)
+    UC -> PRODUCER  : producer(tasksEntity)
+    PRODUCER -> PRODUCER : objectMapper\n.writeValueAsBytes(entity)
+    PRODUCER -> KAFKA : send(\n  "tasks.create.persist.v1",\n  byte[] payload)\n.get(10s timeout)
+end
+
+alt Kafka send timeout / error
+    KAFKA --> PRODUCER : exception
+    PRODUCER --> UC    : throws InternalError
+    UC --> CTRL        : propagates
+    CTRL --> NGINX     : 503 SERVICE_UNAVAILABLE
+    NGINX --> CLIENT   : 503 error
+else Kafka received
+    KAFKA --> PRODUCER : ack
+    PRODUCER --> UC    : returns
+    UC --> CTRL        : idCreated (String)
+
+    CTRL -> CTRL : build dataObject {idCreated}
+    CTRL -> CTRL : build links {self POST, next GET}
+    CTRL -> CTRL : build StandardResponseDTO\n(201, CREATE_TASK_SUCCESS)
+    CTRL --> NGINX  : 201 Created + JSON body
+    NGINX --> CLIENT : 201 Created + JSON body
+
+    note over KAFKA, DB
+        Async persistence flow
+    end note
+
+    KAFKA -> CONSUMER : poll record (byte[] payload)
+    CONSUMER -> CONSUMER : objectMapper\n.readValue(payload, TasksEntity)
+    CONSUMER -> REPO  : save(tasksEntity)
+    REPO -> IMPL      : save(tasksEntity)
+    IMPL -> IMPL      : lookup CategoryModel\nby tasksEntity.category (nullable)
+    IMPL -> IMPL      : map TasksEntity → TasksModel\n(builder)
+    IMPL -> JPA       : save(tasksModel)
+    JPA  -> DB        : INSERT INTO tasks.tasks (...)
+    DB  --> JPA       : persisted
+    JPA --> IMPL      : ok
+    IMPL --> REPO     : ok
+    REPO --> CONSUMER : ok
+    CONSUMER -> KAFKA : ack.acknowledge()
+end
+
+@enduml

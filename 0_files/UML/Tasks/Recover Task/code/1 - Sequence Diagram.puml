@@ -1,0 +1,64 @@
+@startuml Sequence_GET_Tasks
+!theme plain
+skinparam pageMargin 10
+skinparam pageExternalColor white
+skinparam pageBorderColor white
+skinparam dpi 120
+skinparam sequenceArrowThickness 1.5
+skinparam sequenceParticipantBorderThickness 1.5
+skinparam maxMessageSize 120
+skinparam sequenceBoxBorderColor #666666
+skinparam defaultFontSize 11
+
+title GET /api/v1/tasks — Sequence Diagram
+
+actor       "Client"              as CLIENT
+participant "Nginx\n(API Gateway)" as NGINX
+participant "AuthFilter\n(JWT)"   as FILTER
+participant "TasksGetController"  as CTRL
+participant "TasksGetUseCase"     as UC
+participant "TasksRepository\n(interface)" as REPO
+participant "TasksRepositoryImpl" as IMPL
+participant "TasksRepositoryJPA\n+ Specification" as JPA
+database    "PostgreSQL"          as DB
+
+CLIENT -> NGINX   : GET /api/v1/tasks\n?page=0&size=20&taskName=x\n&priority=2&category=name\n&status=pending&location=x&dueDate=yyyy-MM-dd
+NGINX  -> FILTER  : forward request + JWT header
+
+alt JWT invalid or missing
+    FILTER --> NGINX  : 401 INVALID_CREDENTIALS
+    NGINX  --> CLIENT : 401 INVALID_CREDENTIALS
+else JWT valid
+    FILTER -> FILTER  : extract claims\n(userId, level)
+    FILTER -> CTRL    : request + credentialsData attribute
+end
+
+CTRL -> CTRL : read credentialsData\n(userId)
+CTRL -> CTRL : build TasksGetCommand\n(filters + pagination)
+CTRL -> UC   : execute(credentialsData, command)
+
+UC -> UC : parse userId from credentials
+UC -> UC : validate page (0–100 items)\nvalidate filters format
+
+alt Validation error
+    UC --> CTRL   : throws DomainException
+    CTRL --> NGINX : 400 / 422
+    NGINX --> CLIENT : error response
+else Valid
+    UC -> REPO : findAllByUser(\n  userId, filters, pageable)
+    REPO -> IMPL : findAllByUser(...)
+    IMPL -> JPA  : findAll(\n  Specification, Pageable)
+    JPA  -> DB   : SELECT * FROM tasks.tasks\nWHERE id_user = ?\n[AND task_name ILIKE ?]\n[AND priority = ?]\n[AND status = ?]\n[AND category_id = ?]\n[AND location ILIKE ?]\n[AND due_date = ?]\nORDER BY created_at DESC\nLIMIT ? OFFSET ?
+    DB   --> JPA  : List<TasksModel> + total count
+    JPA  --> IMPL : Page<TasksModel>
+    IMPL -> IMPL  : map TasksModel → TasksEntity
+    IMPL --> REPO : Page<TasksEntity>
+    REPO --> UC   : Page<TasksEntity>
+    UC   --> CTRL : Page<TasksEntity>
+end
+
+CTRL -> CTRL : build StandardResponseDTO\n(data, meta: page/size/total, links)
+CTRL --> NGINX  : 200 OK + JSON body
+NGINX --> CLIENT : 200 OK + JSON body
+
+@enduml

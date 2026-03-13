@@ -1,0 +1,184 @@
+@startuml Class_GET_Tasks
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam classAttributeIconSize 0
+skinparam classBorderThickness 1.5
+skinparam defaultFontSize 10
+skinparam linetype ortho
+
+title GET /api/v1/tasks — Class Diagram
+
+package "adapter.rest" {
+
+    class TasksGetController {
+        - tasksBaseURL : String
+        - tasksGetUseCase : TasksGetUseCase
+        --
+        + getAll(request, dto, bindingResult) : ResponseEntity
+    }
+
+    class TasksGetDTO <<record>> {
+        + taskName : String
+        + priority : Integer
+        + category : UUID
+        + location : String
+        + dueDate  : LocalDate
+        + page     : Integer
+        + size     : Integer
+    }
+
+    class StandardResponseDTO {
+        - timestamp  : Instant
+        - statusCode : int
+        - messageCode: String
+        - data       : Object
+        - meta       : Map<String,Object>
+        - links      : Map<String,Object>
+        --
+        + getTimestamp()
+        + getStatusCode()
+        + getData()
+        + getMeta()
+        + getLinks()
+    }
+
+    class GlobalSuccessEnum <<enumeration>> {
+        GET_TASKS_SUCCESS(200, "GET_TASKS_SUCCESS")
+    }
+
+    class GlobalExceptionEnum <<enumeration>> {
+        INVALID_CREDENTIALS(401, ...)
+        UNPROCESSABLE_ENTITY(422, ...)
+        BAD_REQUEST(400, ...)
+        INTERNAL_SERVER_ERROR(500, ...)
+    }
+
+    interface TasksGetCommand {
+        + taskName()  : String
+        + priority()  : Integer
+        + category()  : UUID
+        + location()  : String
+        + dueDate()   : LocalDate
+        + page()      : Integer
+        + size()      : Integer
+    }
+}
+
+package "application" {
+
+    class TasksGetUseCase {
+        - tasksRepository : TasksRepository
+        --
+        + execute(credentialsData, cmd) : Page<TasksEntity>
+    }
+}
+
+package "domain" {
+
+    class TasksEntity {
+        - idUser       : UUID
+        - idCreated    : UUID
+        - createdAt    : LocalDateTime
+        - updatedAt    : LocalDateTime
+        - taskName     : String
+        - description  : String
+        - category     : UUID
+        - color        : String
+        - priority     : Integer
+        - startTime    : LocalDateTime
+        - endTime      : LocalDateTime
+        - location     : String
+        - allDay       : boolean
+        - reminderTime : LocalDateTime
+        - notifyActive : boolean
+        - status       : String
+        - dueDate      : LocalDateTime
+        --
+        - validateBusinessRules(...)
+    }
+
+    interface TasksRepository {
+        + findAllByUser(\n  userId, filters, pageable) : Page<TasksEntity>
+        + existsByTaskNameAndDueDate(\n  name, dueDate) : boolean
+        + save(entity) : void
+    }
+}
+
+package "infrastructure.persistence" {
+
+    class TasksRepositoryImpl {
+        - tasksRepositoryJPA : TasksRepositoryJPA
+        - tasksCategoryJPA   : TasksCategoryJPA
+        --
+        + findAllByUser(\n  userId, filters, pageable) : Page<TasksEntity>
+        + existsByTaskNameAndDueDate(...) : boolean
+        + save(entity) : void
+        - toEntity(model) : TasksEntity
+    }
+
+    class TasksRepositoryJPA <<interface>> {
+        + findAll(\n  spec : Specification,\n  page : Pageable) : Page<TasksModel>
+        + existsByTaskNameAndDueDate(...) : boolean
+    }
+
+    class TasksSpecification {
+        + {static} hasTaskName(name)    : Specification
+        + {static} hasPriority(p)       : Specification
+        + {static} hasCategory(uuid)    : Specification
+        + {static} hasLocation(loc)     : Specification
+        + {static} hasDueDate(date)     : Specification
+        + {static} belongsToUser(uuid)  : Specification
+    }
+
+    class TasksModel <<@Entity>> {
+        - id           : UUID {PK, nullable=false, updatable=false}
+        - createdAt    : LocalDateTime {nullable=false, updatable=false}
+        - updatedAt    : LocalDateTime {nullable=false}
+        - taskName     : String(255) {nullable=false}
+        - description  : String(1000) {nullable=true}
+        - color        : String(20) {nullable=true}
+        - priority     : int {nullable=false}
+        - startTime    : LocalDateTime {nullable=true}
+        - endTime      : LocalDateTime {nullable=true}
+        - location     : String(255) {nullable=true}
+        - allDay       : boolean {nullable=false}
+        - reminderTime : LocalDateTime {nullable=true}
+        - notifyActive : boolean {nullable=false}
+        - status       : String(255) {nullable=false}
+        - dueDate      : LocalDateTime {nullable=true}
+        - idUser       : UUID {nullable=false, updatable=false}
+    }
+
+    class CategoryModel <<@Entity>> {
+        - id           : UUID {PK, nullable=false, updatable=false}
+        - createdAt    : LocalDateTime {nullable=false, updatable=false}
+        - updatedAt    : LocalDateTime {nullable=false}
+        - categoryName : String(100) {nullable=false}
+        - idUser       : UUID {nullable=false, updatable=false}
+    }
+}
+
+package "infrastructure.filters" {
+    class AuthFilter <<OncePerRequestFilter>> {
+        - jwtSecret : String
+        --
+        + doFilterInternal(...) : void
+        - extractClaims(token)  : Map<String,Object>
+    }
+}
+
+' Relations
+TasksGetDTO          ..|>  TasksGetCommand
+TasksGetController   -->   TasksGetUseCase
+TasksGetController   -->   StandardResponseDTO
+TasksGetController   -->   GlobalSuccessEnum
+TasksGetUseCase      -->   TasksRepository
+TasksRepositoryImpl  ..|>  TasksRepository
+TasksRepositoryImpl  -->   TasksRepositoryJPA
+TasksRepositoryImpl  -->   TasksSpecification
+TasksRepositoryJPA   -->   TasksModel
+TasksModel           -->   CategoryModel
+AuthFilter           ..>   TasksGetController : sets credentialsData
+
+@enduml
