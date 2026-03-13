@@ -91,6 +91,7 @@ public class TasksRepositoryImpl implements TasksRepository {
                         model.getTaskName(),
                         model.getDescription(),
                         model.getCategory() != null ? model.getCategory().getId() : null,
+                        model.getCategory() != null ? model.getCategory().getCategoryName() : null,
                         model.getColor(),
                         model.getPriority(),
                         model.getStartTime(),

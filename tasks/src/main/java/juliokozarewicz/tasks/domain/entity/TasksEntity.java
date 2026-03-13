@@ -31,6 +31,7 @@ public class TasksEntity {
     private  String taskName;
     private  String description;
     private  UUID category;
+    private String categoryName;
     private  String color;
     private  Integer priority;
 
@@ -61,6 +62,7 @@ public class TasksEntity {
         String taskName,
         String description,
         UUID category,
+        String categoryName,
         String color,
         Integer priority,
         LocalDateTime startTime,
@@ -81,6 +83,7 @@ public class TasksEntity {
         this.taskName = taskName;
         this.description = description;
         this.category = category;
+        this.categoryName = categoryName;
         this.color = color;
         this.priority = priority;
         this.startTime = startTime;

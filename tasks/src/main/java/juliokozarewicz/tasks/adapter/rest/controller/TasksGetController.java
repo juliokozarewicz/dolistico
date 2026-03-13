@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.TasksGetDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
+import juliokozarewicz.tasks.application.command.TasksGetResponseCommand;
 import juliokozarewicz.tasks.application.usecase.TasksGetUseCase;
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Validated
@@ -64,14 +66,14 @@ public class TasksGetController {
         request.getAttribute("credentialsData");
 
         // Call use case
-        List<TasksEntity> dataReturned = tasksGetUseCase.execute(
+         List<TasksGetResponseCommand> dataResponse = tasksGetUseCase.execute(
             credentialsData,
             tasksGetDTO
         );
 
         // Meta data
         Map<String, Object> metaData = new LinkedHashMap<>();
-        metaData.put("totalItems", dataReturned.size());
+        metaData.put("totalItems", dataResponse.size());
 
         // Links
         Map<String, Object> customLinks = new LinkedHashMap<>();
@@ -93,7 +95,7 @@ public class TasksGetController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
             .messageCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getMessageCode())
-            .data(dataReturned)
+            .data(dataResponse)
             .meta(metaData)
             .links(customLinks)
             .build()

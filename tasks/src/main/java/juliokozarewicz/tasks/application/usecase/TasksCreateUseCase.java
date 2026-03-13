@@ -72,6 +72,7 @@ public class TasksCreateUseCase {
             tasksCreateCommand.taskName().trim(),
             tasksCreateCommand.description(),
             tasksCreateCommand.category(),
+            null,
             tasksCreateCommand.color(),
             tasksCreateCommand.priority(),
             tasksCreateCommand.startTime(),
