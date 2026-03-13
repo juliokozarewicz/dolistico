@@ -83,7 +83,7 @@ public class TasksRepositoryImpl implements TasksRepository {
 
     }
 
-    @Override1
+    @Override
     public List<TasksEntity> findAllByUserId(UUID idUser) {
 
         return tasksRepositoryJPA.findAllByIdUser(idUser)

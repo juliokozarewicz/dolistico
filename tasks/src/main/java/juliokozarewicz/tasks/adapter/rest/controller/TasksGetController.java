@@ -66,14 +66,17 @@ public class TasksGetController {
         request.getAttribute("credentialsData");
 
         // Call use case
-         List<TasksGetResponseCommand> dataResponse = tasksGetUseCase.execute(
+         Map<String, Object> dataResponse = tasksGetUseCase.execute(
             credentialsData,
             tasksGetDTO
         );
 
         // Meta data
         Map<String, Object> metaData = new LinkedHashMap<>();
-        metaData.put("totalItems", dataResponse.size());
+        metaData.put("currentPage", dataResponse.get("currentPage"));
+        metaData.put("pageSize", dataResponse.get("pageSize"));
+        metaData.put("totalPages", dataResponse.get("totalPages"));
+        metaData.put("totalElements", dataResponse.get("totalElements"));
 
         // Links
         Map<String, Object> customLinks = new LinkedHashMap<>();
@@ -95,7 +98,7 @@ public class TasksGetController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getStatusCode())
             .messageCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getMessageCode())
-            .data(dataResponse)
+            .data(dataResponse.get("content"))
             .meta(metaData)
             .links(customLinks)
             .build()

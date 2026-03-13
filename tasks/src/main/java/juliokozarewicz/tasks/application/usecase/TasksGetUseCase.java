@@ -7,10 +7,7 @@ import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +33,8 @@ public class TasksGetUseCase {
 
     // ===================================================== ( constructor end )
 
-    @Transactional
-    public List<TasksGetResponseCommand> execute (
+    @Transactional(readOnly = true)
+    public Map<String, Object> execute (
 
         Map<String, Object> credentialsData,
         TasksGetCommand tasksGetCommand
@@ -47,22 +44,20 @@ public class TasksGetUseCase {
         // Credentials
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
-        // Pagination
-        // ---------------------------------------------------------------------
+        // --------------------------------------------------- (pagination init)
         int pageNumber = tasksGetCommand.pageNumber() != null
         ? tasksGetCommand.pageNumber()
-        : 0;
+        : 1;
 
         int pageSize = tasksGetCommand.sizePagination() != null
         ? tasksGetCommand.sizePagination()
         : 10;
-        // ---------------------------------------------------------------------
 
-        // Return all tasks
-        return tasksRepository.findAllByUserId(idUser)
-        .stream()
+        List<TasksEntity> allElements = tasksRepository.findAllByUserId(idUser);
+
+        List<TasksGetResponseCommand> content = allElements.stream()
         .sorted(Comparator.comparing(TasksEntity::getCreatedAt).reversed())
-        .skip((long) pageNumber * pageSize)
+        .skip((long) (pageNumber - 1) * pageSize)
         .limit(pageSize)
         .map(entity -> new TasksGetResponseCommand(
             entity.getIdCreated(),
@@ -88,6 +83,16 @@ public class TasksGetUseCase {
             entity.getDueDate()
         ))
         .collect(Collectors.toList());
+        // ---------------------------------------------------- (pagination end)
+
+        // Return map
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("content", content);
+        result.put("currentPage", pageNumber);
+        result.put("pageSize", pageSize);
+        result.put("totalElements", allElements.size());
+        result.put("totalPages", (int) Math.ceil((double) allElements.size() / pageSize));
+        return result;
 
     }
 
