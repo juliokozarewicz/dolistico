@@ -71,11 +71,15 @@ public class TasksGetController {
             tasksGetDTO
         );
 
+        // Content
+        List<?> content = (List<?>) dataResponse.get("content");
+
         // Meta data
         Map<String, Object> metaData = new LinkedHashMap<>();
         metaData.put("currentPage", dataResponse.get("currentPage"));
         metaData.put("pageSize", dataResponse.get("pageSize"));
         metaData.put("totalPages", dataResponse.get("totalPages"));
+        metaData.put("totalElementsCurrentPage",  content.size());
         metaData.put("totalElements", dataResponse.get("totalElements"));
 
         // Links
@@ -98,7 +102,7 @@ public class TasksGetController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getStatusCode())
             .messageCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getMessageCode())
-            .data(dataResponse.get("content"))
+            .data(content)
             .meta(metaData)
             .links(customLinks)
             .build()

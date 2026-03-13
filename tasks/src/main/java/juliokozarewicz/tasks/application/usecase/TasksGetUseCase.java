@@ -90,8 +90,8 @@ public class TasksGetUseCase {
         result.put("content", content);
         result.put("currentPage", pageNumber);
         result.put("pageSize", pageSize);
-        result.put("totalElements", allElements.size());
         result.put("totalPages", (int) Math.ceil((double) allElements.size() / pageSize));
+        result.put("totalElements", allElements.size());
         return result;
 
     }
