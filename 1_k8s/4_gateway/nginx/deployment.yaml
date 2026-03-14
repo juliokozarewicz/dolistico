@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nginx-gateway
+    namespace: production
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: nginx-gateway
+    template:
+        metadata:
+            labels:
+                app: nginx-gateway
+        spec:
+            containers:
+                - name: nginx
+                  image: nginx-gateway:latest
+                  imagePullPolicy: Never
+                  ports:
+                      - containerPort: 80
+                  livenessProbe:
+                      httpGet:
+                          path: /nginx-status
+                          port: 80
+                      initialDelaySeconds: 10
+                      periodSeconds: 30
+                      timeoutSeconds: 10
+                      failureThreshold: 5

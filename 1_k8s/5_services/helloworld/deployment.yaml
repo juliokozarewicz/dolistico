@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: helloworld
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: helloworld
+    template:
+        metadata:
+            labels:
+                app: helloworld
+        spec:
+            containers:
+                - name: helloworld
+                  image: helloworld:latest
+                  imagePullPolicy: Never
+                  ports:
+                      - containerPort: 3002
+                  envFrom:
+                      - secretRef:
+                          name: app-secrets
+                  livenessProbe:
+                      httpGet:
+                          path: /actuator/health/liveness
+                          port: 3002
+                      initialDelaySeconds: 10
+                      periodSeconds: 30
+                      timeoutSeconds: 10
+                      failureThreshold: 5

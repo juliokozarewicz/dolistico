@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+resources:
+
+    # Namespace
+    - namespace.yaml
+
+    # 1_config
+    - 1_config/secrets.yaml
+
+    # 2_storage
+    - 2_storage/storageclass.yaml
+
+    # 3_infrastructure
+    - 3_infrastructure/cache/cache-deployment.yaml
+    - 3_infrastructure/cache/cache-service.yaml
+    - 3_infrastructure/database/database-statefulset.yaml
+    - 3_infrastructure/database/database-service.yaml
+    - 3_infrastructure/messaging/messaging-statefulset.yaml
+    - 3_infrastructure/messaging/messaging-service.yaml
+
+    # 4_gateway
+    - 4_gateway/nginx/deployment.yaml
+    - 4_gateway/nginx/service.yaml
+    - 4_gateway/ingress.yaml
+
+    # 5_ervices
+    - 5_services/helloworld/deployment.yaml
+    - 5_services/helloworld/service.yaml
