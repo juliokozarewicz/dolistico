@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+    name: app-config
+
+data:
+    # Server
+    APPLICATION_TITLE: "dolistico"
+    PUBLIC_DOMAIN: "request.juliokozarewicz.com"
+
+    # Documentation
+    DOCUMENTATION_BASE_URL: "api/v1/documentation"
+
+    # Helloworld service
+    HELLOWORLD_BASE_URL: "api/v1/helloworld"
+    HELLOWORLD_PORT: "3001"

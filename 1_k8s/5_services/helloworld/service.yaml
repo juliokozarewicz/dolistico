@@ -6,5 +6,5 @@ spec:
     selector:
         app: helloworld
     ports:
-        - port: 3002
-          targetPort: 3002
+        - port: 3001
+          targetPort: 3001

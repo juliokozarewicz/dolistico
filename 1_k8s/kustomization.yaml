@@ -9,7 +9,8 @@ resources:
     - namespace.yaml
 
     # 1_config
-    - 1_config/secrets.yaml
+    - 1_config/app-config.yaml
+    - 1_config/cloudflared-secrets.yaml
 
     # 2_storage
     - 2_storage/storageclass.yaml
@@ -26,8 +27,11 @@ resources:
     - 4_gateway/cloudflared/deployment.yaml
     - 4_gateway/nginx/deployment.yaml
     - 4_gateway/nginx/service.yaml
-    - 4_gateway/ingress.yaml
 
-    # 5_ervices
+    # ---------------------------------------------------------- (services init)
+
+    # Helloworld
     - 5_services/helloworld/deployment.yaml
     - 5_services/helloworld/service.yaml
+
+    # ---------------------------------------------------------- (services init)

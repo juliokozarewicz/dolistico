@@ -46,4 +46,4 @@ env.*
 *.pem
 */static/uploads/*
 *.tar
-secrets.yaml
+*-secrets.yaml

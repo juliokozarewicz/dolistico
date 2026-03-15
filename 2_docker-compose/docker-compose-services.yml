@@ -5,7 +5,7 @@ services:
 
   # ------------------------------------------------------------- (aux services init)
   nginx:
-    build: ../../nginx
+    build: ../nginx
     container_name: nginx
     expose:
       - "${NGINX_PORT}"
@@ -104,7 +104,7 @@ services:
     container_name: helloworld
     env_file:
       - .env
-    build: ../../helloworld
+    build: ../helloworld
     expose:
       - "${HELLOWORLD_PORT}"
     networks:
@@ -120,7 +120,7 @@ services:
 
   emailservice:
     container_name: emailservice
-    build: ../../emailservice
+    build: ../emailservice
     env_file:
       - .env
     expose:
@@ -141,7 +141,7 @@ services:
 
   accounts:
     container_name: accounts
-    build: ../../accounts
+    build: ../accounts
     env_file:
       - .env
     expose:
@@ -170,7 +170,7 @@ services:
 
   tasks:
     container_name: tasks
-    build: ../../tasks
+    build: ../tasks
     env_file:
       - .env
     ports:
