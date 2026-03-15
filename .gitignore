@@ -45,3 +45,5 @@ env.*
 /1_deploy/.env
 *.pem
 */static/uploads/*
+*.tar
+secrets.yaml

@@ -23,6 +23,7 @@ resources:
     - 3_infrastructure/messaging/messaging-service.yaml
 
     # 4_gateway
+    - 4_gateway/cloudflared/deployment.yaml
     - 4_gateway/nginx/deployment.yaml
     - 4_gateway/nginx/service.yaml
     - 4_gateway/ingress.yaml
