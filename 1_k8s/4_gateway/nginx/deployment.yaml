@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: nginx-gateway
+    name: nginx
     namespace: production
 spec:
     replicas: 1
     selector:
         matchLabels:
-            app: nginx-gateway
+            app: nginx
     template:
         metadata:
             labels:
-                app: nginx-gateway
+                app: nginx
         spec:
             containers:
                 - name: nginx
-                  image: nginx-gateway:latest
+                  image: docker.io/library/nginx:latest
                   imagePullPolicy: Never
                   ports:
                       - containerPort: 80

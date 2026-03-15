@@ -13,6 +13,6 @@ spec:
                     pathType: Prefix
                     backend:
                         service:
-                            name: nginx-gateway
+                            name: nginx
                             port:
                                 number: 80
