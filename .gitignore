@@ -38,11 +38,11 @@ out/
 
 ### OTHERS ###
 logfile.*
-1_deploy/.env
+2_docker-compose/.env
 .env
 .env.*
 env.*
-/1_deploy/.env
+/2_docker-compose/.env
 *.pem
 */static/uploads/*
 *.tar
