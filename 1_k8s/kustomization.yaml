@@ -5,6 +5,8 @@ namespace: production
 
 resources:
 
+    # ------------------------------------------------------------ (config init)
+
     # Namespace
     - namespace.yaml
 
@@ -12,26 +14,28 @@ resources:
     - 1_config/app-config.yaml
     - 1_config/cloudflared-secrets.yaml
 
-    # 2_storage
-    - 2_storage/storageclass.yaml
+    # ------------------------------------------------------------ (config end)
 
-    # 3_infrastructure
-    - 3_infrastructure/cache/cache-deployment.yaml
-    - 3_infrastructure/cache/cache-service.yaml
-    - 3_infrastructure/database/database-statefulset.yaml
-    - 3_infrastructure/database/database-service.yaml
-    - 3_infrastructure/messaging/messaging-statefulset.yaml
-    - 3_infrastructure/messaging/messaging-service.yaml
+    # ---------------------------------------------------- (infrastructure init)
 
-    # 4_gateway
-    - 4_gateway/cloudflared/deployment.yaml
-    - 4_gateway/nginx/deployment.yaml
-    - 4_gateway/nginx/service.yaml
+    # Cloudflare
+    - 2_infrastructure/cloudflared/deployment.yaml
+
+    # Nginx
+    - 2_infrastructure/nginx/deployment.yaml
+    - 2_infrastructure/nginx/service.yaml
+
+    # Database
+    - 2_infrastructure/database/deployment.yaml
+    - 2_infrastructure/database/pvc.yaml
+    - 2_infrastructure/database/service.yaml
+
+    # ----------------------------------------------------- (infrastructure end)
 
     # ---------------------------------------------------------- (services init)
 
     # Helloworld
-    - 5_services/helloworld/deployment.yaml
-    - 5_services/helloworld/service.yaml
+    - 3_services/helloworld/deployment.yaml
+    - 3_services/helloworld/service.yaml
 
-    # ---------------------------------------------------------- (services init)
+    # ----------------------------------------------------------- (services end)
