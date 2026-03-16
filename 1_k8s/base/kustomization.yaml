@@ -12,7 +12,6 @@ resources:
 
     # 1_config
     - 1_config/app-config.yaml
-    - 1_config/cloudflared-secrets.yaml
 
     # ------------------------------------------------------------ (config end)
 
@@ -26,9 +25,9 @@ resources:
     - 2_infrastructure/nginx/service.yaml
 
     # Database
-    - 2_infrastructure/database/deployment.yaml
-    - 2_infrastructure/database/pvc.yaml
-    - 2_infrastructure/database/service.yaml
+    #- 2_infrastructure/database/deployment.yaml
+    #- 2_infrastructure/database/pvc.yaml
+    #- 2_infrastructure/database/service.yaml
 
     # ----------------------------------------------------- (infrastructure end)
 

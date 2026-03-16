@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+resources:
+  - ../../base
+
+secretGenerator:
+
+  # Cloudflare
+  - name: cloudflared-secrets
+    envs:
+      - secrets/cloudflared.env
+
+  # Database
+  - name: database-secrets
+    envs:
+      - secrets/database.env
+
+generatorOptions:
+  disableNameSuffixHash: true
