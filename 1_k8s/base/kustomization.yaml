@@ -25,9 +25,9 @@ resources:
     - 2_infrastructure/nginx/service.yaml
 
     # Database
-    #- 2_infrastructure/database/deployment.yaml
-    #- 2_infrastructure/database/pvc.yaml
-    #- 2_infrastructure/database/service.yaml
+    - 2_infrastructure/database/deployment.yaml
+    - 2_infrastructure/database/pvc.yaml
+    - 2_infrastructure/database/service.yaml
 
     # ----------------------------------------------------- (infrastructure end)
 
@@ -38,3 +38,12 @@ resources:
     - 3_services/helloworld/service.yaml
 
     # ----------------------------------------------------------- (services end)
+
+# Config map generator
+configMapGenerator:
+  - name: database-init-script
+    files:
+      - 2_infrastructure/database/init.sh
+
+generatorOptions:
+  disableNameSuffixHash: true

@@ -18,6 +18,16 @@ spec:
       - name: postgres
         image: postgres:17
         env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: DATABASE_ADMIN_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: DATABASE_ADMIN_PASSWORD
         - name: DATABASE_ADMIN_USER
           valueFrom:
             secretKeyRef:
@@ -32,8 +42,7 @@ spec:
         - name: postgres-data
           mountPath: /var/lib/postgresql/data
         - name: init-script
-          mountPath: /docker-entrypoint-initdb.d/init.sh
-          subPath: init.sh
+          mountPath: /docker-entrypoint-initdb.d
         ports:
         - containerPort: 5432
         readinessProbe:
@@ -48,6 +57,6 @@ spec:
         persistentVolumeClaim:
           claimName: database-pvc
       - name: init-script
-        hostPath:
-          path: /home/fedora/Documents/dolistico/1_k8s/1_config/database/init.sh
-          type: File
+        configMap:
+          name: database-init-script
+          defaultMode: 0755
