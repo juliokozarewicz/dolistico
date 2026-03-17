@@ -28,6 +28,7 @@ resources:
     - 2_infrastructure/database/deployment.yaml
     - 2_infrastructure/database/pvc.yaml
     - 2_infrastructure/database/service.yaml
+    - 2_infrastructure/database/database-init.yaml
 
     # ----------------------------------------------------- (infrastructure end)
 
@@ -39,11 +40,12 @@ resources:
 
     # ----------------------------------------------------------- (services end)
 
-# Config map generator
+# ---------------------------------------------------------------- ( jobs init )
 configMapGenerator:
   - name: database-init-script
     files:
       - 2_infrastructure/database/init.sh
+# ----------------------------------------------------------------- ( jobs end )
 
 generatorOptions:
   disableNameSuffixHash: true

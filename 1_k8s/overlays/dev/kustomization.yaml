@@ -8,6 +8,7 @@ resources:
 
 secretGenerator:
 
+  # ------------------------------------------------------ ( load secrets init )
   # Cloudflare
   - name: cloudflared-secrets
     envs:
@@ -17,6 +18,8 @@ secretGenerator:
   - name: database-secrets
     envs:
       - secrets/database.env
+
+  # ------------------------------------------------------- ( load secrets end )
 
 generatorOptions:
   disableNameSuffixHash: true

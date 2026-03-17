@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-init
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+
+      containers:
+      - name: db-init
+        image: postgres:17
+
+        command: ["/bin/bash", "/scripts/init.sh"]
+
+        envFrom:
+        - secretRef:
+            name: database-secrets
+
+        volumeMounts:
+        - name: script
+          mountPath: /scripts
+
+      volumes:
+      - name: script
+        configMap:
+          name: database-init-script
+          defaultMode: 0755
