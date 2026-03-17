@@ -7,6 +7,8 @@ echo "Waiting for Postgres..."
 until pg_isready -h database -U "$DATABASE_ADMIN_USER" -d postgres; do sleep 2; done
 echo "Postgres is ready!"
 
+echo "***************************** [ INIT SCRIPT ] ****************************"
+
 # ------------------------------------------------------------- ( helpers init )
 
 create_user() {
@@ -70,4 +72,4 @@ create_schema   "$TASKS_DATABASE_NAME" "$TASKS_DATABASE_SCHEMA" "$TASKS_DATABASE
 
 # ---------------------------------------------------------------- ( tasks end )
 
-echo "Done."
+echo "***************************** [ END SCRIPT ] *****************************"
