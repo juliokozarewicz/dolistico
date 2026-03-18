@@ -37,3 +37,4 @@ logfile.*
 ### OTHERS ###
 */static/uploads/*
 *.tar
+*.gz
