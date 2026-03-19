@@ -14,10 +14,15 @@ secretGenerator:
     envs:
       - secrets/cloudflared.env
 
-  # Database
+    # Database
   - name: database-secrets
     envs:
       - secrets/database.env
+
+  # Cache
+  - name: cache-secrets
+    envs:
+      - secrets/cache.env
 
   # ------------------------------------------------------- ( load secrets end )
 

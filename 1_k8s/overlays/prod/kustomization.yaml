@@ -1,5 +1,4 @@
 resources:
     - ../../base
     - secrets/cluster-secret-store.yaml
-    - secrets/cloudflared.yaml
-    - secrets/database.yaml
+    - secrets/cloudflared-secrets.yaml

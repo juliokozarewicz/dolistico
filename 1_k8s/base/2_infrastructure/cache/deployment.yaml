@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cache
+  template:
+    metadata:
+      labels:
+        app: cache
+    spec:
+      containers:
+        - name: cache
+          image: redis:latest
+          command:
+            - redis-server
+            - --port
+            - $(CACHE_PORT)
+            - --notify-keyspace-events
+            - Ex
+          ports:
+            - containerPort: 6379
+              name: redis
+          env:
+            - name: CACHE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: cache-secrets
+                  key: CACHE_PORT
+            - name: CACHE_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cache-secrets
+                  key: CACHE_ADMIN_PASSWORD
+          volumeMounts:
+            - name: cache-data
+              mountPath: /data
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - redis-cli -p ${CACHE_PORT} -a ${CACHE_ADMIN_PASSWORD} PING | grep PONG
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - redis-cli -p ${CACHE_PORT} -a ${CACHE_ADMIN_PASSWORD} PING | grep PONG
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+
+      volumes:
+        - name: cache-data
+          persistentVolumeClaim:
+            claimName: cache-pvc

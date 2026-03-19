@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cache-init
+spec:
+  ttlSecondsAfterFinished: 120
+  backoffLimit: 5
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: cache-init
+          image: redis:latest
+          command:
+            - /bin/bash
+            - -c
+            - |
+              until redis-cli -h cache -p ${CACHE_PORT} PING | grep PONG; do
+                echo "[CACHE INIT] Waiting for Redis..."
+                sleep 2
+              done
+              /init/init.sh
+          envFrom:
+            - secretRef:
+                name: cache-secrets
+          volumeMounts:
+            - name: init-script
+              mountPath: /init
+      volumes:
+        - name: init-script
+          configMap:
+              name: cache-init-script
+              defaultMode: 0755

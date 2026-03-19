@@ -25,10 +25,16 @@ resources:
     - 2_infrastructure/nginx/service.yaml
 
     # Database
+    - 2_infrastructure/database/database-init.yaml
     - 2_infrastructure/database/deployment.yaml
     - 2_infrastructure/database/pvc.yaml
     - 2_infrastructure/database/service.yaml
-    - 2_infrastructure/database/database-init.yaml
+
+    # Cache
+    - 2_infrastructure/cache/cache-init.yaml
+    - 2_infrastructure/cache/deployment.yaml
+    - 2_infrastructure/cache/pvc.yaml
+    - 2_infrastructure/cache/service.yaml
 
     # ----------------------------------------------------- (infrastructure end)
 
@@ -45,6 +51,10 @@ configMapGenerator:
   - name: database-init-script
     files:
       - 2_infrastructure/database/init.sh
+
+  - name: cache-init-script
+    files:
+      - 2_infrastructure/cache/init.sh
 # ----------------------------------------------------------------- ( jobs end )
 
 generatorOptions:
