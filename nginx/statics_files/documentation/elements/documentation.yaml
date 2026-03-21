@@ -155,24 +155,6 @@ paths:
                                                     method:
                                                         type: string
                                                         example: GET
-                                            documentation:
-                                                type: object
-                                                properties:
-                                                    href:
-                                                        type: string
-                                                        example: /api/v1/documentation
-                                                    method:
-                                                        type: string
-                                                        example: GET
-                                            swaggerDocumentation:
-                                                type: object
-                                                properties:
-                                                    href:
-                                                        type: string
-                                                        example: /api/v1/documentation/swagger
-                                                    method:
-                                                        type: string
-                                                        example: GET
 
                 "403":
                     description: >-
