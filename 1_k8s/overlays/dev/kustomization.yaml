@@ -24,6 +24,11 @@ secretGenerator:
     envs:
       - secrets/cache.env
 
+  # Messaging
+  - name: messaging-secrets
+    envs:
+      - secrets/messaging.env
+
   # ------------------------------------------------------- ( load secrets end )
 
 generatorOptions:

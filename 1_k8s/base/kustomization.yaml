@@ -36,6 +36,12 @@ resources:
     - 2_infrastructure/cache/pvc.yaml
     - 2_infrastructure/cache/service.yaml
 
+    # Messaging
+    - 2_infrastructure/messaging/messaging-init.yaml
+    - 2_infrastructure/messaging/deployment.yaml
+    - 2_infrastructure/messaging/pvc.yaml
+    - 2_infrastructure/messaging/service.yaml
+
     # ----------------------------------------------------- (infrastructure end)
 
     # ---------------------------------------------------------- (services init)
@@ -55,6 +61,10 @@ configMapGenerator:
   - name: cache-init-script
     files:
       - 2_infrastructure/cache/init.sh
+
+  - name: messaging-init-script
+    files:
+      - 2_infrastructure/messaging/init.sh
 # ----------------------------------------------------------------- ( jobs end )
 
 generatorOptions:

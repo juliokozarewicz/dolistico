@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: messaging-init
+spec:
+  ttlSecondsAfterFinished: 120
+  backoffLimit: 5
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: messaging-init
+          image: apache/kafka:latest
+          command:
+            - /bin/bash
+            - -c
+            - /init/init.sh
+          envFrom:
+            - secretRef:
+                name: messaging-secrets
+          volumeMounts:
+            - name: init-script
+              mountPath: /init
+      volumes:
+        - name: init-script
+          configMap:
+            name: messaging-init-script
+            defaultMode: 0755

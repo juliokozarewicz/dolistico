@@ -39,7 +39,7 @@ spec:
               name: database-secrets
               key: DATABASE_ADMIN_PASSWORD
         volumeMounts:
-        - name: postgres-data
+        - name: database-data
           mountPath: /var/lib/postgresql/data
         ports:
         - containerPort: 5432
@@ -54,6 +54,6 @@ spec:
           timeoutSeconds: 5
           failureThreshold: 5
       volumes:
-      - name: postgres-data
+      - name: database-data
         persistentVolumeClaim:
           claimName: database-pvc

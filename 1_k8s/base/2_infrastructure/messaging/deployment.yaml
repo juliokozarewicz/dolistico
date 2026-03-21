@@ -1,0 +1,206 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messaging
+  template:
+    metadata:
+      labels:
+        app: messaging
+    spec:
+      initContainers:
+        - name: kafka-storage-format
+          image: apache/kafka:latest
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+
+              # Formata storage se necessário
+              if [ ! -f /var/lib/kafka/data/meta.properties ]; then
+                echo "[STORAGE FORMAT] Formatting Kafka storage..."
+                /opt/kafka/bin/kafka-storage.sh format \
+                  --config /etc/kafka/docker/server.properties \
+                  --cluster-id "$MESSAGING_CLUSTER_ID" \
+                  --ignore-formatted
+                echo "[STORAGE FORMAT] Done."
+              else
+                echo "[STORAGE FORMAT] Already formatted, skipping."
+              fi
+
+              # Sobe Kafka temporariamente sem SASL para registrar o admin user
+              if [ ! -f /var/lib/kafka/data/.admin_provisioned ]; then
+                echo "[STORAGE FORMAT] Starting Kafka temporarily to provision admin SCRAM user..."
+
+                KAFKA_NODE_ID=1 \
+                KAFKA_PROCESS_ROLES=broker,controller \
+                KAFKA_CONTROLLER_QUORUM_VOTERS="1@localhost:9093" \
+                KAFKA_LISTENERS="PLAINTEXT://0.0.0.0:${MESSAGING_PORT},CONTROLLER://0.0.0.0:9093" \
+                KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://localhost:${MESSAGING_PORT}" \
+                KAFKA_LISTENER_SECURITY_PROTOCOL_MAP="PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT" \
+                KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+                KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT \
+                KAFKA_LOG_DIRS=/var/lib/kafka/data \
+                KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+                KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+                KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+                /etc/kafka/docker/run &
+                KAFKA_PID=$!
+
+                echo "[STORAGE FORMAT] Waiting for Kafka..."
+                until /opt/kafka/bin/kafka-broker-api-versions.sh \
+                  --bootstrap-server "localhost:${MESSAGING_PORT}" > /dev/null 2>&1; do
+                  sleep 2
+                done
+
+                echo "[STORAGE FORMAT] Registering admin SCRAM user..."
+                /opt/kafka/bin/kafka-configs.sh \
+                  --bootstrap-server "localhost:${MESSAGING_PORT}" \
+                  --alter \
+                  --add-config "SCRAM-SHA-256=[password=${MESSAGING_ADMIN_PASSWORD}]" \
+                  --entity-type users \
+                  --entity-name "$MESSAGING_ADMIN_USER"
+
+                echo "[STORAGE FORMAT] Stopping temporary Kafka..."
+                kill "$KAFKA_PID"
+                wait "$KAFKA_PID" || true
+
+                touch /var/lib/kafka/data/.admin_provisioned
+                echo "[STORAGE FORMAT] Admin user provisioned."
+              else
+                echo "[STORAGE FORMAT] Admin user already provisioned, skipping."
+              fi
+          env:
+            - name: MESSAGING_CLUSTER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secrets
+                  key: MESSAGING_CLUSTER_ID
+            - name: MESSAGING_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secrets
+                  key: MESSAGING_PORT
+            - name: MESSAGING_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secrets
+                  key: MESSAGING_ADMIN_USER
+            - name: MESSAGING_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secrets
+                  key: MESSAGING_ADMIN_PASSWORD
+          volumeMounts:
+            - name: messaging-data
+              mountPath: /var/lib/kafka/data
+
+      containers:
+        - name: messaging
+          image: apache/kafka:latest
+          ports:
+            - containerPort: 9092
+              name: kafka
+            - containerPort: 9093
+              name: controller
+          env:
+            - name: MESSAGING_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secrets
+                  key: MESSAGING_ADMIN_USER
+            - name: MESSAGING_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: messaging-secrets
+                  key: MESSAGING_ADMIN_PASSWORD
+
+            # KRaft
+            - name: KAFKA_NODE_ID
+              value: "1"
+            - name: KAFKA_PROCESS_ROLES
+              value: "broker,controller"
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              value: "1@localhost:9093"
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              value: "CONTROLLER"
+            - name: KAFKA_LOG_DIRS
+              value: "/var/lib/kafka/data"
+
+            # Listeners
+            - name: KAFKA_LISTENERS
+              value: "SASL_PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "SASL_PLAINTEXT://messaging:9092"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "SASL_PLAINTEXT:SASL_PLAINTEXT,CONTROLLER:PLAINTEXT"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "SASL_PLAINTEXT"
+
+            # SASL
+            - name: KAFKA_SASL_ENABLED_MECHANISMS
+              value: "SCRAM-SHA-256"
+            - name: KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL
+              value: "SCRAM-SHA-256"
+
+            # JAAS
+            - name: KAFKA_OPTS
+              value: "-Djava.security.auth.login.config=/tmp/kafka_jaas.conf"
+
+            # Authorization
+            - name: KAFKA_AUTHORIZER_CLASS_NAME
+              value: "org.apache.kafka.metadata.authorizer.StandardAuthorizer"
+            - name: KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND
+              value: "true"
+            - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+              value: "false"
+
+            # Replication
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+              value: "1"
+
+          command:
+            - sh
+            - -c
+            - |
+              export KAFKA_SUPER_USERS="User:${MESSAGING_ADMIN_USER};User:ANONYMOUS"
+              cat > /tmp/kafka_jaas.conf << JAAS
+              KafkaServer {
+                org.apache.kafka.common.security.scram.ScramLoginModule required
+                username="${MESSAGING_ADMIN_USER}"
+                password="${MESSAGING_ADMIN_PASSWORD}";
+              };
+              JAAS
+              exec /etc/kafka/docker/run
+
+          volumeMounts:
+            - name: messaging-data
+              mountPath: /var/lib/kafka/data
+
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+
+      volumes:
+        - name: messaging-data
+          persistentVolumeClaim:
+            claimName: messaging-pvc
