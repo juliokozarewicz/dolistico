@@ -28,6 +28,11 @@ secretGenerator:
   - name: messaging-secrets
     envs:
       - secrets/messaging.env
+      
+  # Emailservice
+  - name: emailservice-secrets
+    envs:
+      - secrets/emailservice.env
 
   # Tasks
   - name: tasks-secrets

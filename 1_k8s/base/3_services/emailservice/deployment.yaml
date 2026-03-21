@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emailservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emailservice
+  template:
+    metadata:
+      labels:
+        app: emailservice
+    spec:
+
+      initContainers:
+        - name: wait-for-messaging
+          image: busybox
+          command: ["sh", "-c", "until nc -z messaging $MESSAGING_PORT; do sleep 2; done"]
+          env:
+            - name: MESSAGING_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MESSAGING_PORT
+
+      containers:
+        - name: emailservice
+          image: docker.io/library/emailservice:latest
+          imagePullPolicy: Never
+          ports:
+            - name: service-port
+              containerPort: 3001
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: emailservice-secrets
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: service-port
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5

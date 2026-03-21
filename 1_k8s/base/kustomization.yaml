@@ -46,9 +46,13 @@ resources:
 
     # ---------------------------------------------------------- (services init)
 
-        # Helloworld
+    # Helloworld
     - 3_services/helloworld/deployment.yaml
     - 3_services/helloworld/service.yaml
+
+    # Emailservice
+    - 3_services/emailservice/deployment.yaml
+    - 3_services/emailservice/service.yaml
 
     # Tasks
     - 3_services/tasks/deployment.yaml
