@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: tasks
+  name: tasks
 spec:
-    selector:
-        app: tasks
-    ports:
-        - port: 3011
-          targetPort: service-port
+  selector:
+    app: tasks
+  ports:
+    - port: 3011
+      targetPort: service-port

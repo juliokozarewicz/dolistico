@@ -1,34 +1,62 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
-    name: tasks
-
+  name: tasks
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: tasks
-    template:
-        metadata:
-            labels:
-                app: tasks
-        spec:
-            containers:
-                - name: tasks
-                  image: docker.io/library/tasks:latest
-                  imagePullPolicy: Never
-                  ports:
-                      - name: service-port
-                        containerPort: 3011
-                  envFrom:
-                      - configMapRef:
-                          name: app-config
-                  livenessProbe:
-                      httpGet:
-                          path: /actuator/health/liveness
-                          port: service-port
-                      initialDelaySeconds: 10
-                      periodSeconds: 30
-                      timeoutSeconds: 10
-                      failureThreshold: 5
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tasks
+  template:
+    metadata:
+      labels:
+        app: tasks
+    spec:
+      initContainers:
+        - name: wait-for-database
+          image: busybox
+          command: ["sh", "-c", "until nc -z database $DATABASE_PORT; do sleep 2; done"]
+          env:
+            - name: DATABASE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DATABASE_PORT
+        - name: wait-for-cache
+          image: busybox
+          command: ["sh", "-c", "until nc -z cache $CACHE_PORT; do sleep 2; done"]
+          env:
+            - name: CACHE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: CACHE_PORT
+        - name: wait-for-messaging
+          image: busybox
+          command: ["sh", "-c", "until nc -z messaging $MESSAGING_PORT; do sleep 2; done"]
+          env:
+            - name: MESSAGING_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MESSAGING_PORT
+      containers:
+        - name: tasks
+          image: docker.io/library/tasks:latest
+          imagePullPolicy: Never
+          ports:
+            - name: service-port
+              containerPort: 3011
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: tasks-secrets
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: service-port
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5

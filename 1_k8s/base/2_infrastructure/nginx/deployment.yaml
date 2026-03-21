@@ -1,29 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: nginx
+  name: nginx
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: nginx
-    template:
-        metadata:
-            labels:
-                app: nginx
-        spec:
-            containers:
-                - name: nginx
-                  image: docker.io/library/nginx:latest
-                  imagePullPolicy: Never
-                  ports:
-                      - name: service-port
-                        containerPort: 80
-                  livenessProbe:
-                      httpGet:
-                          path: /nginx-status
-                          port: service-port
-                      initialDelaySeconds: 10
-                      periodSeconds: 30
-                      timeoutSeconds: 10
-                      failureThreshold: 5
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      initContainers:
+        - name: wait-for-helloworld
+          image: busybox
+          command: ["sh", "-c", "until nc -z helloworld $HELLOWORLD_PORT; do sleep 2; done"]
+          env:
+            - name: HELLOWORLD_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: HELLOWORLD_PORT
+        - name: wait-for-tasks
+          image: busybox
+          command: ["sh", "-c", "until nc -z tasks $TASKS_PORT; do sleep 2; done"]
+          env:
+            - name: TASKS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: TASKS_PORT
+      containers:
+        - name: nginx
+          image: docker.io/library/nginx:latest
+          imagePullPolicy: Never
+          ports:
+            - name: service-port
+              containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /nginx-status
+              port: service-port
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
