@@ -9,8 +9,6 @@ echo "Postgres is ready!"
 
 echo "***************************** [ INIT SCRIPT ] ****************************"
 
-# ------------------------------------------------------------- ( helpers init )
-
 create_user() {
   local user=$1 password=$2
   psql -v ON_ERROR_STOP=1 -h database -U "$DATABASE_ADMIN_USER" -d postgres <<-EOF
@@ -54,22 +52,16 @@ create_schema() {
 EOF
 }
 
-# -------------------------------------------------------------- ( helpers end )
-
 # ------------------------------------------------------------ ( accounts init )
-
 create_user     "$ACCOUNTS_DATABASE_USER" "$ACCOUNTS_DATABASE_PASSWORD"
 create_database "$ACCOUNTS_DATABASE_NAME" "$ACCOUNTS_DATABASE_USER"
 create_schema   "$ACCOUNTS_DATABASE_NAME" "$ACCOUNTS_DATABASE_SCHEMA" "$ACCOUNTS_DATABASE_USER"
-
 # ------------------------------------------------------------- ( accounts end )
 
 # --------------------------------------------------------------- ( tasks init )
-
 create_user     "$TASKS_DATABASE_USER" "$TASKS_DATABASE_PASSWORD"
 create_database "$TASKS_DATABASE_NAME" "$TASKS_DATABASE_USER"
 create_schema   "$TASKS_DATABASE_NAME" "$TASKS_DATABASE_SCHEMA" "$TASKS_DATABASE_USER"
-
 # ---------------------------------------------------------------- ( tasks end )
 
 echo "***************************** [ END SCRIPT ] *****************************"

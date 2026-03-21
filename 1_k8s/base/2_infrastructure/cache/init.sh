@@ -39,10 +39,14 @@ create_user() {
     "&__keyevent@0__:expired" || true
 }
 
+# --------------------------------------------------------- ( call create init )
+
 echo "[CACHE INIT] Creating Accounts user..."
 create_user "$ACCOUNTS_CACHE_USER" "$ACCOUNTS_CACHE_PASSWORD" "accounts"
 
 echo "[CACHE INIT] Creating Tasks user..."
 create_user "$TASKS_CACHE_USER" "$TASKS_CACHE_PASSWORD" "tasks"
+
+# ---------------------------------------------------------- ( call create end )
 
 echo "***************************** [ END SCRIPT ] *****************************"
