@@ -15,9 +15,14 @@ spec:
             - /bin/bash
             - -c
             - /init/init.sh
+
           envFrom:
+            - configMapRef:
+                name: app-config
+
             - secretRef:
                 name: messaging-secrets
+
           volumeMounts:
             - name: init-script
               mountPath: /init

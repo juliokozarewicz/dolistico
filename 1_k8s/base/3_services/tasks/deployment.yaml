@@ -2,25 +2,25 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-    name: helloworld
+    name: tasks
 
 spec:
     replicas: 1
     selector:
         matchLabels:
-            app: helloworld
+            app: tasks
     template:
         metadata:
             labels:
-                app: helloworld
+                app: tasks
         spec:
             containers:
-                - name: helloworld
-                  image: docker.io/library/helloworld:latest
+                - name: tasks
+                  image: docker.io/library/tasks:latest
                   imagePullPolicy: Never
                   ports:
                       - name: service-port
-                        containerPort: 3001
+                        containerPort: 3011
                   envFrom:
                       - configMapRef:
                           name: app-config

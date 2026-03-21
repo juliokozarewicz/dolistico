@@ -21,7 +21,6 @@ spec:
             - |
               set -e
 
-              # Formata storage se necessário
               if [ ! -f /var/lib/kafka/data/meta.properties ]; then
                 echo "[STORAGE FORMAT] Formatting Kafka storage..."
                 /opt/kafka/bin/kafka-storage.sh format \
@@ -33,7 +32,6 @@ spec:
                 echo "[STORAGE FORMAT] Already formatted, skipping."
               fi
 
-              # Sobe Kafka temporariamente sem SASL para registrar o admin user
               if [ ! -f /var/lib/kafka/data/.admin_provisioned ]; then
                 echo "[STORAGE FORMAT] Starting Kafka temporarily to provision admin SCRAM user..."
 
@@ -83,8 +81,8 @@ spec:
                   key: MESSAGING_CLUSTER_ID
             - name: MESSAGING_PORT
               valueFrom:
-                secretKeyRef:
-                  name: messaging-secrets
+                configMapKeyRef:
+                  name: app-config
                   key: MESSAGING_PORT
             - name: MESSAGING_ADMIN_USER
               valueFrom:
@@ -104,11 +102,16 @@ spec:
         - name: messaging
           image: apache/kafka:latest
           ports:
-            - containerPort: 9092
-              name: kafka
-            - containerPort: 9093
-              name: controller
+            - name: service-port
+              containerPort: 9092
+            - name: controller
+              containerPort: 9093
           env:
+            - name: MESSAGING_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MESSAGING_PORT
             - name: MESSAGING_ADMIN_USER
               valueFrom:
                 secretKeyRef:
@@ -134,9 +137,9 @@ spec:
 
             # Listeners
             - name: KAFKA_LISTENERS
-              value: "SASL_PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+              value: "SASL_PLAINTEXT://0.0.0.0:$(MESSAGING_PORT),CONTROLLER://0.0.0.0:9093"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "SASL_PLAINTEXT://messaging:9092"
+              value: "SASL_PLAINTEXT://messaging:$(MESSAGING_PORT)"
             - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
               value: "SASL_PLAINTEXT:SASL_PLAINTEXT,CONTROLLER:PLAINTEXT"
             - name: KAFKA_INTER_BROKER_LISTENER_NAME
@@ -188,14 +191,14 @@ spec:
 
           livenessProbe:
             tcpSocket:
-              port: 9092
+              port: service-port
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 5
           readinessProbe:
             tcpSocket:
-              port: 9092
+              port: service-port
             initialDelaySeconds: 20
             periodSeconds: 10
             timeoutSeconds: 5

@@ -42,7 +42,8 @@ spec:
         - name: database-data
           mountPath: /var/lib/postgresql/data
         ports:
-        - containerPort: 5432
+          - name: service-port
+            containerPort: 5432
         livenessProbe:
           exec:
             command:

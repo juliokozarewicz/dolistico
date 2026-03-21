@@ -16,6 +16,9 @@ spec:
         command: ["/bin/bash", "/scripts/init.sh"]
 
         envFrom:
+        - configMapRef:
+                name: app-config
+
         - secretRef:
             name: database-secrets
 

@@ -22,13 +22,13 @@ spec:
             - --notify-keyspace-events
             - Ex
           ports:
-            - containerPort: 6379
-              name: redis
+            - name: service-port
+              containerPort: 6379
           env:
             - name: CACHE_PORT
               valueFrom:
-                secretKeyRef:
-                  name: cache-secrets
+                configMapKeyRef:
+                  name: app-config
                   key: CACHE_PORT
             - name: CACHE_ADMIN_PASSWORD
               valueFrom:

@@ -28,9 +28,6 @@ public class HelloWorldCreateController {
     // -------------------------------------------------------------------------
     @Value("${HELLOWORLD_BASE_URL}")
     private String helloWorldBaseURL;
-
-    @Value("${DOCUMENTATION_BASE_URL}")
-    private String documentationBaseURL;
     // -------------------------------------------------------------------------
 
     private final HelloWorldCreateUseCase helloWorldCreateUseCase;
@@ -67,14 +64,6 @@ public class HelloWorldCreateController {
         Map<String, Object> customLinks = new LinkedHashMap<>();
         customLinks.put("self", new LinkedHashMap<>() {{
             put("href", "/" + helloWorldBaseURL);
-            put("method", "GET");
-        }});
-        customLinks.put("documentation", new LinkedHashMap<>() {{
-            put("href", "/" + documentationBaseURL);
-            put("method", "GET");
-        }});
-        customLinks.put("swaggerDocumentation", new LinkedHashMap<>() {{
-            put("href", "/" + documentationBaseURL + "/swagger");
             put("method", "GET");
         }});
 

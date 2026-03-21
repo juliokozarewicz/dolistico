@@ -6,7 +6,6 @@ spec:
   selector:
     app: messaging
   ports:
-    - name: kafka
-      port: 9092
-      targetPort: 9092
+    - port: 9092
+      targetPort: service-port
   clusterIP: None

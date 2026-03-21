@@ -6,13 +6,40 @@ metadata:
 
 data:
 
-    # Server
+    # ---------------------------------------------------------- ( server init )
     APPLICATION_TITLE: "dolistico"
     PUBLIC_DOMAIN: "request.juliokozarewicz.com"
+    # ----------------------------------------------------------- ( server end )
 
-    # Documentation
-    DOCUMENTATION_BASE_URL: "api/v1/documentation"
+    # -------------------------------------------------- ( infrastructure init )
 
-    # Helloworld service
+    # Database
+    DATABASE_PORT: "5432"
+
+    # Cache
+    CACHE_PORT: "6379"
+
+    # Messaging
+    MESSAGING_PORT: "9092"
+
+    # --------------------------------------------------- ( infrastructure end )
+
+    # -------------------------------------------------------- ( services init )
+
+    # Helloworld
     HELLOWORLD_BASE_URL: "api/v1/helloworld"
     HELLOWORLD_PORT: "3001"
+
+    # Emailservice
+    EMAILSERVICE_BASE_URL: "api/v1/emailservice"
+    EMAILSERVICE_PORT: "3002"
+
+    # Accounts
+    ACCOUNTS_BASE_URL: "api/v1/accounts"
+    ACCOUNTS_PORT: "3010"
+
+    # Tasks
+    TASKS_BASE_URL: "api/v1/tasks"
+    TASKS_PORT: "3011"
+
+    # --------------------------------------------------------- ( services end )

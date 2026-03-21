@@ -21,6 +21,8 @@ spec:
               done
               /init/init.sh
           envFrom:
+            - configMapRef:
+                name: app-config
             - secretRef:
                 name: cache-secrets
           volumeMounts:
