@@ -156,7 +156,7 @@ spec:
             - name: KAFKA_AUTHORIZER_CLASS_NAME
               value: "org.apache.kafka.metadata.authorizer.StandardAuthorizer"
             - name: KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND
-              value: "true"
+              value: "false"
             - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
               value: "false"
 
