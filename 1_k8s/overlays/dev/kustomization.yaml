@@ -34,6 +34,11 @@ secretGenerator:
     envs:
       - secrets/emailservice.env
 
+  # Accounts
+  - name: accounts-secrets
+    envs:
+      - secrets/accounts.env
+  
   # Tasks
   - name: tasks-secrets
     envs:

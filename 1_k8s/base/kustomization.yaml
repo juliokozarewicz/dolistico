@@ -53,6 +53,10 @@ resources:
     # Emailservice
     - 3_services/emailservice/deployment.yaml
     - 3_services/emailservice/service.yaml
+    
+    # Accounts
+    - 3_services/accounts/deployment.yaml
+    - 3_services/accounts/service.yaml
 
     # Tasks
     - 3_services/tasks/deployment.yaml

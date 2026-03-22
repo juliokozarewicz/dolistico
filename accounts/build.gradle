@@ -42,7 +42,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'com.github.f4b6a3:uuid-creator:6.1.0'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:4.2.0'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.78'
 	implementation 'org.springframework.security:spring-security-config:6.2.0'
 	implementation 'org.springframework.security:spring-security-web:6.2.0'
     implementation 'org.springframework.boot:spring-boot-starter'
