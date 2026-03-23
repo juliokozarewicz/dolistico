@@ -161,7 +161,7 @@ spec:
             - name: KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND
               value: "false"
             - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
-              value: "false"
+              value: "true"
 
             # Replication
             - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
