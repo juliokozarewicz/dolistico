@@ -49,7 +49,9 @@ create_user() {
   $KAFKA_BIN/kafka-acls.sh \
     --bootstrap-server "$BOOTSTRAP" --command-config "$ADMIN_CONFIG" \
     --add --allow-principal "User:${user}" \
-    --operation CREATE --cluster || true
+    --operation CREATE \
+    --topic "${prefix}." \
+    --resource-pattern-type prefixed || true
 }
 
 $KAFKA_BIN/kafka-configs.sh \
