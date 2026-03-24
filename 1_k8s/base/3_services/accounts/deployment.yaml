@@ -44,6 +44,10 @@ spec:
                   name: app-config
                   key: MESSAGING_PORT
 
+        - name: sleep-delay
+          image: busybox
+          command: [ "sleep", "60" ]
+
       containers:
         - name: accounts
           image: docker.io/library/accounts:latest

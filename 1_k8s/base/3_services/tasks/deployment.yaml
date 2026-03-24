@@ -43,6 +43,11 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: MESSAGING_PORT
+
+        - name: sleep-delay
+          image: busybox
+          command: ["sleep", "60"]
+
       containers:
         - name: tasks
           image: docker.io/library/tasks:latest

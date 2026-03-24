@@ -14,6 +14,7 @@ spec:
     spec:
 
       initContainers:
+
         - name: wait-for-messaging
           image: busybox
           command: ["sh", "-c", "until nc -z messaging $MESSAGING_PORT; do sleep 2; done"]
@@ -24,13 +25,17 @@ spec:
                   name: app-config
                   key: MESSAGING_PORT
 
+        - name: sleep-delay
+          image: busybox
+          command: [ "sleep", "60" ]
+
       containers:
         - name: emailservice
           image: docker.io/library/emailservice:latest
           imagePullPolicy: Never
           ports:
             - name: service-port
-              containerPort: 3001
+              containerPort: 3002
           envFrom:
             - configMapRef:
                 name: app-config

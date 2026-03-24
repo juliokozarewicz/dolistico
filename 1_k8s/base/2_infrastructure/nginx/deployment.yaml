@@ -12,7 +12,9 @@ spec:
       labels:
         app: nginx
     spec:
+
       initContainers:
+
         - name: wait-for-helloworld
           image: busybox
           command: ["sh", "-c", "until nc -z helloworld $HELLOWORLD_PORT; do sleep 2; done"]
@@ -22,6 +24,7 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: HELLOWORLD_PORT
+
         - name: wait-for-tasks
           image: busybox
           command: ["sh", "-c", "until nc -z tasks $TASKS_PORT; do sleep 2; done"]
@@ -31,6 +34,17 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: TASKS_PORT
+
+        - name: wait-for-accounts
+          image: busybox
+          command: [ "sh", "-c", "until nc -z accounts $ACCOUNTS_PORT; do sleep 2; done" ]
+          env:
+            - name: ACCOUNTS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: ACCOUNTS_PORT
+
       containers:
         - name: nginx
           image: docker.io/library/nginx:latest
