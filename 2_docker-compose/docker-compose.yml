@@ -1,0 +1,79 @@
+services:
+
+  # ------------------------------------------------------------- (aux services init)
+
+  database:
+    container_name: database
+    env_file: .env
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${DATABASE_ADMIN_USER}
+      POSTGRES_PASSWORD: ${DATABASE_ADMIN_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:5432"
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    networks:
+      - spring_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_ADMIN_USER} -d postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  cache:
+    container_name: cache
+    env_file: .env
+    image: redis:latest
+    command: redis-server --port ${CACHE_PORT} --requirepass ${CACHE_ADMIN_PASSWORD} --notify-keyspace-events Ex
+    ports:
+      - "${CACHE_PORT}:${CACHE_PORT}"
+    volumes:
+      - cache_data:/data
+    networks:
+      - spring_net
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -p ${CACHE_PORT} -a ${CACHE_ADMIN_PASSWORD} PING | grep PONG"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  messaging:
+      container_name: messaging
+      image: apache/kafka:latest
+      environment:
+        KAFKA_NODE_ID: 0
+        KAFKA_PROCESS_ROLES: broker,controller
+        KAFKA_LISTENERS: PLAINTEXT://:${MESSAGING_PORT},CONTROLLER://:9093
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:${MESSAGING_PORT}
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+        KAFKA_CONTROLLER_QUORUM_VOTERS: 0@messaging:9093
+        KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+        KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_LOG_DIRS: /var/lib/kafka/data
+      ports:
+        - "${MESSAGING_PORT}:${MESSAGING_PORT}"
+      volumes:
+        - messaging_data:/var/lib/kafka/data
+      networks:
+        - spring_net
+      healthcheck:
+        test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:${MESSAGING_PORT} --list"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+        start_period: 30s
+
+  # ------------------------------------------------------------- (aux services end)
+
+volumes:
+  database_data:
+  cache_data:
+  messaging_data:
+
+networks:
+  spring_net:
+    driver: bridge
