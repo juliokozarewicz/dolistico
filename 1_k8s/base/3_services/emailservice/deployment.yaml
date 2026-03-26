@@ -12,9 +12,7 @@ spec:
       labels:
         app: emailservice
     spec:
-
       initContainers:
-
         - name: wait-for-messaging
           image: busybox
           command: ["sh", "-c", "until nc -z messaging $MESSAGING_PORT; do sleep 2; done"]
@@ -24,11 +22,9 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: MESSAGING_PORT
-
         - name: sleep-delay
           image: busybox
           command: [ "sleep", "60" ]
-
       containers:
         - name: emailservice
           image: ghcr.io/juliokozarewicz/dolistico/emailservice:latest
@@ -49,3 +45,18 @@ spec:
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: service-port
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"

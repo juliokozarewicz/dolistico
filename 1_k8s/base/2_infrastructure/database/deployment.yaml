@@ -1,9 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: database
-
 spec:
   replicas: 1
   selector:
@@ -44,7 +42,7 @@ spec:
         ports:
           - name: service-port
             containerPort: 5432
-        livenessProbe:
+        readinessProbe:
           exec:
             command:
               - sh
@@ -54,6 +52,23 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 5
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - pg_isready -U "$DATABASE_ADMIN_USER" -d postgres
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "8"
+            memory: "32Gi"
       volumes:
       - name: database-data
         persistentVolumeClaim:

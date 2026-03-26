@@ -12,9 +12,7 @@ spec:
       labels:
         app: nginx
     spec:
-
       initContainers:
-
         - name: wait-for-helloworld
           image: busybox
           command: ["sh", "-c", "until nc -z helloworld $HELLOWORLD_PORT; do sleep 2; done"]
@@ -24,7 +22,6 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: HELLOWORLD_PORT
-
         - name: wait-for-tasks
           image: busybox
           command: ["sh", "-c", "until nc -z tasks $TASKS_PORT; do sleep 2; done"]
@@ -34,7 +31,6 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: TASKS_PORT
-
         - name: wait-for-accounts
           image: busybox
           command: [ "sh", "-c", "until nc -z accounts $ACCOUNTS_PORT; do sleep 2; done" ]
@@ -44,7 +40,6 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: ACCOUNTS_PORT
-
       containers:
         - name: nginx
           image: ghcr.io/juliokozarewicz/dolistico/nginx:latest
@@ -60,3 +55,18 @@ spec:
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /nginx-status
+              port: service-port
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"

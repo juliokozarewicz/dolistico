@@ -13,7 +13,6 @@ spec:
         app: accounts
     spec:
       initContainers:
-
         - name: wait-for-database
           image: busybox
           command: ["sh", "-c", "until nc -z database $DATABASE_PORT; do sleep 2; done"]
@@ -23,7 +22,6 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: DATABASE_PORT
-
         - name: wait-for-cache
           image: busybox
           command: ["sh", "-c", "until nc -z cache $CACHE_PORT; do sleep 2; done"]
@@ -33,7 +31,6 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: CACHE_PORT
-
         - name: wait-for-messaging
           image: busybox
           command: ["sh", "-c", "until nc -z messaging $MESSAGING_PORT; do sleep 2; done"]
@@ -43,11 +40,9 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: MESSAGING_PORT
-
         - name: sleep-delay
           image: busybox
           command: [ "sleep", "60" ]
-
       containers:
         - name: accounts
           image: ghcr.io/juliokozarewicz/dolistico/accounts:latest
@@ -55,14 +50,11 @@ spec:
           ports:
             - name: service-port
               containerPort: 3010
-
           envFrom:
             - configMapRef:
                 name: app-config
-
             - secretRef:
                 name: accounts-secrets
-
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
@@ -71,3 +63,18 @@ spec:
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: service-port
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"

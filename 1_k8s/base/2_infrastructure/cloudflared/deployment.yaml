@@ -1,35 +1,51 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: cloudflared
+  name: cloudflared
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: cloudflared
-    template:
-        metadata:
-            labels:
-                app: cloudflared
-        spec:
-            containers:
-                - name: cloudflared
-                  image: cloudflare/cloudflared:latest
-                  args:
-                      - tunnel
-                      - run
-                      - --token
-                      - $(TUNNEL_TOKEN)
-                  envFrom:
-                      - configMapRef:
-                            name: app-config
-                      - secretRef:
-                            name: cloudflared-secrets
-                  resources:
-                      requests:
-                          cpu: "50m"
-                          memory: "64Mi"
-                      limits:
-                          cpu: "200m"
-                          memory: "128Mi"
-            restartPolicy: Always
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+    spec:
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:latest
+          args:
+            - tunnel
+            - run
+            - --token
+            - $(TUNNEL_TOKEN)
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: cloudflared-secrets
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+      restartPolicy: Always

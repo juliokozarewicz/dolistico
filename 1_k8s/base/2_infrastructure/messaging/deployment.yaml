@@ -101,11 +101,13 @@ spec:
       containers:
         - name: messaging
           image: apache/kafka:latest
+
           ports:
             - name: service-port
               containerPort: 9092
             - name: controller
               containerPort: 9093
+
           env:
             - name: MESSAGING_PORT
               valueFrom:
@@ -196,12 +198,21 @@ spec:
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 5
+
           readinessProbe:
             tcpSocket:
               port: service-port
             initialDelaySeconds: 20
             periodSeconds: 10
             timeoutSeconds: 5
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "8"
+              memory: "16Gi"
 
       volumes:
         - name: messaging-data
