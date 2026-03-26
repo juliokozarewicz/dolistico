@@ -31,8 +31,8 @@ spec:
 
       containers:
         - name: emailservice
-          image: docker.io/library/emailservice:latest
-          imagePullPolicy: Never
+          image: ghcr.io/juliokozarewicz/dolistico/emailservice:latest
+          imagePullPolicy: Always
           ports:
             - name: service-port
               containerPort: 3002

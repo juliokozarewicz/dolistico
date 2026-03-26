@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: helloworld
-          image: docker.io/library/helloworld:latest
-          imagePullPolicy: Never
+          image: ghcr.io/juliokozarewicz/dolistico/helloworld:latest
+          imagePullPolicy: Always
           ports:
             - name: service-port
               containerPort: 3001

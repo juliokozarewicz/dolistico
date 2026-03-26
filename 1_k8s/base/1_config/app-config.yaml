@@ -31,8 +31,8 @@ data:
     HELLOWORLD_PORT: "3001"
 
     # Emailservice
-    EMAILSERVICE_BASE_URL: "api/v1/emailservice"
-    EMAILSERVICE_PORT: "3002"
+    EMAIL_SERVICE_BASE_URL: "api/v1/emailservice"
+    EMAIL_SERVICE_PORT: "3002"
 
     # Accounts
     ACCOUNTS_BASE_URL: "api/v1/accounts"

@@ -50,8 +50,8 @@ spec:
 
       containers:
         - name: tasks
-          image: docker.io/library/tasks:latest
-          imagePullPolicy: Never
+          image: ghcr.io/juliokozarewicz/dolistico/tasks:latest
+          imagePullPolicy: Always
           ports:
             - name: service-port
               containerPort: 3011

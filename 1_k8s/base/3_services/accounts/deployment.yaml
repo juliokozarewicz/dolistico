@@ -50,8 +50,8 @@ spec:
 
       containers:
         - name: accounts
-          image: docker.io/library/accounts:latest
-          imagePullPolicy: Never
+          image: ghcr.io/juliokozarewicz/dolistico/accounts:latest
+          imagePullPolicy: Always
           ports:
             - name: service-port
               containerPort: 3010

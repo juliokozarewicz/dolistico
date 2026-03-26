@@ -47,8 +47,8 @@ spec:
 
       containers:
         - name: nginx
-          image: docker.io/library/nginx:latest
-          imagePullPolicy: Never
+          image: ghcr.io/juliokozarewicz/dolistico/nginx:latest
+          imagePullPolicy: Always
           ports:
             - name: service-port
               containerPort: 80
