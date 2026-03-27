@@ -2,6 +2,24 @@ services:
 
   # ------------------------------------------------------------- (aux services init)
 
+  nginx:
+    build: ../nginx
+    container_name: nginx
+    env_file:
+      - .env
+    ports:
+      - "${NGINX_PORT}:${NGINX_PORT}"
+    networks:
+      - spring_net
+    volumes:
+      - accounts_static_files:/static/public:ro
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "-A", "Docker-Healthcheck", "http://nginx/healthz" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+
   database:
     container_name: database
     env_file: .env
