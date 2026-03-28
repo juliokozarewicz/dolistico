@@ -38,8 +38,9 @@ services:
       bash -c '
         docker-entrypoint.sh postgres &
         until pg_isready -U ${DATABASE_ADMIN_USER} -d postgres -q; do sleep 1; done
-        psql -U ${DATABASE_ADMIN_USER} -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = '"'"'accounts_database'"'"'" | grep -q 1 || psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE accounts_database"
-        psql -U ${DATABASE_ADMIN_USER} -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = '"'"'tasks_database'"'"'" | grep -q 1 || psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE tasks_database"
+        sleep 2
+        psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE accounts_database" 2>/dev/null || true
+        psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE tasks_database" 2>/dev/null || true
         wait
       '
     ports:
