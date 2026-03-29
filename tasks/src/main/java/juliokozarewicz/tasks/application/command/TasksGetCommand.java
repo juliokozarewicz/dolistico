@@ -1,5 +1,6 @@
 package juliokozarewicz.tasks.application.command;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -8,10 +9,11 @@ public interface TasksGetCommand {
     Integer sizePagination();
     Integer pageNumber();
     String taskName();
-    UUID category();
+    String category();
     Integer priority();
     String location();
     String status();
-    LocalDateTime dueDate();
+    LocalDate dueDateInit();
+    LocalDate dueDateEnd();
 
 }

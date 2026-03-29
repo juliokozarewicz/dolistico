@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalExceptionEnum;
 import juliokozarewicz.tasks.application.command.TasksGetCommand;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public record TasksGetDTO(
     )
     String taskName,
 
-    UUID category,
+    String category,
 
     @Min(value = 1, message = GlobalExceptionEnum.INVALID_PRIORITY_DTO)
     @Max(value = 5, message = GlobalExceptionEnum.INVALID_PRIORITY_DTO)
@@ -46,6 +47,8 @@ public record TasksGetDTO(
     )
     String status,
 
-    LocalDateTime dueDate
+    LocalDate dueDateInit,
+
+    LocalDate dueDateEnd
 
 ) implements TasksGetCommand {}

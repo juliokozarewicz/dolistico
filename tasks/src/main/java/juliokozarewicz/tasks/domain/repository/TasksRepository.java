@@ -11,7 +11,18 @@ public interface TasksRepository {
 
     boolean existsByTaskNameAndDueDate(String taskName, LocalDateTime dueDate);
 
-    List<TasksEntity> findAllByUserId(UUID idUser);
+    List<TasksEntity> findAllByIdUser(
+
+        UUID idUser,
+        String taskName,
+        String category,
+        Integer priority,
+        String location,
+        String status,
+        LocalDate dueDateInit,
+        LocalDate dueDateEnd
+
+    );
 
     void save(TasksEntity task);
 

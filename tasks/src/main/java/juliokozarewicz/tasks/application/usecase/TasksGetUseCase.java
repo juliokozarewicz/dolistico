@@ -53,7 +53,16 @@ public class TasksGetUseCase {
         ? tasksGetCommand.sizePagination()
         : 10;
 
-        List<TasksEntity> allElements = tasksRepository.findAllByUserId(idUser);
+        List<TasksEntity> allElements = tasksRepository.findAllByIdUser(
+            idUser,
+            tasksGetCommand.taskName(),
+            tasksGetCommand.category(),
+            tasksGetCommand.priority(),
+            tasksGetCommand.location(),
+            tasksGetCommand.status(),
+            tasksGetCommand.dueDateInit(),
+            tasksGetCommand.dueDateEnd()
+        );
 
         List<TasksGetResponseCommand> content = allElements.stream()
         .sorted(Comparator.comparing(TasksEntity::getCreatedAt).reversed())

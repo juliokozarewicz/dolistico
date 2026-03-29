@@ -78,8 +78,8 @@ public class TasksGetController {
         Map<String, Object> metaData = new LinkedHashMap<>();
         metaData.put("currentPage", dataResponse.get("currentPage"));
         metaData.put("totalPages", dataResponse.get("totalPages"));
-        metaData.put("pageSize", dataResponse.get("pageSize"));
         metaData.put("totalElementsCurrentPage",  content.size());
+        metaData.put("pageSize", dataResponse.get("pageSize"));
         metaData.put("totalElements", dataResponse.get("totalElements"));
 
         // Links
