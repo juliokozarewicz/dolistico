@@ -1,1859 +1,2005 @@
 openapi: 3.0.0
 servers:
-    - url: PUBLIC_DOMAIN_REPLACE
+  - url: PUBLIC_DOMAIN_REPLACE
 info:
-    title: DOLISTICO
-    version: "1.0"
-    description: |-
-
-        Dolistico is a lightweight and scalable microservice for managing 
-        to-do tasks, built with Java and Spring. Designed to integrate 
-        seamlessly into a microservices architecture, it allows users to 
-        create, update, delete, and organize personal tasks and agendas 
-        securely. With support for JWT authentication, user account 
-        management, and features like due dates, categorization, and 
-        ownership enforcement, Dolistico ensures that 
-        task management is both secure and efficient.
-
-        <br>
-        
-        #### Additional templates you might find useful
-        The official API documentation contains everything you need to 
-        understand, integrate, and test the available endpoints. It provides 
-        details on authentication, parameters, request and response examples, 
-        as well as explanations of the data models used. Access it here:
-        ```
-        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE
-        ```
-        
-        <br>
-
-        Besides direct access to the official documentation, you can also explore the API through an alternative interface.
-        
-        ##### Swagger:
-        Swagger offers a user-friendly, interactive interface where you 
-        can test API endpoints directly from your browser. It's ideal for 
-        quickly exploring requests, responses, and available operations.
-        Access it here:
-        ```
-        PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
-        ```
-
-        <br>
-
-        #### Error Response Pattern
-
-        All error responses follow a standard structure to ensure consistency across the API.
-        
-        Every error response always contains the following fields:
-        
-        - **timestamp** – The date and time when the error occurred (ISO 8601 format).
-        - **statusCode** – The HTTP status code returned by the server.
-        - **messageCode** – A machine-readable code representing the error type.
-        
-        Example of the base error response structure:
-        
-        ```json
-        {
-            "timestamp": "2026-02-27T19:53:14Z",
-            "statusCode": 401,
-            "messageCode": "INVALID_CREDENTIALS"
-        }
-        ```
-        
-        <br>
-        
-        **Input Validation Errors (422)**
-        
-        When validation fails for request inputs (such as **request body fields, form fields, query parameters, or path parameters**), the response will include an additional field called `fieldErrors`.
-        
-        This field lists each invalid field and its corresponding error code.
-        
-        Example:
-        
-        ```json
-        {
-            "timestamp": "2026-02-27T19:55:12Z",
-            "statusCode": 422,
-            "messageCode": "UNPROCESSABLE_ENTITY",
-            "fieldErrors": [
-                {
-                    "field": "subject",
-                    "fieldMessageCode": "FIELD_CANNOT_REMAIN_EMPTY"
-                },
-                {
-                    "field": "message",
-                    "fieldMessageCode": "FIELD_CANNOT_REMAIN_EMPTY"
-                }
-            ]
-        }
-        ```
+  title: DOLISTICO
+  version: "1.0"
+  description: |-
+    
+    Dolistico is a lightweight and scalable microservice for managing 
+    to-do tasks, built with Java and Spring. Designed to integrate 
+    seamlessly into a microservices architecture, it allows users to 
+    create, update, delete, and organize personal tasks and agendas 
+    securely. With support for JWT authentication, user account 
+    management, and features like due dates, categorization, and 
+    ownership enforcement, Dolistico ensures that 
+    task management is both secure and efficient.
+    
+    <br>
+    
+    #### Additional templates you might find useful
+    The official API documentation contains everything you need to 
+    understand, integrate, and test the available endpoints. It provides 
+    details on authentication, parameters, request and response examples, 
+    as well as explanations of the data models used. Access it here:
+    ```
+    PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE
+    ```
+    
+    <br>
+    
+    Besides direct access to the official documentation, you can also explore the API through an alternative interface.
+    
+    ##### Swagger:
+    Swagger offers a user-friendly, interactive interface where you 
+    can test API endpoints directly from your browser. It's ideal for 
+    quickly exploring requests, responses, and available operations.
+    Access it here:
+    ```
+    PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
+    ```
+    
+    <br>
+    
+    #### Error Response Pattern
+    
+    All error responses follow a standard structure to ensure consistency across the API.
+    
+    Every error response always contains the following fields:
+    
+    - **timestamp** – The date and time when the error occurred (ISO 8601 format).
+    - **statusCode** – The HTTP status code returned by the server.
+    - **messageCode** – A machine-readable code representing the error type.
+    
+    Example of the base error response structure:
+    
+    ```json
+    {
+        "timestamp": "2026-02-27T19:53:14Z",
+        "statusCode": 401,
+        "messageCode": "INVALID_CREDENTIALS"
+    }
+    ```
+    
+    <br>
+    
+    **Input Validation Errors (422)**
+    
+    When validation fails for request inputs (such as **request body fields, form fields, query parameters, or path parameters**), the response will include an additional field called `fieldErrors`.
+    
+    This field lists each invalid field and its corresponding error code.
+    
+    Example:
+    
+    ```json
+    {
+        "timestamp": "2026-02-27T19:55:12Z",
+        "statusCode": 422,
+        "messageCode": "UNPROCESSABLE_ENTITY",
+        "fieldErrors": [
+            {
+                "field": "subject",
+                "fieldMessageCode": "FIELD_CANNOT_REMAIN_EMPTY"
+            },
+            {
+                "field": "message",
+                "fieldMessageCode": "FIELD_CANNOT_REMAIN_EMPTY"
+            }
+        ]
+    }
+    ```
 
 components:
-    securitySchemes:
-        BearerAuth:
-            type: http
-            scheme: bearer
-            bearerFormat: JWT
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
 paths:
 
-    # HELLO WORLD
-    ######################################################################
+  ######################################################## ( helloworld init )
 
-    "/HELLOWORLD_BASE_URL_REPLACE":
-        get:
-            summary: Get hello world message
-            description: >-
-                Retrieves a hello world message. If the message parameter is not
-                provided or is empty, the default value "Hello World!" will be returned.
-                If the message equals "bad-message", a business rule error will be triggered.
-            tags:
-                - HELLO WORLD
-            parameters:
-                - name: message
-                  in: query
-                  required: false
-                  description: Custom message to be validated and returned.
-                  schema:
-                      type: string
-                      maxLength: 256
-                      example: Hello from the API!
-            responses:
-                "200":
-                    description: Successful response with validated hello world message.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    timestamp:
-                                        type: string
-                                        format: date-time
-                                        example: "2026-03-05T11:38:17Z"
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    messageCode:
-                                        type: string
-                                        example: HELLO_WORLD_SUCCESS
-                                    data:
-                                        type: object
-                                        properties:
-                                            message:
-                                                type: string
-                                                example: test_message
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: object
-                                                properties:
-                                                    href:
-                                                        type: string
-                                                        example: /api/v1/helloworld
-                                                    method:
-                                                        type: string
-                                                        example: GET
-
-                "403":
-                    description: >-
-                        Business rule violation. Triggered when the provided
-                        message equals "bad-message".
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    timestamp:
-                                        type: string
-                                        format: date-time
-                                        example: "2026-03-05T11:38:17Z"
-                                    statusCode:
-                                        type: integer
-                                        example: 403
-                                    messageCode:
-                                        type: string
-                                        example: NO_PERMISSION_TO_ACCESS
-
-    ######################################################################
-
-    # ACCOUNTS - SIGNUP
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/signup":
-        post:
-            summary: Create a new user account
-            description: >-
-                Creates a new user account with the provided details such as
-                name, email and password. An activation email is sent after
-                account creation.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                name:
-                                    type: string
-                                    description: The name of the user.
-                                    example: My Name
-                                email:
-                                    type: string
-                                    description: >-
-                                        The email address of the user. Must be a valid
-                                        email format.
-                                    example: Email@hotmail.com
-                                password:
-                                    type: string
-                                    description: >-
-                                        The password for the new account. Must contain
-                                        at least one uppercase letter, one number,
-                                        and one special character.
-                                    example: SecurePass123!
-                            required:
-                                - name
-                                - email
-                                - password
-            responses:
-                "201":
-                    description: Account successfully created and activation email sent.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 201
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: >-
-                                            Account created successfully, please activate
-                                            your account through the link sent to your email.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/signup
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/activate-email
-
-    ######################################################################
-
-    # ACCOUNTS - ACTIVATE ACCOUNT
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/activate-account":
-        post:
-            summary: Activate a user account
-            description: Activate the user's account using a token.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                token:
-                                    type: string
-                                    description: The activation token sent to the user's email.
-                                    example: abcd1234efgh5678
-                            required:
-                                - token
-            responses:
-                "200":
-                    description: Account successfully activated.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Your account has been successfully activated.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/activate-email
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/login
-
-                "404":
-                    description: Error occurred while trying to activate the account.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 404
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: The link has expired. Please go through the process again.
-
-    ######################################################################
-
-    # ACCOUNTS - UPDATE PASSWORD LINK 
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/update-password-link":
-        post:
-            summary: Send password update link to the user
-            description: >-
-                Sends an email to the user with instructions to update their
-                password. The email address must be valid.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                email:
-                                    type: string
-                                    description: The email address of the user requesting the password update.
-                                    example: email@email.com
-                            required:
-                                - email
-            responses:
-                "200":
-                    description: Password update link sent successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Change your password by clicking the link sent to your email.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/update-password-link
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/update-password
-
-    ######################################################################
-
-    # ACCOUNTS - UPDATE PASSWORD
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/update-password":
-        patch:
-            summary: Update user password
-            description: >-
-                This endpoint allows the user to update their password. The user
-                must provide a valid token and a new password. The token must
-                correspond to the one generated for password update purposes.
-                If successful, the password will be updated.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                password:
-                                    type: string
-                                    description: The new password that the user wants to set.
-                                    example: NewPassword123!
-                                token:
-                                    type: string
-                                    description: The token associated with the password reset process.
-                                    example: abcd1234efgh5678
-                            required:
-                                - email
-                                - password
-                                - token
-            responses:
-                "200":
-                    description: Password updated successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Password changed successfully. Please log in to continue.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/update-password
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/login
-
-                "404":
-                    description: Invalid token. An error occurred while changing your password.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 404
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: The link has expired. Please go through the process again.
-
-    ######################################################################
-
-    # ACCOUNTS - REQUEST LOGIN
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/login":
-        post:
-            summary: Authenticate user login
-            description: >-
-                This endpoint uses the user's email and password to validate
-                credentials. If the credentials are correct and the account is
-                active, a login token is generated and returned. This token must
-                then be used along with the numeric PIN sent to the user's email
-                to complete the login process. If the credentials are invalid, the
-                account is banned, or deactivated, an appropriate error response is returned.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                email:
-                                    type: string
-                                    description: The email address of the user attempting to log in.
-                                    example: user@example.com
-                                password:
-                                    type: string
-                                    description: The password associated with the user's account.
-                                    example: SecurePass123!
-                            required:
-                                - email
-                                - password
-            responses:
-                "200":
-                    description: User credentials are valid. A login token is returned to confirm the PIN sent to the user's email.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Your credentials have been confirmed. Next, enter the numeric code we sent to your email.
-                                    data:
-                                        type: object
-                                        properties:
-                                            userLoginToken:
-                                                type: string
-                                                example: Cg2eCx5HUg5zeS--h9zFaJlHSOv_eejo4hSqQEIbwu8DRD27CWsmVIhu471uHr-6-Ix7q9A6hFz0jsb0rybc_hQKJrBgFSkcmeTv
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /api/v1/accounts/login
-                                            next:
-                                                type: string
-                                                example: /api/v1/accounts/login-confirmation
-
-                "401":
-                    description: Invalid credentials provided.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 401
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: Invalid credentials.
-
-                "403":
-                    description: Account is banned or deactivated.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 403
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: We couldn't complete your login. More information has been sent to your email.
-
-    ######################################################################
-
-    # ACCOUNTS - LOGIN CONFIRMATION
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/login-confirmation":
-        post:
-            summary: Confirm user login with PIN
-            description: >-
-                This endpoint completes the login process by verifying the
-                `userLoginToken` and the numeric PIN sent to the user's email.
-                If both are valid and the account exists, access and refresh tokens
-                are generated and returned. Invalid tokens or PINs, or non-existent
-                users, will result in appropriate error responses.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                userLoginToken:
-                                    type: string
-                                    description: The temporary login token generated after validating user credentials in the initial login step.
-                                    example: Cg2eCx5HUg5zeS--h9zFaJlHSOv_eejo4hSqQEIbwu8DRD27CWsmVIhu471uHr-6-Ix7q9A6hFz0jsb0rybc_hQKJrBgFSkcmeTv
-                                pin:
-                                    type: string
-                                    description: The numeric PIN sent to the user's email during the login process.
-                                    example: "123456"
-                            required:
-                                - userLoginToken
-                                - pin
-            responses:
-                "200":
-                    description: User login confirmed successfully. Access and refresh tokens are returned.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Welcome! You are logged in.
-                                    data:
-                                        type: object
-                                        properties:
-                                            access:
-                                                type: string
-                                                example: M6sE0Snd3mO8ho1yToAcxeszZL0MS_pFbjfgzw-HMtFcAfzl1s20KAjm0j0p2OQFvQalPcD-8CxuEK2J17I6ABigcApt9IEF7lqvn7mYANJj-ZIGMXARch5qAmsWXq5Y6uGIai0AX1ekhgvIv2wa_k8qauhDKHpUjBAytAHDkiAhrjjVX_S1o8tNbpNg5p7Rj5RS2RqkqBB3RDubS_gFM1GQOz-IOBL-Zt0-OxbWmL2wVeTn7it885iGznKrI5GM8vnAsABWYcwUa05lRlTQqdWrxp0wlaSLbbcTPBQYkZ3AdiMPIYzdLsewQsvY1kZ8Xu36HO_IZzWSHrZoo5yvNdcrUZ2z6lc_GrvFAQhlUKdyTs-ztBrbZT_lxhYNnZa8CCvA_lY5Pv5dQ7l4YXoVJgDk-Lz2ZwW3oYrSb_Il7h_-GlXcaRQb27XNh795FODT7xgXofNYs26j-PpNPD5GMw9eKyMdz-EpOjrXXV0YVlbiqyzLv6t87HJPLka629Vs2Z6mHh00ULzeHsQ5tas7LP1Sn4qVdkN5uCqDYlcdXt590N5-_oQMRgxEuZHPftTUv9TyLcMJzG5Rumvr3NAUXx0R9UFNW9vs_URnGZnjhnR4APdr5wa2SFTXLH5cxf3apSCLIouBE3YAW_97WjclXSpIBSKZ25yb8TfkjBL4BhnZkA_2GSkvuJyxtduhPs7QkJ1MEvRg3qUa7L1opDOpVNFWN-vQ7ZuJJTy_zLlL9hOKcYB_62pB-yNDsmm1Yvbp68lqAufT865L66gdpEOA9VzOTUDfSlkoX1piu3WQKsoHtNB0Ow348mZcy3m7avWKTEDr94fceMfh_xXwIwF9AHZtkrE9DVriM-3QwKFfLyu_cgA8pgLGOnaydTDC4onUd3RSupQSeW5ivNLDV7an_dsWNu8Cju_cf4Ttgq0HvDPmvq7Mm3wgSR3guRu1z2F2vypgK_duQB5uhA5YfMotcMyAEGqXRMd2rJFf0f36RXy2Gi28QWOdJnhGk4t-jjku99HFaqMaM4HeUyEA5j3FAr89fPxZkwYyCO43h6rIlpme3ORiz7IviODBb6e89vzsQhsv_7z38AFDn23Xwzzlp4HQBpjPKo0nZq8n28yPCfg_ZpSOYK0U1CzwBw8VQhOOkuR9cKKM7LkoL6Xo3A6ADiyklz9ryA9-egFYE8LJUbsZyDmo
-                                            refresh:
-                                                type: string
-                                                example: jhrD34yP92IIb_QkPdJwpsEvG61zNGQL_tXrypiJwd4bKrjHtjo_w6NNWBTBTbZei_Ki3ue4fInoNMKFu_dDCg3ylov9CdvnArphX6Kv_heXq1UBfk-61Nux1_I_0hF2Bft6viaLoj12XdBLUrUSiIwa2LCJcOj8b6ISp7mLTQw
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /api/v1/accounts/login-confirmation
-                                            next:
-                                                type: string
-                                                example: /api/v1/accounts/get-profile
-
-                "401":
-                    description: Invalid login token or credentials.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 401
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: The token has expired. Please sign in again.
-
-                "404":
-                    description: Invalid or expired PIN.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 404
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: The entered PIN is invalid or has expired. Please try again.
-
-    ######################################################################
-
-    # ACCOUNTS - REFRESH LOGIN
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/refresh-login":
-        post:
-            summary: Refresh user access credentials
-            description: >-
-                This endpoint allows users to obtain new access and refresh tokens
-                by providing a valid refresh token. If the token is valid and associated
-                with an active account, the system generates new tokens. Errors are returned
-                if the token is invalid, the account is banned, or the account is deactivated.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                refreshToken:
-                                    type: string
-                                    description: The base64-encoded refresh token issued during the last login.
-                                    example: REFRESH_TOKEN_STRING
-                            required:
-                                - refreshToken
-            responses:
-                "200":
-                    description: New tokens issued successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: You are logged in.
-                                    data:
-                                        type: object
-                                        properties:
-                                            access:
-                                                type: string
-                                                example: ACCESS_TOKEN_STRING
-                                            refresh:
-                                                type: string
-                                                example: REFRESH_TOKEN_STRING
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/refresh-login
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/get-profile
-                "403":
-                    description: Account is banned or deactivated.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 403
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: We couldn't complete your login. More information has been sent to your email.
-
-    ######################################################################
-
-    # ACCOUNTS - GET PROFILE
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/get-profile":
-        get:
-            summary: Retrieve user profile information
-            description: >-
-                This endpoint returns the authenticated user's profile information,
-                including personal details and language preferences. The request must
-                include a valid Bearer access token in the Authorization header.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            responses:
-                "200":
-                    description: Profile retrieved successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    data:
-                                        type: object
-                                        properties:
-                                            profileImage:
-                                                type: string
-                                                example: https://example.com/image.jpg
-                                            name:
-                                                type: string
-                                                example: John Doe
-                                            email:
-                                                type: string
-                                                example: john.doe@example.com
-                                            phone:
-                                                type: string
-                                                example: +123456789
-                                            identityDocument:
-                                                type: string
-                                                example: 1234567890
-                                            gender:
-                                                type: string
-                                                example: male
-                                            birthdate:
-                                                type: string
-                                                example: 1990-01-01
-                                            biography:
-                                                type: string
-                                                example: I'm John Doe. I live everywhere. I am anyone.
-                                            language:
-                                                type: string
-                                                example: en
-                                            theme:
-                                                type: string
-                                                example: dark-mode
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/get-profile
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/update-profile
-
-    ######################################################################
-
-    # ACCOUNTS - UPLOAD AVATAR
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/upload-avatar":
-        post:
-            summary: Upload or remove profile image (avatar)
-            description: >-
-                This endpoint allows authenticated users to upload a profile image (avatar)
-                or remove it. If no image is sent in the request, the existing avatar
-                will be deleted. If an image is sent, it replaces the current one or
-                sets a new avatar if none exists. Only one image is allowed and must
-                be JPEG or PNG format with a maximum size of 1MB.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            requestBody:
-                required: false
-                content:
-                    multipart/form-data:
-                        schema:
-                            type: object
-                            properties:
-                                avatarImage:
-                                    type: array
-                                    items:
-                                        type: string
-                                        format: binary
-                                    description: Single image file (PNG or JPEG, max 1MB). If not provided, existing profile image will be removed.
-            responses:
-                "200":
-                    description: Profile image uploaded or removed successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Profile image changed successfully.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/upload-avatar
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/get-avatar
-                                examples:
-                                    imageRemoved:
-                                        summary: Avatar removed
-                                        value:
-                                            statusCode: 200
-                                            statusMessage: success
-                                            message: Your profile picture has been removed.
-                                    imageUploaded:
-                                        summary: Avatar uploaded
-                                        value:
-                                            statusCode: 200
-                                            statusMessage: success
-                                            message: Profile image changed successfully.
-                                            links:
-                                                self: /ACCOUNTS_BASE_URL_REPLACE/upload-avatar
-                                                next: /ACCOUNTS_BASE_URL_REPLACE/get-avatar
-
-    ######################################################################
-
-    # ACCOUNTS - UPDATE PROFILE
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/update-profile":
-        put:
-            summary: Update user profile information
-            description: >-
-                This endpoint allows authenticated users to update their profile details
-                such as name, phone, identity document, gender, birthdate, biography,
-                and language. The fields are not required, but if provided in the request
-                body, they must contain valid non-empty values. A valid Bearer token must
-                be provided in the Authorization header.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                name:
-                                    type: string
-                                    maxLength: 255
-                                    description: Full name of the user.
-                                    example: John Doe
-                                phone:
-                                    type: string
-                                    maxLength: 25
-                                    description: User's contact number.
-                                    example: "+1 (123) 456-7890"
-                                identityDocument:
-                                    type: string
-                                    maxLength: 256
-                                    description: Government-issued identity document number.
-                                    example: AB1234567
-                                gender:
-                                    type: string
-                                    maxLength: 256
-                                    description: Gender identification.
-                                    example: male
-                                birthdate:
-                                    type: string
-                                    description: Date of birth in YYYY-MM-DD format.
-                                    example: "1990-05-15"
-                                biography:
-                                    type: string
-                                    maxLength: 256
-                                    description: Short biography of the user.
-                                    example: A passionate developer who loves open-source.
-                                language:
-                                    type: string
-                                    maxLength: 50
-                                    description: Language code in ISO 639-1 format (e.g., en, pt-BR).
-                                    example: en
-                                theme:
-                                    type: string
-                                    maxLength: 100
-                                    description: The theme name, which represents the colors and fonts chosen by the user.
-                                    example: dark-mode
-            responses:
-                "200":
-                    description: Profile updated successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Profile updated successfully.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/update-profile
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/get-profile
-
-    ######################################################################
-
-    # ACCOUNTS - ACCOUNTS - CREATE ADDRESS
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/create-address":
-        post:
-            summary: Create a new address for the user
-            description: >-
-                This endpoint allows authenticated users to create a new address entry. 
-                The user can provide various address details including address name, 
-                zip code, street, neighborhood, city, state, country, and more. 
-                The address will be associated with the user, and if the address is marked 
-                as 'primary', any existing primary address will be set to 'secondary'. 
-                The user can store up to 5 addresses.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - addressName
-                                - zipCode
-                                - street
-                                - number
-                                - neighborhood
-                                - city
-                                - state
-                                - country
-                                - addressType
-                                - isPrimary
-                            properties:
-                                addressName:
-                                    type: string
-                                    maxLength: 256
-                                    description: Name of the address (e.g., 'home', 'work').
-                                    example: home
-                                zipCode:
-                                    type: string
-                                    maxLength: 50
-                                    description: Zip code of the address.
-                                    example: 90210
-                                street:
-                                    type: string
-                                    maxLength: 256
-                                    description: Street name of the address.
-                                    example: Sunset Boulevard
-                                number:
-                                    type: string
-                                    maxLength: 50
-                                    description: Number or identifier for the address (e.g., '123', 'Apt 4B').
-                                    example: 123
-                                addressLineTwo:
-                                    type: string
-                                    maxLength: 256
-                                    description: Additional address line (e.g., 'Apt 4B').
-                                    example: Apt 4B
-                                neighborhood:
-                                    type: string
-                                    maxLength: 256
-                                    description: Neighborhood or district of the address.
-                                    example: Beverly Hills
-                                city:
-                                    type: string
-                                    maxLength: 256
-                                    description: City of the address.
-                                    example: Los Angeles
-                                state:
-                                    type: string
-                                    maxLength: 256
-                                    description: State of the address.
-                                    example: California
-                                country:
-                                    type: string
-                                    maxLength: 256
-                                    description: Country of the address.
-                                    example: USA
-                                addressType:
-                                    type: string
-                                    maxLength: 256
-                                    description: Type of the address (e.g., 'Home', 'Work').
-                                    example: Home
-                                isPrimary:
-                                    type: boolean
-                                    description: Flag indicating if the address is the primary one.
-                                    example: true
-                                landmark:
-                                    type: string
-                                    maxLength: 256
-                                    description: Landmark near the address (e.g., 'Near Rodeo Drive').
-                                    example: Near Rodeo Drive
-            responses:
-                "201":
-                    description: Address created successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 201
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Address created successfully.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/create-address
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/get-address
-                "409":
-                    description: Conflict in address creation. The address creation failed because the address already exists.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 409
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: This address has already been registered.
-                "422":
-                    description: Unprocessable Entity. The user has reached the maximum limit of addresses allowed (5).
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 422
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: You can only keep up to five addresses registered.
-
-    ######################################################################
-
-    # ACCOUNTS - GET ADDRESS
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/get-address":
-        get:
-            summary: Retrieve all addresses associated with the user
-            description: >-
-                This endpoint allows authenticated users to retrieve a list of their saved addresses. 
-                It returns all the addresses associated with the user's account, including information 
-                such as street, number, city, state, country, and whether the address is marked as primary. 
-                Cached data may be used to improve performance. Users can maintain a maximum of five (5) addresses. 
-                It is not possible to edit existing addresses; they must be deleted and recreated if changes are needed.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            responses:
-                "200":
-                    description: Addresses retrieved successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    data:
-                                        type: array
-                                        items:
-                                            type: object
-                                            properties:
-                                                addressId:
-                                                    type: string
-                                                    example: f53d0ad4-a4fe-456a-b586-c930025233ce
-                                                addressName:
-                                                    type: string
-                                                    example: work
-                                                zipCode:
-                                                    type: string
-                                                    example: 90210
-                                                street:
-                                                    type: string
-                                                    example: Sunset Boulevard
-                                                number:
-                                                    type: string
-                                                    example: 123
-                                                addressLineTwo:
-                                                    type: string
-                                                    example: Apt 4B
-                                                neighborhood:
-                                                    type: string
-                                                    example: Beverly Hills
-                                                city:
-                                                    type: string
-                                                    example: Los Angeles
-                                                state:
-                                                    type: string
-                                                    example: California
-                                                country:
-                                                    type: string
-                                                    example: USA
-                                                addressType:
-                                                    type: string
-                                                    example: Home
-                                                isPrimary:
-                                                    type: boolean
-                                                    example: false
-                                                landmark:
-                                                    type: string
-                                                    example: Near Rodeo Drive
-                                        example:
-                                            - addressId: f53d0ad4-a4fe-456a-b586-c930025233ce
-                                              addressName: home
-                                              zipCode: 90210
-                                              street: Sunset Boulevard
-                                              number: "123"
-                                              addressLineTwo: Apt 4B
-                                              neighborhood: Beverly Hills
-                                              city: Los Angeles
-                                              state: California
-                                              country: USA
-                                              addressType: Home
-                                              isPrimary: false
-                                              landmark: Near Rodeo Drive
-
-                                            - addressId: 7ab67274-54c5-4625-8e9e-825749290c8e
-                                              addressName: home
-                                              zipCode: 90210
-                                              street: Sunset Boulevard
-                                              number: "123"
-                                              addressLineTwo: Apt 4B
-                                              neighborhood: Beverly Hills
-                                              city: Los Angeles
-                                              state: California
-                                              country: USA
-                                              addressType: Home
-                                              isPrimary: true
-                                              landmark: Near Rodeo Drive
-                                    meta:
-                                        type: object
-                                        properties:
-                                            totalItems:
-                                                type: integer
-                                                example: 2
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/get-address
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/create-address
-
-    ######################################################################
-
-    # ACCOUNTS - DELETE ADDRESS
-    ######################################################################
-
-    "/ACCOUNTS_BASE_URL_REPLACE/delete-address/{id}":
-        delete:
-            summary: Delete user address
-            description: >-
-                This endpoint allows an authenticated user to delete one of their registered addresses. 
-                The address must belong to the authenticated user, otherwise a not found error will be returned.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  description: UUID of the address to be deleted.
-                  schema:
+  # HELLO WORLD
+  "/HELLOWORLD_BASE_URL_REPLACE":
+    get:
+      summary: Get hello world message
+      description: >-
+        Retrieves a hello world message. If the message parameter is not
+        provided or is empty, the default value "Hello World!" will be returned.
+        If the message equals "bad-message", a business rule error will be triggered.
+      tags:
+        - HELLO WORLD
+      parameters:
+        - name: message
+          in: query
+          required: false
+          description: Custom message to be validated and returned.
+          schema:
+            type: string
+            maxLength: 256
+            example: Hello from the API!
+      responses:
+        "200":
+          description: Successful response with validated hello world message.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
                     type: string
-                    format: uuid
-                    example: 550e8400-e29b-41d4-a716-446655440000
-            responses:
-                "200":
-                    description: Address deleted successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Address deleted successfully.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /api/v1/accounts/address-delete
-                                            next:
-                                                type: string
-                                                example: /api/v1/accounts/address-get
-                            example:
-                                statusCode: 200
-                                statusMessage: success
-                                message: Address deleted successfully.
-                                links:
-                                    self: /api/v1/accounts/address-delete
-                                    next: /api/v1/accounts/address-get
-                "404":
-                    description: Address not found.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 404
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: Address not found.
-                            example:
-                                statusCode: 404
-                                statusMessage: error
-                                message: Address not found.
-                "400":
-                    description: Bad request.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 400
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: The request has an error, check.
-                            example:
-                                statusCode: 400
-                                statusMessage: error
-                                message: The request has an error, check.
+                    format: date-time
+                    example: "2026-03-05T11:38:17Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: HELLO_WORLD_SUCCESS
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: test_message
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: object
+                        properties:
+                          href:
+                            type: string
+                            example: /api/v1/helloworld
+                          method:
+                            type: string
+                            example: GET
 
-    ######################################################################
+        "403":
+          description: >-
+            Business rule violation. Triggered when the provided
+            message equals "bad-message".
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-03-05T11:38:17Z"
+                  statusCode:
+                    type: integer
+                    example: 403
+                  messageCode:
+                    type: string
+                    example: NO_PERMISSION_TO_ACCESS
 
-    # ACCOUNTS - UPDATE EMAIL LINK
-    ######################################################################
+  ######################################################### ( helloworld end )
 
-    "/ACCOUNTS_BASE_URL_REPLACE/update-email-link":
-        post:
-            summary: Send verification link and PIN for email update
-            description: >-
-                This endpoint allows users to request an email change. A verification PIN 
-                will be sent to the new email address, and a verification link containing 
-                a token will be sent to the current email address. Both must be validated 
-                to complete the email update process. Additionally, all login refresh tokens will be revoked.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - newEmail
-                                - link
-                            properties:
-                                newEmail:
-                                    type: string
-                                    format: email
-                                    description: The new email address that the user wants to register.
-                                    example: email@email.com
-            responses:
-                "200":
-                    description: Verification instructions sent successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: To change your email, click the link sent to your current address.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/update-email-link
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/update-email
-                "409":
-                    description: The new email address is already in use.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 409
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: This email address is already associated with an account.
+  ########################################################## ( accounts init )
 
-    ######################################################################
+  # ACCOUNTS - SIGNUP
+  "/ACCOUNTS_BASE_URL_REPLACE/signup":
+    post:
+      summary: Create a new user account
+      description: >-
+        Creates a new user account with the provided details such as
+        name, email and password. An activation email is sent after
+        account creation.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the user.
+                  example: My Name
+                email:
+                  type: string
+                  description: >-
+                    The email address of the user. Must be a valid
+                    email format.
+                  example: Email@hotmail.com
+                password:
+                  type: string
+                  description: >-
+                    The password for the new account. Must contain
+                    at least one uppercase letter, one number,
+                    and one special character.
+                  example: SecurePass123!
+              required:
+                - name
+                - email
+                - password
+      responses:
+        "201":
+          description: Account successfully created and activation email sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 201
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: >-
+                      Account created successfully, please activate
+                      your account through the link sent to your email.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/signup
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/activate-email
 
-    # ACCOUNTS - UPDATE EMAIL
-    ######################################################################
+  # ACCOUNTS - ACTIVATE ACCOUNT
+  "/ACCOUNTS_BASE_URL_REPLACE/activate-account":
+    post:
+      summary: Activate a user account
+      description: Activate the user's account using a token.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: The activation token sent to the user's email.
+                  example: abcd1234efgh5678
+              required:
+                - token
+      responses:
+        "200":
+          description: Account successfully activated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Your account has been successfully activated.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/activate-email
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/login
 
-    "/ACCOUNTS_BASE_URL_REPLACE/update-email":
-        patch:
-            summary: Complete email update process
-            description: >-
-                This endpoint allows the user to complete the process of updating their email address. 
-                A link containing a token is sent to the user’s current email address, and a PIN is sent to the new email address. 
-                The user must provide both the token and the PIN. Only after both are verified will the email be updated.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - password
-                                - pin
-                                - token
-                            properties:
-                                pin:
-                                    type: string
-                                    description: The 6-digit PIN sent to the new email address.
-                                    example: "685278"
-                                token:
-                                    type: string
-                                    description: Verification token sent to the current email address.
-                                    example: abcd1234efgh5678
-            responses:
-                "200":
-                    description: Email changed successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Your email has been changed successfully.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/update-email
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/login
-                "401":
-                    description: Invalid token or user not found.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 401
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: The link has expired. Your email address could not be changed.
-                "404":
-                    description: Invalid PIN.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 404
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: The entered PIN is invalid or has expired. Please try again.
-                "409":
-                    description: The new email address is already in use.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 409
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: This email address is already associated with an account.
+        "404":
+          description: Error occurred while trying to activate the account.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The link has expired. Please go through the process again.
 
-    ######################################################################
+  # ACCOUNTS - UPDATE PASSWORD LINK
+  "/ACCOUNTS_BASE_URL_REPLACE/update-password-link":
+    post:
+      summary: Send password update link to the user
+      description: >-
+        Sends an email to the user with instructions to update their
+        password. The email address must be valid.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: The email address of the user requesting the password update.
+                  example: email@email.com
+              required:
+                - email
+      responses:
+        "200":
+          description: Password update link sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Change your password by clicking the link sent to your email.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/update-password-link
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/update-password
 
-    # ACCOUNTS - CONNECTED DEVICES
-    ######################################################################
+  # ACCOUNTS - UPDATE PASSWORD
+  "/ACCOUNTS_BASE_URL_REPLACE/update-password":
+    patch:
+      summary: Update user password
+      description: >-
+        This endpoint allows the user to update their password. The user
+        must provide a valid token and a new password. The token must
+        correspond to the one generated for password update purposes.
+        If successful, the password will be updated.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: The new password that the user wants to set.
+                  example: NewPassword123!
+                token:
+                  type: string
+                  description: The token associated with the password reset process.
+                  example: abcd1234efgh5678
+              required:
+                - email
+                - password
+                - token
+      responses:
+        "200":
+          description: Password updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Password changed successfully. Please log in to continue.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/update-password
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/login
 
-    "/ACCOUNTS_BASE_URL_REPLACE/connected-devices":
-        get:
-            summary: List connected devices
-            description: >-
-                Returns a list of devices that have active sessions for the authenticated user. 
-                It also attempts to enrich the response with geolocation data based on IP. 
-                Some fields may be null if the corresponding data could not be retrieved.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            responses:
-                "200":
-                    description: Connected devices listed successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Connected devices received successfully. If you don't recognize any of them, change your password.
-                                    data:
-                                        type: array
-                                        items:
-                                            type: object
-                                            properties:
-                                                createdAt:
-                                                    type: string
-                                                    format: date-time
-                                                    example: 2025-09-02T14:20:15.387213300Z
-                                                deviceName:
-                                                    type: string
-                                                    example: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Mobile Safari/537.36
-                                                country:
-                                                    type: string
-                                                    example: Brazil
-                                                regionName:
-                                                    type: string
-                                                    example: São Paulo
-                                                city:
-                                                    type: string
-                                                    example: São Paulo
-                                                lat:
-                                                    type: string
-                                                    example: -23.5505
-                                                lon:
-                                                    type: string
-                                                    example: -46.6333
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/connected-devices
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/profile-get
+        "404":
+          description: Invalid token. An error occurred while changing your password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The link has expired. Please go through the process again.
 
-    ######################################################################
+  # ACCOUNTS - REQUEST LOGIN
+  "/ACCOUNTS_BASE_URL_REPLACE/login":
+    post:
+      summary: Authenticate user login
+      description: >-
+        This endpoint uses the user's email and password to validate
+        credentials. If the credentials are correct and the account is
+        active, a login token is generated and returned. This token must
+        then be used along with the numeric PIN sent to the user's email
+        to complete the login process. If the credentials are invalid, the
+        account is banned, or deactivated, an appropriate error response is returned.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: The email address of the user attempting to log in.
+                  example: user@example.com
+                password:
+                  type: string
+                  description: The password associated with the user's account.
+                  example: SecurePass123!
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: User credentials are valid. A login token is returned to confirm the PIN sent to the user's email.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Your credentials have been confirmed. Next, enter the numeric code we sent to your email.
+                  data:
+                    type: object
+                    properties:
+                      userLoginToken:
+                        type: string
+                        example: Cg2eCx5HUg5zeS--h9zFaJlHSOv_eejo4hSqQEIbwu8DRD27CWsmVIhu471uHr-6-Ix7q9A6hFz0jsb0rybc_hQKJrBgFSkcmeTv
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /api/v1/accounts/login
+                      next:
+                        type: string
+                        example: /api/v1/accounts/login-confirmation
 
-    # ACCOUNTS - DELETE ACCOUNT LINK
-    ######################################################################
+        "401":
+          description: Invalid credentials provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid credentials.
 
-    "/ACCOUNTS_BASE_URL_REPLACE/delete-account-link":
-        post:
-            summary: Send account deletion confirmation link
-            description: >-
-                This endpoint allows authenticated users to request a link containing a token to delete their account. 
-                The link will be sent to the user's email address. All refresh tokens will be revoked immediately after the request.
-            tags:
-                - ACCOUNTS
-            security:
-                - BearerAuth: []
-            requestBody:
-                required: false
-            responses:
-                "200":
-                    description: Account deletion link sent successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: Check your email to delete your account.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/delete-account-link
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/delete-account
+        "403":
+          description: Account is banned or deactivated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: We couldn't complete your login. More information has been sent to your email.
 
-    ######################################################################
+  # ACCOUNTS - LOGIN CONFIRMATION
+  "/ACCOUNTS_BASE_URL_REPLACE/login-confirmation":
+    post:
+      summary: Confirm user login with PIN
+      description: >-
+        This endpoint completes the login process by verifying the
+        `userLoginToken` and the numeric PIN sent to the user's email.
+        If both are valid and the account exists, access and refresh tokens
+        are generated and returned. Invalid tokens or PINs, or non-existent
+        users, will result in appropriate error responses.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userLoginToken:
+                  type: string
+                  description: The temporary login token generated after validating user credentials in the initial login step.
+                  example: Cg2eCx5HUg5zeS--h9zFaJlHSOv_eejo4hSqQEIbwu8DRD27CWsmVIhu471uHr-6-Ix7q9A6hFz0jsb0rybc_hQKJrBgFSkcmeTv
+                pin:
+                  type: string
+                  description: The numeric PIN sent to the user's email during the login process.
+                  example: "123456"
+              required:
+                - userLoginToken
+                - pin
+      responses:
+        "200":
+          description: User login confirmed successfully. Access and refresh tokens are returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Welcome! You are logged in.
+                  data:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        example: M6sE0Snd3mO8ho1yToAcxeszZL0MS_pFbjfgzw-HMtFcAfzl1s20KAjm0j0p2OQFvQalPcD-8CxuEK2J17I6ABigcApt9IEF7lqvn7mYANJj-ZIGMXARch5qAmsWXq5Y6uGIai0AX1ekhgvIv2wa_k8qauhDKHpUjBAytAHDkiAhrjjVX_S1o8tNbpNg5p7Rj5RS2RqkqBB3RDubS_gFM1GQOz-IOBL-Zt0-OxbWmL2wVeTn7it885iGznKrI5GM8vnAsABWYcwUa05lRlTQqdWrxp0wlaSLbbcTPBQYkZ3AdiMPIYzdLsewQsvY1kZ8Xu36HO_IZzWSHrZoo5yvNdcrUZ2z6lc_GrvFAQhlUKdyTs-ztBrbZT_lxhYNnZa8CCvA_lY5Pv5dQ7l4YXoVJgDk-Lz2ZwW3oYrSb_Il7h_-GlXcaRQb27XNh795FODT7xgXofNYs26j-PpNPD5GMw9eKyMdz-EpOjrXXV0YVlbiqyzLv6t87HJPLka629Vs2Z6mHh00ULzeHsQ5tas7LP1Sn4qVdkN5uCqDYlcdXt590N5-_oQMRgxEuZHPftTUv9TyLcMJzG5Rumvr3NAUXx0R9UFNW9vs_URnGZnjhnR4APdr5wa2SFTXLH5cxf3apSCLIouBE3YAW_97WjclXSpIBSKZ25yb8TfkjBL4BhnZkA_2GSkvuJyxtduhPs7QkJ1MEvRg3qUa7L1opDOpVNFWN-vQ7ZuJJTy_zLlL9hOKcYB_62pB-yNDsmm1Yvbp68lqAufT865L66gdpEOA9VzOTUDfSlkoX1piu3WQKsoHtNB0Ow348mZcy3m7avWKTEDr94fceMfh_xXwIwF9AHZtkrE9DVriM-3QwKFfLyu_cgA8pgLGOnaydTDC4onUd3RSupQSeW5ivNLDV7an_dsWNu8Cju_cf4Ttgq0HvDPmvq7Mm3wgSR3guRu1z2F2vypgK_duQB5uhA5YfMotcMyAEGqXRMd2rJFf0f36RXy2Gi28QWOdJnhGk4t-jjku99HFaqMaM4HeUyEA5j3FAr89fPxZkwYyCO43h6rIlpme3ORiz7IviODBb6e89vzsQhsv_7z38AFDn23Xwzzlp4HQBpjPKo0nZq8n28yPCfg_ZpSOYK0U1CzwBw8VQhOOkuR9cKKM7LkoL6Xo3A6ADiyklz9ryA9-egFYE8LJUbsZyDmo
+                      refresh:
+                        type: string
+                        example: jhrD34yP92IIb_QkPdJwpsEvG61zNGQL_tXrypiJwd4bKrjHtjo_w6NNWBTBTbZei_Ki3ue4fInoNMKFu_dDCg3ylov9CdvnArphX6Kv_heXq1UBfk-61Nux1_I_0hF2Bft6viaLoj12XdBLUrUSiIwa2LCJcOj8b6ISp7mLTQw
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /api/v1/accounts/login-confirmation
+                      next:
+                        type: string
+                        example: /api/v1/accounts/get-profile
 
-    # ACCOUNTS - DELETE ACCOUNT
-    ######################################################################
+        "401":
+          description: Invalid login token or credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The token has expired. Please sign in again.
 
-    "/ACCOUNTS_BASE_URL_REPLACE/delete":
-        post:
-            summary: Delete account
-            description: >-
-                This endpoint completes the user account deactivation process by verifying a link containing a token sent to the user's email address. 
-                Once the request is successful, the account is deactivated and enters a 30-day grace period before permanent deletion. 
-                During this period, the user can reactivate the account by changing their password. All active sessions and tokens are revoked immediately. 
-                A confirmation email is sent once the deactivation is successfully completed.
-            tags:
-                - ACCOUNTS
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - token
-                            properties:
-                                token:
-                                    type: string
-                                    description: The verification token contained in the account deletion link sent to the user's email.
-                                    example: kjhgJHGJHgJHgy564ygfchgfchgFHGfhgfchGvcHGvctr765fhgfyut
-            responses:
-                "200":
-                    description: Account deactivation completed successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 200
-                                    statusMessage:
-                                        type: string
-                                        example: success
-                                    message:
-                                        type: string
-                                        example: >-
-                                            Your account has been successfully deactivated! Your data will be deleted in 30 days. 
-                                            You can still reactivate your account by changing your password within this period.
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/delete
-                                            next:
-                                                type: string
-                                                example: /ACCOUNTS_BASE_URL_REPLACE/signup
-                "404":
-                    description: Invalid or expired token, or user not found.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    statusCode:
-                                        type: integer
-                                        example: 404
-                                    statusMessage:
-                                        type: string
-                                        example: error
-                                    message:
-                                        type: string
-                                        example: The link has expired. Please go through the process again.
+        "404":
+          description: Invalid or expired PIN.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The entered PIN is invalid or has expired. Please try again.
 
-    ######################################################################
+  # ACCOUNTS - REFRESH LOGIN
+  "/ACCOUNTS_BASE_URL_REPLACE/refresh-login":
+    post:
+      summary: Refresh user access credentials
+      description: >-
+        This endpoint allows users to obtain new access and refresh tokens
+        by providing a valid refresh token. If the token is valid and associated
+        with an active account, the system generates new tokens. Errors are returned
+        if the token is invalid, the account is banned, or the account is deactivated.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: The base64-encoded refresh token issued during the last login.
+                  example: REFRESH_TOKEN_STRING
+              required:
+                - refreshToken
+      responses:
+        "200":
+          description: New tokens issued successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: You are logged in.
+                  data:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        example: ACCESS_TOKEN_STRING
+                      refresh:
+                        type: string
+                        example: REFRESH_TOKEN_STRING
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/refresh-login
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/get-profile
+        "403":
+          description: Account is banned or deactivated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: We couldn't complete your login. More information has been sent to your email.
 
-    # TASKS - CREATE
-    ######################################################################
+  # ACCOUNTS - GET PROFILE
+  "/ACCOUNTS_BASE_URL_REPLACE/get-profile":
+    get:
+      summary: Retrieve user profile information
+      description: >-
+        This endpoint returns the authenticated user's profile information,
+        including personal details and language preferences. The request must
+        include a valid Bearer access token in the Authorization header.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Profile retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      profileImage:
+                        type: string
+                        example: https://example.com/image.jpg
+                      name:
+                        type: string
+                        example: John Doe
+                      email:
+                        type: string
+                        example: john.doe@example.com
+                      phone:
+                        type: string
+                        example: +123456789
+                      identityDocument:
+                        type: string
+                        example: 1234567890
+                      gender:
+                        type: string
+                        example: male
+                      birthdate:
+                        type: string
+                        example: 1990-01-01
+                      biography:
+                        type: string
+                        example: I'm John Doe. I live everywhere. I am anyone.
+                      language:
+                        type: string
+                        example: en
+                      theme:
+                        type: string
+                        example: dark-mode
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/get-profile
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/update-profile
 
-    "/TASKS_BASE_URL_REPLACE":
-        post:
-            summary: Create task
-            description: >-
-                This endpoint creates a new task for the authenticated user. 
-                The request must include the task details such as name, priority, status, and optional scheduling information.
-                The system validates business rules including date consistency, priority limits, reminder rules, and duplication checks.
-                If the task is successfully created, a unique task identifier is returned.
-            tags:
-                - TASKS
-            security:
-                - BearerAuth: []
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            required:
-                                - taskName
-                                - priority
-                                - allDay
-                                - notifyActive
-                                - status
-                            properties:
-                                taskName:
-                                    type: string
-                                    description: Name of the task.
-                                    minLength: 3
-                                    maxLength: 255
-                                    example: Finish backend documentation
-                                description:
-                                    type: string
-                                    description: Optional detailed description of the task.
-                                    maxLength: 1000
-                                    example: Write the API documentation for the tasks module.
-                                category:
-                                    type: string
-                                    format: uuid
-                                    description: Optional category identifier associated with the task.
-                                    example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
-                                color:
-                                    type: string
-                                    description: Optional color label for the task.
-                                    maxLength: 20
-                                    example: blue
-                                priority:
-                                    type: integer
-                                    description: Priority level of the task ranging from 1 (lowest) to 5 (highest).
-                                    minimum: 1
-                                    maximum: 5
-                                    example: 3
-                                startTime:
-                                    type: string
-                                    format: date-time
-                                    description: Optional start time of the task.
-                                    example: "2026-03-11T09:00:00"
-                                endTime:
-                                    type: string
-                                    format: date-time
-                                    description: Optional end time of the task.
-                                    example: "2026-03-11T10:00:00"
-                                location:
-                                    type: string
-                                    description: Optional location related to the task.
-                                    maxLength: 255
-                                    example: Office meeting room
-                                allDay:
-                                    type: boolean
-                                    description: Indicates whether the task lasts all day.
-                                    example: false
-                                reminderTime:
-                                    type: string
-                                    format: date-time
-                                    description: Optional reminder time before the task due date.
-                                    example: "2026-03-11T08:30:00"
-                                notifyActive:
-                                    type: boolean
-                                    description: Indicates whether notifications are enabled for the task.
-                                    example: true
-                                status:
-                                    type: string
-                                    description: Current status of the task.
-                                    maxLength: 255
-                                    example: pending
-                                dueDate:
-                                    type: string
-                                    format: date-time
-                                    description: Optional due date for the task.
-                                    example: "2026-03-11T10:00:00"
+  # ACCOUNTS - UPLOAD AVATAR
+  "/ACCOUNTS_BASE_URL_REPLACE/upload-avatar":
+    post:
+      summary: Upload or remove profile image (avatar)
+      description: >-
+        This endpoint allows authenticated users to upload a profile image (avatar)
+        or remove it. If no image is sent in the request, the existing avatar
+        will be deleted. If an image is sent, it replaces the current one or
+        sets a new avatar if none exists. Only one image is allowed and must
+        be JPEG or PNG format with a maximum size of 1MB.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatarImage:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Single image file (PNG or JPEG, max 1MB). If not provided, existing profile image will be removed.
+      responses:
+        "200":
+          description: Profile image uploaded or removed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Profile image changed successfully.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/upload-avatar
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/get-avatar
+                examples:
+                  imageRemoved:
+                    summary: Avatar removed
+                    value:
+                      statusCode: 200
+                      statusMessage: success
+                      message: Your profile picture has been removed.
+                  imageUploaded:
+                    summary: Avatar uploaded
+                    value:
+                      statusCode: 200
+                      statusMessage: success
+                      message: Profile image changed successfully.
+                      links:
+                        self: /ACCOUNTS_BASE_URL_REPLACE/upload-avatar
+                        next: /ACCOUNTS_BASE_URL_REPLACE/get-avatar
 
-            responses:
-                "201":
-                    description: Task created successfully.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    timestamp:
-                                        type: string
-                                        format: date-time
-                                        example: "2026-03-11T11:20:40Z"
-                                    statusCode:
-                                        type: integer
-                                        example: 201
-                                    messageCode:
-                                        type: string
-                                        example: CREATE_TASK_SUCCESS
-                                    data:
-                                        type: object
-                                        properties:
-                                            idCreated:
-                                                type: string
-                                                format: uuid
-                                                example: 464140a1-cbec-4935-a604-e7decf33d6d9
-                                    links:
-                                        type: object
-                                        properties:
-                                            self:
-                                                type: object
-                                                properties:
-                                                    href:
-                                                        type: string
-                                                        example: /api/v1/tasks
-                                                    method:
-                                                        type: string
-                                                        example: POST
-                                            next:
-                                                type: object
-                                                properties:
-                                                    href:
-                                                        type: string
-                                                        example: /api/v1/tasks
-                                                    method:
-                                                        type: string
-                                                        example: GET
+  # ACCOUNTS - UPDATE PROFILE
+  "/ACCOUNTS_BASE_URL_REPLACE/update-profile":
+    put:
+      summary: Update user profile information
+      description: >-
+        This endpoint allows authenticated users to update their profile details
+        such as name, phone, identity document, gender, birthdate, biography,
+        and language. The fields are not required, but if provided in the request
+        body, they must contain valid non-empty values. A valid Bearer token must
+        be provided in the Authorization header.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  description: Full name of the user.
+                  example: John Doe
+                phone:
+                  type: string
+                  maxLength: 25
+                  description: User's contact number.
+                  example: "+1 (123) 456-7890"
+                identityDocument:
+                  type: string
+                  maxLength: 256
+                  description: Government-issued identity document number.
+                  example: AB1234567
+                gender:
+                  type: string
+                  maxLength: 256
+                  description: Gender identification.
+                  example: male
+                birthdate:
+                  type: string
+                  description: Date of birth in YYYY-MM-DD format.
+                  example: "1990-05-15"
+                biography:
+                  type: string
+                  maxLength: 256
+                  description: Short biography of the user.
+                  example: A passionate developer who loves open-source.
+                language:
+                  type: string
+                  maxLength: 50
+                  description: Language code in ISO 639-1 format (e.g., en, pt-BR).
+                  example: en
+                theme:
+                  type: string
+                  maxLength: 100
+                  description: The theme name, which represents the colors and fonts chosen by the user.
+                  example: dark-mode
+      responses:
+        "200":
+          description: Profile updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Profile updated successfully.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/update-profile
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/get-profile
 
-    ######################################################################
+  # ACCOUNTS - ACCOUNTS - CREATE ADDRESS
+  "/ACCOUNTS_BASE_URL_REPLACE/create-address":
+    post:
+      summary: Create a new address for the user
+      description: >-
+        This endpoint allows authenticated users to create a new address entry. 
+        The user can provide various address details including address name, 
+        zip code, street, neighborhood, city, state, country, and more. 
+        The address will be associated with the user, and if the address is marked 
+        as 'primary', any existing primary address will be set to 'secondary'. 
+        The user can store up to 5 addresses.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - addressName
+                - zipCode
+                - street
+                - number
+                - neighborhood
+                - city
+                - state
+                - country
+                - addressType
+                - isPrimary
+              properties:
+                addressName:
+                  type: string
+                  maxLength: 256
+                  description: Name of the address (e.g., 'home', 'work').
+                  example: home
+                zipCode:
+                  type: string
+                  maxLength: 50
+                  description: Zip code of the address.
+                  example: 90210
+                street:
+                  type: string
+                  maxLength: 256
+                  description: Street name of the address.
+                  example: Sunset Boulevard
+                number:
+                  type: string
+                  maxLength: 50
+                  description: Number or identifier for the address (e.g., '123', 'Apt 4B').
+                  example: 123
+                addressLineTwo:
+                  type: string
+                  maxLength: 256
+                  description: Additional address line (e.g., 'Apt 4B').
+                  example: Apt 4B
+                neighborhood:
+                  type: string
+                  maxLength: 256
+                  description: Neighborhood or district of the address.
+                  example: Beverly Hills
+                city:
+                  type: string
+                  maxLength: 256
+                  description: City of the address.
+                  example: Los Angeles
+                state:
+                  type: string
+                  maxLength: 256
+                  description: State of the address.
+                  example: California
+                country:
+                  type: string
+                  maxLength: 256
+                  description: Country of the address.
+                  example: USA
+                addressType:
+                  type: string
+                  maxLength: 256
+                  description: Type of the address (e.g., 'Home', 'Work').
+                  example: Home
+                isPrimary:
+                  type: boolean
+                  description: Flag indicating if the address is the primary one.
+                  example: true
+                landmark:
+                  type: string
+                  maxLength: 256
+                  description: Landmark near the address (e.g., 'Near Rodeo Drive').
+                  example: Near Rodeo Drive
+      responses:
+        "201":
+          description: Address created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 201
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Address created successfully.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/create-address
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/get-address
+        "409":
+          description: Conflict in address creation. The address creation failed because the address already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 409
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: This address has already been registered.
+        "422":
+          description: Unprocessable Entity. The user has reached the maximum limit of addresses allowed (5).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 422
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: You can only keep up to five addresses registered.
+
+  # ACCOUNTS - GET ADDRESS
+  "/ACCOUNTS_BASE_URL_REPLACE/get-address":
+    get:
+      summary: Retrieve all addresses associated with the user
+      description: >-
+        This endpoint allows authenticated users to retrieve a list of their saved addresses. 
+        It returns all the addresses associated with the user's account, including information 
+        such as street, number, city, state, country, and whether the address is marked as primary. 
+        Cached data may be used to improve performance. Users can maintain a maximum of five (5) addresses. 
+        It is not possible to edit existing addresses; they must be deleted and recreated if changes are needed.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Addresses retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        addressId:
+                          type: string
+                          example: f53d0ad4-a4fe-456a-b586-c930025233ce
+                        addressName:
+                          type: string
+                          example: work
+                        zipCode:
+                          type: string
+                          example: 90210
+                        street:
+                          type: string
+                          example: Sunset Boulevard
+                        number:
+                          type: string
+                          example: 123
+                        addressLineTwo:
+                          type: string
+                          example: Apt 4B
+                        neighborhood:
+                          type: string
+                          example: Beverly Hills
+                        city:
+                          type: string
+                          example: Los Angeles
+                        state:
+                          type: string
+                          example: California
+                        country:
+                          type: string
+                          example: USA
+                        addressType:
+                          type: string
+                          example: Home
+                        isPrimary:
+                          type: boolean
+                          example: false
+                        landmark:
+                          type: string
+                          example: Near Rodeo Drive
+                    example:
+                      - addressId: f53d0ad4-a4fe-456a-b586-c930025233ce
+                        addressName: home
+                        zipCode: 90210
+                        street: Sunset Boulevard
+                        number: "123"
+                        addressLineTwo: Apt 4B
+                        neighborhood: Beverly Hills
+                        city: Los Angeles
+                        state: California
+                        country: USA
+                        addressType: Home
+                        isPrimary: false
+                        landmark: Near Rodeo Drive
+
+                      - addressId: 7ab67274-54c5-4625-8e9e-825749290c8e
+                        addressName: home
+                        zipCode: 90210
+                        street: Sunset Boulevard
+                        number: "123"
+                        addressLineTwo: Apt 4B
+                        neighborhood: Beverly Hills
+                        city: Los Angeles
+                        state: California
+                        country: USA
+                        addressType: Home
+                        isPrimary: true
+                        landmark: Near Rodeo Drive
+                  meta:
+                    type: object
+                    properties:
+                      totalItems:
+                        type: integer
+                        example: 2
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/get-address
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/create-address
+
+  # ACCOUNTS - DELETE ADDRESS
+  "/ACCOUNTS_BASE_URL_REPLACE/delete-address/{id}":
+    delete:
+      summary: Delete user address
+      description: >-
+        This endpoint allows an authenticated user to delete one of their registered addresses. 
+        The address must belong to the authenticated user, otherwise a not found error will be returned.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the address to be deleted.
+          schema:
+            type: string
+            format: uuid
+            example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        "200":
+          description: Address deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Address deleted successfully.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /api/v1/accounts/address-delete
+                      next:
+                        type: string
+                        example: /api/v1/accounts/address-get
+              example:
+                statusCode: 200
+                statusMessage: success
+                message: Address deleted successfully.
+                links:
+                  self: /api/v1/accounts/address-delete
+                  next: /api/v1/accounts/address-get
+        "404":
+          description: Address not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Address not found.
+              example:
+                statusCode: 404
+                statusMessage: error
+                message: Address not found.
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The request has an error, check.
+              example:
+                statusCode: 400
+                statusMessage: error
+                message: The request has an error, check.
+
+  # ACCOUNTS - UPDATE EMAIL LINK
+  "/ACCOUNTS_BASE_URL_REPLACE/update-email-link":
+    post:
+      summary: Send verification link and PIN for email update
+      description: >-
+        This endpoint allows users to request an email change. A verification PIN 
+        will be sent to the new email address, and a verification link containing 
+        a token will be sent to the current email address. Both must be validated 
+        to complete the email update process. Additionally, all login refresh tokens will be revoked.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newEmail
+                - link
+              properties:
+                newEmail:
+                  type: string
+                  format: email
+                  description: The new email address that the user wants to register.
+                  example: email@email.com
+      responses:
+        "200":
+          description: Verification instructions sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: To change your email, click the link sent to your current address.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/update-email-link
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/update-email
+        "409":
+          description: The new email address is already in use.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 409
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: This email address is already associated with an account.
+
+  # ACCOUNTS - UPDATE EMAIL
+  "/ACCOUNTS_BASE_URL_REPLACE/update-email":
+    patch:
+      summary: Complete email update process
+      description: >-
+        This endpoint allows the user to complete the process of updating their email address. 
+        A link containing a token is sent to the user’s current email address, and a PIN is sent to the new email address. 
+        The user must provide both the token and the PIN. Only after both are verified will the email be updated.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+                - pin
+                - token
+              properties:
+                pin:
+                  type: string
+                  description: The 6-digit PIN sent to the new email address.
+                  example: "685278"
+                token:
+                  type: string
+                  description: Verification token sent to the current email address.
+                  example: abcd1234efgh5678
+      responses:
+        "200":
+          description: Email changed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Your email has been changed successfully.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/update-email
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/login
+        "401":
+          description: Invalid token or user not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The link has expired. Your email address could not be changed.
+        "404":
+          description: Invalid PIN.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The entered PIN is invalid or has expired. Please try again.
+        "409":
+          description: The new email address is already in use.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 409
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: This email address is already associated with an account.
+
+  # ACCOUNTS - CONNECTED DEVICES
+  "/ACCOUNTS_BASE_URL_REPLACE/connected-devices":
+    get:
+      summary: List connected devices
+      description: >-
+        Returns a list of devices that have active sessions for the authenticated user. 
+        It also attempts to enrich the response with geolocation data based on IP. 
+        Some fields may be null if the corresponding data could not be retrieved.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Connected devices listed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Connected devices received successfully. If you don't recognize any of them, change your password.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: 2025-09-02T14:20:15.387213300Z
+                        deviceName:
+                          type: string
+                          example: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Mobile Safari/537.36
+                        country:
+                          type: string
+                          example: Brazil
+                        regionName:
+                          type: string
+                          example: São Paulo
+                        city:
+                          type: string
+                          example: São Paulo
+                        lat:
+                          type: string
+                          example: -23.5505
+                        lon:
+                          type: string
+                          example: -46.6333
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/connected-devices
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/profile-get
+
+  # ACCOUNTS - DELETE ACCOUNT LINK
+  "/ACCOUNTS_BASE_URL_REPLACE/delete-account-link":
+    post:
+      summary: Send account deletion confirmation link
+      description: >-
+        This endpoint allows authenticated users to request a link containing a token to delete their account. 
+        The link will be sent to the user's email address. All refresh tokens will be revoked immediately after the request.
+      tags:
+        - ACCOUNTS
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: false
+      responses:
+        "200":
+          description: Account deletion link sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Check your email to delete your account.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/delete-account-link
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/delete-account
+
+  # ACCOUNTS - DELETE ACCOUNT
+  "/ACCOUNTS_BASE_URL_REPLACE/delete":
+    post:
+      summary: Delete account
+      description: >-
+        This endpoint completes the user account deactivation process by verifying a link containing a token sent to the user's email address. 
+        Once the request is successful, the account is deactivated and enters a 30-day grace period before permanent deletion. 
+        During this period, the user can reactivate the account by changing their password. All active sessions and tokens are revoked immediately. 
+        A confirmation email is sent once the deactivation is successfully completed.
+      tags:
+        - ACCOUNTS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: The verification token contained in the account deletion link sent to the user's email.
+                  example: kjhgJHGJHgJHgy564ygfchgfchgFHGfhgfchGvcHGvctr765fhgfyut
+      responses:
+        "200":
+          description: Account deactivation completed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  statusMessage:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: >-
+                      Your account has been successfully deactivated! Your data will be deleted in 30 days. 
+                      You can still reactivate your account by changing your password within this period.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/delete
+                      next:
+                        type: string
+                        example: /ACCOUNTS_BASE_URL_REPLACE/signup
+        "404":
+          description: Invalid or expired token, or user not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  statusMessage:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: The link has expired. Please go through the process again.
+
+  ########################################################### ( accounts end )
+
+  ############################################################# ( tasks init )
+
+  # TASKS - CREATE
+  "/TASKS_BASE_URL_REPLACE":
+    post:
+      summary: Create task
+      description: >-
+        This endpoint creates a new task for the authenticated user. 
+        The request must include the task details such as name, priority, status, and optional scheduling information.
+        The system validates business rules including date consistency, priority limits, reminder rules, and duplication checks.
+        If the task is successfully created, a unique task identifier is returned.
+      tags:
+        - TASKS
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - taskName
+                - priority
+                - allDay
+                - notifyActive
+                - status
+              properties:
+                taskName:
+                  type: string
+                  description: Name of the task.
+                  minLength: 3
+                  maxLength: 255
+                  example: Finish backend documentation
+                description:
+                  type: string
+                  description: Optional detailed description of the task.
+                  maxLength: 1000
+                  example: Write the API documentation for the tasks module.
+                category:
+                  type: string
+                  format: uuid
+                  description: Optional category identifier associated with the task.
+                  example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
+                color:
+                  type: string
+                  description: Optional color label for the task.
+                  maxLength: 20
+                  example: blue
+                priority:
+                  type: integer
+                  description: Priority level of the task ranging from 1 (lowest) to 5 (highest).
+                  minimum: 1
+                  maximum: 5
+                  example: 3
+                startTime:
+                  type: string
+                  format: date-time
+                  description: Optional start time of the task.
+                  example: "2026-03-11T09:00:00"
+                endTime:
+                  type: string
+                  format: date-time
+                  description: Optional end time of the task.
+                  example: "2026-03-11T10:00:00"
+                location:
+                  type: string
+                  description: Optional location related to the task.
+                  maxLength: 255
+                  example: Office meeting room
+                allDay:
+                  type: boolean
+                  description: Indicates whether the task lasts all day.
+                  example: false
+                reminderTime:
+                  type: string
+                  format: date-time
+                  description: Optional reminder time before the task due date.
+                  example: "2026-03-11T08:30:00"
+                notifyActive:
+                  type: boolean
+                  description: Indicates whether notifications are enabled for the task.
+                  example: true
+                status:
+                  type: string
+                  description: Current status of the task.
+                  maxLength: 255
+                  example: pending
+                dueDate:
+                  type: string
+                  format: date-time
+                  description: Optional due date for the task.
+                  example: "2026-03-11T10:00:00"
+
+      responses:
+        "201":
+          description: Task created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-03-11T11:20:40Z"
+                  statusCode:
+                    type: integer
+                    example: 201
+                  messageCode:
+                    type: string
+                    example: CREATE_TASK_SUCCESS
+                  data:
+                    type: object
+                    properties:
+                      idCreated:
+                        type: string
+                        format: uuid
+                        example: 464140a1-cbec-4935-a604-e7decf33d6d9
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: object
+                        properties:
+                          href:
+                            type: string
+                            example: /api/v1/tasks
+                          method:
+                            type: string
+                            example: POST
+                      next:
+                        type: object
+                        properties:
+                          href:
+                            type: string
+                            example: /api/v1/tasks
+                          method:
+                            type: string
+                            example: GET
+
+    # TASKS - GET
+    get:
+      summary: Get tasks
+      description: >-
+        Retrieves a paginated list of tasks for the authenticated user.
+        All query parameters are optional and act as filters.
+        Results are sorted by creation date in descending order.
+      tags:
+        - TASKS
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: sizePagination
+          in: query
+          required: false
+          description: Number of items per page. Must be between 1 and 100. Defaults to 10.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
+        - name: pageNumber
+          in: query
+          required: false
+          description: Page number to retrieve. Must be at most 100. Defaults to 1.
+          schema:
+            type: integer
+            maximum: 100
+            example: 1
+        - name: taskName
+          in: query
+          required: false
+          description: Filter by task name. Must be between 3 and 255 characters. Special characters are not allowed.
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 255
+            example: Finish backend documentation
+        - name: category
+          in: query
+          required: false
+          description: Filter by category identifier.
+          schema:
+            type: string
+            example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
+        - name: priority
+          in: query
+          required: false
+          description: Filter by priority level ranging from 1 (lowest) to 5 (highest).
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+            example: 3
+        - name: location
+          in: query
+          required: false
+          description: Filter by location. Must be between 1 and 255 characters. Special characters are not allowed.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 255
+            example: Office meeting room
+        - name: status
+          in: query
+          required: false
+          description: Filter by task status. Must be between 1 and 255 characters. Special characters are not allowed.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 255
+            example: pending
+        - name: dueDateInit
+          in: query
+          required: false
+          description: Start of the due date filter range (inclusive).
+          schema:
+            type: string
+            format: date
+            example: "2026-03-01"
+        - name: dueDateEnd
+          in: query
+          required: false
+          description: End of the due date filter range (inclusive).
+          schema:
+            type: string
+            format: date
+            example: "2026-03-31"
+      responses:
+        "200":
+          description: Tasks retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-03-11T11:20:40Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: GET_TASKS_SUCCESS
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        idCreated:
+                          type: string
+                          format: uuid
+                          example: 464140a1-cbec-4935-a604-e7decf33d6d9
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-11T09:00:00"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-11T10:00:00"
+                        taskName:
+                          type: string
+                          example: Finish backend documentation
+                        description:
+                          type: string
+                          example: Write the API documentation for the tasks module.
+                        category:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                              example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
+                            categoryName:
+                              type: string
+                              example: Work
+                        color:
+                          type: string
+                          example: blue
+                        priority:
+                          type: integer
+                          example: 3
+                        startTime:
+                          type: string
+                          format: date-time
+                          example: "2026-03-11T09:00:00"
+                        endTime:
+                          type: string
+                          format: date-time
+                          example: "2026-03-11T10:00:00"
+                        location:
+                          type: string
+                          example: Office meeting room
+                        allDay:
+                          type: boolean
+                          example: false
+                        reminderTime:
+                          type: string
+                          format: date-time
+                          example: "2026-03-11T08:30:00"
+                        notifyActive:
+                          type: boolean
+                          example: true
+                        status:
+                          type: string
+                          example: pending
+                        dueDate:
+                          type: string
+                          format: date-time
+                          example: "2026-03-11T10:00:00"
+                  meta:
+                    type: object
+                    properties:
+                      currentPage:
+                        type: integer
+                        example: 1
+                      totalPages:
+                        type: integer
+                        example: 5
+                      totalElementsCurrentPage:
+                        type: integer
+                        example: 10
+                      pageSize:
+                        type: integer
+                        example: 10
+                      totalElements:
+                        type: integer
+                        example: 48
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: object
+                        properties:
+                          href:
+                            type: string
+                            example: /api/v1/tasks
+                          method:
+                            type: string
+                            example: GET
+                      next:
+                        type: object
+                        properties:
+                          href:
+                            type: string
+                            example: /api/v1/tasks
+                          method:
+                            type: string
+                            example: PUT
+
+  ############################################################## ( tasks end )
