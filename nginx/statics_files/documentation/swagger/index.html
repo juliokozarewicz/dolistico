@@ -38,6 +38,10 @@
             const yamlResponse = await fetch("./documentation.yaml");
             let yamlText = await yamlResponse.text();
 
+            // Apply dynamic PUBLIC_DOMAIN_REPLACE
+            const PUBLIC_DOMAIN = `${window.location.origin}/api/v1`;
+            yamlText = yamlText.replace(/PUBLIC_DOMAIN_REPLACE/g, PUBLIC_DOMAIN);
+
             // Apply replacements
             if (REPLACE_MAP.APPLICATION_TITLE_REPLACE) {
                 document.title = REPLACE_MAP.APPLICATION_TITLE_REPLACE.toUpperCase();

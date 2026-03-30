@@ -15,27 +15,26 @@ http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
 
-    ##### resolver 10.43.0.10 valid=30s;
-    resolver 127.0.0.1 valid=30s;
+    resolver 10.43.0.10 valid=30s;
 
     # -------------------------------------------- (upstream load balancer init)
 
     upstream helloworld_backend {
         zone helloworld_backend 64k;
-        #####  server helloworld.production.svc.cluster.local:3001;
-        server helloworld:3001;
+        #####  server helloworld.production.svc.cluster.local:${HELLOWORLD_PORT};
+        server helloworld:${HELLOWORLD_PORT};
     }
 
     upstream accounts_backend {
         zone accounts_backend 64k;
-        #####  server accounts.production.svc.cluster.local:3010;
-        server accounts:3010;
+        #####  server accounts.production.svc.cluster.local:${ACCOUNTS_PORT};
+        server accounts:${ACCOUNTS_PORT};
     }
 
     upstream tasks_backend {
         zone tasks_backend 64k;
-        #####  server tasks.production.svc.cluster.local:3011;
-        server tasks:3011;
+        #####  server tasks.production.svc.cluster.local:${TASKS_PORT};
+        server tasks:${TASKS_PORT};
     }
 
     # --------------------------------------------- (upstream load balancer end)
@@ -221,11 +220,11 @@ http {
         # [ DOCUMENTATION - Stoplight Elements ]
         # ======================================================================
 
-        location = /api/v1/documentation {
-            return 301 /api/v1/documentation/;
+        location = /${DOCUMENTATION_BASE_URL} {
+            return 301 /${DOCUMENTATION_BASE_URL}/;
         }
 
-        location /api/v1/documentation/ {
+        location /${DOCUMENTATION_BASE_URL}/ {
             alias /static/public/documentation/elements/;
             index index.html;
             try_files $uri $uri/ =404;
@@ -239,11 +238,11 @@ http {
         # [ DOCUMENTATION - Swagger ]
         # ======================================================================
 
-        location = /api/v1/documentation/swagger {
-            return 301 /api/v1/documentation/swagger/;
+        location = /${DOCUMENTATION_BASE_URL}/swagger {
+            return 301 /${DOCUMENTATION_BASE_URL}/swagger/;
         }
 
-        location /api/v1/documentation/swagger {
+        location /${DOCUMENTATION_BASE_URL}/swagger {
             alias /static/public/documentation/swagger/;
             index index.html;
             try_files $uri $uri/ =404;
@@ -258,14 +257,14 @@ http {
         # ======================================================================
 
         # [ ACCOUNTS - Avatar ]
-        location /api/v1/accounts/static/uploads/avatar/ {
+        location /${ACCOUNTS_BASE_URL}/static/uploads/avatar/ {
             alias /static/public/uploads/avatar/;
             add_header Cache-Control "public";
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Activate Account ]
-        location /api/v1/accounts/static/active-account/ {
+        location /${ACCOUNTS_BASE_URL}/static/active-account/ {
             alias /static/public/active-account/;
             index index.html;
             try_files $uri /index.html;
@@ -274,7 +273,7 @@ http {
         }
 
         # [ ACCOUNTS - Update Password ]
-        location /api/v1/accounts/static/update-password/ {
+        location /${ACCOUNTS_BASE_URL}/static/update-password/ {
             alias /static/public/update-password/;
             index index.html;
             try_files $uri /index.html;
@@ -283,7 +282,7 @@ http {
         }
 
         # [ ACCOUNTS - Update Email ]
-        location /api/v1/accounts/static/update-email/ {
+        location /${ACCOUNTS_BASE_URL}/static/update-email/ {
             alias /static/public/update-email/;
             index index.html;
             try_files $uri /index.html;
@@ -292,7 +291,7 @@ http {
         }
 
         # [ ACCOUNTS - Delete Account ]
-        location /api/v1/accounts/static/delete-account/ {
+        location /${ACCOUNTS_BASE_URL}/static/delete-account/ {
             alias /static/public/delete-account/;
             index index.html;
             try_files $uri /index.html;
@@ -305,13 +304,13 @@ http {
         # --------------------------------------------------- (hello world init)
 
         # [ HELLO WORLD - Static Files ]
-        location /api/v1/helloworld/static {
+        location /${HELLOWORLD_BASE_URL}/static {
             proxy_pass http://helloworld_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ HELLO WORLD - Helloworld ]
-        location /api/v1/helloworld {
+        location /${HELLOWORLD_BASE_URL} {
             proxy_pass http://helloworld_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
@@ -321,109 +320,109 @@ http {
         # ------------------------------------------------------ (accounts init)
 
         # [ ACCOUNTS - Signup ]
-        location /api/v1/accounts/signup {
+        location /${ACCOUNTS_BASE_URL}/signup {
             proxy_pass http://accounts_backend;
             limit_req zone=critical_zone burst=1 nodelay;
         }
 
         # [ ACCOUNTS - Activate Account ]
-        location /api/v1/accounts/activate-account {
+        location /${ACCOUNTS_BASE_URL}/activate-account {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Update Password Link ]
-        location /api/v1/accounts/update-password-link {
+        location /${ACCOUNTS_BASE_URL}/update-password-link {
             proxy_pass http://accounts_backend;
             limit_req zone=critical_zone burst=1 nodelay;
         }
 
         # [ ACCOUNTS - Update Password ]
-        location /api/v1/accounts/update-password {
+        location /${ACCOUNTS_BASE_URL}/update-password {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Login ]
-        location /api/v1/accounts/login {
+        location /${ACCOUNTS_BASE_URL}/login {
             proxy_pass http://accounts_backend;
             limit_req zone=critical_zone burst=3 nodelay;
         }
 
         # [ ACCOUNTS - Login Confirmation ]
-        location /api/v1/accounts/login-confirmation {
+        location /${ACCOUNTS_BASE_URL}/login-confirmation {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=1 nodelay;
         }
 
         # [ ACCOUNTS - Refresh Login ]
-        location /api/v1/accounts/refresh-login {
+        location /${ACCOUNTS_BASE_URL}/refresh-login {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Get Profile ]
-        location /api/v1/accounts/get-profile {
+        location /${ACCOUNTS_BASE_URL}/get-profile {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Upload Avatar ]
-        location /api/v1/accounts/upload-avatar {
+        location /${ACCOUNTS_BASE_URL}/upload-avatar {
             proxy_pass http://accounts_backend;
             limit_req zone=critical_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Update Profile ]
-        location /api/v1/accounts/update-profile {
+        location /${ACCOUNTS_BASE_URL}/update-profile {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Create Address ]
-        location /api/v1/accounts/create-address {
+        location /${ACCOUNTS_BASE_URL}/create-address {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Get Address ]
-        location /api/v1/accounts/get-address {
+        location /${ACCOUNTS_BASE_URL}/get-address {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Delete Address ]
-        location /api/v1/accounts/delete-address {
+        location /${ACCOUNTS_BASE_URL}/delete-address {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=1 nodelay;
         }
 
         # [ ACCOUNTS - Update Email Link ]
-        location /api/v1/accounts/update-email-link {
+        location /${ACCOUNTS_BASE_URL}/update-email-link {
             proxy_pass http://accounts_backend;
             limit_req zone=critical_zone burst=1 nodelay;
         }
 
         # [ ACCOUNTS - Update Email ]
-        location /api/v1/accounts/update-email {
+        location /${ACCOUNTS_BASE_URL}/update-email {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Get Connected Devices ]
-        location /api/v1/accounts/connected-devices {
+        location /${ACCOUNTS_BASE_URL}/connected-devices {
             proxy_pass http://accounts_backend;
             limit_req zone=critical_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - Delete Account Link ]
-        location /api/v1/accounts/delete-account-link {
+        location /${ACCOUNTS_BASE_URL}/delete-account-link {
             proxy_pass http://accounts_backend;
             limit_req zone=critical_zone burst=1 nodelay;
         }
 
         # [ ACCOUNTS - Delete Account ]
-        location /api/v1/accounts/delete {
+        location /${ACCOUNTS_BASE_URL}/delete {
             proxy_pass http://accounts_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
@@ -433,7 +432,7 @@ http {
         # --------------------------------------------------------- (tasks init)
 
         # [ TASKS ]
-        location /api/v1/tasks {
+        location /${TASKS_BASE_URL} {
             proxy_pass http://tasks_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
