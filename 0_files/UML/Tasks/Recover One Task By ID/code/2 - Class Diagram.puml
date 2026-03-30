@@ -1,0 +1,156 @@
+@startuml Class_GET_Task_By_Id
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam classAttributeIconSize 0
+skinparam classBorderThickness 1.5
+skinparam defaultFontSize 10
+skinparam linetype ortho
+
+title GET /api/v1/tasks/{id} — Class Diagram
+
+package "adapter.rest" {
+
+    class TasksGetByIdController {
+        - tasksBaseURL : String
+        - tasksGetByIdUseCase : TasksGetByIdUseCase
+        --
+        + getById(id : UUID,\n  request) : ResponseEntity
+    }
+
+    class StandardResponseDTO {
+        - timestamp   : Instant
+        - statusCode  : int
+        - messageCode : String
+        - data        : Object
+        - meta        : Map<String,Object>
+        - links       : Map<String,Object>
+    }
+
+    class GlobalSuccessEnum <<enumeration>> {
+        GET_TASK_SUCCESS(200, "GET_TASK_SUCCESS")
+    }
+
+    class GlobalExceptionEnum <<enumeration>> {
+        INVALID_CREDENTIALS(401, ...)
+        TASK_NOT_FOUND(404, ...)
+        BAD_REQUEST(400, ...)
+        NO_PERMISSION_TO_ACCESS(403, ...)
+        INTERNAL_SERVER_ERROR(500, ...)
+    }
+}
+
+package "application" {
+
+    class TasksGetByIdUseCase {
+        - tasksRepository : TasksRepository
+        --
+        + execute(credentialsData,\n  taskId : UUID) : TasksEntity
+    }
+}
+
+package "domain" {
+
+    class TasksEntity {
+        - idUser       : UUID
+        - idCreated    : UUID
+        - createdAt    : LocalDateTime
+        - updatedAt    : LocalDateTime
+        - taskName     : String
+        - description  : String
+        - category     : UUID
+        - color        : String
+        - priority     : Integer
+        - startTime    : LocalDateTime
+        - endTime      : LocalDateTime
+        - location     : String
+        - allDay       : boolean
+        - reminderTime : LocalDateTime
+        - notifyActive : boolean
+        - status       : String
+        - dueDate      : LocalDateTime
+    }
+
+    class DomainException {
+        - error : DomainExceptionEnum
+        --
+        + DomainException(error)
+        + getError() : DomainExceptionEnum
+    }
+
+    class DomainExceptionEnum <<enumeration>> {
+        INVALID_CREDENTIALS
+        TASK_NOT_FOUND
+        NO_PERMISSION_TO_ACCESS
+    }
+
+    interface TasksRepository {
+        + findByIdAndUser(\n  taskId : UUID,\n  userId : UUID) : Optional<TasksEntity>
+        + existsByTaskNameAndDueDate(\n  name, dueDate) : boolean
+        + save(entity) : void
+    }
+}
+
+package "infrastructure.persistence" {
+
+    class TasksRepositoryImpl {
+        - tasksRepositoryJPA : TasksRepositoryJPA
+        --
+        + findByIdAndUser(\n  taskId, userId) : Optional<TasksEntity>
+        - toEntity(model : TasksModel) : TasksEntity
+    }
+
+    interface TasksRepositoryJPA {
+        + findByIdAndIdUser(\n  id : UUID,\n  idUser : UUID) : Optional<TasksModel>
+    }
+
+    class TasksModel <<@Entity>> {
+        - id           : UUID
+        - createdAt    : LocalDateTime
+        - updatedAt    : LocalDateTime
+        - taskName     : String
+        - description  : String
+        - color        : String
+        - priority     : int
+        - startTime    : LocalDateTime
+        - endTime      : LocalDateTime
+        - location     : String
+        - allDay       : boolean
+        - reminderTime : LocalDateTime
+        - notifyActive : boolean
+        - status       : String
+        - dueDate      : LocalDateTime
+        - idUser       : UUID
+        - category     : CategoryModel
+    }
+
+    class CategoryModel <<@Entity>> {
+        - id           : UUID
+        - categoryName : String
+        - idUser       : UUID
+    }
+}
+
+package "infrastructure.filters" {
+    class AuthFilter <<OncePerRequestFilter>> {
+        - jwtSecret : String
+        --
+        + doFilterInternal(...) : void
+        - extractClaims(token) : Map<String,Object>
+    }
+}
+
+' Relations
+TasksGetByIdController  -->  TasksGetByIdUseCase
+TasksGetByIdController  -->  StandardResponseDTO
+TasksGetByIdController  -->  GlobalSuccessEnum
+TasksGetByIdUseCase     -->  TasksRepository
+TasksGetByIdUseCase     ..>  DomainException : throws
+DomainException         -->  DomainExceptionEnum
+TasksRepositoryImpl     ..|> TasksRepository
+TasksRepositoryImpl     -->  TasksRepositoryJPA
+TasksRepositoryJPA      -->  TasksModel
+TasksModel              -->  CategoryModel
+AuthFilter              ..>  TasksGetByIdController : sets credentialsData
+
+@enduml

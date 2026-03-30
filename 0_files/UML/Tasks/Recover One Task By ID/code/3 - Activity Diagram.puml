@@ -1,0 +1,88 @@
+@startuml Activity_GET_Task_By_Id
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam defaultFontSize 11
+skinparam ActivityBorderThickness 1.5
+skinparam ActivityArrowThickness 1.5
+skinparam activityDiamondBorderThickness 1.5
+
+title GET /api/v1/tasks/{id} — Activity Diagram
+
+|Client|
+start
+:Send GET /api/v1/tasks/{id}\n+ JWT header;
+
+|Nginx (API Gateway)|
+:Receive and forward request;
+
+|AuthFilter|
+:Intercept request;
+if (JWT present?) then (no)
+    |Client|
+    :Receive 401 INVALID_CREDENTIALS;
+    stop
+else (yes)
+    |AuthFilter|
+    :Validate JWT signature & expiration;
+    if (JWT valid?) then (no)
+        |Client|
+        :Receive 401 ACCESS_EXPIRED;
+        stop
+    else (yes)
+        |AuthFilter|
+        :Extract claims (userId, level);
+        :Set credentialsData on request;
+    endif
+endif
+
+|TasksGetByIdController|
+:Receive request + credentialsData;
+:Extract {id} from path variable;
+if (Invalid UUID format?) then (yes)
+    |Client|
+    :Receive 400 BAD_REQUEST;
+    stop
+else (no)
+    |TasksGetByIdUseCase|
+    :Parse userId from credentialsData;
+    :Call TasksRepository\n.findByIdAndUser(taskId, userId);
+endif
+
+|TasksRepositoryImpl|
+:Call JPA\n.findByIdAndIdUser(taskId, userId);
+
+|PostgreSQL|
+:SELECT * FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?;
+if (DB error?) then (yes)
+    |Client|
+    :Receive 503 SERVICE_UNAVAILABLE;
+    stop
+else (no)
+endif
+
+|TasksRepositoryImpl|
+if (Result is empty?) then (yes)
+    |Client|
+    :Receive 404 TASK_NOT_FOUND;
+    stop
+else (no)
+    |TasksRepositoryImpl|
+    :Map TasksModel\nto TasksEntity;
+    :Return Optional<TasksEntity>;
+endif
+
+|TasksGetByIdUseCase|
+:Unwrap TasksEntity;
+:Return TasksEntity to controller;
+
+|TasksGetByIdController|
+:Map TasksEntity\nto response data object;
+:Build links:\n{self: GET /tasks/{id},\ncollection: GET /tasks};
+:Build StandardResponseDTO\n(200 GET_TASK_SUCCESS);
+
+|Client|
+:Receive 200 OK\n+ task detail JSON;
+stop
+
+@enduml
