@@ -15,6 +15,10 @@ import java.util.UUID;
 public interface TasksRepositoryJPA extends
     JpaRepository<TasksModel, UUID>, JpaSpecificationExecutor<TasksModel> {
 
-    boolean existsByTaskNameAndDueDate(String taskName, LocalDateTime dueDate);
+    boolean existsByIdUserAndTaskNameAndDueDate(
+        UUID idUser,
+        String taskName,
+        LocalDateTime dueDate
+    );
 
 }

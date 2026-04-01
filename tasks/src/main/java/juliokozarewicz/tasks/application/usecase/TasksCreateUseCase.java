@@ -52,7 +52,8 @@ public class TasksCreateUseCase {
         // String idLevelUser = credentialsData.get("level").toString();
 
         // Duplicated task
-        if ( tasksRepository.existsByTaskNameAndDueDate(
+        if ( tasksRepository.existsByIdUserAndTaskNameAndDueDate(
+            idUser,
             tasksCreateCommand.taskName().trim(),
             tasksCreateCommand.dueDate()
         )) {

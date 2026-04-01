@@ -10,5 +10,6 @@ public enum DomainExceptionEnum {
     INVALID_DATE_RANGE,
     INVALID_ALLDAY,
     INVALID_REMINDER,
+    TASK_NOT_FOUND,
     DUPLICATED_TASK;
 }

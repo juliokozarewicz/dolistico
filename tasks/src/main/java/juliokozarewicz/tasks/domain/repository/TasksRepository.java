@@ -1,6 +1,8 @@
 package juliokozarewicz.tasks.domain.repository;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,10 +12,13 @@ import java.util.Optional;
 
 public interface TasksRepository {
 
-    boolean existsByTaskNameAndDueDate(String taskName, LocalDateTime dueDate);
+    boolean existsByIdUserAndTaskNameAndDueDate(
+        UUID idUser,
+        String taskName,
+        LocalDateTime dueDate
+    );
 
-    List<TasksEntity> findAllByIdUser(
-
+    Page<TasksEntity> findAllByIdUser(
         UUID idUser,
         String taskName,
         String category,
@@ -21,8 +26,8 @@ public interface TasksRepository {
         String location,
         String status,
         LocalDate dueDateInit,
-        LocalDate dueDateEnd
-
+        LocalDate dueDateEnd,
+        Pageable pageable
     );
 
     void save(TasksEntity task);

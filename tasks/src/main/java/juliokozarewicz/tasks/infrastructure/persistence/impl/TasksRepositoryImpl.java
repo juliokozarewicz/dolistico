@@ -7,6 +7,8 @@ import juliokozarewicz.tasks.infrastructure.persistence.jpa.TasksRepositoryJPA;
 import juliokozarewicz.tasks.infrastructure.persistence.model.CategoryModel;
 import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import juliokozarewicz.tasks.infrastructure.persistence.specification.TasksGetUserSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -31,8 +33,16 @@ public class TasksRepositoryImpl implements TasksRepository {
     }
 
     @Override
-    public boolean existsByTaskNameAndDueDate(String taskName, LocalDateTime dueDate) {
-        return tasksRepositoryJPA.existsByTaskNameAndDueDate(taskName, dueDate);
+    public boolean existsByIdUserAndTaskNameAndDueDate(
+        UUID idUser,
+        String taskName,
+        LocalDateTime dueDate
+    ) {
+        return tasksRepositoryJPA.existsByIdUserAndTaskNameAndDueDate(
+            idUser,
+            taskName,
+            dueDate
+        );
     }
 
     // =============================================== ( category helpers init )
@@ -106,9 +116,9 @@ public class TasksRepositoryImpl implements TasksRepository {
         tasksRepositoryJPA.save(toModel(tasksEntity));
     }
 
-    // Find All
+    // Find all by user
     @Override
-    public List<TasksEntity> findAllByIdUser(
+    public Page<TasksEntity> findAllByIdUser(
         UUID idUser,
         String taskName,
         String category,
@@ -116,7 +126,8 @@ public class TasksRepositoryImpl implements TasksRepository {
         String location,
         String status,
         LocalDate dueDateInit,
-        LocalDate dueDateEnd
+        LocalDate dueDateEnd,
+        Pageable pageable
     ) {
 
         var spec = TasksGetUserSpecification.filter(
@@ -130,10 +141,9 @@ public class TasksRepositoryImpl implements TasksRepository {
             idUser
         );
 
-        return tasksRepositoryJPA.findAll(spec)
-            .stream()
-            .map(this::toEntity)
-            .collect(Collectors.toList());
+        return tasksRepositoryJPA
+            .findAll(spec, pageable)
+            .map(this::toEntity);
     }
 
     // Find by id

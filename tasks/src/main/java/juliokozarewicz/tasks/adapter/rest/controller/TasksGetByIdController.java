@@ -3,24 +3,20 @@ package juliokozarewicz.tasks.adapter.rest.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
-import juliokozarewicz.tasks.adapter.rest.dto.TasksGetDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.ValidationIdentityDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.tasks.application.command.TasksGetResponseCommand;
 import juliokozarewicz.tasks.application.usecase.TasksGetByIdUseCase;
-import juliokozarewicz.tasks.application.usecase.TasksGetUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -49,12 +45,11 @@ public class TasksGetByIdController {
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${TASKS_BASE_URL}/{id}")
+    @GetMapping("/${TASKS_BASE_URL}/{validationIdentityDTO}")
     public ResponseEntity create (
 
         // DTO error
         @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
-        BindingResult bindingResult,
 
         // Request for auth
         HttpServletRequest request

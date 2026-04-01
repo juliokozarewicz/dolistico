@@ -2,6 +2,8 @@ package juliokozarewicz.tasks.application.usecase;
 
 import juliokozarewicz.tasks.application.command.TasksGetCommand;
 import juliokozarewicz.tasks.application.command.TasksGetResponseCommand;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +48,8 @@ public class TasksGetByIdUseCase {
         // Task id
         UUID taskId = UUID.fromString(id);
 
-        // Return task by id
-        return tasksRepository.findById(taskId)
+        // Get task by id
+        TasksGetResponseCommand taskByID = tasksRepository.findById(taskId)
         .filter(task -> task.getIdUser().equals(idUser))
         .map(task -> new TasksGetResponseCommand(
                 task.getIdCreated(),
@@ -73,6 +75,14 @@ public class TasksGetByIdUseCase {
                 task.getDueDate()
         ))
         .orElse(null);
+
+        // Task not found
+        if  (taskByID == null) {
+            throw new DomainException(DomainExceptionEnum.TASK_NOT_FOUND);
+        }
+
+        // Return task by id
+        return taskByID;
 
     }
 

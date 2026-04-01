@@ -4,6 +4,10 @@ import juliokozarewicz.tasks.application.command.TasksGetCommand;
 import juliokozarewicz.tasks.application.command.TasksGetResponseCommand;
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +57,13 @@ public class TasksGetUseCase {
         ? tasksGetCommand.sizePagination()
         : 10;
 
-        List<TasksEntity> allElements = tasksRepository.findAllByIdUser(
+        Pageable pageable = PageRequest.of(
+            pageNumber - 1,
+            pageSize,
+            Sort.by("createdAt").descending()
+        );
+
+        Page<TasksEntity> page = tasksRepository.findAllByIdUser(
             idUser,
             tasksGetCommand.taskName(),
             tasksGetCommand.category(),
@@ -61,37 +71,36 @@ public class TasksGetUseCase {
             tasksGetCommand.location(),
             tasksGetCommand.status(),
             tasksGetCommand.dueDateInit(),
-            tasksGetCommand.dueDateEnd()
+            tasksGetCommand.dueDateEnd(),
+            pageable
         );
 
-        List<TasksGetResponseCommand> content = allElements.stream()
-        .sorted(Comparator.comparing(TasksEntity::getCreatedAt).reversed())
-        .skip((long) (pageNumber - 1) * pageSize)
-        .limit(pageSize)
-        .map(entity -> new TasksGetResponseCommand(
-            entity.getIdCreated(),
-            entity.getCreatedAt(),
-            entity.getUpdatedAt(),
-            entity.getTaskName(),
-            entity.getDescription(),
-            entity.getCategory() != null
-                ? new TasksGetResponseCommand.CategoryCommand(
-                    entity.getCategory(),
-                    entity.getCategoryName()
-                  )
-                : null,
-            entity.getColor(),
-            entity.getPriority(),
-            entity.getStartTime(),
-            entity.getEndTime(),
-            entity.getLocation(),
-            entity.isAllDay(),
-            entity.getReminderTime(),
-            entity.isNotifyActive(),
-            entity.getStatus(),
-            entity.getDueDate()
-        ))
-        .collect(Collectors.toList());
+        List<TasksGetResponseCommand> content = page.getContent()
+            .stream()
+            .map(entity -> new TasksGetResponseCommand(
+                entity.getIdCreated(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt(),
+                entity.getTaskName(),
+                entity.getDescription(),
+                entity.getCategory() != null
+                    ? new TasksGetResponseCommand.CategoryCommand(
+                        entity.getCategory(),
+                        entity.getCategoryName()
+                      )
+                    : null,
+                entity.getColor(),
+                entity.getPriority(),
+                entity.getStartTime(),
+                entity.getEndTime(),
+                entity.getLocation(),
+                entity.isAllDay(),
+                entity.getReminderTime(),
+                entity.isNotifyActive(),
+                entity.getStatus(),
+                entity.getDueDate()
+            ))
+            .toList();
         // ---------------------------------------------------- (pagination end)
 
         // Return map
@@ -99,8 +108,8 @@ public class TasksGetUseCase {
         result.put("content", content);
         result.put("currentPage", pageNumber);
         result.put("pageSize", pageSize);
-        result.put("totalPages", (int) Math.ceil((double) allElements.size() / pageSize));
-        result.put("totalElements", allElements.size());
+        result.put("totalPages", page.getTotalPages());
+        result.put("totalElements", page.getTotalElements());
         return result;
 
     }
