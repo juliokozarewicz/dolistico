@@ -98,7 +98,7 @@ components:
 
 paths:
 
-  ######################################################## ( helloworld init )
+  ########################################################## ( helloworld init )
 
   # HELLO WORLD
   "/HELLOWORLD_BASE_URL_REPLACE":
@@ -164,9 +164,9 @@ paths:
                     type: string
                     example: NO_PERMISSION_TO_ACCESS
 
-  ######################################################### ( helloworld end )
+  ########################################################### ( helloworld end )
 
-  ########################################################## ( accounts init )
+  ############################################################ ( accounts init )
 
   # ACCOUNTS - SIGNUP
   "/ACCOUNTS_BASE_URL_REPLACE/signup":
@@ -1633,9 +1633,9 @@ paths:
                     type: string
                     example: The link has expired. Please go through the process again.
 
-  ########################################################### ( accounts end )
+  ############################################################# ( accounts end )
 
-  ############################################################# ( tasks init )
+  ############################################################### ( tasks init )
 
   # TASKS - CREATE
   "/TASKS_BASE_URL_REPLACE":
@@ -1948,4 +1948,111 @@ paths:
                         type: integer
                         example: 48
 
-  ############################################################## ( tasks end )
+  # TASKS - GET BY ID
+  "/TASKS_BASE_URL_REPLACE/{id}":
+    get:
+      summary: Get task by ID
+      description: >-
+        Retrieves a specific task by its unique identifier.
+        The task must belong to the authenticated user.
+        If the task does not exist or belongs to another user, a not found error is returned.
+      tags:
+        - TASKS
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier (UUID) of the task to retrieve.
+          schema:
+            type: string
+            format: uuid
+            example: 464140a1-cbec-4935-a604-e7decf33d6d9
+
+      responses:
+        "200":
+          description: Task retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-03-11T11:20:40Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: GET_TASKS_SUCCESS
+                  data:
+                    type: object
+                    properties:
+                      idCreated:
+                        type: string
+                        format: uuid
+                        example: 464140a1-cbec-4935-a604-e7decf33d6d9
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2026-03-11T09:00:00"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2026-03-11T10:00:00"
+                      taskName:
+                        type: string
+                        example: Finish backend documentation
+                      description:
+                        type: string
+                        example: Write the API documentation for the tasks module.
+                      category:
+                        type: object
+                        nullable: true
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                            example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
+                          categoryName:
+                            type: string
+                            example: Work
+                      color:
+                        type: string
+                        example: blue
+                      priority:
+                        type: integer
+                        example: 3
+                      startTime:
+                        type: string
+                        format: date-time
+                        example: "2026-03-11T09:00:00"
+                      endTime:
+                        type: string
+                        format: date-time
+                        example: "2026-03-11T10:00:00"
+                      location:
+                        type: string
+                        example: Office meeting room
+                      allDay:
+                        type: boolean
+                        example: false
+                      reminderTime:
+                        type: string
+                        format: date-time
+                        example: "2026-03-11T08:30:00"
+                      notifyActive:
+                        type: boolean
+                        example: true
+                      status:
+                        type: string
+                        example: pending
+                      dueDate:
+                        type: string
+                        format: date-time
+                        example: "2026-03-11T10:00:00"
+
+  #####################################################@@######### ( tasks end )
