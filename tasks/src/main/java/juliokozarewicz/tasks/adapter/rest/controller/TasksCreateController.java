@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
@@ -73,17 +74,6 @@ public class TasksCreateController {
         Map<String, String> dataObject = new LinkedHashMap<>();
         dataObject.put("idCreated", idCreated);
 
-        // Links
-        Map<String, Object> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", new LinkedHashMap<>() {{
-            put("href", "/" + tasksBaseURL);
-            put("method", "POST");
-        }});
-        customLinks.put("next", new LinkedHashMap<>() {{
-            put("href", "/" + tasksBaseURL);
-            put("method", "GET");
-        }});
-
         // Standard response
         return ResponseEntity
         .status(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
@@ -94,7 +84,6 @@ public class TasksCreateController {
             .statusCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
             .messageCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getMessageCode())
             .data(dataObject)
-            .links(customLinks)
             .build()
         );
 

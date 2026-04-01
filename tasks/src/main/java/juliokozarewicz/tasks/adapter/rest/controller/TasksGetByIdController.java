@@ -4,7 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.TasksGetDTO;
+import juliokozarewicz.tasks.adapter.rest.dto.ValidationIdentityDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
+import juliokozarewicz.tasks.application.command.TasksGetResponseCommand;
+import juliokozarewicz.tasks.application.usecase.TasksGetByIdUseCase;
 import juliokozarewicz.tasks.application.usecase.TasksGetUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -12,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
@@ -22,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-public class TasksGetController {
+public class TasksGetByIdController {
 
     // ==================================================== ( constructor init )
 
@@ -32,25 +35,25 @@ public class TasksGetController {
     private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
-    private final TasksGetUseCase tasksGetUseCase;
+    private final TasksGetByIdUseCase tasksGetByIdUseCase;
 
-    public TasksGetController (
+    public TasksGetByIdController (
 
-        TasksGetUseCase tasksGetUseCase
+        TasksGetByIdUseCase tasksGetByIdUseCase
 
     ) {
 
-        this.tasksGetUseCase = tasksGetUseCase;
+        this.tasksGetByIdUseCase = tasksGetByIdUseCase;
 
     }
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${TASKS_BASE_URL}")
+    @GetMapping("/${TASKS_BASE_URL}/{id}")
     public ResponseEntity create (
 
         // DTO error
-        @Valid TasksGetDTO tasksGetDTO,
+        @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
         BindingResult bindingResult,
 
         // Request for auth
@@ -64,21 +67,10 @@ public class TasksGetController {
         request.getAttribute("credentialsData");
 
         // Call use case
-         Map<String, Object> dataResponse = tasksGetUseCase.execute(
+         TasksGetResponseCommand dataResponse = tasksGetByIdUseCase.execute(
             credentialsData,
-            tasksGetDTO
+            validationIdentityDTO.id()
         );
-
-        // Content
-        List<?> content = (List<?>) dataResponse.get("content");
-
-        // Meta data
-        Map<String, Object> metaData = new LinkedHashMap<>();
-        metaData.put("currentPage", dataResponse.get("currentPage"));
-        metaData.put("totalPages", dataResponse.get("totalPages"));
-        metaData.put("totalElementsCurrentPage",  content.size());
-        metaData.put("pageSize", dataResponse.get("pageSize"));
-        metaData.put("totalElements", dataResponse.get("totalElements"));
 
         // Standard response
         return ResponseEntity
@@ -89,8 +81,7 @@ public class TasksGetController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getStatusCode())
             .messageCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getMessageCode())
-            .data(content)
-            .meta(metaData)
+            .data(dataResponse)
             .build()
         );
 

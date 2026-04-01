@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 public interface TasksRepository {
 
@@ -25,5 +26,7 @@ public interface TasksRepository {
     );
 
     void save(TasksEntity task);
+
+    Optional<TasksEntity> findById(UUID id);
 
 }

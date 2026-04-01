@@ -30,6 +30,7 @@ public enum GlobalExceptionEnum {
     public static final String INVALID_PRIORITY_DTO = "INVALID_PRIORITY";
     public static final String FEW_CHARACTERS = "FEW_CHARACTERS";
     public static final String FORBIDDEN_CHARACTERS = "FORBIDDEN_CHARACTERS";
+    public static final String INVALID_ID = "INVALID_ID";
 
     public final int statusCode;
     public final String messageCode;

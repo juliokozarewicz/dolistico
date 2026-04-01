@@ -143,18 +143,6 @@ paths:
                       message:
                         type: string
                         example: test_message
-                  links:
-                    type: object
-                    properties:
-                      self:
-                        type: object
-                        properties:
-                          href:
-                            type: string
-                            example: /api/v1/helloworld
-                          method:
-                            type: string
-                            example: GET
 
         "403":
           description: >-
@@ -1766,27 +1754,6 @@ paths:
                         type: string
                         format: uuid
                         example: 464140a1-cbec-4935-a604-e7decf33d6d9
-                  links:
-                    type: object
-                    properties:
-                      self:
-                        type: object
-                        properties:
-                          href:
-                            type: string
-                            example: /api/v1/tasks
-                          method:
-                            type: string
-                            example: POST
-                      next:
-                        type: object
-                        properties:
-                          href:
-                            type: string
-                            example: /api/v1/tasks
-                          method:
-                            type: string
-                            example: GET
 
     # TASKS - GET
     get:
@@ -1980,26 +1947,5 @@ paths:
                       totalElements:
                         type: integer
                         example: 48
-                  links:
-                    type: object
-                    properties:
-                      self:
-                        type: object
-                        properties:
-                          href:
-                            type: string
-                            example: /api/v1/tasks
-                          method:
-                            type: string
-                            example: GET
-                      next:
-                        type: object
-                        properties:
-                          href:
-                            type: string
-                            example: /api/v1/tasks
-                          method:
-                            type: string
-                            example: PUT
 
   ############################################################## ( tasks end )

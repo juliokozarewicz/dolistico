@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,15 +23,11 @@ public class TasksRepositoryImpl implements TasksRepository {
     private final TasksCategoryJPA tasksCategoryJPA;
 
     public TasksRepositoryImpl(
-
         TasksRepositoryJPA jpaRepository,
         TasksCategoryJPA tasksCategoryJPA
-
     ) {
-
         this.tasksRepositoryJPA = jpaRepository;
         this.tasksCategoryJPA = tasksCategoryJPA;
-
     }
 
     @Override
@@ -38,82 +35,49 @@ public class TasksRepositoryImpl implements TasksRepository {
         return tasksRepositoryJPA.existsByTaskNameAndDueDate(taskName, dueDate);
     }
 
-    // ------------------------------------------------------- ( Category init )
+    // =============================================== ( category helpers init )
+
     private CategoryModel getCategory(UUID categoryId) {
         return categoryId == null
-        ? null
-        : tasksCategoryJPA.findById(categoryId).orElse(null);
+            ? null
+            : tasksCategoryJPA.findById(categoryId).orElse(null);
     }
 
     private String getCategoryName(TasksModel model) {
         return model.getCategory() != null
-        ? model.getCategory().getCategoryName()
-        : null;
+            ? model.getCategory().getCategoryName()
+            : null;
     }
-    // -------------------------------------------------------- ( Category end )
+    // ================================================ ( category helpers end )
 
-    @Override
-    public void save(
+    // ======================================================== ( mappers init )
 
-        TasksEntity tasksEntity
-
-    ) {
-
-        // Mapper
-        TasksModel model = TasksModel.builder()
-            .idUser(tasksEntity.getIdUser())
-            .id(tasksEntity.getIdCreated())
-            .createdAt(tasksEntity.getCreatedAt())
-            .updatedAt(tasksEntity.getUpdatedAt())
-            .taskName(tasksEntity.getTaskName())
-            .description(tasksEntity.getDescription())
-            .category(getCategory(tasksEntity.getCategory()))
-            .color(tasksEntity.getColor())
-            .priority(tasksEntity.getPriority())
-            .startTime(tasksEntity.getStartTime())
-            .endTime(tasksEntity.getEndTime())
-            .location(tasksEntity.getLocation())
-            .allDay(tasksEntity.isAllDay())
-            .reminderTime(tasksEntity.getReminderTime())
-            .notifyActive(tasksEntity.isNotifyActive())
-            .status(tasksEntity.getStatus())
-            .dueDate(tasksEntity.getDueDate())
+    // ENTITY -> MODEL
+    private TasksModel toModel(TasksEntity entity) {
+        return TasksModel.builder()
+            .idUser(entity.getIdUser())
+            .id(entity.getIdCreated())
+            .createdAt(entity.getCreatedAt())
+            .updatedAt(entity.getUpdatedAt())
+            .taskName(entity.getTaskName())
+            .description(entity.getDescription())
+            .category(getCategory(entity.getCategory()))
+            .color(entity.getColor())
+            .priority(entity.getPriority())
+            .startTime(entity.getStartTime())
+            .endTime(entity.getEndTime())
+            .location(entity.getLocation())
+            .allDay(entity.isAllDay())
+            .reminderTime(entity.getReminderTime())
+            .notifyActive(entity.isNotifyActive())
+            .status(entity.getStatus())
+            .dueDate(entity.getDueDate())
             .build();
-
-        // Save
-        tasksRepositoryJPA.save(model);
-
     }
 
-    @Override
-    public List<TasksEntity> findAllByIdUser(
-
-        UUID idUser,
-        String taskName,
-        String category,
-        Integer priority,
-        String location,
-        String status,
-        LocalDate dueDateInit,
-        LocalDate dueDateEnd
-
-    ) {
-
-        // Specification
-        var spec = TasksGetUserSpecification.filter(
-            taskName,
-            category,
-            priority,
-            location,
-            status,
-            dueDateInit,
-            dueDateEnd,
-            idUser
-        );
-
-        return tasksRepositoryJPA.findAll(spec)
-        .stream()
-        .map(model -> new TasksEntity(
+    // MODEL -> ENTITY
+    private TasksEntity toEntity(TasksModel model) {
+        return new TasksEntity(
             model.getIdUser(),
             model.getId(),
             model.getCreatedAt(),
@@ -132,9 +96,51 @@ public class TasksRepositoryImpl implements TasksRepository {
             model.isNotifyActive(),
             model.getStatus(),
             model.getDueDate()
-        ))
-        .collect(Collectors.toList());
+        );
+    }
 
+    // ========================================================= ( mappers end )
+
+    @Override
+    public void save(TasksEntity tasksEntity) {
+        tasksRepositoryJPA.save(toModel(tasksEntity));
+    }
+
+    // Find All
+    @Override
+    public List<TasksEntity> findAllByIdUser(
+        UUID idUser,
+        String taskName,
+        String category,
+        Integer priority,
+        String location,
+        String status,
+        LocalDate dueDateInit,
+        LocalDate dueDateEnd
+    ) {
+
+        var spec = TasksGetUserSpecification.filter(
+            taskName,
+            category,
+            priority,
+            location,
+            status,
+            dueDateInit,
+            dueDateEnd,
+            idUser
+        );
+
+        return tasksRepositoryJPA.findAll(spec)
+            .stream()
+            .map(this::toEntity)
+            .collect(Collectors.toList());
+    }
+
+    // Find by id
+    @Override
+    public Optional<TasksEntity> findById(UUID id) {
+        return tasksRepositoryJPA.findById(id)
+            .map(this::toEntity);
     }
 
 }
