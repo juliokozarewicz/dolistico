@@ -1,0 +1,195 @@
+@startuml Activity_PUT_Task_By_Id
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam defaultFontSize 11
+skinparam ActivityBorderThickness 1.5
+skinparam ActivityArrowThickness 1.5
+skinparam activityDiamondBorderThickness 1.5
+
+title PUT /api/v1/tasks/{id} — Activity Diagram
+
+|Client|
+start
+:Send PUT /api/v1/tasks/{id}\n+ JWT header + JSON body\n(taskName, description, category,\ncolor, priority, startTime, endTime,\nlocation, allDay, reminderTime,\nnotifyActive, status, dueDate);
+
+|Nginx (API Gateway)|
+:Receive and forward request;
+
+|AuthFilter|
+:Intercept request;
+if (JWT present?) then (no)
+    |Client|
+    :Receive 401 INVALID_CREDENTIALS;
+    stop
+else (yes)
+    |AuthFilter|
+    :Validate JWT signature & expiration;
+    if (JWT valid?) then (no)
+        |Client|
+        :Receive 401 ACCESS_EXPIRED;
+        stop
+    else (yes)
+        |AuthFilter|
+        :Extract claims (userId, level);
+        :Set credentialsData on request;
+    endif
+endif
+
+|TasksUpdateController|
+:Receive request + credentialsData;
+:Extract {id} from path variable;
+if (Invalid UUID format?) then (yes)
+    |Client|
+    :Receive 400 BAD_REQUEST;
+    stop
+else (no)
+    |TasksUpdateController|
+    :Deserialize JSON to TasksUpdateDTO;
+    :Run @Valid (BindingResult);
+    if (DTO invalid?) then (yes)
+        |Client|
+        :Receive 422 UNPROCESSABLE_ENTITY\n+ fieldErrors;
+        stop
+    else (no)
+        |TasksUpdateUseCase|
+        :Parse userId from credentialsData;
+        :Call TasksRepository\n.findByIdAndUser(taskId, userId);
+    endif
+endif
+
+|TasksRepositoryImpl|
+:Call JPA\n.findByIdAndIdUser(taskId, userId);
+
+|PostgreSQL|
+:SELECT * FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?;
+if (DB error?) then (yes)
+    |Client|
+    :Receive 503 SERVICE_UNAVAILABLE;
+    stop
+else (no)
+endif
+
+|TasksRepositoryImpl|
+if (Result is empty?) then (yes)
+    |Client|
+    :Receive 404 TASK_NOT_FOUND;
+    stop
+else (no)
+    |TasksRepositoryImpl|
+    :Map TasksModel to TasksEntity;
+    :Return existing TasksEntity;
+endif
+
+|TasksUpdateUseCase|
+:Call existsByTaskNameAndDueDateAndIdNot\n(taskName, dueDate, taskId);
+if (Duplicated task?) then (yes)
+    |Client|
+    :Receive 409 DUPLICATED_TASK;
+    stop
+else (no)
+    |TasksUpdateUseCase|
+    :Generate new timeStamp (now);
+    :Instantiate new TasksEntity\n(userId, taskId,\noriginal.createdAt, timeStamp,\n...fields from command);
+endif
+
+|TasksEntity|
+:Execute validateBusinessRules();
+if (idUser is null?) then (yes)
+    |Client|
+    :Receive 401 INVALID_CREDENTIALS;
+    stop
+else (no)
+endif
+
+|TasksEntity|
+if (priority null or < 0 or > 5?) then (yes)
+    |Client|
+    :Receive 400 INVALID_PRIORITY;
+    stop
+else (no)
+endif
+
+|TasksEntity|
+if (only one of startTime\nor endTime provided?) then (yes)
+    |Client|
+    :Receive 400 INVALID_DATE_RANGE;
+    stop
+else (no)
+endif
+
+|TasksEntity|
+if (both startTime\nand endTime set?) then (yes)
+    if (different day OR startTime\nafter endTime OR date\nmismatches dueDate?) then (yes)
+        |Client|
+        :Receive 400 INVALID_DATE_RANGE;
+        stop
+    else (no)
+    endif
+else (no)
+endif
+
+|TasksEntity|
+if (allDay=true AND startTime\nor endTime is set?) then (yes)
+    |Client|
+    :Receive 400 INVALID_ALLDAY;
+    stop
+else (no)
+endif
+
+|TasksEntity|
+if (reminderTime\nis after dueDate?) then (yes)
+    |Client|
+    :Receive 400 INVALID_REMINDER;
+    stop
+else (no)
+    |TasksEntity|
+    :Return valid TasksEntity;
+endif
+
+|TasksEventProducer|
+:Serialize TasksEntity\nto byte[] (JSON);
+:kafkaTemplate.send(\n"tasks.update.persist.v1",\npayload).get(10s timeout);
+if (Timeout or Kafka error?) then (yes)
+    |Client|
+    :Receive 503 SERVICE_UNAVAILABLE;
+    stop
+else (no)
+    |TasksUpdateController|
+    :Build data {idUpdated};
+    :Build links\n{self: PUT /tasks/{id},\ncollection: GET /tasks,\ndetail: GET /tasks/{id}};
+    :Build StandardResponseDTO\n(200 UPDATE_TASK_SUCCESS);
+endif
+
+|Client|
+:Receive 200 OK\n+ {idUpdated, links}\n[async persistence continues];
+
+|TasksEventConsumer|
+:Poll Kafka record (byte[] payload);
+:Deserialize payload\nto TasksEntity;
+:Call TasksRepository.update(entity);
+
+|TasksRepositoryImpl|
+:Lookup CategoryModel\nby entity.category (nullable);
+:Call JPA\n.findByIdAndIdUser(taskId, userId);
+
+|PostgreSQL|
+:SELECT * FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?;
+
+|TasksRepositoryImpl|
+:Update fields on existing TasksModel\n(preserves createdAt, idUser, id);
+:Call tasksRepositoryJPA.save(model);
+
+|PostgreSQL|
+:UPDATE tasks.tasks\nSET task_name=?, updated_at=?,\n... WHERE id=?;
+if (DB error?) then (yes)
+    |TasksEventConsumer|
+    :Throw InternalError\n(Kafka offset NOT committed);
+    stop
+else (no)
+    |TasksEventConsumer|
+    :ack.acknowledge()\n(commit Kafka offset);
+    stop
+endif
+
+@enduml
