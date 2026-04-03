@@ -4,25 +4,26 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.TasksCreateUpadateDTO;
+import juliokozarewicz.tasks.adapter.rest.dto.ValidationIdentityDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
-import juliokozarewicz.tasks.application.usecase.TasksCreateUseCase;
+import juliokozarewicz.tasks.application.usecase.TasksUpdateUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @Validated
-public class TasksCreateController {
+public class TasksUpdateController {
 
     // ==================================================== ( constructor init )
 
@@ -33,24 +34,25 @@ public class TasksCreateController {
     private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
-    private final TasksCreateUseCase tasksCreateUseCase;
+    private final TasksUpdateUseCase tasksUpdateUseCase;
 
-    public TasksCreateController(
+    public TasksUpdateController(
 
-        TasksCreateUseCase tasksCreateUseCase
+        TasksUpdateUseCase tasksUpdateUseCase
 
     ) {
 
-        this.tasksCreateUseCase = tasksCreateUseCase;
+        this.tasksUpdateUseCase = tasksUpdateUseCase;
 
     }
 
     // ===================================================== ( constructor end )
 
-    @PostMapping("/${TASKS_BASE_URL}")
+    @PutMapping("/${TASKS_BASE_URL}/{validationIdentityDTO}")
     public ResponseEntity create (
 
         // DTO error
+        @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
         @Valid @RequestBody TasksCreateUpadateDTO tasksCreateUpadateDTO,
         BindingResult bindingResult,
 
@@ -65,25 +67,21 @@ public class TasksCreateController {
         request.getAttribute("credentialsData");
 
         // Call use case
-        String idCreated = tasksCreateUseCase.execute(
+        tasksUpdateUseCase.execute(
             credentialsData,
+            UUID.fromString(validationIdentityDTO.id()),
             tasksCreateUpadateDTO
         );
 
-        // data
-        Map<String, String> dataObject = new LinkedHashMap<>();
-        dataObject.put("idCreated", idCreated);
-
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
+        .status(GlobalSuccessEnum.UPDATE_TASK_SUCCESS.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getStatusCode())
-            .messageCode(GlobalSuccessEnum.CREATE_TASK_SUCCESS.getMessageCode())
-            .data(dataObject)
+            .statusCode(GlobalSuccessEnum.UPDATE_TASK_SUCCESS.getStatusCode())
+            .messageCode(GlobalSuccessEnum.UPDATE_TASK_SUCCESS.getMessageCode())
             .build()
         );
 

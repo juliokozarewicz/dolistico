@@ -3,7 +3,7 @@ package juliokozarewicz.tasks.application.command;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public interface TasksCreateCommand {
+public interface TasksCreateUpdateCommand {
 
     String taskName();
     String description();

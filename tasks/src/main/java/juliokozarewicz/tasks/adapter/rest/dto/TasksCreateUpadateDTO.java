@@ -2,12 +2,12 @@ package juliokozarewicz.tasks.adapter.rest.dto;
 
 import jakarta.validation.constraints.*;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalExceptionEnum;
-import juliokozarewicz.tasks.application.command.TasksCreateCommand;
+import juliokozarewicz.tasks.application.command.TasksCreateUpdateCommand;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record TasksCreateDTO(
+public record TasksCreateUpadateDTO(
 
     @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
     @Size(min = 3, message = GlobalExceptionEnum.FEW_CHARACTERS)
@@ -70,4 +70,4 @@ public record TasksCreateDTO(
 
     LocalDateTime dueDate
 
-) implements TasksCreateCommand {}
+) implements TasksCreateUpdateCommand {}

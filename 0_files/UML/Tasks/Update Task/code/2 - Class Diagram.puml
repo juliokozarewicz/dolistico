@@ -1,0 +1,249 @@
+@startuml Class_PUT_Task_By_Id
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam classAttributeIconSize 0
+skinparam classBorderThickness 1.5
+skinparam defaultFontSize 10
+
+title PUT /api/v1/tasks/{id} — Class Diagram
+
+package "adapter.rest" {
+    class TasksUpdateController {
+        - tasksBaseURL : String
+        - tasksUpdateUseCase : TasksUpdateUseCase
+        --
+        + update(id, dto, request) : ResponseEntity
+    }
+
+    class TasksUpdateDTO {
+        + taskName : String
+        + description : String
+        + category : UUID
+        + color : String
+        + priority : Integer
+        + startTime : LocalDateTime
+        + endTime : LocalDateTime
+        + location : String
+        + allDay : Boolean
+        + reminderTime : LocalDateTime
+        + notifyActive : Boolean
+        + status : String
+        + dueDate : LocalDateTime
+    }
+
+    interface TasksUpdateCommand {
+        + taskName() : String
+        + description() : String
+        + category() : UUID
+        + color() : String
+        + priority() : Integer
+        + startTime() : LocalDateTime
+        + endTime() : LocalDateTime
+        + location() : String
+        + allDay() : Boolean
+        + reminderTime() : LocalDateTime
+        + notifyActive() : Boolean
+        + status() : String
+        + dueDate() : LocalDateTime
+    }
+
+    class StandardResponseDTO {
+        - timestamp : Instant
+        - statusCode : int
+        - messageCode : String
+        - fieldErrors : List
+        - data : Object
+        - meta : Map
+        - links : Map
+        --
+        + getTimestamp() : Instant
+        + getStatusCode() : int
+        + getData() : Object
+    }
+
+    enum GlobalSuccessEnum {
+        UPDATE_TASK_SUCCESS
+        --
+        + getStatusCode() : int
+        + getMessageCode() : String
+    }
+
+    enum GlobalExceptionEnum {
+        INVALID_CREDENTIALS
+        TASK_NOT_FOUND
+        DUPLICATED_TASK
+        INVALID_PRIORITY
+        INVALID_DATE_RANGE
+        INVALID_ALLDAY
+        INVALID_REMINDER
+        UNPROCESSABLE_ENTITY
+        BAD_REQUEST
+        SERVICE_UNAVAILABLE
+        --
+        + getStatusCode() : int
+        + getMessageCode() : String
+    }
+}
+
+package "application" {
+    class TasksUpdateUseCase {
+        - tasksRepository : TasksRepository
+        - tasksEventProducer : TasksEventProducer
+        --
+        + execute(credentialsData, taskId, command) : String
+    }
+}
+
+package "domain" {
+    class TasksEntity {
+        - idUser : UUID
+        - idCreated : UUID
+        - createdAt : LocalDateTime
+        - updatedAt : LocalDateTime
+        - taskName : String
+        - description : String
+        - category : UUID
+        - color : String
+        - priority : Integer
+        - startTime : LocalDateTime
+        - endTime : LocalDateTime
+        - location : String
+        - allDay : boolean
+        - reminderTime : LocalDateTime
+        - notifyActive : boolean
+        - status : String
+        - dueDate : LocalDateTime
+        --
+        + TasksEntity(...)
+        - validateBusinessRules(...) : void
+    }
+
+    class DomainException {
+        - error : DomainExceptionEnum
+        --
+        + DomainException(error)
+        + getError() : DomainExceptionEnum
+    }
+
+    enum DomainExceptionEnum {
+        INVALID_CREDENTIALS
+        INVALID_PRIORITY
+        INVALID_DATE_RANGE
+        INVALID_ALLDAY
+        INVALID_REMINDER
+        DUPLICATED_TASK
+        TASK_NOT_FOUND
+        NO_PERMISSION_TO_ACCESS
+    }
+
+    interface TasksRepository {
+        + findByIdAndUser(taskId, userId) : Optional
+        + existsByTaskNameAndDueDateAndIdNot(name, dueDate, id) : boolean
+        + existsByTaskNameAndDueDate(name, dueDate) : boolean
+        + update(entity) : void
+        + save(entity) : void
+    }
+}
+
+package "infrastructure.messaging" {
+    class TasksEventProducer {
+        - kafkaTemplate : KafkaTemplate
+        - objectMapper : ObjectMapper
+        --
+        + producer(message) : void
+    }
+
+    class TasksEventConsumer {
+        - tasksRepository : TasksRepository
+        - objectMapper : ObjectMapper
+        --
+        + consumerCreate(record, ack) : void
+        + consumerUpdate(record, ack) : void
+    }
+
+    enum MessagingTopicEnum {
+        TASKS_CREATE_PERSIST
+        TASKS_UPDATE_PERSIST
+        --
+        + getTopicName() : String
+    }
+}
+
+package "infrastructure.persistence" {
+    class TasksRepositoryImpl {
+        - tasksRepositoryJPA : TasksRepositoryJPA
+        - tasksCategoryJPA : TasksCategoryJPA
+        --
+        + findByIdAndUser(taskId, userId) : Optional
+        + existsByTaskNameAndDueDateAndIdNot(name, dueDate, id) : boolean
+        + update(entity) : void
+        + save(entity) : void
+        - toEntity(model) : TasksEntity
+    }
+
+    interface TasksRepositoryJPA {
+        + findByIdAndIdUser(id, idUser) : Optional
+        + existsByTaskNameAndDueDateAndIdNot(name, dueDate, id) : boolean
+        + save(model) : TasksModel
+    }
+
+    interface TasksCategoryJPA {
+        + findById(id) : Optional
+    }
+
+    class TasksModel {
+        - id : UUID
+        - createdAt : LocalDateTime
+        - updatedAt : LocalDateTime
+        - taskName : String
+        - description : String
+        - color : String
+        - priority : int
+        - startTime : LocalDateTime
+        - endTime : LocalDateTime
+        - location : String
+        - allDay : boolean
+        - reminderTime : LocalDateTime
+        - notifyActive : boolean
+        - status : String
+        - dueDate : LocalDateTime
+        - idUser : UUID
+    }
+
+    class CategoryModel {
+        - id : UUID
+        - categoryName : String
+        - idUser : UUID
+    }
+}
+
+package "infrastructure.filters" {
+    class AuthFilter {
+        - jwtSecret : String
+        --
+        + doFilterInternal(request, response, chain) : void
+        - extractClaims(token) : Map
+    }
+}
+
+TasksUpdateDTO        ..|>  TasksUpdateCommand
+TasksUpdateController  -->  TasksUpdateUseCase
+TasksUpdateController  -->  StandardResponseDTO
+TasksUpdateController  -->  GlobalSuccessEnum
+TasksUpdateUseCase     -->  TasksRepository
+TasksUpdateUseCase     -->  TasksEventProducer
+TasksUpdateUseCase     ..>  TasksEntity
+TasksEntity            ..>  DomainException
+DomainException        -->  DomainExceptionEnum
+TasksEventProducer     -->  MessagingTopicEnum
+TasksEventConsumer     -->  TasksRepository
+TasksEventConsumer     -->  MessagingTopicEnum
+TasksRepositoryImpl   ..|>  TasksRepository
+TasksRepositoryImpl    -->  TasksRepositoryJPA
+TasksRepositoryImpl    -->  TasksCategoryJPA
+TasksRepositoryJPA     -->  TasksModel
+TasksModel             -->  CategoryModel
+AuthFilter             ..>  TasksUpdateController
+
+@enduml

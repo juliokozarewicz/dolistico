@@ -1641,11 +1641,19 @@ paths:
   "/TASKS_BASE_URL_REPLACE":
     post:
       summary: Create task
-      description: >-
-        This endpoint creates a new task for the authenticated user. 
-        The request must include the task details such as name, priority, status, and optional scheduling information.
-        The system validates business rules including date consistency, priority limits, reminder rules, and duplication checks.
-        If the task is successfully created, a unique task identifier is returned.
+      description: |-
+        Creates a new task for the authenticated user. Every task belongs exclusively 
+        to the authenticated user — it is not possible to access or modify another 
+        user's data.
+        
+        **Business rules:**
+        
+        - `priority` must be between `1` (lowest) and `5` (highest).
+        - `startTime` and `endTime` must always be provided together. Both must fall on the same calendar day, and `startTime` must be before `endTime`. When `dueDate` is also provided, all three must fall on the same day.
+        - When `allDay` is `true`, `startTime` and `endTime` must not be provided.
+        - `reminderTime` must not be after `dueDate`.
+        - A task is considered a duplicate when the same user already has a task 
+        with the same `taskName` and `dueDate`.
       tags:
         - TASKS
       security:
@@ -2054,5 +2062,151 @@ paths:
                         type: string
                         format: date-time
                         example: "2026-03-11T10:00:00"
+
+    put:
+      summary: Update task by ID
+      description: >-
+        This endpoint updates an existing task for the authenticated user.
+        The task is identified by its unique UUID provided in the path.
+        All fields follow the same validation rules as task creation.
+        The system validates business rules including date consistency, priority limits,
+        reminder rules, and duplication checks (excluding the task being updated).
+        The original creation date is preserved. Only the owner of the task can update it.
+        If the task does not exist or belongs to another user, a not found error is returned.
+      tags:
+        - TASKS
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier (UUID) of the task to update.
+          schema:
+            type: string
+            format: uuid
+            example: 464140a1-cbec-4935-a604-e7decf33d6d9
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - taskName
+                - priority
+                - allDay
+                - notifyActive
+                - status
+              properties:
+                taskName:
+                  type: string
+                  description: Name of the task.
+                  minLength: 3
+                  maxLength: 255
+                  example: Finish backend documentation
+                description:
+                  type: string
+                  description: Optional detailed description of the task.
+                  maxLength: 1000
+                  example: Write the API documentation for the tasks module.
+                category:
+                  type: string
+                  format: uuid
+                  description: Optional category identifier associated with the task.
+                  example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
+                color:
+                  type: string
+                  description: Optional color label for the task.
+                  maxLength: 20
+                  example: blue
+                priority:
+                  type: integer
+                  description: Priority level of the task ranging from 1 (lowest) to 5 (highest).
+                  minimum: 1
+                  maximum: 5
+                  example: 3
+                startTime:
+                  type: string
+                  format: date-time
+                  description: >-
+                    Optional start time of the task. If provided, endTime must also be provided.
+                    Both must fall on the same day. Cannot be set if allDay is true.
+                  example: "2026-03-11T09:00:00"
+                endTime:
+                  type: string
+                  format: date-time
+                  description: >-
+                    Optional end time of the task. If provided, startTime must also be provided.
+                    Must be after startTime and on the same day.
+                  example: "2026-03-11T10:00:00"
+                location:
+                  type: string
+                  description: Optional location related to the task.
+                  maxLength: 255
+                  example: Office meeting room
+                allDay:
+                  type: boolean
+                  description: Indicates whether the task lasts all day. Cannot be true if startTime or endTime are provided.
+                  example: false
+                reminderTime:
+                  type: string
+                  format: date-time
+                  description: Optional reminder time. Must not be after dueDate if both are provided.
+                  example: "2026-03-11T08:30:00"
+                notifyActive:
+                  type: boolean
+                  description: Indicates whether notifications are enabled for the task.
+                  example: true
+                status:
+                  type: string
+                  description: Current status of the task.
+                  maxLength: 255
+                  example: in_progress
+                dueDate:
+                  type: string
+                  format: date-time
+                  description: >-
+                    Optional due date for the task.
+                    If startTime and endTime are provided, they must fall on the same day as dueDate.
+                  example: "2026-03-11T10:00:00"
+
+      responses:
+        "200":
+          description: Task updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-03-11T11:20:40Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: UPDATE_TASK_SUCCESS
+                  data:
+                    type: object
+                    properties:
+                      idUpdated:
+                        type: string
+                        format: uuid
+                        example: 464140a1-cbec-4935-a604-e7decf33d6d9
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: PUT /TASKS_BASE_URL_REPLACE/464140a1-cbec-4935-a604-e7decf33d6d9
+                      collection:
+                        type: string
+                        example: GET /TASKS_BASE_URL_REPLACE
+                      detail:
+                        type: string
+                        example: GET /TASKS_BASE_URL_REPLACE/464140a1-cbec-4935-a604-e7decf33d6d9
 
   #####################################################@@######### ( tasks end )

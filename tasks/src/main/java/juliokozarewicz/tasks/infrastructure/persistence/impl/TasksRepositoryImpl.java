@@ -10,13 +10,10 @@ import juliokozarewicz.tasks.infrastructure.persistence.specification.TasksGetUs
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Repository
 public class TasksRepositoryImpl implements TasksRepository {
@@ -151,6 +148,57 @@ public class TasksRepositoryImpl implements TasksRepository {
     public Optional<TasksEntity> findById(UUID id) {
         return tasksRepositoryJPA.findById(id)
             .map(this::toEntity);
+    }
+
+    // Find by id and user
+    @Override
+    public Optional<TasksEntity> findByIdAndUser(UUID taskId, UUID idUser) {
+        return tasksRepositoryJPA.findByIdAndIdUser(taskId, idUser)
+            .map(this::toEntity);
+    }
+
+    // Exist by task name and due date and id not
+    @Override
+    public boolean existsByTaskNameAndDueDateAndIdNot(
+        UUID idUser,
+        String taskName,
+        LocalDateTime dueDate,
+        UUID excludeId
+    ) {
+        return tasksRepositoryJPA.existsByIdUserAndTaskNameAndDueDateAndIdNot(
+            idUser,
+            taskName,
+            dueDate,
+            excludeId
+        );
+    }
+
+    // Update
+    @Override
+    public void update(TasksEntity tasksEntity) {
+        tasksRepositoryJPA.findByIdAndIdUser(tasksEntity.getIdCreated(), tasksEntity.getIdUser())
+        .ifPresent(model -> {
+            TasksModel updated = TasksModel.builder()
+                .id(model.getId())
+                .idUser(model.getIdUser())
+                .createdAt(model.getCreatedAt())
+                .updatedAt(tasksEntity.getUpdatedAt())
+                .taskName(tasksEntity.getTaskName())
+                .description(tasksEntity.getDescription())
+                .category(getCategory(tasksEntity.getCategory()))
+                .color(tasksEntity.getColor())
+                .priority(tasksEntity.getPriority())
+                .startTime(tasksEntity.getStartTime())
+                .endTime(tasksEntity.getEndTime())
+                .location(tasksEntity.getLocation())
+                .allDay(tasksEntity.isAllDay())
+                .reminderTime(tasksEntity.getReminderTime())
+                .notifyActive(tasksEntity.isNotifyActive())
+                .status(tasksEntity.getStatus())
+                .dueDate(tasksEntity.getDueDate())
+                .build();
+            tasksRepositoryJPA.save(updated);
+        });
     }
 
 }

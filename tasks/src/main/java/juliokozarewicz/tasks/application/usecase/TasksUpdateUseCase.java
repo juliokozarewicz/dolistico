@@ -8,13 +8,12 @@ import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import juliokozarewicz.tasks.infrastructure.messaging.producer.TasksEventProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class TasksCreateUseCase {
+public class TasksUpdateUseCase {
 
     // ==================================================== ( constructor init )
 
@@ -25,7 +24,7 @@ public class TasksCreateUseCase {
     private final TasksRepository tasksRepository;
     private final TasksEventProducer tasksEventProducer;
 
-    public TasksCreateUseCase(
+    public TasksUpdateUseCase(
 
         TasksRepository tasksRepository,
         TasksEventProducer tasksEventProducer
@@ -42,33 +41,41 @@ public class TasksCreateUseCase {
     @Transactional
     public String execute(
 
-        Map<String, Object> credentialsData,
-        TasksCreateUpdateCommand tasksCreateUpdateCommand
+            Map<String, Object> credentialsData,
+            UUID taskId,
+            TasksCreateUpdateCommand tasksCreateUpdateCommand
 
     ) {
 
         // Credentials
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
-        // String idLevelUser = credentialsData.get("level").toString();
 
-        // Duplicated task
-        if ( tasksRepository.existsByIdUserAndTaskNameAndDueDate(
-            idUser,
-            tasksCreateUpdateCommand.taskName().trim(),
-            tasksCreateUpdateCommand.dueDate()
-        )) {
+        // Find existing task
+        TasksEntity existingTask = tasksRepository.findByIdAndUser(taskId, idUser)
+        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASK_NOT_FOUND));
+
+        // Duplicated task check (exclude current task id)
+        if (
+
+            tasksRepository.existsByTaskNameAndDueDateAndIdNot(
+                idUser,
+                tasksCreateUpdateCommand.taskName().trim(),
+                tasksCreateUpdateCommand.dueDate(),
+                taskId
+            )
+
+        ) {
             throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
         }
 
-        // Create task id and time stamp
-        UUID idCreated = UUID.randomUUID();
+        // New timestamp for update
         LocalDateTime timeStamp = LocalDateTime.now();
 
-        // Create entity
-        TasksEntity createNewTask = new TasksEntity(
+        // Create updated entity (preserving original createdAt)
+        TasksEntity updatedTask = new TasksEntity(
             idUser,
-            idCreated,
-            timeStamp,
+            taskId,
+            existingTask.getCreatedAt(),
             timeStamp,
             tasksCreateUpdateCommand.taskName().trim(),
             tasksCreateUpdateCommand.description(),
@@ -86,11 +93,11 @@ public class TasksCreateUseCase {
             tasksCreateUpdateCommand.dueDate()
         );
 
-        // Create message
-        tasksEventProducer.producer(createNewTask);
+        // Publish update event to Kafka
+        tasksEventProducer.producer(updatedTask);
 
-        // Return created id
-        return idCreated.toString();
+        // Return updated id
+        return taskId.toString();
 
     }
 
