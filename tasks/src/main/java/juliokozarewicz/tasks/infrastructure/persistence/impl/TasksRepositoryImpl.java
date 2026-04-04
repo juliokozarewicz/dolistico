@@ -173,32 +173,4 @@ public class TasksRepositoryImpl implements TasksRepository {
         );
     }
 
-    // Update
-    @Override
-    public void update(TasksEntity tasksEntity) {
-        tasksRepositoryJPA.findByIdAndIdUser(tasksEntity.getIdCreated(), tasksEntity.getIdUser())
-        .ifPresent(model -> {
-            TasksModel updated = TasksModel.builder()
-                .id(model.getId())
-                .idUser(model.getIdUser())
-                .createdAt(model.getCreatedAt())
-                .updatedAt(tasksEntity.getUpdatedAt())
-                .taskName(tasksEntity.getTaskName())
-                .description(tasksEntity.getDescription())
-                .category(getCategory(tasksEntity.getCategory()))
-                .color(tasksEntity.getColor())
-                .priority(tasksEntity.getPriority())
-                .startTime(tasksEntity.getStartTime())
-                .endTime(tasksEntity.getEndTime())
-                .location(tasksEntity.getLocation())
-                .allDay(tasksEntity.isAllDay())
-                .reminderTime(tasksEntity.getReminderTime())
-                .notifyActive(tasksEntity.isNotifyActive())
-                .status(tasksEntity.getStatus())
-                .dueDate(tasksEntity.getDueDate())
-                .build();
-            tasksRepositoryJPA.save(updated);
-        });
-    }
-
 }

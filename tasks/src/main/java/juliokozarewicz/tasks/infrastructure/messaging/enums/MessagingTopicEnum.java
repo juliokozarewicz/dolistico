@@ -5,7 +5,9 @@ import lombok.Getter;
 @Getter
 public enum MessagingTopicEnum {
 
-    TASKS_CREATE_PERSIST("tasks.create.persist.v1");
+    TASKS_CREATE_UPDATE("tasks-create-update-persist");
+
+    public static final String TASKS_CREATE_UPDATE_PERSIST = "tasks-create-update-persist";
 
     private final String topicName;
 

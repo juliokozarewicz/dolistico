@@ -2,6 +2,7 @@ package juliokozarewicz.tasks.infrastructure.messaging.consumer;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
+import juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -34,8 +35,8 @@ public class TasksEventConsumer {
 
      // consumer
     @KafkaListener(
-        topics = "#{T(juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum).TASKS_CREATE_PERSIST.getTopicName()}",
-        groupId = "#{T(juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum).TASKS_CREATE_PERSIST.getTopicName()}"
+        topics = MessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST,
+        groupId = MessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST
     )
     public void consumer (
 

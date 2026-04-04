@@ -47,7 +47,7 @@ public class TasksEventProducer {
 
             // Send as raw bytes
             kafkaTemplate.send(
-                MessagingTopicEnum.TASKS_CREATE_PERSIST.getTopicName(),
+                MessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST,
                 payload
             ).get(10, TimeUnit.SECONDS);
 
