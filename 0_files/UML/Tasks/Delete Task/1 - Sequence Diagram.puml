@@ -1,0 +1,105 @@
+@startuml Sequence_DELETE_Task_By_Id
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam sequenceArrowThickness 1.5
+skinparam sequenceParticipantBorderThickness 1.5
+skinparam maxMessageSize 120
+skinparam defaultFontSize 11
+
+title DELETE /api/v1/tasks/{id} — Sequence Diagram
+
+actor       "Client"               as CLIENT
+participant "Nginx\n(API Gateway)" as NGINX
+participant "AuthFilter\n(JWT)"    as FILTER
+participant "TasksDeleteController" as CTRL
+participant "TasksDeleteUseCase"   as UC
+participant "TasksRepository\n(interface)" as REPO
+participant "TasksRepositoryImpl"  as IMPL
+participant "TasksEventProducer"   as PRODUCER
+participant "Kafka\ntasks.delete.persist.v1" as KAFKA
+participant "TasksEventConsumer"   as CONSUMER
+participant "TasksRepositoryJPA"   as JPA
+database    "PostgreSQL"           as DB
+
+CLIENT -> NGINX  : DELETE /api/v1/tasks/{id}\n+ JWT header
+
+NGINX  -> FILTER : forward request + JWT
+
+alt JWT missing or invalid
+    FILTER --> NGINX  : 401 INVALID_CREDENTIALS
+    NGINX  --> CLIENT : 401 INVALID_CREDENTIALS
+else JWT valid
+    FILTER -> FILTER  : extract claims (userId, level)
+    FILTER -> CTRL    : request + credentialsData attribute
+end
+
+CTRL -> CTRL : read credentialsData (userId)
+CTRL -> CTRL : extract {id} from path variable
+CTRL -> CTRL : validate UUID format
+
+alt Invalid UUID format
+    CTRL --> NGINX  : 400 BAD_REQUEST
+    NGINX --> CLIENT : 400 BAD_REQUEST
+else Valid UUID
+    CTRL -> UC : execute(credentialsData, taskId)
+end
+
+UC -> UC : parse userId from credentials
+UC -> REPO : findByIdAndUser(taskId, userId)
+REPO -> IMPL : findByIdAndUser(taskId, userId)
+IMPL -> JPA  : findByIdAndIdUser(taskId, userId)
+JPA  -> DB   : SELECT * FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?
+DB  --> JPA  : TasksModel or empty
+
+alt Task not found
+    JPA  --> IMPL : Optional.empty()
+    IMPL --> REPO : Optional.empty()
+    REPO --> UC   : Optional.empty()
+    UC   --> CTRL : throws DomainException\nTASK_NOT_FOUND
+    CTRL --> NGINX : 404 TASK_NOT_FOUND
+    NGINX --> CLIENT : 404 TASK_NOT_FOUND
+else Task found
+    JPA  --> IMPL : Optional<TasksModel>
+    IMPL -> IMPL  : map TasksModel -> TasksEntity
+    IMPL --> REPO : Optional<TasksEntity>
+    REPO --> UC   : Optional<TasksEntity>
+    UC -> PRODUCER : producer(tasksEntity)
+    PRODUCER -> PRODUCER : objectMapper\n.writeValueAsBytes(entity)
+    PRODUCER -> KAFKA : send(\n  "tasks.delete.persist.v1",\n  byte[] payload)\n.get(10s timeout)
+end
+
+alt Kafka send timeout / error
+    KAFKA --> PRODUCER : exception
+    PRODUCER --> UC    : throws InternalError
+    UC --> CTRL        : propagates
+    CTRL --> NGINX     : 503 SERVICE_UNAVAILABLE
+    NGINX --> CLIENT   : 503 error
+else Kafka received
+    KAFKA --> PRODUCER : ack
+    PRODUCER --> UC    : returns
+    UC --> CTRL        : void
+
+    CTRL -> CTRL : build links\n{collection: GET /tasks}
+    CTRL -> CTRL : build StandardResponseDTO\n(200, DELETE_TASK_SUCCESS)
+    CTRL --> NGINX  : 200 OK + JSON body
+    NGINX --> CLIENT : 200 OK + JSON body
+
+    note over KAFKA, DB
+        Async persistence flow
+    end note
+
+    KAFKA -> CONSUMER : poll record (byte[] payload)
+    CONSUMER -> CONSUMER : objectMapper\n.readValue(payload, TasksEntity)
+    CONSUMER -> REPO  : delete(tasksEntity)
+    REPO -> IMPL      : delete(tasksEntity)
+    IMPL -> JPA       : deleteByIdAndIdUser(taskId, userId)
+    JPA  -> DB        : DELETE FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?
+    DB  --> JPA       : deleted
+    JPA --> IMPL      : ok
+    IMPL --> REPO     : ok
+    REPO --> CONSUMER : ok
+    CONSUMER -> KAFKA : ack.acknowledge()
+end
+
+@enduml

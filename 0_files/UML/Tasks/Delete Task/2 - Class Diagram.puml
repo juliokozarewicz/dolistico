@@ -1,0 +1,204 @@
+@startuml Class_DELETE_Task_By_Id
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam classAttributeIconSize 0
+skinparam classBorderThickness 1.5
+skinparam defaultFontSize 10
+
+title DELETE /api/v1/tasks/{id} — Class Diagram
+
+package "adapter.rest" {
+    class TasksDeleteController {
+        - tasksBaseURL : String
+        - tasksDeleteUseCase : TasksDeleteUseCase
+        --
+        + delete(id : UUID, request : HttpServletRequest) : ResponseEntity
+    }
+
+    class StandardResponseDTO {
+        - timestamp : Instant
+        - statusCode : int
+        - messageCode : String
+        - data : Object
+        - meta : Map
+        - links : Map
+        --
+        + getTimestamp() : Instant
+        + getStatusCode() : int
+        + getData() : Object
+    }
+
+    enum GlobalSuccessEnum {
+        DELETE_TASK_SUCCESS
+        --
+        + getStatusCode() : int
+        + getMessageCode() : String
+    }
+
+    enum GlobalExceptionEnum {
+        INVALID_CREDENTIALS
+        TASK_NOT_FOUND
+        BAD_REQUEST
+        SERVICE_UNAVAILABLE
+        INTERNAL_SERVER_ERROR
+        --
+        + getStatusCode() : int
+        + getMessageCode() : String
+    }
+}
+
+package "application" {
+    class TasksDeleteUseCase {
+        - tasksRepository : TasksRepository
+        - tasksEventProducer : TasksEventProducer
+        --
+        + execute(credentialsData : Map, taskId : UUID) : void
+    }
+}
+
+package "domain" {
+    class TasksEntity {
+        - idUser : UUID
+        - idCreated : UUID
+        - createdAt : LocalDateTime
+        - updatedAt : LocalDateTime
+        - taskName : String
+        - description : String
+        - category : UUID
+        - color : String
+        - priority : Integer
+        - startTime : LocalDateTime
+        - endTime : LocalDateTime
+        - location : String
+        - allDay : boolean
+        - reminderTime : LocalDateTime
+        - notifyActive : boolean
+        - status : String
+        - dueDate : LocalDateTime
+        --
+        + TasksEntity(...)
+        - validateBusinessRules(...) : void
+    }
+
+    class DomainException {
+        - error : DomainExceptionEnum
+        --
+        + DomainException(error)
+        + getError() : DomainExceptionEnum
+    }
+
+    enum DomainExceptionEnum {
+        INVALID_CREDENTIALS
+        TASK_NOT_FOUND
+        NO_PERMISSION_TO_ACCESS
+    }
+
+    interface TasksRepository {
+        + findByIdAndUser(taskId : UUID, userId : UUID) : Optional
+        + delete(entity : TasksEntity) : void
+        + existsByTaskNameAndDueDate(name : String, dueDate : LocalDateTime) : boolean
+        + save(entity : TasksEntity) : void
+    }
+}
+
+package "infrastructure.messaging" {
+    class TasksEventProducer {
+        - kafkaTemplate : KafkaTemplate
+        - objectMapper : ObjectMapper
+        --
+        + producer(message : TasksEntity) : void
+    }
+
+    class TasksEventConsumer {
+        - tasksRepository : TasksRepository
+        - objectMapper : ObjectMapper
+        --
+        + consumerCreate(record, ack) : void
+        + consumerUpdate(record, ack) : void
+        + consumerDelete(record, ack) : void
+    }
+
+    enum MessagingTopicEnum {
+        TASKS_CREATE_PERSIST
+        TASKS_UPDATE_PERSIST
+        TASKS_DELETE_PERSIST
+        --
+        + getTopicName() : String
+    }
+}
+
+package "infrastructure.persistence" {
+    class TasksRepositoryImpl {
+        - tasksRepositoryJPA : TasksRepositoryJPA
+        - tasksCategoryJPA : TasksCategoryJPA
+        --
+        + findByIdAndUser(taskId, userId) : Optional
+        + delete(entity : TasksEntity) : void
+        + save(entity : TasksEntity) : void
+        - toEntity(model : TasksModel) : TasksEntity
+    }
+
+    interface TasksRepositoryJPA {
+        + findByIdAndIdUser(id : UUID, idUser : UUID) : Optional
+        + deleteByIdAndIdUser(id : UUID, idUser : UUID) : void
+        + save(model : TasksModel) : TasksModel
+    }
+
+    interface TasksCategoryJPA {
+        + findById(id : UUID) : Optional
+    }
+
+    class TasksModel {
+        - id : UUID
+        - createdAt : LocalDateTime
+        - updatedAt : LocalDateTime
+        - taskName : String
+        - description : String
+        - color : String
+        - priority : int
+        - startTime : LocalDateTime
+        - endTime : LocalDateTime
+        - location : String
+        - allDay : boolean
+        - reminderTime : LocalDateTime
+        - notifyActive : boolean
+        - status : String
+        - dueDate : LocalDateTime
+        - idUser : UUID
+    }
+
+    class CategoryModel {
+        - id : UUID
+        - categoryName : String
+        - idUser : UUID
+    }
+}
+
+package "infrastructure.filters" {
+    class AuthFilter {
+        - jwtSecret : String
+        --
+        + doFilterInternal(request, response, chain) : void
+        - extractClaims(token) : Map
+    }
+}
+
+TasksDeleteController  -->  TasksDeleteUseCase
+TasksDeleteController  -->  StandardResponseDTO
+TasksDeleteController  -->  GlobalSuccessEnum
+TasksDeleteUseCase     -->  TasksRepository
+TasksDeleteUseCase     -->  TasksEventProducer
+TasksDeleteUseCase     ..>  DomainException
+DomainException        -->  DomainExceptionEnum
+TasksEventProducer     -->  MessagingTopicEnum
+TasksEventConsumer     -->  TasksRepository
+TasksEventConsumer     -->  MessagingTopicEnum
+TasksRepositoryImpl   ..|>  TasksRepository
+TasksRepositoryImpl    -->  TasksRepositoryJPA
+TasksRepositoryImpl    -->  TasksCategoryJPA
+TasksRepositoryJPA     -->  TasksModel
+TasksModel             -->  CategoryModel
+AuthFilter             ..>  TasksDeleteController
+
+@enduml

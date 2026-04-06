@@ -1,0 +1,111 @@
+@startuml Activity_DELETE_Task_By_Id
+!theme plain
+skinparam pageMargin 10
+skinparam dpi 120
+skinparam defaultFontSize 11
+skinparam ActivityBorderThickness 1.5
+skinparam ActivityArrowThickness 1.5
+skinparam activityDiamondBorderThickness 1.5
+
+title DELETE /api/v1/tasks/{id} — Activity Diagram
+
+|Client|
+start
+:Send DELETE /api/v1/tasks/{id}\n+ JWT header;
+
+|Nginx (API Gateway)|
+:Receive and forward request;
+
+|AuthFilter|
+:Intercept request;
+if (JWT present?) then (no)
+    |Client|
+    :Receive 401 INVALID_CREDENTIALS;
+    stop
+else (yes)
+    |AuthFilter|
+    :Validate JWT signature & expiration;
+    if (JWT valid?) then (no)
+        |Client|
+        :Receive 401 ACCESS_EXPIRED;
+        stop
+    else (yes)
+        |AuthFilter|
+        :Extract claims (userId, level);
+        :Set credentialsData on request;
+    endif
+endif
+
+|TasksDeleteController|
+:Receive request + credentialsData;
+:Extract {id} from path variable;
+if (Invalid UUID format?) then (yes)
+    |Client|
+    :Receive 400 BAD_REQUEST;
+    stop
+else (no)
+    |TasksDeleteUseCase|
+    :Parse userId from credentialsData;
+    :Call TasksRepository\n.findByIdAndUser(taskId, userId);
+endif
+
+|TasksRepositoryImpl|
+:Call JPA\n.findByIdAndIdUser(taskId, userId);
+
+|PostgreSQL|
+:SELECT * FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?;
+if (DB error?) then (yes)
+    |Client|
+    :Receive 503 SERVICE_UNAVAILABLE;
+    stop
+else (no)
+endif
+
+|TasksRepositoryImpl|
+if (Result is empty?) then (yes)
+    |Client|
+    :Receive 404 TASK_NOT_FOUND;
+    stop
+else (no)
+    |TasksRepositoryImpl|
+    :Map TasksModel to TasksEntity;
+    :Return existing TasksEntity;
+endif
+
+|TasksEventProducer|
+:Serialize TasksEntity\nto byte[] (JSON);
+:kafkaTemplate.send(\n"tasks.delete.persist.v1",\npayload).get(10s timeout);
+if (Timeout or Kafka error?) then (yes)
+    |Client|
+    :Receive 503 SERVICE_UNAVAILABLE;
+    stop
+else (no)
+    |TasksDeleteController|
+    :Build links\n{collection: GET /tasks};
+    :Build StandardResponseDTO\n(200 DELETE_TASK_SUCCESS);
+endif
+
+|Client|
+:Receive 200 OK\n[async deletion continues];
+
+|TasksEventConsumer|
+:Poll Kafka record (byte[] payload);
+:Deserialize payload\nto TasksEntity;
+:Call TasksRepository.delete(entity);
+
+|TasksRepositoryImpl|
+:Call JPA\n.deleteByIdAndIdUser(taskId, userId);
+
+|PostgreSQL|
+:DELETE FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?;
+if (DB error?) then (yes)
+    |TasksEventConsumer|
+    :Throw InternalError\n(Kafka offset NOT committed);
+    stop
+else (no)
+    |TasksEventConsumer|
+    :ack.acknowledge()\n(commit Kafka offset);
+    stop
+endif
+
+@enduml
