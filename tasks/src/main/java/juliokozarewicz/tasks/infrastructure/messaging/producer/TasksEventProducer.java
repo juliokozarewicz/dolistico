@@ -55,7 +55,7 @@ public class TasksEventProducer {
 
             throw new InternalError(
                 "Error while producing the Kafka message " +
-                "[ TasksEventProducer.producer() ]: " + e
+                "[ TasksEventProducer.consumerCreateUpdate() ]: " + e
             );
 
         }
