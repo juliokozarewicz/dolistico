@@ -87,7 +87,7 @@ public class TasksCreateUseCase {
         );
 
         // Create message
-        tasksEventProducer.producer(createNewTask);
+        tasksEventProducer.consumerCreateUpdate(createNewTask);
 
         // Return created id
         return idCreated.toString();

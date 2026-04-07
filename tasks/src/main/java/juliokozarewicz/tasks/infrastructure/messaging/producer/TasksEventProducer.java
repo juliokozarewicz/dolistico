@@ -33,8 +33,8 @@ public class TasksEventProducer {
     }
     // ===================================================== ( constructor end )
 
-    // producer
-    public void producer(
+    // create update producer
+    public void consumerCreateUpdate (
 
         TasksEntity message
 
@@ -56,6 +56,35 @@ public class TasksEventProducer {
             throw new InternalError(
                 "Error while producing the Kafka message " +
                 "[ TasksEventProducer.producer() ]: " + e
+            );
+
+        }
+
+    }
+
+    // create update producer
+    public void producerDelete (
+
+        TasksEntity message
+
+    ) {
+
+        try {
+
+            // Convert object to JSON bytes
+            byte[] payload = objectMapper.writeValueAsBytes(message);
+
+            // Send as raw bytes
+            kafkaTemplate.send(
+                MessagingTopicEnum.TASKS_DELETE_PERSIST,
+                payload
+            ).get(10, TimeUnit.SECONDS);
+
+        } catch (Exception e) {
+
+            throw new InternalError(
+                "Error while producing the Kafka message " +
+                "[ TasksEventProducer.producerDelete() ]: " + e
             );
 
         }

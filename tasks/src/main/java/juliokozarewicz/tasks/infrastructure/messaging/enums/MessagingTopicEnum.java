@@ -1,18 +1,10 @@
 package juliokozarewicz.tasks.infrastructure.messaging.enums;
 
-import lombok.Getter;
-
-@Getter
-public enum MessagingTopicEnum {
-
-    TASKS_CREATE_UPDATE("tasks-create-update-persist");
+public final class MessagingTopicEnum {
 
     public static final String TASKS_CREATE_UPDATE_PERSIST = "tasks-create-update-persist";
+    public static final String TASKS_DELETE_PERSIST = "tasks.delete.persist.v1";
 
-    private final String topicName;
-
-    MessagingTopicEnum(String topicName) {
-        this.topicName = topicName;
-    }
+    private MessagingTopicEnum() {}
 
 }

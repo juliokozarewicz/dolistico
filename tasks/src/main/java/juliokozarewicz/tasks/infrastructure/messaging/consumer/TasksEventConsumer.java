@@ -33,12 +33,12 @@ public class TasksEventConsumer {
     }
     // ===================================================== ( constructor end )
 
-     // consumer
+     // create update consumer
     @KafkaListener(
         topics = MessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST,
         groupId = MessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST
     )
-    public void consumer (
+    public void consumerCreateUpdate (
 
         ConsumerRecord<String, byte[]> record,
         Acknowledgment ack
@@ -57,7 +57,38 @@ public class TasksEventConsumer {
 
             throw new InternalError(
                 "Error while consuming the Kafka message " +
-                "[ TasksEventConsumer.consumer() ]: " + e
+                "[ TasksEventConsumer.consumerCreateUpdate() ]: " + e
+            );
+
+        }
+
+    }
+
+    // delete consumer
+    @KafkaListener(
+        topics = MessagingTopicEnum.TASKS_DELETE_PERSIST,
+        groupId = MessagingTopicEnum.TASKS_DELETE_PERSIST
+    )
+    public void consumerDelete (
+
+        ConsumerRecord<String, byte[]> record,
+        Acknowledgment ack
+
+    ) {
+
+        try {
+
+            // Save task entity in DB
+            byte[] payload = record.value();
+            TasksEntity tasksEntity = objectMapper.readValue(payload, TasksEntity.class);
+            tasksRepository.delete(tasksEntity);
+            ack.acknowledge();
+
+        } catch (Exception e) {
+
+            throw new InternalError(
+                "Error while consuming the Kafka message " +
+                "[ TasksEventConsumer.consumerDelete() ]: " + e
             );
 
         }

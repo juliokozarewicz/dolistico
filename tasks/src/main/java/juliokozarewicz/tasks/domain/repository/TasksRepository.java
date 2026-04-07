@@ -41,4 +41,6 @@ public interface TasksRepository {
         UUID excludeId
     );
 
+    void delete(TasksEntity task);
+
 }

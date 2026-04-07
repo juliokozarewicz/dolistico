@@ -173,4 +173,13 @@ public class TasksRepositoryImpl implements TasksRepository {
         );
     }
 
+    // Delete exist task by id
+    @Override
+    public void delete(TasksEntity tasksEntity) {
+        tasksRepositoryJPA.deleteByIdAndIdUser(
+            tasksEntity.getIdCreated(),
+            tasksEntity.getIdUser()
+        );
+    }
+
 }
