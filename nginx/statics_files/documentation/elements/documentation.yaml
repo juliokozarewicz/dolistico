@@ -2189,25 +2189,6 @@ paths:
                   messageCode:
                     type: string
                     example: UPDATE_TASK_SUCCESS
-                  data:
-                    type: object
-                    properties:
-                      idUpdated:
-                        type: string
-                        format: uuid
-                        example: 464140a1-cbec-4935-a604-e7decf33d6d9
-                  links:
-                    type: object
-                    properties:
-                      self:
-                        type: string
-                        example: PUT /TASKS_BASE_URL_REPLACE/464140a1-cbec-4935-a604-e7decf33d6d9
-                      collection:
-                        type: string
-                        example: GET /TASKS_BASE_URL_REPLACE
-                      detail:
-                        type: string
-                        example: GET /TASKS_BASE_URL_REPLACE/464140a1-cbec-4935-a604-e7decf33d6d9
 
     # TASKS - DELETE
     delete:
@@ -2217,7 +2198,6 @@ paths:
         The task is identified by its unique UUID provided in the path.
         The system ensures that the task exists and belongs to the user before deletion.
         If the task does not exist or does not belong to the user, a not found error is returned.
-        After deletion, an event is published for asynchronous processing.
 
       tags:
         - TASKS
@@ -2253,18 +2233,5 @@ paths:
                   messageCode:
                     type: string
                     example: DELETE_TASK_SUCCESS
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                  links:
-                    type: object
-                    properties:
-                      self:
-                        type: string
-                        example: DELETE /TASKS_BASE_URL_REPLACE/464140a1-cbec-4935-a604-e7decf33d6d9
-                      collection:
-                        type: string
-                        example: GET /TASKS_BASE_URL_REPLACE
 
   ################################################################ ( tasks end )
