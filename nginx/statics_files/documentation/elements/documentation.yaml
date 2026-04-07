@@ -2062,6 +2062,7 @@ paths:
                         format: date-time
                         example: "2026-03-11T10:00:00"
 
+    # TASKS - UPDATE
     put:
       summary: Update task by ID
       description: >-
@@ -2208,4 +2209,62 @@ paths:
                         type: string
                         example: GET /TASKS_BASE_URL_REPLACE/464140a1-cbec-4935-a604-e7decf33d6d9
 
-  #####################################################@@######### ( tasks end )
+    # TASKS - DELETE
+    delete:
+      summary: Delete task by ID
+      description: >-
+        Deletes a specific task belonging to the authenticated user.
+        The task is identified by its unique UUID provided in the path.
+        The system ensures that the task exists and belongs to the user before deletion.
+        If the task does not exist or does not belong to the user, a not found error is returned.
+        After deletion, an event is published for asynchronous processing.
+
+      tags:
+        - TASKS
+
+      security:
+        - BearerAuth: [ ]
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier (UUID) of the task to delete.
+          schema:
+            type: string
+            format: uuid
+            example: 464140a1-cbec-4935-a604-e7decf33d6d9
+
+      responses:
+        "200":
+          description: Task deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-03-11T11:20:40Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: DELETE_TASK_SUCCESS
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: DELETE /TASKS_BASE_URL_REPLACE/464140a1-cbec-4935-a604-e7decf33d6d9
+                      collection:
+                        type: string
+                        example: GET /TASKS_BASE_URL_REPLACE
+
+  ################################################################ ( tasks end )

@@ -46,14 +46,14 @@ public class TasksRepositoryImpl implements TasksRepository {
 
     private CategoryModel getCategory(UUID categoryId) {
         return categoryId == null
-            ? null
-            : tasksCategoryJPA.findById(categoryId).orElse(null);
+        ? null
+        : tasksCategoryJPA.findById(categoryId).orElse(null);
     }
 
     private String getCategoryName(TasksModel model) {
         return model.getCategory() != null
-            ? model.getCategory().getCategoryName()
-            : null;
+        ? model.getCategory().getCategoryName()
+        : null;
     }
     // ================================================ ( category helpers end )
 
@@ -62,24 +62,24 @@ public class TasksRepositoryImpl implements TasksRepository {
     // ENTITY -> MODEL
     private TasksModel toModel(TasksEntity entity) {
         return TasksModel.builder()
-            .idUser(entity.getIdUser())
-            .id(entity.getIdCreated())
-            .createdAt(entity.getCreatedAt())
-            .updatedAt(entity.getUpdatedAt())
-            .taskName(entity.getTaskName())
-            .description(entity.getDescription())
-            .category(getCategory(entity.getCategory()))
-            .color(entity.getColor())
-            .priority(entity.getPriority())
-            .startTime(entity.getStartTime())
-            .endTime(entity.getEndTime())
-            .location(entity.getLocation())
-            .allDay(entity.isAllDay())
-            .reminderTime(entity.getReminderTime())
-            .notifyActive(entity.isNotifyActive())
-            .status(entity.getStatus())
-            .dueDate(entity.getDueDate())
-            .build();
+        .idUser(entity.getIdUser())
+        .id(entity.getIdCreated())
+        .createdAt(entity.getCreatedAt())
+        .updatedAt(entity.getUpdatedAt())
+        .taskName(entity.getTaskName())
+        .description(entity.getDescription())
+        .category(getCategory(entity.getCategory()))
+        .color(entity.getColor())
+        .priority(entity.getPriority())
+        .startTime(entity.getStartTime())
+        .endTime(entity.getEndTime())
+        .location(entity.getLocation())
+        .allDay(entity.isAllDay())
+        .reminderTime(entity.getReminderTime())
+        .notifyActive(entity.isNotifyActive())
+        .status(entity.getStatus())
+        .dueDate(entity.getDueDate())
+        .build();
     }
 
     // MODEL -> ENTITY
