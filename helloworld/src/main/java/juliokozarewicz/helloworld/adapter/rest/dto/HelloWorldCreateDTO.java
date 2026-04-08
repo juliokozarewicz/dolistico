@@ -7,8 +7,8 @@ import juliokozarewicz.helloworld.application.command.HelloWorldCreateCommand;
 
 public record HelloWorldCreateDTO(
 
-    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_REMAIN_EMPTY)
-    @Size(max = 256, message = GlobalExceptionEnum.MANY_CHARACTERS)
+    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_BE_EMPTY)
+    @Size(max = 256, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS

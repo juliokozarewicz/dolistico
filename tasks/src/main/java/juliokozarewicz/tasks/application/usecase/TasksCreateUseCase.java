@@ -60,7 +60,7 @@ public class TasksCreateUseCase {
             throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
         }
 
-        // Create task id and time stamp
+        // Create task id and timestamp
         UUID idCreated = UUID.randomUUID();
         LocalDateTime timeStamp = LocalDateTime.now();
 

@@ -69,13 +69,13 @@ public class TasksGetByIdController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.GET_TASKS_SUCCESS.getStatusCode())
+        .status(GlobalSuccessEnum.TASKS_RETRIEVED_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getStatusCode())
-            .messageCode(GlobalSuccessEnum.GET_TASKS_SUCCESS.getMessageCode())
+            .statusCode(GlobalSuccessEnum.TASKS_RETRIEVED_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.TASKS_RETRIEVED_SUCCESSFULLY.getMessageCode())
             .data(dataResponse)
             .build()
         );

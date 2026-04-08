@@ -125,7 +125,7 @@ else (no)
     |TasksCreateController|
     :Build data {idCreated};
     :Build links\n{self: POST, next: GET};
-    :Build StandardResponseDTO\n(201 CREATE_TASK_SUCCESS);
+    :Build StandardResponseDTO\n(201 TASK_CREATED_SUCCESSFULLY);
 endif
 
 |Client|

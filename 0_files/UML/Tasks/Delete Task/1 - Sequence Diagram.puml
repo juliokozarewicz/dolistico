@@ -81,7 +81,7 @@ else Kafka received
     UC --> CTRL        : void
 
     CTRL -> CTRL : build links\n{collection: GET /tasks}
-    CTRL -> CTRL : build StandardResponseDTO\n(200, DELETE_TASK_SUCCESS)
+    CTRL -> CTRL : build StandardResponseDTO\n(200, TASK_DELETED_SUCCESSFULLY)
     CTRL --> NGINX  : 200 OK + JSON body
     NGINX --> CLIENT : 200 OK + JSON body
 

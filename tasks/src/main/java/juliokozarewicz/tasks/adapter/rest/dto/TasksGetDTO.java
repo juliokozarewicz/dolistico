@@ -10,15 +10,15 @@ import java.util.UUID;
 
 public record TasksGetDTO(
 
-    @Min(value = 1, message = GlobalExceptionEnum.FEW_CHARACTERS)
-    @Max(value = 100, message = GlobalExceptionEnum.MANY_CHARACTERS)
+    @Min(value = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS)
+    @Max(value = 100, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
     Integer sizePagination,
 
-    @Max(value = 100, message = GlobalExceptionEnum.MANY_CHARACTERS)
+    @Max(value = 100, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
     Integer pageNumber,
 
-    @Size(min = 3, message = GlobalExceptionEnum.FEW_CHARACTERS)
-    @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
+    @Size(min = 3, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS)
+    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
@@ -27,20 +27,20 @@ public record TasksGetDTO(
 
     String category,
 
-    @Min(value = 1, message = GlobalExceptionEnum.INVALID_PRIORITY_DTO)
-    @Max(value = 5, message = GlobalExceptionEnum.INVALID_PRIORITY_DTO)
+    @Min(value = 1, message = GlobalExceptionEnum.TINVALID_PRIORITY)
+    @Max(value = 5, message = GlobalExceptionEnum.TINVALID_PRIORITY)
     Integer priority,
 
-    @Size(min = 1, message = GlobalExceptionEnum.FEW_CHARACTERS)
-    @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
+    @Size(min = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS)
+    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
     )
     String location,
 
-    @Size(min = 1, message = GlobalExceptionEnum.FEW_CHARACTERS)
-    @Size(max = 255, message = GlobalExceptionEnum.MANY_CHARACTERS)
+    @Size(min = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS)
+    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS

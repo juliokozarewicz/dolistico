@@ -4,7 +4,7 @@ import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 
 public enum GlobalExceptionEnum {
 
-    // Domain error code
+    // Domain error codes
     INVALID_PRIORITY(400, "INVALID_PRIORITY", DomainExceptionEnum.INVALID_PRIORITY),
     USER_NOT_FOUND(404, "USER_NOT_FOUND", DomainExceptionEnum.USER_NOT_FOUND),
     INVALID_DATE(400, "INVALID_DATE", DomainExceptionEnum.INVALID_DATE),
@@ -14,7 +14,7 @@ public enum GlobalExceptionEnum {
     DUPLICATED_TASK(409, "DUPLICATED_TASK", DomainExceptionEnum.DUPLICATED_TASK),
     TASK_NOT_FOUND(404, "TASK_NOT_FOUND", DomainExceptionEnum.TASK_NOT_FOUND),
 
-    // Rest error code,
+    // Rest error codes
     SERVICE_UNAVAILABLE(503, "SERVICE_UNAVAILABLE", null),
     INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", null),
     TOO_MANY_REQUESTS(429, "TOO_MANY_REQUESTS", null),
@@ -25,11 +25,11 @@ public enum GlobalExceptionEnum {
     INVALID_CREDENTIALS(401, "INVALID_CREDENTIALS", DomainExceptionEnum.INVALID_CREDENTIALS),
     BAD_REQUEST(400, "BAD_REQUEST", null);
 
-    // DTO error code
-    public static final String FIELD_CANNOT_REMAIN_EMPTY = "FIELD_CANNOT_REMAIN_EMPTY";
-    public static final String MANY_CHARACTERS = "MANY_CHARACTERS";
-    public static final String INVALID_PRIORITY_DTO = "INVALID_PRIORITY";
-    public static final String FEW_CHARACTERS = "FEW_CHARACTERS";
+    // DTO error codes
+    public static final String FIELD_CANNOT_BE_EMPTY = "FIELD_CANNOT_BE_EMPTY";
+    public static final String TOO_MANY_CHARACTERS = "TOO_MANY_CHARACTERS";
+    public static final String TINVALID_PRIORITY = "INVALID_PRIORITY";
+    public static final String TOO_FEW_CHARACTERS = "TOO_FEW_CHARACTERS";
     public static final String FORBIDDEN_CHARACTERS = "FORBIDDEN_CHARACTERS";
     public static final String INVALID_ID = "INVALID_ID";
 

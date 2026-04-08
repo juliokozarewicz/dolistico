@@ -1,7 +1,7 @@
 package juliokozarewicz.tasks.infrastructure.persistence.model;
 
 import jakarta.persistence.*;
-import juliokozarewicz.category.infrastructure.persistence.model.CategoryModel;
+import juliokozarewicz.categories.infrastructure.persistence.model.CategoriesModel;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -68,6 +68,6 @@ public class TasksModel {
     // Relations
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_task_category"))
-    private CategoryModel category;
+    private CategoriesModel category;
 
 }

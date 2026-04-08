@@ -118,7 +118,7 @@ else Kafka received
 
     CTRL -> CTRL : build dataObject {idUpdated}
     CTRL -> CTRL : build links\n{self: PUT /tasks/{id},\ncollection: GET /tasks,\ndetail: GET /tasks/{id}}
-    CTRL -> CTRL : build StandardResponseDTO\n(200, UPDATE_TASK_SUCCESS)
+    CTRL -> CTRL : build StandardResponseDTO\n(200, TASK_UPDATED_SUCCESSFULLY)
     CTRL --> NGINX  : 200 OK + JSON body
     NGINX --> CLIENT : 200 OK + JSON body
 

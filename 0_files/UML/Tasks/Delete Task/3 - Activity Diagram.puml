@@ -82,7 +82,7 @@ if (Timeout or Kafka error?) then (yes)
 else (no)
     |TasksDeleteController|
     :Build links\n{collection: GET /tasks};
-    :Build StandardResponseDTO\n(200 DELETE_TASK_SUCCESS);
+    :Build StandardResponseDTO\n(200 TASK_DELETED_SUCCESSFULLY);
 endif
 
 |Client|

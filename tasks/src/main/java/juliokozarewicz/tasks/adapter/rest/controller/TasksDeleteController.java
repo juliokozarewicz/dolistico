@@ -72,13 +72,13 @@ public class TasksDeleteController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.DELETE_TASK_SUCCESS.getStatusCode())
+        .status(GlobalSuccessEnum.TASK_DELETED_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.DELETE_TASK_SUCCESS.getStatusCode())
-            .messageCode(GlobalSuccessEnum.DELETE_TASK_SUCCESS.getMessageCode())
+            .statusCode(GlobalSuccessEnum.TASK_DELETED_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.TASK_DELETED_SUCCESSFULLY.getMessageCode())
             .build()
         );
 

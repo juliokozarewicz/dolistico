@@ -102,7 +102,7 @@ endif
 :Build data list\nfrom page content;
 :Build meta object:\n{page, size, totalElements,\ntotalPages};
 :Build links:\n{self, next?, prev?};
-:Build StandardResponseDTO\n(200, GET_TASKS_SUCCESS,\ndata, meta, links);
+:Build StandardResponseDTO\n(200, TASKS_RETRIEVED_SUCCESSFULLY,\ndata, meta, links);
 :Return 200 OK + JSON;
 
 |Nginx (API Gateway)|

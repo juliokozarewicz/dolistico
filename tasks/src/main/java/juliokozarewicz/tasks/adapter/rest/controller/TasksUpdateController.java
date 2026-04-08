@@ -75,13 +75,13 @@ public class TasksUpdateController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.UPDATE_TASK_SUCCESS.getStatusCode())
+        .status(GlobalSuccessEnum.TASK_UPDATED_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.UPDATE_TASK_SUCCESS.getStatusCode())
-            .messageCode(GlobalSuccessEnum.UPDATE_TASK_SUCCESS.getMessageCode())
+            .statusCode(GlobalSuccessEnum.TASK_UPDATED_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.TASK_UPDATED_SUCCESSFULLY.getMessageCode())
             .build()
         );
 

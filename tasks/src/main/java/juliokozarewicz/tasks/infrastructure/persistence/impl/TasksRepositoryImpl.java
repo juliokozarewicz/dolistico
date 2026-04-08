@@ -2,9 +2,9 @@ package juliokozarewicz.tasks.infrastructure.persistence.impl;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
-import juliokozarewicz.category.infrastructure.persistence.jpa.CategoryJPA;
+import juliokozarewicz.categories.infrastructure.persistence.jpa.CategoriesJPA;
 import juliokozarewicz.tasks.infrastructure.persistence.jpa.TasksRepositoryJPA;
-import juliokozarewicz.category.infrastructure.persistence.model.CategoryModel;
+import juliokozarewicz.categories.infrastructure.persistence.model.CategoriesModel;
 import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import juliokozarewicz.tasks.infrastructure.persistence.specification.TasksGetUserSpecification;
 import org.springframework.data.domain.Page;
@@ -19,14 +19,14 @@ import java.util.UUID;
 public class TasksRepositoryImpl implements TasksRepository {
 
     private final TasksRepositoryJPA tasksRepositoryJPA;
-    private final CategoryJPA categoryJPA;
+    private final CategoriesJPA categoriesJPA;
 
     public TasksRepositoryImpl(
         TasksRepositoryJPA jpaRepository,
-        CategoryJPA categoryJPA
+        CategoriesJPA categoriesJPA
     ) {
         this.tasksRepositoryJPA = jpaRepository;
-        this.categoryJPA = categoryJPA;
+        this.categoriesJPA = categoriesJPA;
     }
 
     @Override
@@ -42,12 +42,12 @@ public class TasksRepositoryImpl implements TasksRepository {
         );
     }
 
-    // =============================================== ( category helpers init )
+    // =============================================== ( categories helpers init )
 
-    private CategoryModel getCategory(UUID categoryId) {
+    private CategoriesModel getCategory(UUID categoryId) {
         return categoryId == null
         ? null
-        : categoryJPA.findById(categoryId).orElse(null);
+        : categoriesJPA.findById(categoryId).orElse(null);
     }
 
     private String getCategoryName(TasksModel model) {
@@ -55,7 +55,7 @@ public class TasksRepositoryImpl implements TasksRepository {
         ? model.getCategory().getCategoryName()
         : null;
     }
-    // ================================================ ( category helpers end )
+    // ================================================ ( categories helpers end )
 
     // ======================================================== ( mappers init )
 

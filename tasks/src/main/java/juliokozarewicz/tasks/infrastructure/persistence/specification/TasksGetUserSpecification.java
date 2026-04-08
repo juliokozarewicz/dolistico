@@ -39,10 +39,10 @@ public class TasksGetUserSpecification {
                 ));
             }
 
-            // category
+            // categories
             if (category != null && !category.isBlank()) {
                 predicates.add(cb.like(
-                    cb.lower(root.join("category").get("categoryName")),
+                    cb.lower(root.join("categories").get("categoryName")),
                     "%" + category.toLowerCase() + "%"
                 ));
             }

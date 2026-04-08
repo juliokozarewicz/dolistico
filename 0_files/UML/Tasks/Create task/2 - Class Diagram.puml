@@ -45,7 +45,7 @@ package "adapter.rest" {
     }
 
     class GlobalSuccessEnum <<enumeration>> {
-        CREATE_TASK_SUCCESS(201,\n"CREATE_TASK_SUCCESS")
+        TASK_CREATED_SUCCESSFULLY(201,\n"TASK_CREATED_SUCCESSFULLY")
     }
 
     class GlobalExceptionEnum <<enumeration>> {

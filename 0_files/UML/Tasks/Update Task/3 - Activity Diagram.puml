@@ -158,7 +158,7 @@ else (no)
     |TasksUpdateController|
     :Build data {idUpdated};
     :Build links\n{self: PUT /tasks/{id},\ncollection: GET /tasks,\ndetail: GET /tasks/{id}};
-    :Build StandardResponseDTO\n(200 UPDATE_TASK_SUCCESS);
+    :Build StandardResponseDTO\n(200 TASK_UPDATED_SUCCESSFULLY);
 endif
 
 |Client|

@@ -63,7 +63,7 @@ package "adapter.rest" {
     }
 
     enum GlobalSuccessEnum {
-        UPDATE_TASK_SUCCESS
+        TASK_UPDATED_SUCCESSFULLY
         --
         + getStatusCode() : int
         + getMessageCode() : String

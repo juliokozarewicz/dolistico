@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS tasks;
 
--- CATEGORY
-CREATE TABLE IF NOT EXISTS tasks.category (
+-- CATEGORIES
+CREATE TABLE IF NOT EXISTS tasks.categories (
     id UUID PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
@@ -29,5 +29,5 @@ CREATE TABLE IF NOT EXISTS tasks.tasks (
     id_user UUID NOT NULL,
     category_id UUID,
 
-    CONSTRAINT fk_task_category FOREIGN KEY (category_id) REFERENCES tasks.category(id) ON DELETE SET NULL
+    CONSTRAINT fk_task_categories FOREIGN KEY (category_id) REFERENCES tasks.categories(id) ON DELETE SET NULL
 );

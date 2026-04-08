@@ -2,8 +2,8 @@ package juliokozarewicz.helloworld.adapter.rest.enums;
 
 public enum GlobalSuccessEnum {
 
-    HELLO_WORLD_SUCCESS(200, "HELLO_WORLD_SUCCESS"),
-    HELLO_WORLD_CREATE(201, "HELLO_WORLD_CREATE");
+    HELLO_WORLD_CREATED_SUCCESSFULLY(200, "HELLO_WORLD_CREATED_SUCCESSFULLY"),
+    HELLO_WORLD_RETRIEVED_SUCCESSFULLY(200, "HELLO_WORLD_RETRIEVED_SUCCESSFULLY");
 
     private final int statusCode;
     private final String messageCode;

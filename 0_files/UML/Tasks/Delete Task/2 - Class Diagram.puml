@@ -30,7 +30,7 @@ package "adapter.rest" {
     }
 
     enum GlobalSuccessEnum {
-        DELETE_TASK_SUCCESS
+        TASK_DELETED_SUCCESSFULLY
         --
         + getStatusCode() : int
         + getMessageCode() : String

@@ -90,7 +90,7 @@ else Kafka received
 
     CTRL -> CTRL : build dataObject {idCreated}
     CTRL -> CTRL : build links {self POST, next GET}
-    CTRL -> CTRL : build StandardResponseDTO\n(201, CREATE_TASK_SUCCESS)
+    CTRL -> CTRL : build StandardResponseDTO\n(201, TASK_CREATED_SUCCESSFULLY)
     CTRL --> NGINX  : 201 Created + JSON body
     NGINX --> CLIENT : 201 Created + JSON body
 

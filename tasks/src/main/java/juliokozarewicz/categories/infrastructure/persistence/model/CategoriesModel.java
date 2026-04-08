@@ -1,4 +1,4 @@
-package juliokozarewicz.category.infrastructure.persistence.model;
+package juliokozarewicz.categories.infrastructure.persistence.model;
 
 import jakarta.persistence.*;
 import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "category", schema = "tasks")
+@Table(name = "categories", schema = "tasks")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Builder
-public class CategoryModel {
+public class CategoriesModel {
 
     @Id
     @Column(updatable = false, nullable = false)

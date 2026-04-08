@@ -89,39 +89,20 @@ public class TasksEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
-        this.allDay = allDay;
+        this.allDay = Boolean.TRUE.equals(allDay);
         this.reminderTime = reminderTime;
         this.notifyActive = Boolean.TRUE.equals(notifyActive);
+        this.status = status;
+        this.dueDate = dueDate;
 
-
-        validateBusinessRules(
-            idUser,
-            priority,
-            startTime,
-            endTime,
-            allDay,
-            reminderTime,
-            this.notifyActive,
-            dueDate
-        );
+        validateBusinessRules();
 
     }
 
     // ===================================================== ( constructor end )
 
-    private void validateBusinessRules (
+    private void validateBusinessRules () {
 
-        UUID idUser,
-        Integer priority,
-        LocalDateTime startTime,
-        LocalDateTime endTime,
-        Boolean allDay,
-        LocalDateTime reminderTime,
-        Boolean notifyActive,
-        LocalDateTime dueDate
-
-    ) {
-    
         //------------------------------------------------------- (  user init )
 
         if (idUser == null) {
@@ -182,7 +163,7 @@ public class TasksEntity {
         }
 
         // Notify / Reminder consistency (XOR)
-        if ( (reminderTime != null) ^ Boolean.TRUE.equals(notifyActive) ) {
+        if ( (reminderTime != null) ^ notifyActive ) {
             throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
         }
 

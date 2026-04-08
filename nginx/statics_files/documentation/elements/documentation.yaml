@@ -79,11 +79,11 @@ info:
         "fieldErrors": [
             {
                 "field": "subject",
-                "fieldMessageCode": "FIELD_CANNOT_REMAIN_EMPTY"
+                "fieldMessageCode": "FIELD_CANNOT_BE_EMPTY"
             },
             {
                 "field": "message",
-                "fieldMessageCode": "FIELD_CANNOT_REMAIN_EMPTY"
+                "fieldMessageCode": "FIELD_CANNOT_BE_EMPTY"
             }
         ]
     }
@@ -136,7 +136,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: HELLO_WORLD_SUCCESS
+                    example: HELLO_WORLD_CREATED_SUCCESSFULLY
                   data:
                     type: object
                     properties:
@@ -1685,7 +1685,7 @@ paths:
                 category:
                   type: string
                   format: uuid
-                  description: Optional category identifier associated with the task.
+                  description: Optional categories identifier associated with the task.
                   example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
                 color:
                   type: string
@@ -1754,7 +1754,7 @@ paths:
                     example: 201
                   messageCode:
                     type: string
-                    example: CREATE_TASK_SUCCESS
+                    example: TASK_CREATED_SUCCESSFULLY
                   data:
                     type: object
                     properties:
@@ -1801,10 +1801,10 @@ paths:
             minLength: 3
             maxLength: 255
             example: Finish backend documentation
-        - name: category
+        - name: categories
           in: query
           required: false
-          description: Filter by category identifier.
+          description: Filter by categories identifier.
           schema:
             type: string
             example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
@@ -1868,7 +1868,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: GET_TASKS_SUCCESS
+                    example: TASKS_RETRIEVED_SUCCESSFULLY
                   data:
                     type: array
                     items:
@@ -1995,7 +1995,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: GET_TASKS_SUCCESS
+                    example: TASKS_RETRIEVED_SUCCESSFULLY
                   data:
                     type: object
                     properties:
@@ -2114,7 +2114,7 @@ paths:
                 category:
                   type: string
                   format: uuid
-                  description: Optional category identifier associated with the task.
+                  description: Optional categories identifier associated with the task.
                   example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
                 color:
                   type: string
@@ -2189,7 +2189,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: UPDATE_TASK_SUCCESS
+                    example: TASK_UPDATED_SUCCESSFULLY
 
     # TASKS - DELETE
     delete:
@@ -2233,6 +2233,6 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: DELETE_TASK_SUCCESS
+                    example: TASK_DELETED_SUCCESSFULLY
 
   ################################################################ ( tasks end )
