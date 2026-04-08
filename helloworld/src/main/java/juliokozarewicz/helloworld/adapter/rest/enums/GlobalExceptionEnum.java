@@ -19,9 +19,9 @@ public enum GlobalExceptionEnum {
     BAD_REQUEST(400, "BAD_REQUEST", null);
 
     // DTO error code
-    public static final String FIELD_CANNOT_BE_EMPTY = "FIELD_CANNOT_BE_EMPTY";
-    public static final String TOO_MANY_CHARACTERS = "TOO_MANY_CHARACTERS";
-    public static final String FORBIDDEN_CHARACTERS = "FORBIDDEN_CHARACTERS";
+    public static final String FIELD_CANNOT_BE_EMPTY_DTO = "FIELD_CANNOT_BE_EMPTY_DTO";
+    public static final String TOO_MANY_CHARACTERS_DTO = "TOO_MANY_CHARACTERS_DTO";
+    public static final String FORBIDDEN_CHARACTERS_DTO = "FORBIDDEN_CHARACTERS_DTO";
 
     public final int statusCode;
     public final String messageCode;

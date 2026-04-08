@@ -8,11 +8,11 @@ import juliokozarewicz.tasks.adapter.rest.enums.GlobalExceptionEnum;
 
 public record CategoriesCreateUpadateDTO (
 
-    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_BE_EMPTY)
-    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
+    @NotBlank(message = GlobalExceptionEnum.FIELD_CANNOT_BE_EMPTY_DTO)
+    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS_DTO)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
+        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS_DTO
     )
     String categoryName
 

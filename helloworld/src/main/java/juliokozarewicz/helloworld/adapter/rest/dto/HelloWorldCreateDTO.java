@@ -7,11 +7,11 @@ import juliokozarewicz.helloworld.application.command.HelloWorldCreateCommand;
 
 public record HelloWorldCreateDTO(
 
-    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_BE_EMPTY)
-    @Size(max = 256, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
+    @Size(min = 1, message = GlobalExceptionEnum.FIELD_CANNOT_BE_EMPTY_DTO)
+    @Size(max = 256, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS_DTO)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
+        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS_DTO
     )
     String message
 

@@ -79,11 +79,11 @@ info:
         "fieldErrors": [
             {
                 "field": "subject",
-                "fieldMessageCode": "FIELD_CANNOT_BE_EMPTY"
+                "fieldMessageCode": "FIELD_CANNOT_BE_EMPTY_DTO"
             },
             {
                 "field": "message",
-                "fieldMessageCode": "FIELD_CANNOT_BE_EMPTY"
+                "fieldMessageCode": "FIELD_CANNOT_BE_EMPTY_DTO"
             }
         ]
     }

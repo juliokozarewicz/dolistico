@@ -10,40 +10,40 @@ import java.util.UUID;
 
 public record TasksGetDTO(
 
-    @Min(value = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS)
-    @Max(value = 100, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
+    @Min(value = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS_DTO)
+    @Max(value = 100, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS_DTO)
     Integer sizePagination,
 
-    @Max(value = 100, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
+    @Max(value = 100, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS_DTO)
     Integer pageNumber,
 
-    @Size(min = 3, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS)
-    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
+    @Size(min = 3, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS_DTO)
+    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS_DTO)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
+        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS_DTO
     )
     String taskName,
 
     String category,
 
-    @Min(value = 1, message = GlobalExceptionEnum.TINVALID_PRIORITY)
-    @Max(value = 5, message = GlobalExceptionEnum.TINVALID_PRIORITY)
+    @Min(value = 1, message = GlobalExceptionEnum.INVALID_PRIORITY_DTO)
+    @Max(value = 5, message = GlobalExceptionEnum.INVALID_PRIORITY_DTO)
     Integer priority,
 
-    @Size(min = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS)
-    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
+    @Size(min = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS_DTO)
+    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS_DTO)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
+        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS_DTO
     )
     String location,
 
-    @Size(min = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS)
-    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS)
+    @Size(min = 1, message = GlobalExceptionEnum.TOO_FEW_CHARACTERS_DTO)
+    @Size(max = 255, message = GlobalExceptionEnum.TOO_MANY_CHARACTERS_DTO)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS
+        message = GlobalExceptionEnum.FORBIDDEN_CHARACTERS_DTO
     )
     String status,
 

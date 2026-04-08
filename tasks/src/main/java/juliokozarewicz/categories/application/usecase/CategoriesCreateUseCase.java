@@ -1,6 +1,9 @@
 package juliokozarewicz.categories.application.usecase;
 
 import juliokozarewicz.categories.application.command.CategoriesCreateUpdateCommand;
+import juliokozarewicz.categories.domain.repository.CategoriesRepository;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import juliokozarewicz.tasks.infrastructure.messaging.producer.TasksEventProducer;
 import org.springframework.stereotype.Service;
@@ -19,17 +22,17 @@ public class CategoriesCreateUseCase {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final TasksRepository tasksRepository;
+    private final CategoriesRepository categoriesRepository;
     private final TasksEventProducer tasksEventProducer;
 
     public CategoriesCreateUseCase(
 
-        TasksRepository tasksRepository,
+        CategoriesRepository categoriesRepository,
         TasksEventProducer tasksEventProducer
 
     ) {
 
-        this.tasksRepository = tasksRepository;
+        this.categoriesRepository = categoriesRepository;
         this.tasksEventProducer = tasksEventProducer;
 
     }
@@ -48,6 +51,12 @@ public class CategoriesCreateUseCase {
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // Duplicated category
+        if ( categoriesRepository.existsByIdUserAndCategoryName(
+            idUser,
+            categoriesCreateUpdateCommand.categoryName().trim()
+        )) {
+            throw new DomainException(DomainExceptionEnum.DUPLICATED_CATEGORY);
+        }
 
         // Create category id and timestamp
         UUID idCreated = UUID.randomUUID();

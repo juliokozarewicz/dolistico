@@ -1,0 +1,22 @@
+package juliokozarewicz.categories.domain.repository;
+
+import juliokozarewicz.categories.domain.entity.CategoriesEntity;
+import org.springframework.data.domain.Page;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface CategoriesRepository {
+
+    boolean existsByIdUserAndCategoryName(UUID idUser, String categoryName);
+
+    Page<CategoriesEntity> findAllByIdUser(UUID idUser);
+
+    void save(CategoriesEntity task);
+
+    Optional<CategoriesEntity> findById(UUID id);
+
+    Optional<CategoriesEntity> findByIdAndUser(UUID taskId, UUID idUser);
+
+    void delete(CategoriesEntity task);
+
+}
