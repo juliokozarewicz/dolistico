@@ -1652,6 +1652,7 @@ paths:
         - `startTime` and `endTime` must always be provided together. Both must fall on the same calendar day, and `startTime` must be before `endTime`. When `dueDate` is also provided, all three must fall on the same day.
         - When `allDay` is `true`, `startTime` and `endTime` must not be provided.
         - `reminderTime` must not be after `dueDate`.
+        - `reminderTime` and `notifyActive` must match: either both are set or neither is set. You can't have a reminder without notification being active, and you can't have notification active without a reminder time.
         - A task is considered a duplicate when the same user already has a task with the same `taskName` and `dueDate`.
       tags:
         - TASKS
