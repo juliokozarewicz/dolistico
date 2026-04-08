@@ -1,10 +1,10 @@
 package juliokozarewicz.tasks.infrastructure.persistence.model;
 
 import jakarta.persistence.*;
+import juliokozarewicz.category.infrastructure.persistence.model.CategoryModel;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity

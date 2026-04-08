@@ -1,6 +1,7 @@
-package juliokozarewicz.tasks.infrastructure.persistence.model;
+package juliokozarewicz.category.infrastructure.persistence.model;
 
 import jakarta.persistence.*;
+import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import lombok.*;
 
 import java.time.LocalDateTime;

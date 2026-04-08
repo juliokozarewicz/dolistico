@@ -2,9 +2,9 @@ package juliokozarewicz.tasks.infrastructure.persistence.impl;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
-import juliokozarewicz.tasks.infrastructure.persistence.jpa.TasksCategoryJPA;
+import juliokozarewicz.category.infrastructure.persistence.jpa.CategoryJPA;
 import juliokozarewicz.tasks.infrastructure.persistence.jpa.TasksRepositoryJPA;
-import juliokozarewicz.tasks.infrastructure.persistence.model.CategoryModel;
+import juliokozarewicz.category.infrastructure.persistence.model.CategoryModel;
 import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import juliokozarewicz.tasks.infrastructure.persistence.specification.TasksGetUserSpecification;
 import org.springframework.data.domain.Page;
@@ -19,14 +19,14 @@ import java.util.UUID;
 public class TasksRepositoryImpl implements TasksRepository {
 
     private final TasksRepositoryJPA tasksRepositoryJPA;
-    private final TasksCategoryJPA tasksCategoryJPA;
+    private final CategoryJPA categoryJPA;
 
     public TasksRepositoryImpl(
         TasksRepositoryJPA jpaRepository,
-        TasksCategoryJPA tasksCategoryJPA
+        CategoryJPA categoryJPA
     ) {
         this.tasksRepositoryJPA = jpaRepository;
-        this.tasksCategoryJPA = tasksCategoryJPA;
+        this.categoryJPA = categoryJPA;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TasksRepositoryImpl implements TasksRepository {
     private CategoryModel getCategory(UUID categoryId) {
         return categoryId == null
         ? null
-        : tasksCategoryJPA.findById(categoryId).orElse(null);
+        : categoryJPA.findById(categoryId).orElse(null);
     }
 
     private String getCategoryName(TasksModel model) {
