@@ -91,9 +91,8 @@ public class TasksEntity {
         this.location = location;
         this.allDay = allDay;
         this.reminderTime = reminderTime;
-        this.notifyActive = notifyActive;
-        this.status = status;
-        this.dueDate = dueDate;
+        this.notifyActive = Boolean.TRUE.equals(notifyActive);
+
 
         validateBusinessRules(
             idUser,
@@ -102,6 +101,7 @@ public class TasksEntity {
             endTime,
             allDay,
             reminderTime,
+            this.notifyActive,
             dueDate
         );
 
@@ -117,6 +117,7 @@ public class TasksEntity {
         LocalDateTime endTime,
         Boolean allDay,
         LocalDateTime reminderTime,
+        Boolean notifyActive,
         LocalDateTime dueDate
 
     ) {
@@ -177,6 +178,11 @@ public class TasksEntity {
 
         // Reminder time validate
         if (reminderTime != null && dueDate != null && reminderTime.isAfter(dueDate)) {
+            throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
+        }
+
+        // Notify / Reminder consistency (XOR)
+        if ( (reminderTime != null) ^ Boolean.TRUE.equals(notifyActive) ) {
             throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
         }
 
