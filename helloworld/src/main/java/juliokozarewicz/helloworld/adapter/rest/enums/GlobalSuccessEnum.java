@@ -2,8 +2,13 @@ package juliokozarewicz.helloworld.adapter.rest.enums;
 
 public enum GlobalSuccessEnum {
 
+    // =========================================== ( domain success codes init )
+
+    // hello world
     HELLO_WORLD_CREATED_SUCCESSFULLY(200, "HELLO_WORLD_CREATED_SUCCESSFULLY"),
     HELLO_WORLD_RETRIEVED_SUCCESSFULLY(200, "HELLO_WORLD_RETRIEVED_SUCCESSFULLY");
+
+    // ============================================ ( domain success codes end )
 
     private final int statusCode;
     private final String messageCode;

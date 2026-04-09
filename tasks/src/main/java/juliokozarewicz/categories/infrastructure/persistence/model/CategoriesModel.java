@@ -3,7 +3,6 @@ package juliokozarewicz.categories.infrastructure.persistence.model;
 import jakarta.persistence.*;
 import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

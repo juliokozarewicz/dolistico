@@ -1,14 +1,11 @@
-package juliokozarewicz.tasks.adapter.rest.enums;
+package juliokozarewicz.categories.adapter.rest.enums;
 
 public enum GlobalSuccessEnum {
 
     // =========================================== ( domain success codes init )
 
-    // tasks
-    TASK_CREATED_SUCCESSFULLY(201, "TASK_CREATED_SUCCESSFULLY"),
-    TASKS_RETRIEVED_SUCCESSFULLY(200, "TASKS_RETRIEVED_SUCCESSFULLY"),
-    TASK_UPDATED_SUCCESSFULLY(200, "TASK_UPDATED_SUCCESSFULLY"),
-    TASK_DELETED_SUCCESSFULLY(200, "TASK_DELETED_SUCCESSFULLY");
+    // categories
+    CATEGORY_CREATED_SUCCESSFULLY(201, "CATEGORY_CREATED_SUCCESSFULLY");
 
     // ============================================ ( domain success codes end )
 

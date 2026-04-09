@@ -4,7 +4,9 @@ import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 
 public enum GlobalExceptionEnum {
 
-    // Domain error codes
+    // ============================================= ( domain error codes init )
+
+    // tasks
     INVALID_PRIORITY(400, "INVALID_PRIORITY", DomainExceptionEnum.INVALID_PRIORITY),
     USER_NOT_FOUND(404, "USER_NOT_FOUND", DomainExceptionEnum.USER_NOT_FOUND),
     INVALID_DATE(400, "INVALID_DATE", DomainExceptionEnum.INVALID_DATE),
@@ -17,7 +19,9 @@ public enum GlobalExceptionEnum {
     TOO_MANY_CHARACTERS(400, "TOO_MANY_CHARACTERS", DomainExceptionEnum.TOO_MANY_CHARACTERS),
     FORBIDDEN_CHARACTERS(400, "FORBIDDEN_CHARACTERS", DomainExceptionEnum.FORBIDDEN_CHARACTERS),
 
-    // Rest error codes
+    // ============================================== ( domain error codes end )
+
+    // =============================================== ( rest error codes init )
     SERVICE_UNAVAILABLE(503, "SERVICE_UNAVAILABLE", null),
     INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", null),
     TOO_MANY_REQUESTS(429, "TOO_MANY_REQUESTS", null),
@@ -27,14 +31,16 @@ public enum GlobalExceptionEnum {
     ACCESS_EXPIRED(401, "ACCESS_EXPIRED", null),
     INVALID_CREDENTIALS(401, "INVALID_CREDENTIALS", DomainExceptionEnum.INVALID_CREDENTIALS),
     BAD_REQUEST(400, "BAD_REQUEST", null);
+    // ================================================ ( rest error codes end )
 
-    // DTO error codes
+    // ================================================ ( dto error codes init )
     public static final String FIELD_CANNOT_BE_EMPTY_DTO = "FIELD_CANNOT_BE_EMPTY_DTO";
     public static final String TOO_MANY_CHARACTERS_DTO = "TOO_MANY_CHARACTERS_DTO";
     public static final String INVALID_PRIORITY_DTO = "INVALID_PRIORITY";
     public static final String TOO_FEW_CHARACTERS_DTO = "TOO_FEW_CHARACTERS_DTO";
     public static final String FORBIDDEN_CHARACTERS_DTO = "FORBIDDEN_CHARACTERS_DTO";
     public static final String INVALID_ID_DTO = "INVALID_ID_DTO";
+    // ================================================= ( dto error codes end )
 
     public final int statusCode;
     public final String messageCode;

@@ -4,13 +4,10 @@ import juliokozarewicz.categories.domain.entity.CategoriesEntity;
 import juliokozarewicz.categories.domain.repository.CategoriesRepository;
 import juliokozarewicz.categories.infrastructure.persistence.jpa.CategoriesRepositoryJPA;
 import juliokozarewicz.categories.infrastructure.persistence.model.CategoriesModel;
-import juliokozarewicz.tasks.domain.entity.TasksEntity;
-import juliokozarewicz.tasks.infrastructure.persistence.specification.TasksGetUserSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 

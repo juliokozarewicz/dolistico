@@ -1,16 +1,13 @@
-package juliokozarewicz.helloworld.adapter.rest.enums;
+package juliokozarewicz.categories.adapter.rest.enums;
 
-import juliokozarewicz.helloworld.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.categories.domain.exception.DomainExceptionEnum;
 
 public enum GlobalExceptionEnum {
 
     // ============================================= ( domain error codes init )
 
-    // hello world
-    USER_NOT_FOUND(404, "USER_NOT_FOUND", DomainExceptionEnum.USER_NOT_FOUND),
-    FIELD_CANNOT_BE_EMPTY(400, "FIELD_CANNOT_BE_EMPTY", DomainExceptionEnum.FIELD_CANNOT_BE_EMPTY),
-    TOO_MANY_CHARACTERS(400, "TOO_MANY_CHARACTERS", DomainExceptionEnum.TOO_MANY_CHARACTERS),
-    FORBIDDEN_CHARACTERS(400, "FORBIDDEN_CHARACTERS", DomainExceptionEnum.FORBIDDEN_CHARACTERS),
+    // categories
+    DUPLICATED_CATEGORY(409, "DUPLICATED_CATEGORY", DomainExceptionEnum.DUPLICATED_CATEGORY),
 
     // ============================================== ( domain error codes end )
 
