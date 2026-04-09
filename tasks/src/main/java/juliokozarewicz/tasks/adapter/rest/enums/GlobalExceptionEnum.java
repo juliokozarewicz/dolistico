@@ -19,6 +19,9 @@ public enum GlobalExceptionEnum {
     TOO_MANY_CHARACTERS(400, "TOO_MANY_CHARACTERS", DomainExceptionEnum.TOO_MANY_CHARACTERS),
     FORBIDDEN_CHARACTERS(400, "FORBIDDEN_CHARACTERS", DomainExceptionEnum.FORBIDDEN_CHARACTERS),
 
+    // categories
+    DUPLICATED_CATEGORY(409, "DUPLICATED_CATEGORY", juliokozarewicz.tasks.domain.exception.DomainExceptionEnum.DUPLICATED_CATEGORY),
+
     // ============================================== ( domain error codes end )
 
     // =============================================== ( rest error codes init )

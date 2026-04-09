@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.categories.adapter.rest.dto.CategoriesCreateUpadateDTO;
 import juliokozarewicz.categories.adapter.rest.dto.StandardResponseDTO;
-import juliokozarewicz.categories.adapter.rest.enums.GlobalSuccessEnum;
+import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.categories.application.usecase.CategoriesCreateUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

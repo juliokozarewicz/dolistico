@@ -55,6 +55,12 @@ public class CategoriesCreateUseCase {
             idUser,
             categoriesCreateUpdateCommand.categoryName().trim()
         )) {
+            System.out.println("********************************************");
+            System.out.println("********************************************");
+            System.out.println("ERROU!!!!!!!");
+            System.out.println("********************************************");
+            System.out.println("********************************************");
+
             throw new DomainException(DomainExceptionEnum.DUPLICATED_CATEGORY);
         }
 
@@ -68,7 +74,7 @@ public class CategoriesCreateUseCase {
             idCreated,
             timeStamp,
             timeStamp,
-            categoriesCreateUpdateCommand.categoryName()
+            categoriesCreateUpdateCommand.categoryName().trim()
         );
 
         // Create message

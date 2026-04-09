@@ -27,7 +27,10 @@ public enum DomainExceptionEnum {
     INVALID_ALLDAY,
     INVALID_REMINDER,
     TASK_NOT_FOUND,
-    DUPLICATED_TASK
+    DUPLICATED_TASK,
+
+    // Categories
+    DUPLICATED_CATEGORY;
 
     // ============================================== ( domain error codes end )
 

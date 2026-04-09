@@ -1,8 +1,8 @@
 package juliokozarewicz.categories.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import juliokozarewicz.categories.domain.exception.DomainException;
-import juliokozarewicz.categories.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
