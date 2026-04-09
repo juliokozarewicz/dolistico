@@ -1637,6 +1637,63 @@ paths:
 
   ############################################################### ( tasks init )
 
+  # CATEGORIES - CREATE
+  "/TASKS_BASE_URL_REPLACE/category":
+    post:
+      summary: Create category
+      description: |-
+        Creates a new category for the authenticated user. Categories are used
+        to organize and group tasks. Each category name must be unique per user.
+
+        **Business rules:**
+
+        - `categoryName` must not be blank and must not exceed 255 characters.
+        - Characters `< > & ' " /` are forbidden for security reasons.
+        - A duplicate category is detected when the same user already has a category with the same `categoryName`.
+      tags:
+        - TASKS
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - categoryName
+              properties:
+                categoryName:
+                  type: string
+                  description: Name of the category. Must be unique per user.
+                  maxLength: 255
+                  example: Work
+      responses:
+        "201":
+          description: Category created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-04-09T19:13:56Z"
+                  statusCode:
+                    type: integer
+                    example: 201
+                  messageCode:
+                    type: string
+                    example: CATEGORY_CREATED_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      idCreated:
+                        type: string
+                        format: uuid
+                        example: 6a1dd3c0-2f6e-48fc-b995-45daf63ab942
+
   # TASKS - CREATE
   "/TASKS_BASE_URL_REPLACE":
     post:
