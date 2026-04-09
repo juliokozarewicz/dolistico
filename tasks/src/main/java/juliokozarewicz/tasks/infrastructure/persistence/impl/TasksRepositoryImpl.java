@@ -2,7 +2,7 @@ package juliokozarewicz.tasks.infrastructure.persistence.impl;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
-import juliokozarewicz.categories.infrastructure.persistence.jpa.CategoriesJPA;
+import juliokozarewicz.categories.infrastructure.persistence.jpa.CategoriesRepositoryJPA;
 import juliokozarewicz.tasks.infrastructure.persistence.jpa.TasksRepositoryJPA;
 import juliokozarewicz.categories.infrastructure.persistence.model.CategoriesModel;
 import juliokozarewicz.tasks.infrastructure.persistence.model.TasksModel;
@@ -19,14 +19,14 @@ import java.util.UUID;
 public class TasksRepositoryImpl implements TasksRepository {
 
     private final TasksRepositoryJPA tasksRepositoryJPA;
-    private final CategoriesJPA categoriesJPA;
+    private final CategoriesRepositoryJPA categoriesRepositoryJPA;
 
     public TasksRepositoryImpl(
         TasksRepositoryJPA jpaRepository,
-        CategoriesJPA categoriesJPA
+        CategoriesRepositoryJPA categoriesRepositoryJPA
     ) {
         this.tasksRepositoryJPA = jpaRepository;
-        this.categoriesJPA = categoriesJPA;
+        this.categoriesRepositoryJPA = categoriesRepositoryJPA;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TasksRepositoryImpl implements TasksRepository {
     private CategoriesModel getCategory(UUID categoryId) {
         return categoryId == null
         ? null
-        : categoriesJPA.findById(categoryId).orElse(null);
+        : categoriesRepositoryJPA.findById(categoryId).orElse(null);
     }
 
     private String getCategoryName(TasksModel model) {

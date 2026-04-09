@@ -1,10 +1,11 @@
 package juliokozarewicz.categories.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -18,16 +19,31 @@ public class CategoriesEntity {
     // -------------------------------------------------------------------------
 
     private UUID idUser;
+    private  UUID idCreated;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+
+    private  LocalDateTime updatedAt;
+
     private String categoryName;
 
     public CategoriesEntity (
 
         UUID idUser,
+        UUID idCreated,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAtAt,
         String categoryName
 
     ) {
 
         this.idUser = idUser;
+        this.idCreated = idCreated;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAtAt;
         this.categoryName = categoryName;
 
         validateBusinessRules();

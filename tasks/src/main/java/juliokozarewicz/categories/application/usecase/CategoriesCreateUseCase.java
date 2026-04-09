@@ -1,11 +1,11 @@
 package juliokozarewicz.categories.application.usecase;
 
 import juliokozarewicz.categories.application.command.CategoriesCreateUpdateCommand;
+import juliokozarewicz.categories.domain.entity.CategoriesEntity;
 import juliokozarewicz.categories.domain.repository.CategoriesRepository;
+import juliokozarewicz.categories.infrastructure.messaging.producer.CategoriesEventProducer;
 import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
-import juliokozarewicz.tasks.domain.repository.TasksRepository;
-import juliokozarewicz.tasks.infrastructure.messaging.producer.TasksEventProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,17 +23,17 @@ public class CategoriesCreateUseCase {
     // -------------------------------------------------------------------------
 
     private final CategoriesRepository categoriesRepository;
-    private final TasksEventProducer tasksEventProducer;
+    private final CategoriesEventProducer categoriesEventProducer;
 
     public CategoriesCreateUseCase(
 
         CategoriesRepository categoriesRepository,
-        TasksEventProducer tasksEventProducer
+        CategoriesEventProducer categoriesEventProducer
 
     ) {
 
         this.categoriesRepository = categoriesRepository;
-        this.tasksEventProducer = tasksEventProducer;
+        this.categoriesEventProducer = categoriesEventProducer;
 
     }
 
@@ -50,7 +50,7 @@ public class CategoriesCreateUseCase {
         // Credentials
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
-        // Duplicated category
+        // Duplicated
         if ( categoriesRepository.existsByIdUserAndCategoryName(
             idUser,
             categoriesCreateUpdateCommand.categoryName().trim()
@@ -62,8 +62,17 @@ public class CategoriesCreateUseCase {
         UUID idCreated = UUID.randomUUID();
         LocalDateTime timeStamp = LocalDateTime.now();
 
-        // Create category entity
-        // Create category message
+        // Create entity
+        CategoriesEntity createNewCategory = new CategoriesEntity(
+            idUser,
+            idCreated,
+            timeStamp,
+            timeStamp,
+            categoriesCreateUpdateCommand.categoryName()
+        );
+
+        // Create message
+        categoriesEventProducer.producerCreateUpdate(createNewCategory);
 
         // Return created id
         return idCreated.toString();

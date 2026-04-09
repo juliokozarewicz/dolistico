@@ -94,7 +94,7 @@ public class TasksUpdateUseCase {
         );
 
         // Publish update event to Kafka
-        tasksEventProducer.consumerCreateUpdate(updatedTask);
+        tasksEventProducer.producerCreateUpdate(updatedTask);
 
         // Return updated id
         return taskId.toString();

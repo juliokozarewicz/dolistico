@@ -2,6 +2,8 @@ package juliokozarewicz.categories.domain.repository;
 
 import juliokozarewicz.categories.domain.entity.CategoriesEntity;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,7 +11,7 @@ public interface CategoriesRepository {
 
     boolean existsByIdUserAndCategoryName(UUID idUser, String categoryName);
 
-    Page<CategoriesEntity> findAllByIdUser(UUID idUser);
+    Page<CategoriesEntity> findAllByIdUser(UUID idUser, Pageable pageable);
 
     void save(CategoriesEntity task);
 
