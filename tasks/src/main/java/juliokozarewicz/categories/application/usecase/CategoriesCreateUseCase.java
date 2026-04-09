@@ -4,8 +4,8 @@ import juliokozarewicz.categories.application.command.CategoriesCreateUpdateComm
 import juliokozarewicz.categories.domain.entity.CategoriesEntity;
 import juliokozarewicz.categories.domain.repository.CategoriesRepository;
 import juliokozarewicz.categories.infrastructure.messaging.producer.CategoriesEventProducer;
-import juliokozarewicz.categories.domain.exception.DomainException;
-import juliokozarewicz.categories.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
