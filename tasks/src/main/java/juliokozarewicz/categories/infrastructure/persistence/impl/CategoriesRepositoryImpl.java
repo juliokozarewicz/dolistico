@@ -4,6 +4,8 @@ import juliokozarewicz.categories.domain.entity.CategoriesEntity;
 import juliokozarewicz.categories.domain.repository.CategoriesRepository;
 import juliokozarewicz.categories.infrastructure.persistence.jpa.CategoriesRepositoryJPA;
 import juliokozarewicz.categories.infrastructure.persistence.model.CategoriesModel;
+import juliokozarewicz.categories.infrastructure.persistence.specification.CategoriesGetSpecification;
+import juliokozarewicz.tasks.infrastructure.persistence.specification.TasksGetUserSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -52,9 +54,21 @@ public class CategoriesRepositoryImpl implements CategoriesRepository {
     }
 
     @Override
-    public Page<CategoriesEntity> findAllByIdUser(UUID idUser, String categoryName, Pageable pageable) {
+    public Page<CategoriesEntity> findAllByIdUser(
+
+        UUID idUser,
+        String categoryName,
+        Pageable pageable
+
+    ) {
+
+        var spec = CategoriesGetSpecification.filter(
+            categoryName,
+            idUser
+        );
+
         return categoriesRepositoryJPA
-        .findAllByIdUser(idUser, categoryName, pageable)
+        .findAll(spec, pageable)
         .map(this::toEntity);
     }
 
