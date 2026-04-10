@@ -25,22 +25,22 @@ public class CategoriesRepositoryImpl implements CategoriesRepository {
     // ENTITY -> MODEL
     private CategoriesModel toModel(CategoriesEntity entity) {
         return CategoriesModel.builder()
-                .id(entity.getIdCreated())
-                .idUser(entity.getIdUser())
-                .categoryName(entity.getCategoryName())
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .build();
+            .id(entity.getIdCreated())
+            .idUser(entity.getIdUser())
+            .categoryName(entity.getCategoryName())
+            .createdAt(entity.getCreatedAt())
+            .updatedAt(entity.getUpdatedAt())
+            .build();
     }
 
     // MODEL -> ENTITY
     private CategoriesEntity toEntity(CategoriesModel model) {
         return new CategoriesEntity(
-                model.getId(),
-                model.getIdUser(),
-                model.getCreatedAt(),
-                model.getUpdatedAt(),
-                model.getCategoryName()
+            model.getId(),
+            model.getIdUser(),
+            model.getCreatedAt(),
+            model.getUpdatedAt(),
+            model.getCategoryName()
         );
     }
 
@@ -52,10 +52,10 @@ public class CategoriesRepositoryImpl implements CategoriesRepository {
     }
 
     @Override
-    public Page<CategoriesEntity> findAllByIdUser(UUID idUser, Pageable pageable) {
+    public Page<CategoriesEntity> findAllByIdUser(UUID idUser, String categoryName, Pageable pageable) {
         return categoriesRepositoryJPA
-                .findAllByIdUser(idUser, pageable)
-                .map(this::toEntity);
+        .findAllByIdUser(idUser, categoryName, pageable)
+        .map(this::toEntity);
     }
 
     @Override
@@ -66,14 +66,14 @@ public class CategoriesRepositoryImpl implements CategoriesRepository {
     @Override
     public Optional<CategoriesEntity> findById(UUID id) {
         return categoriesRepositoryJPA
-                .findById(id)
-                .map(this::toEntity);
+        .findById(id)
+        .map(this::toEntity);
     }
 
     @Override
-    public Optional<CategoriesEntity> findByIdAndUser(UUID taskId, UUID idUser) {
-        return categoriesRepositoryJPA.findByIdAndIdUser(taskId, idUser)
-            .map(this::toEntity);
+    public Optional<CategoriesEntity> findByIdAndUser(UUID categoryId, UUID idUser) {
+        return categoriesRepositoryJPA.findByIdAndIdUser(categoryId, idUser)
+        .map(this::toEntity);
     }
 
     @Override

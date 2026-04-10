@@ -11,14 +11,18 @@ public interface CategoriesRepository {
 
     boolean existsByIdUserAndCategoryName(UUID idUser, String categoryName);
 
-    Page<CategoriesEntity> findAllByIdUser(UUID idUser, Pageable pageable);
+    Page<CategoriesEntity> findAllByIdUser(
+        UUID idUser,
+        String categoryName,
+        Pageable pageable
+    );
 
-    void save(CategoriesEntity task);
+    void save(CategoriesEntity category);
 
     Optional<CategoriesEntity> findById(UUID id);
 
-    Optional<CategoriesEntity> findByIdAndUser(UUID taskId, UUID idUser);
+    Optional<CategoriesEntity> findByIdAndUser(UUID categoryId, UUID idUser);
 
-    void delete(CategoriesEntity task);
+    void delete(CategoriesEntity category);
 
 }

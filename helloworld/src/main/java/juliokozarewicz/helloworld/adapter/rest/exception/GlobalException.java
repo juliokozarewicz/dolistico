@@ -14,7 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
+import org.apache.tomcat.util.http.InvalidParameterException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
@@ -88,7 +88,9 @@ public class GlobalException {
         MissingServletRequestParameterException.class,
         NoHandlerFoundException.class,
         HttpRequestMethodNotSupportedException.class,
-        NoResourceFoundException.class
+        NoResourceFoundException.class,
+        InvalidParameterException.class,
+        IllegalArgumentException.class
     })
     public ResponseEntity<StandardResponseDTO> handleBadRequest(Exception ex) {
 

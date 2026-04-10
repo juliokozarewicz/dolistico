@@ -1,11 +1,11 @@
-package juliokozarewicz.tasks.adapter.rest.controller;
+package juliokozarewicz.categories.adapter.rest.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import juliokozarewicz.categories.adapter.rest.dto.CategoriesGetDTO;
+import juliokozarewicz.categories.application.usecase.CategoriesGetUseCase;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
-import juliokozarewicz.tasks.adapter.rest.dto.TasksGetDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
-import juliokozarewicz.tasks.application.usecase.TasksGetUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-public class TasksGetController {
+public class CategoriesGetController {
 
     // ==================================================== ( constructor init )
 
@@ -32,25 +32,25 @@ public class TasksGetController {
     private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
-    private final TasksGetUseCase tasksGetUseCase;
+    private final CategoriesGetUseCase categoriesGetUseCase;
 
-    public TasksGetController (
+    public CategoriesGetController(
 
-        TasksGetUseCase tasksGetUseCase
+        CategoriesGetUseCase categoriesGetUseCase
 
     ) {
 
-        this.tasksGetUseCase = tasksGetUseCase;
+        this.categoriesGetUseCase = categoriesGetUseCase;
 
     }
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${TASKS_BASE_URL}")
+    @GetMapping("/${TASKS_BASE_URL}/category")
     public ResponseEntity create (
 
         // DTO error
-        @Valid TasksGetDTO tasksGetDTO,
+        @Valid CategoriesGetDTO categoriesGetDTO,
         BindingResult bindingResult,
 
         // Request for auth
@@ -64,9 +64,9 @@ public class TasksGetController {
         request.getAttribute("credentialsData");
 
         // Call use case
-        Map<String, Object> dataResponse = tasksGetUseCase.execute(
+        Map<String, Object> dataResponse = categoriesGetUseCase.execute(
             credentialsData,
-            tasksGetDTO
+            categoriesGetDTO
         );
 
         // Content
@@ -82,13 +82,13 @@ public class TasksGetController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.TASKS_RETRIEVED_SUCCESSFULLY.getStatusCode())
+        .status(GlobalSuccessEnum.CATEGORY_RETRIEVED_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.TASKS_RETRIEVED_SUCCESSFULLY.getStatusCode())
-            .messageCode(GlobalSuccessEnum.TASKS_RETRIEVED_SUCCESSFULLY.getMessageCode())
+            .statusCode(GlobalSuccessEnum.CATEGORY_RETRIEVED_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.CATEGORY_RETRIEVED_SUCCESSFULLY.getMessageCode())
             .data(content)
             .meta(metaData)
             .build()

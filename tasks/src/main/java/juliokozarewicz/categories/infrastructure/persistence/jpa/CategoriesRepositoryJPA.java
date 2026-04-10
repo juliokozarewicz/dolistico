@@ -12,7 +12,13 @@ import java.util.UUID;
 public interface CategoriesRepositoryJPA extends JpaRepository<CategoriesModel, UUID> {
 
     boolean existsByIdUserAndCategoryName(UUID idUser, String categoryName);
-    Page<CategoriesModel> findAllByIdUser(UUID idUser, Pageable pageable);
+
+    Page<CategoriesModel> findAllByIdUser(
+        UUID idUser,
+        String categoryName,
+        Pageable pageable
+    );
+
     Optional<CategoriesModel> findByIdAndIdUser(UUID id, UUID idUser);
 
 }
