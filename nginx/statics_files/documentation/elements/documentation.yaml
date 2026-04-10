@@ -1647,8 +1647,7 @@ paths:
 
         **Business rules:**
 
-        - `categoryName` must not be blank and must not exceed 255 characters.
-        - Characters `< > & ' " /` are forbidden for security reasons.
+        - `categoryName` must not be blank, must have at least 3 characters, and must not exceed 255 characters.
         - A duplicate category is detected when the same user already has a category with the same `categoryName`.
       tags:
         - TASKS
@@ -1666,6 +1665,7 @@ paths:
                 categoryName:
                   type: string
                   description: Name of the category. Must be unique per user.
+                  minLength: 3
                   maxLength: 255
                   example: Work
       responses:
@@ -2363,7 +2363,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: Unique identifier (UUID) of the task to delete.
+          escription: Unique identifier (UUID) of the task to delete.
           schema:
             type: string
             format: uuid
