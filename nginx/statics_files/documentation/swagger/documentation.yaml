@@ -1782,13 +1782,13 @@ paths:
                         example: 1
                       totalElementsCurrentPage:
                         type: integer
-                        example: 2
+                        example: 1
                       pageSize:
                         type: integer
                         example: 50
                       totalElements:
                         type: integer
-                        example: 2
+                        example: 1
 
   # TASKS - CREATE
   "/TASKS_BASE_URL_REPLACE":
