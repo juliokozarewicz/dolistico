@@ -1694,6 +1694,102 @@ paths:
                         format: uuid
                         example: 6a1dd3c0-2f6e-48fc-b995-45daf63ab942
 
+    # CATEGORIES - GET
+    get:
+      summary: Get categories
+      description: >-
+        Retrieves a paginated list of categories for the authenticated user.
+        All query parameters are optional and act as filters.
+        Results are sorted by creation date in descending order.
+      tags:
+        - TASKS
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: sizePagination
+          in: query
+          required: false
+          description: Number of items per page. Must be between 1 and 100. Defaults to 50.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 50
+        - name: pageNumber
+          in: query
+          required: false
+          description: Page number to retrieve. Must be at most 100. Defaults to 1.
+          schema:
+            type: integer
+            maximum: 100
+            example: 1
+        - name: categoryName
+          in: query
+          required: false
+          description: Filter by category name. Must be between 3 and 255 characters. Special characters are not allowed.
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 255
+            example: credit card
+
+      responses:
+        "200":
+          description: Categories retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-04-10T15:17:05Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: CATEGORY_RETRIEVED_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        idCreated:
+                          type: string
+                          format: uuid
+                          example: 019d6df6-8819-7711-abb0-cba3cfe2a534
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2026-04-10T14:37:37"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-04-10T14:37:37"
+                        categoryName:
+                          type: string
+                          example: credit card
+                  meta:
+                    type: object
+                    properties:
+                      currentPage:
+                        type: integer
+                        example: 1
+                      totalPages:
+                        type: integer
+                        example: 1
+                      totalElementsCurrentPage:
+                        type: integer
+                        example: 2
+                      pageSize:
+                        type: integer
+                        example: 50
+                      totalElements:
+                        type: integer
+                        example: 2
+
   # TASKS - CREATE
   "/TASKS_BASE_URL_REPLACE":
     post:
