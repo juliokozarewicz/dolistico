@@ -55,8 +55,8 @@ public class CategoriesGetUseCase {
         ? categoriesGetCommand.pageNumber()
         : 1;
 
-        int pageSize = categoriesGetCommand.sizePagination() != null
-        ? categoriesGetCommand.sizePagination()
+        int pageSize = categoriesGetCommand.pageSize() != null
+        ? categoriesGetCommand.pageSize()
         : 50;
 
         Pageable pageable = PageRequest.of(

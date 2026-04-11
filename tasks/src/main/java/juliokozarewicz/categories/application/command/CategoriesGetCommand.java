@@ -2,7 +2,7 @@ package juliokozarewicz.categories.application.command;
 
 public interface CategoriesGetCommand {
 
-    Integer sizePagination();
+    Integer pageSize();
     Integer pageNumber();
     String categoryName();
 

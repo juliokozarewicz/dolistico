@@ -1706,7 +1706,7 @@ paths:
       security:
         - BearerAuth: [ ]
       parameters:
-        - name: sizePagination
+        - name: pageSize
           in: query
           required: false
           description: Number of items per page. Must be between 1 and 100. Defaults to 50.
@@ -1928,7 +1928,7 @@ paths:
       security:
         - BearerAuth: [ ]
       parameters:
-        - name: sizePagination
+        - name: pageSize
           in: query
           required: false
           description: Number of items per page. Must be between 1 and 100. Defaults to 10.

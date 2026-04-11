@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public interface TasksGetCommand {
 
-    Integer sizePagination();
+    Integer pageSize();
     Integer pageNumber();
     String taskName();
     String category();

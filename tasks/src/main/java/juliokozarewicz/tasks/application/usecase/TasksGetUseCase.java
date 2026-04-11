@@ -55,8 +55,8 @@ public class TasksGetUseCase {
         ? tasksGetCommand.pageNumber()
         : 1;
 
-        int pageSize = tasksGetCommand.sizePagination() != null
-        ? tasksGetCommand.sizePagination()
+        int pageSize = tasksGetCommand.pageSize() != null
+        ? tasksGetCommand.pageSize()
         : 10;
 
         Pageable pageable = PageRequest.of(
