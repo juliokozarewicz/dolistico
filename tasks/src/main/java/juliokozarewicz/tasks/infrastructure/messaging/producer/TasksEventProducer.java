@@ -2,7 +2,7 @@ package juliokozarewicz.tasks.infrastructure.messaging.producer;
 
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
-import juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum;
+import juliokozarewicz.tasks.infrastructure.messaging.enums.TasksMessagingTopicEnum;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
@@ -47,7 +47,7 @@ public class TasksEventProducer {
 
             // Send as raw bytes
             kafkaTemplate.send(
-                MessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST,
+                TasksMessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST,
                 payload
             ).get(10, TimeUnit.SECONDS);
 
@@ -76,7 +76,7 @@ public class TasksEventProducer {
 
             // Send as raw bytes
             kafkaTemplate.send(
-                MessagingTopicEnum.TASKS_DELETE_PERSIST,
+                TasksMessagingTopicEnum.TASKS_DELETE_PERSIST,
                 payload
             ).get(10, TimeUnit.SECONDS);
 

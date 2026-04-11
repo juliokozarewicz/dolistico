@@ -1,7 +1,7 @@
 package juliokozarewicz.categories.infrastructure.messaging.producer;
 
 import juliokozarewicz.categories.domain.entity.CategoriesEntity;
-import juliokozarewicz.categories.infrastructure.messaging.enums.MessagingTopicEnum;
+import juliokozarewicz.categories.infrastructure.messaging.enums.CategoriesMessagingTopicEnum;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
@@ -46,7 +46,7 @@ public class CategoriesEventProducer {
 
             // Send as raw bytes
             kafkaTemplate.send(
-                MessagingTopicEnum.CATEGORIES_CREATE_UPDATE_PERSIST,
+                CategoriesMessagingTopicEnum.CATEGORIES_CREATE_UPDATE_PERSIST,
                 payload
             ).get(10, TimeUnit.SECONDS);
 
@@ -75,7 +75,7 @@ public class CategoriesEventProducer {
 
             // Send as raw bytes
             kafkaTemplate.send(
-                MessagingTopicEnum.CATEGORIES_DELETE_PERSIST,
+                CategoriesMessagingTopicEnum.CATEGORIES_DELETE_PERSIST,
                 payload
             ).get(10, TimeUnit.SECONDS);
 

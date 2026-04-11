@@ -2,7 +2,8 @@ package juliokozarewicz.tasks.infrastructure.messaging.consumer;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
-import juliokozarewicz.tasks.infrastructure.messaging.enums.MessagingTopicEnum;
+import juliokozarewicz.tasks.infrastructure.messaging.enums.TasksMessagingGroupEnum;
+import juliokozarewicz.tasks.infrastructure.messaging.enums.TasksMessagingTopicEnum;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -35,8 +36,8 @@ public class TasksEventConsumer {
 
      // create update consumer
     @KafkaListener(
-        topics = MessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST,
-        groupId = MessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST
+        topics = TasksMessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST,
+        groupId = TasksMessagingGroupEnum.ACCOUNTS_GROUP_ID
     )
     public void consumerCreateUpdate (
 
@@ -66,8 +67,8 @@ public class TasksEventConsumer {
 
     // delete consumer
     @KafkaListener(
-        topics = MessagingTopicEnum.TASKS_DELETE_PERSIST,
-        groupId = MessagingTopicEnum.TASKS_DELETE_PERSIST
+        topics = TasksMessagingTopicEnum.TASKS_DELETE_PERSIST,
+        groupId = TasksMessagingGroupEnum.ACCOUNTS_GROUP_ID
     )
     public void consumerDelete (
 
