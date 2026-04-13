@@ -1790,6 +1790,64 @@ paths:
                         type: integer
                         example: 1
 
+  # CATEGORIES - GET BY ID
+  "/TASKS_BASE_URL_REPLACE/category/{id}":
+    get:
+      summary: Get category by ID
+      description: >-
+        Retrieves a specific category by its unique identifier.
+        The category must belong to the authenticated user.
+      tags:
+        - TASKS
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier (UUID) of the category to retrieve.
+          schema:
+            type: string
+            format: uuid
+            example: 6a1dd3c0-2f6e-48fc-b995-45daf63ab942
+
+      responses:
+        "200":
+          description: Category retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-04-13T15:22:10Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: CATEGORIES_RETRIEVED_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      idCreated:
+                        type: string
+                        format: uuid
+                        example: 6a1dd3c0-2f6e-48fc-b995-45daf63ab942
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2026-04-10T14:37:37"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2026-04-10T14:37:37"
+                      categoryName:
+                        type: string
+                        example: Work
+
   # TASKS - CREATE
   "/TASKS_BASE_URL_REPLACE":
     post:
