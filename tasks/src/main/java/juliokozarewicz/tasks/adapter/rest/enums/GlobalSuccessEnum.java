@@ -12,7 +12,7 @@ public enum GlobalSuccessEnum {
 
     // categories
     CATEGORY_CREATED_SUCCESSFULLY(201, "CATEGORY_CREATED_SUCCESSFULLY"),
-    CATEGORY_RETRIEVED_SUCCESSFULLY(200, "CATEGORY_RETRIEVED_SUCCESSFULLY");
+    CATEGORIES_RETRIEVED_SUCCESSFULLY(200, "CATEGORIES_RETRIEVED_SUCCESSFULLY");
 
     // ============================================ ( domain success codes end )
 

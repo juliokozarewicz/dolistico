@@ -1,6 +1,8 @@
 package juliokozarewicz.tasks.infrastructure.persistence.impl;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import juliokozarewicz.categories.infrastructure.persistence.jpa.CategoriesRepositoryJPA;
 import juliokozarewicz.tasks.infrastructure.persistence.jpa.TasksRepositoryJPA;
@@ -44,10 +46,10 @@ public class TasksRepositoryImpl implements TasksRepository {
 
     // =============================================== ( categories helpers init )
 
-    private CategoriesModel getCategory(UUID categoryId) {
-        return categoryId == null
+    private CategoriesModel getCategory(UUID idCategory, UUID idUser) {
+    return idCategory == null
         ? null
-        : categoriesRepositoryJPA.findById(categoryId).orElse(null);
+        : categoriesRepositoryJPA.findByIdAndIdUser(idCategory, idUser).orElse(null);
     }
 
     private String getCategoryName(TasksModel model) {
@@ -68,7 +70,7 @@ public class TasksRepositoryImpl implements TasksRepository {
         .updatedAt(entity.getUpdatedAt())
         .taskName(entity.getTaskName())
         .description(entity.getDescription())
-        .category(getCategory(entity.getCategory()))
+        .category(getCategory(entity.getCategory(), entity.getIdUser()))
         .color(entity.getColor())
         .priority(entity.getPriority())
         .startTime(entity.getStartTime())
@@ -143,17 +145,10 @@ public class TasksRepositoryImpl implements TasksRepository {
             .map(this::toEntity);
     }
 
-    // Find by id
-    @Override
-    public Optional<TasksEntity> findById(UUID id) {
-        return tasksRepositoryJPA.findById(id)
-            .map(this::toEntity);
-    }
-
     // Find by id and user
     @Override
-    public Optional<TasksEntity> findByIdAndUser(UUID taskId, UUID idUser) {
-        return tasksRepositoryJPA.findByIdAndIdUser(taskId, idUser)
+    public Optional<TasksEntity> findByIdAndUser(UUID idTask, UUID idUser) {
+        return tasksRepositoryJPA.findByIdAndIdUser(idTask, idUser)
             .map(this::toEntity);
     }
 

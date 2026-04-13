@@ -1750,7 +1750,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: CATEGORY_RETRIEVED_SUCCESSFULLY
+                    example: CATEGORIES_RETRIEVED_SUCCESSFULLY
                   data:
                     type: array
                     items:

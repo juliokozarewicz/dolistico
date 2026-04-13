@@ -30,7 +30,8 @@ public enum DomainExceptionEnum {
     DUPLICATED_TASK,
 
     // Categories
-    DUPLICATED_CATEGORY;
+    DUPLICATED_CATEGORY,
+    CATEGORY_NOT_FOUND,
 
     // ============================================== ( domain error codes end )
 

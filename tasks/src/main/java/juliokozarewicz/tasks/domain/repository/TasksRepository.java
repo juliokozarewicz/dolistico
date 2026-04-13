@@ -30,8 +30,6 @@ public interface TasksRepository {
 
     void save(TasksEntity task);
 
-    Optional<TasksEntity> findById(UUID id);
-
     Optional<TasksEntity> findByIdAndUser(UUID taskId, UUID idUser);
 
     boolean existsByTaskNameAndDueDateAndIdNot(

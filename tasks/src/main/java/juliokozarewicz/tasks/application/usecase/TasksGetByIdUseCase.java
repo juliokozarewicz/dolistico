@@ -46,11 +46,10 @@ public class TasksGetByIdUseCase {
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // Task id
-        UUID taskId = UUID.fromString(id);
+        UUID idTask = UUID.fromString(id);
 
         // Get task by id
-        TasksGetResponseCommand taskByID = tasksRepository.findById(taskId)
-        .filter(task -> task.getIdUser().equals(idUser))
+        TasksGetResponseCommand taskByID = tasksRepository.findByIdAndUser( idTask, idUser )
         .map(task -> new TasksGetResponseCommand(
                 task.getIdCreated(),
                 task.getCreatedAt(),
@@ -59,8 +58,8 @@ public class TasksGetByIdUseCase {
                 task.getDescription(),
                 task.getCategory() != null
                     ? new TasksGetResponseCommand.CategoryCommand(
-                            task.getCategory(),
-                            task.getCategoryName()
+                        task.getCategory(),
+                        task.getCategoryName()
                     )
                     : null,
                 task.getColor(),

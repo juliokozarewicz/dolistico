@@ -5,7 +5,6 @@ import juliokozarewicz.categories.domain.repository.CategoriesRepository;
 import juliokozarewicz.categories.infrastructure.persistence.jpa.CategoriesRepositoryJPA;
 import juliokozarewicz.categories.infrastructure.persistence.model.CategoriesModel;
 import juliokozarewicz.categories.infrastructure.persistence.specification.CategoriesGetSpecification;
-import juliokozarewicz.tasks.infrastructure.persistence.specification.TasksGetUserSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -38,8 +37,8 @@ public class CategoriesRepositoryImpl implements CategoriesRepository {
     // MODEL -> ENTITY
     private CategoriesEntity toEntity(CategoriesModel model) {
         return new CategoriesEntity(
-            model.getId(),
             model.getIdUser(),
+            model.getId(),
             model.getCreatedAt(),
             model.getUpdatedAt(),
             model.getCategoryName()
@@ -75,13 +74,6 @@ public class CategoriesRepositoryImpl implements CategoriesRepository {
     @Override
     public void save(CategoriesEntity category) {
         categoriesRepositoryJPA.save(toModel(category));
-    }
-
-    @Override
-    public Optional<CategoriesEntity> findById(UUID id) {
-        return categoriesRepositoryJPA
-        .findById(id)
-        .map(this::toEntity);
     }
 
     @Override

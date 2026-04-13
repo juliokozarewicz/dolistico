@@ -2,27 +2,26 @@ package juliokozarewicz.categories.adapter.rest.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import juliokozarewicz.categories.adapter.rest.dto.CategoriesGetDTO;
-import juliokozarewicz.categories.application.usecase.CategoriesGetUseCase;
-import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
+import juliokozarewicz.categories.adapter.rest.dto.StandardResponseDTO;
+import juliokozarewicz.categories.adapter.rest.dto.ValidationIdentityDTO;
+import juliokozarewicz.categories.application.command.CategoriesGetResponseCommand;
+import juliokozarewicz.categories.application.usecase.CategoriesGetByIdUseCase;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @Validated
-public class CategoriesGetController {
+public class CategoriesGetByIdController {
 
     // ==================================================== ( constructor init )
 
@@ -32,26 +31,25 @@ public class CategoriesGetController {
     private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
-    private final CategoriesGetUseCase categoriesGetUseCase;
+    private final CategoriesGetByIdUseCase categoriesGetByIdUseCase;
 
-    public CategoriesGetController(
+    public CategoriesGetByIdController(
 
-        CategoriesGetUseCase categoriesGetUseCase
+        CategoriesGetByIdUseCase categoriesGetByIdUseCase
 
     ) {
 
-        this.categoriesGetUseCase = categoriesGetUseCase;
+        this.categoriesGetByIdUseCase = categoriesGetByIdUseCase;
 
     }
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${TASKS_BASE_URL}/category")
+    @GetMapping("/${TASKS_BASE_URL}/category/{validationIdentityDTO}")
     public ResponseEntity create (
 
         // DTO error
-        @Valid CategoriesGetDTO categoriesGetDTO,
-        BindingResult bindingResult,
+        @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
 
         // Request for auth
         HttpServletRequest request
@@ -64,21 +62,10 @@ public class CategoriesGetController {
         request.getAttribute("credentialsData");
 
         // Call use case
-        Map<String, Object> dataResponse = categoriesGetUseCase.execute(
+         CategoriesGetResponseCommand dataResponse = categoriesGetByIdUseCase.execute(
             credentialsData,
-            categoriesGetDTO
+            validationIdentityDTO.id()
         );
-
-        // Content
-        List<?> content = (List<?>) dataResponse.get("content");
-
-        // Meta data
-        Map<String, Object> metaData = new LinkedHashMap<>();
-        metaData.put("currentPage", dataResponse.get("currentPage"));
-        metaData.put("totalPages", dataResponse.get("totalPages"));
-        metaData.put("totalElementsCurrentPage",  content.size());
-        metaData.put("pageSize", dataResponse.get("pageSize"));
-        metaData.put("totalElements", dataResponse.get("totalElements"));
 
         // Standard response
         return ResponseEntity
@@ -89,8 +76,7 @@ public class CategoriesGetController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.CATEGORIES_RETRIEVED_SUCCESSFULLY.getStatusCode())
             .messageCode(GlobalSuccessEnum.CATEGORIES_RETRIEVED_SUCCESSFULLY.getMessageCode())
-            .data(content)
-            .meta(metaData)
+            .data(dataResponse)
             .build()
         );
 

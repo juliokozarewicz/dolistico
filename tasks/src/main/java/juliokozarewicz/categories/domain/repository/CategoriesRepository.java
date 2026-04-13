@@ -19,8 +19,6 @@ public interface CategoriesRepository {
 
     void save(CategoriesEntity category);
 
-    Optional<CategoriesEntity> findById(UUID id);
-
     Optional<CategoriesEntity> findByIdAndUser(UUID categoryId, UUID idUser);
 
     void delete(CategoriesEntity category);

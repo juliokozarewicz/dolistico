@@ -21,7 +21,7 @@ public enum GlobalExceptionEnum {
 
     // categories
     DUPLICATED_CATEGORY(409, "DUPLICATED_CATEGORY", juliokozarewicz.tasks.domain.exception.DomainExceptionEnum.DUPLICATED_CATEGORY),
-
+    CATEGORY_NOT_FOUND(404, "CATEGORY_NOT_FOUND", juliokozarewicz.tasks.domain.exception.DomainExceptionEnum.CATEGORY_NOT_FOUND),
     // ============================================== ( domain error codes end )
 
     // =============================================== ( rest error codes init )

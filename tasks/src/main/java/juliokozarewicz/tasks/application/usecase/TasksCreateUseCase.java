@@ -1,5 +1,6 @@
 package juliokozarewicz.tasks.application.usecase;
 
+import juliokozarewicz.categories.domain.repository.CategoriesRepository;
 import juliokozarewicz.tasks.application.command.TasksCreateUpdateCommand;
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
 import juliokozarewicz.tasks.domain.exception.DomainException;
@@ -23,16 +24,19 @@ public class TasksCreateUseCase {
     // -------------------------------------------------------------------------
 
     private final TasksRepository tasksRepository;
+    private final CategoriesRepository categoriesRepository;
     private final TasksEventProducer tasksEventProducer;
 
     public TasksCreateUseCase(
 
         TasksRepository tasksRepository,
+        CategoriesRepository categoriesRepository,
         TasksEventProducer tasksEventProducer
 
     ) {
 
         this.tasksRepository = tasksRepository;
+        this.categoriesRepository = categoriesRepository;
         this.tasksEventProducer = tasksEventProducer;
 
     }
@@ -64,6 +68,18 @@ public class TasksCreateUseCase {
         UUID idCreated = UUID.randomUUID();
         LocalDateTime timeStamp = LocalDateTime.now();
 
+        // Verify category
+        UUID idCategory = tasksCreateUpdateCommand.category();
+
+        if (idCategory != null) {
+            boolean exists = categoriesRepository.findByIdAndUser(idCategory, idUser).isPresent();
+
+            if (!exists) {
+                idCategory = null;
+            }
+
+        }
+
         // Create entity
         TasksEntity createNewTask = new TasksEntity(
             idUser,
@@ -72,7 +88,7 @@ public class TasksCreateUseCase {
             timeStamp,
             tasksCreateUpdateCommand.taskName().trim(),
             tasksCreateUpdateCommand.description(),
-            tasksCreateUpdateCommand.category(),
+            idCategory,
             null,
             tasksCreateUpdateCommand.color(),
             tasksCreateUpdateCommand.priority(),
