@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class CategoriesCreateUseCase {
+public class CategoriesUpdateUseCase {
 
     // ==================================================== ( constructor init )
 
@@ -25,7 +25,7 @@ public class CategoriesCreateUseCase {
     private final CategoriesRepository categoriesRepository;
     private final CategoriesEventProducer categoriesEventProducer;
 
-    public CategoriesCreateUseCase(
+    public CategoriesUpdateUseCase(
 
         CategoriesRepository categoriesRepository,
         CategoriesEventProducer categoriesEventProducer
@@ -40,9 +40,10 @@ public class CategoriesCreateUseCase {
     // ===================================================== ( constructor end )
 
     @Transactional
-    public String execute(
+    public void execute(
 
         Map<String, Object> credentialsData,
+        UUID idCategory,
         CategoriesCreateUpdateCommand categoriesCreateUpdateCommand
 
     ) {
@@ -50,32 +51,33 @@ public class CategoriesCreateUseCase {
         // Credentials
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
-        // Duplicated
-        if ( categoriesRepository.existsByIdUserAndCategoryName(
-            idUser,
-            categoriesCreateUpdateCommand.categoryName().toLowerCase().trim()
+        // Find existing category
+        CategoriesEntity existingCategory = categoriesRepository.findByIdAndUser(idCategory, idUser)
+        .orElseThrow(() -> new DomainException(DomainExceptionEnum.CATEGORY_NOT_FOUND));
+
+        // Duplicated check (exclude current id)
+        if ( categoriesRepository.existsByCategoryNameAndAndIdNot(
+                idUser,
+                categoriesCreateUpdateCommand.categoryName().toLowerCase().trim(),
+                idCategory
         )) {
             throw new DomainException(DomainExceptionEnum.DUPLICATED_CATEGORY);
         }
 
-        // Create category id and timestamp
-        UUID idCreated = UUID.randomUUID();
+        // New timestamp for update
         LocalDateTime timeStamp = LocalDateTime.now();
 
         // Create entity
         CategoriesEntity createNewCategory = new CategoriesEntity(
             idUser,
-            idCreated,
-            timeStamp,
+            idCategory,
+            existingCategory.getCreatedAt(),
             timeStamp,
             categoriesCreateUpdateCommand.categoryName().toLowerCase().trim()
         );
 
         // Create message
         categoriesEventProducer.producerCreateUpdate(createNewCategory);
-
-        // Return created id
-        return idCreated.toString();
 
     }
 

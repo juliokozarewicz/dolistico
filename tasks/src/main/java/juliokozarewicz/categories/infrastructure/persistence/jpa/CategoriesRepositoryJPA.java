@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,6 +21,12 @@ public interface CategoriesRepositoryJPA extends
         UUID idUser,
         String categoryName,
         Pageable pageable
+    );
+
+    boolean existsByIdUserAndCategoryNameAndIdNot (
+        UUID idUser,
+        String categoryName,
+        UUID excludeId
     );
 
     Optional<CategoriesModel> findByIdAndIdUser(UUID id, UUID idUser);

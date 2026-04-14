@@ -58,7 +58,7 @@ public class TasksCreateUseCase {
         // Duplicated task
         if ( tasksRepository.existsByIdUserAndTaskNameAndDueDate(
             idUser,
-            tasksCreateUpdateCommand.taskName().trim(),
+            tasksCreateUpdateCommand.taskName().toLowerCase().trim(),
             tasksCreateUpdateCommand.dueDate()
         )) {
             throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
@@ -86,7 +86,7 @@ public class TasksCreateUseCase {
             idCreated,
             timeStamp,
             timeStamp,
-            tasksCreateUpdateCommand.taskName().trim(),
+            tasksCreateUpdateCommand.taskName().toLowerCase().trim(),
             tasksCreateUpdateCommand.description(),
             idCategory,
             null,

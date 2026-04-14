@@ -43,7 +43,7 @@ public class TasksUpdateUseCase {
     // ===================================================== ( constructor end )
 
     @Transactional
-    public String execute(
+    public void execute(
 
             Map<String, Object> credentialsData,
             UUID taskId,
@@ -58,17 +58,13 @@ public class TasksUpdateUseCase {
         TasksEntity existingTask = tasksRepository.findByIdAndUser(taskId, idUser)
         .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASK_NOT_FOUND));
 
-        // Duplicated task check (exclude current task id)
-        if (
-
-            tasksRepository.existsByTaskNameAndDueDateAndIdNot(
+        // Duplicated check (exclude current id)
+        if ( tasksRepository.existsByTaskNameAndDueDateAndIdNot(
                 idUser,
-                tasksCreateUpdateCommand.taskName().trim(),
+                tasksCreateUpdateCommand.taskName().toLowerCase().trim(),
                 tasksCreateUpdateCommand.dueDate(),
                 taskId
-            )
-
-        ) {
+        )) {
             throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
         }
 
@@ -93,7 +89,7 @@ public class TasksUpdateUseCase {
             taskId,
             existingTask.getCreatedAt(),
             timeStamp,
-            tasksCreateUpdateCommand.taskName().trim(),
+            tasksCreateUpdateCommand.taskName().toLowerCase().trim(),
             tasksCreateUpdateCommand.description(),
             idCategory,
             null,
@@ -111,9 +107,6 @@ public class TasksUpdateUseCase {
 
         // Publish update event to Kafka
         tasksEventProducer.producerCreateUpdate(updatedTask);
-
-        // Return updated id
-        return taskId.toString();
 
     }
 

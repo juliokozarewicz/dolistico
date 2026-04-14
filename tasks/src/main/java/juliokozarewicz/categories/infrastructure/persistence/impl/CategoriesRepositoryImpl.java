@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -80,6 +81,19 @@ public class CategoriesRepositoryImpl implements CategoriesRepository {
     public Optional<CategoriesEntity> findByIdAndUser(UUID categoryId, UUID idUser) {
         return categoriesRepositoryJPA.findByIdAndIdUser(categoryId, idUser)
         .map(this::toEntity);
+    }
+
+    @Override
+    public boolean existsByCategoryNameAndAndIdNot(
+        UUID idUser,
+        String categoryName,
+        UUID excludeId
+    ) {
+        return categoriesRepositoryJPA.existsByIdUserAndCategoryNameAndIdNot(
+            idUser,
+            categoryName,
+            excludeId
+        );
     }
 
     @Override
