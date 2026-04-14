@@ -90,7 +90,7 @@ public class TasksCreateUseCase {
             tasksCreateUpdateCommand.description(),
             idCategory,
             null,
-            tasksCreateUpdateCommand.color(),
+            tasksCreateUpdateCommand.color().toLowerCase().trim(),
             tasksCreateUpdateCommand.priority(),
             tasksCreateUpdateCommand.startTime(),
             tasksCreateUpdateCommand.endTime(),
@@ -98,7 +98,7 @@ public class TasksCreateUseCase {
             tasksCreateUpdateCommand.allDay(),
             tasksCreateUpdateCommand.reminderTime(),
             tasksCreateUpdateCommand.notifyActive(),
-            tasksCreateUpdateCommand.status(),
+            tasksCreateUpdateCommand.status().toLowerCase().trim(),
             tasksCreateUpdateCommand.dueDate()
         );
 
