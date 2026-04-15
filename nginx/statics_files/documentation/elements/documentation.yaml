@@ -1901,6 +1901,45 @@ paths:
                     type: string
                     example: CATEGORY_UPDATED_SUCCESSFULLY
 
+    # CATEGORIES - DELETE
+    delete:
+      summary: Delete category
+      description: >-
+        Deletes an existing category by its unique identifier.
+        The category must belong to the authenticated user.
+        If the category does not exist or belongs to another user, a not found error is returned.
+      tags:
+        - TASKS
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique identifier (UUID) of the category to delete.
+          schema:
+            type: string
+            format: uuid
+            example: 6a1dd3c0-2f6e-48fc-b995-45daf63ab942
+      responses:
+        "200":
+          description: Category deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-04-13T15:22:10Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: CATEGORY_DELETED_SUCCESSFULLY
+
   # TASKS - CREATE
   "/TASKS_BASE_URL_REPLACE":
     post:
