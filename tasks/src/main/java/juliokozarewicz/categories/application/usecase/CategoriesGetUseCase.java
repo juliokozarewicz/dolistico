@@ -79,7 +79,7 @@ public class CategoriesGetUseCase {
                 entity.getUpdatedAt(),
                 entity.getCategoryName()
             ))
-            .toList();
+        .toList();
         // ---------------------------------------------------- (pagination end)
 
         // Return map
