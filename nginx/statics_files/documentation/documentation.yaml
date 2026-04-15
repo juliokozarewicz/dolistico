@@ -51,9 +51,8 @@ info:
     * **data**  — Contains the main payload returned by the operation, such as created 
       resource identifiers, retrieved entities, or result objects.
     * **meta** — Provides additional contextual information, such as pagination details, 
-      totals, or other metadata relevant to the request. This field is omitted when empty.
-    * **links** — Contains navigation or related resource links (e.g., HATEOAS). 
-      This field is omitted when empty.
+      totals, or other metadata relevant to the request.
+    * **links** — Contains navigation or related resource links (e.g., HATEOAS).
 
     <br>
     
