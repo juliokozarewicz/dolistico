@@ -244,25 +244,7 @@ http {
         }
 
         location /${DOCUMENTATION_BASE_URL}/ {
-            alias /static/public/documentation/documentation/;
-            index index.html;
-            try_files $uri $uri/ =404;
-            add_header Cache-Control "public";
-            add_header X-Frame-Options "SAMEORIGIN";
-            add_header X-Content-Type-Options "nosniff";
-            limit_req zone=general_zone burst=50 nodelay;
-        }
-
-        # ======================================================================
-        # [ DOCUMENTATION - Swagger ]
-        # ======================================================================
-
-        location = /${DOCUMENTATION_BASE_URL}/swagger {
-            return 301 /${DOCUMENTATION_BASE_URL}/swagger/;
-        }
-
-        location /${DOCUMENTATION_BASE_URL}/swagger {
-            alias /static/public/documentation/swagger/;
+            alias /static/public/documentation/;
             index index.html;
             try_files $uri $uri/ =404;
             add_header Cache-Control "public";

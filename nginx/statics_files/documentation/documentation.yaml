@@ -5,6 +5,8 @@ info:
   title: DOLISTICO
   version: "1.0"
   description: |-
+  
+    # About
     
     Dolistico is a lightweight and scalable microservice for managing 
     to-do tasks, built with Java and Spring. Designed to integrate 
@@ -17,41 +19,53 @@ info:
     
     <br>
     
-    #### Additional templates you might find useful
-    The official API documentation contains everything you need to 
-    understand, integrate, and test the available endpoints. It provides 
-    details on authentication, parameters, request and response examples, 
-    as well as explanations of the data models used. Access it here:
-    ```
-    PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE
-    ```
+    # Response Pattern
+
+    All API responses, whether successful or error, follow a standardized structure 
+    to ensure consistency across the system. Each response includes a `messageCode`, 
+    which uniquely identifies the result of the operation.
+    
+    This `messageCode` acts as a machine-readable key that maps to a human-readable 
+    message in English (en-US). Clients should rely on this code to interpret the 
+    outcome, display appropriate messages, or trigger specific behaviors, ensuring 
+    consistency and simplifying integration.
+    
+    It is also possible to translate response messages to other languages by keeping 
+    the same `messageCode` keys and replacing only the message text. This allows 
+    localization without impacting the API contract.
     
     <br>
     
-    Besides direct access to the official documentation, you can also explore the API through an alternative interface.
+    ## Success Response Structure
     
-    ##### Swagger:
-    Swagger offers a user-friendly, interactive interface where you 
-    can test API endpoints directly from your browser. It's ideal for 
-    quickly exploring requests, responses, and available operations.
-    Access it here:
-    ```
-    PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/swagger
-    ```
+    Every successful response contains the following base fields:
+
+    * **timestamp** — The date and time when the response was generated (ISO 8601 format).
+    * **statusCode** — The HTTP status code returned by the server (e.g., 200, 201).
+    * **messageCode** — A machine-readable code representing the success type.
     
+    Additional Fields
+    
+    Depending on the operation, the response may include the following optional fields:
+    
+    * **data**  — Contains the main payload returned by the operation, such as created 
+      resource identifiers, retrieved entities, or result objects.
+    * **meta** — Provides additional contextual information, such as pagination details, 
+      totals, or other metadata relevant to the request. This field is omitted when empty.
+    * **links** — Contains navigation or related resource links (e.g., HATEOAS). 
+      This field is omitted when empty.
+
     <br>
     
-    #### Error Response Pattern
+    ## Error Response Structure
     
-    All error responses follow a standard structure to ensure consistency across the API.
+    Every error response contains the following base fields:
     
-    Every error response always contains the following fields:
+    * **timestamp** — The date and time when the error occurred (ISO 8601 format).
+    * **statusCode** — The HTTP status code returned by the server.
+    * **messageCode** — A machine-readable code representing the error type.
     
-    - **timestamp** – The date and time when the error occurred (ISO 8601 format).
-    - **statusCode** – The HTTP status code returned by the server.
-    - **messageCode** – A machine-readable code representing the error type.
-    
-    Example of the base error response structure:
+    Example:
     
     ```json
     {
@@ -63,11 +77,13 @@ info:
     
     <br>
     
-    **Input Validation Errors (422)**
-    
-    When validation fails for request inputs (such as **request body fields, form fields, query parameters, or path parameters**), the response will include an additional field called `fieldErrors`.
-    
-    This field lists each invalid field and its corresponding error code.
+    When validation fails for request inputs (such as request body, query parameters, 
+    path parameters, or form fields), the API returns a 422 Unprocessable Entity status code. 
+    In these cases, the response includes an additional field called fieldErrors.
+
+    This field contains a list of invalid fields along with their respective 
+    error codes, allowing clients to identify exactly which inputs failed 
+    validation and why.
     
     Example:
     
@@ -88,6 +104,15 @@ info:
         ]
     }
     ```
+    
+    <br>
+    
+    ## Message Codes Reference
+    
+    You can download the full list of `messageCode` values and their corresponding messages in JSON format here:
+    
+    [Download message codes JSON](#)
+
 
 components:
   securitySchemes:
@@ -100,7 +125,7 @@ paths:
 
   ########################################################## ( helloworld init )
 
-  # HELLO WORLD
+  # Hello World
   "/HELLOWORLD_BASE_URL_REPLACE":
     get:
       summary: Get hello world message
@@ -109,7 +134,7 @@ paths:
         provided or is empty, the default value "Hello World!" will be returned.
         If the message equals "bad-message", a business rule error will be triggered.
       tags:
-        - HELLO WORLD
+        - Hello World
       parameters:
         - name: message
           in: query
@@ -168,7 +193,7 @@ paths:
 
   ############################################################ ( accounts init )
 
-  # ACCOUNTS - SIGNUP
+  # Accounts - SIGNUP
   "/ACCOUNTS_BASE_URL_REPLACE/signup":
     post:
       summary: Create a new user account
@@ -177,7 +202,7 @@ paths:
         name, email and password. An activation email is sent after
         account creation.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -235,13 +260,13 @@ paths:
                         type: string
                         example: /ACCOUNTS_BASE_URL_REPLACE/activate-email
 
-  # ACCOUNTS - ACTIVATE ACCOUNT
+  # Accounts - ACTIVATE ACCOUNT
   "/ACCOUNTS_BASE_URL_REPLACE/activate-account":
     post:
       summary: Activate a user account
       description: Activate the user's account using a token.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -299,7 +324,7 @@ paths:
                     type: string
                     example: The link has expired. Please go through the process again.
 
-  # ACCOUNTS - UPDATE PASSWORD LINK
+  # Accounts - UPDATE PASSWORD LINK
   "/ACCOUNTS_BASE_URL_REPLACE/update-password-link":
     post:
       summary: Send password update link to the user
@@ -307,7 +332,7 @@ paths:
         Sends an email to the user with instructions to update their
         password. The email address must be valid.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -348,7 +373,7 @@ paths:
                         type: string
                         example: /ACCOUNTS_BASE_URL_REPLACE/update-password
 
-  # ACCOUNTS - UPDATE PASSWORD
+  # Accounts - UPDATE PASSWORD
   "/ACCOUNTS_BASE_URL_REPLACE/update-password":
     patch:
       summary: Update user password
@@ -358,7 +383,7 @@ paths:
         correspond to the one generated for password update purposes.
         If successful, the password will be updated.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -422,7 +447,7 @@ paths:
                     type: string
                     example: The link has expired. Please go through the process again.
 
-  # ACCOUNTS - REQUEST LOGIN
+  # Accounts - REQUEST LOGIN
   "/ACCOUNTS_BASE_URL_REPLACE/login":
     post:
       summary: Authenticate user login
@@ -434,7 +459,7 @@ paths:
         to complete the login process. If the credentials are invalid, the
         account is banned, or deactivated, an appropriate error response is returned.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -520,7 +545,7 @@ paths:
                     type: string
                     example: We couldn't complete your login. More information has been sent to your email.
 
-  # ACCOUNTS - LOGIN CONFIRMATION
+  # Accounts - LOGIN CONFIRMATION
   "/ACCOUNTS_BASE_URL_REPLACE/login-confirmation":
     post:
       summary: Confirm user login with PIN
@@ -531,7 +556,7 @@ paths:
         are generated and returned. Invalid tokens or PINs, or non-existent
         users, will result in appropriate error responses.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -620,7 +645,7 @@ paths:
                     type: string
                     example: The entered PIN is invalid or has expired. Please try again.
 
-  # ACCOUNTS - REFRESH LOGIN
+  # Accounts - REFRESH LOGIN
   "/ACCOUNTS_BASE_URL_REPLACE/refresh-login":
     post:
       summary: Refresh user access credentials
@@ -630,7 +655,7 @@ paths:
         with an active account, the system generates new tokens. Errors are returned
         if the token is invalid, the account is banned, or the account is deactivated.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -696,7 +721,7 @@ paths:
                     type: string
                     example: We couldn't complete your login. More information has been sent to your email.
 
-  # ACCOUNTS - GET PROFILE
+  # Accounts - GET PROFILE
   "/ACCOUNTS_BASE_URL_REPLACE/get-profile":
     get:
       summary: Retrieve user profile information
@@ -705,7 +730,7 @@ paths:
         including personal details and language preferences. The request must
         include a valid Bearer access token in the Authorization header.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       responses:
@@ -765,7 +790,7 @@ paths:
                         type: string
                         example: /ACCOUNTS_BASE_URL_REPLACE/update-profile
 
-  # ACCOUNTS - UPLOAD AVATAR
+  # Accounts - UPLOAD AVATAR
   "/ACCOUNTS_BASE_URL_REPLACE/upload-avatar":
     post:
       summary: Upload or remove profile image (avatar)
@@ -776,7 +801,7 @@ paths:
         sets a new avatar if none exists. Only one image is allowed and must
         be JPEG or PNG format with a maximum size of 1MB.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       requestBody:
@@ -835,7 +860,7 @@ paths:
                         self: /ACCOUNTS_BASE_URL_REPLACE/upload-avatar
                         next: /ACCOUNTS_BASE_URL_REPLACE/get-avatar
 
-  # ACCOUNTS - UPDATE PROFILE
+  # Accounts - UPDATE PROFILE
   "/ACCOUNTS_BASE_URL_REPLACE/update-profile":
     put:
       summary: Update user profile information
@@ -846,7 +871,7 @@ paths:
         body, they must contain valid non-empty values. A valid Bearer token must
         be provided in the Authorization header.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       requestBody:
@@ -922,7 +947,7 @@ paths:
                         type: string
                         example: /ACCOUNTS_BASE_URL_REPLACE/get-profile
 
-  # ACCOUNTS - ACCOUNTS - CREATE ADDRESS
+  # Accounts - Accounts - CREATE ADDRESS
   "/ACCOUNTS_BASE_URL_REPLACE/create-address":
     post:
       summary: Create a new address for the user
@@ -934,7 +959,7 @@ paths:
         as 'primary', any existing primary address will be set to 'secondary'. 
         The user can store up to 5 addresses.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       requestBody:
@@ -1073,7 +1098,7 @@ paths:
                     type: string
                     example: You can only keep up to five addresses registered.
 
-  # ACCOUNTS - GET ADDRESS
+  # Accounts - GET ADDRESS
   "/ACCOUNTS_BASE_URL_REPLACE/get-address":
     get:
       summary: Retrieve all addresses associated with the user
@@ -1084,7 +1109,7 @@ paths:
         Cached data may be used to improve performance. Users can maintain a maximum of five (5) addresses. 
         It is not possible to edit existing addresses; they must be deleted and recreated if changes are needed.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       responses:
@@ -1189,7 +1214,7 @@ paths:
                         type: string
                         example: /ACCOUNTS_BASE_URL_REPLACE/create-address
 
-  # ACCOUNTS - DELETE ADDRESS
+  # Accounts - DELETE ADDRESS
   "/ACCOUNTS_BASE_URL_REPLACE/delete-address/{id}":
     delete:
       summary: Delete user address
@@ -1197,7 +1222,7 @@ paths:
         This endpoint allows an authenticated user to delete one of their registered addresses. 
         The address must belong to the authenticated user, otherwise a not found error will be returned.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       parameters:
@@ -1283,7 +1308,7 @@ paths:
                 statusMessage: error
                 message: The request has an error, check.
 
-  # ACCOUNTS - UPDATE EMAIL LINK
+  # Accounts - UPDATE EMAIL LINK
   "/ACCOUNTS_BASE_URL_REPLACE/update-email-link":
     post:
       summary: Send verification link and PIN for email update
@@ -1293,7 +1318,7 @@ paths:
         a token will be sent to the current email address. Both must be validated 
         to complete the email update process. Additionally, all login refresh tokens will be revoked.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       requestBody:
@@ -1354,7 +1379,7 @@ paths:
                     type: string
                     example: This email address is already associated with an account.
 
-  # ACCOUNTS - UPDATE EMAIL
+  # Accounts - UPDATE EMAIL
   "/ACCOUNTS_BASE_URL_REPLACE/update-email":
     patch:
       summary: Complete email update process
@@ -1363,7 +1388,7 @@ paths:
         A link containing a token is sent to the user’s current email address, and a PIN is sent to the new email address. 
         The user must provide both the token and the PIN. Only after both are verified will the email be updated.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -1458,7 +1483,7 @@ paths:
                     type: string
                     example: This email address is already associated with an account.
 
-  # ACCOUNTS - CONNECTED DEVICES
+  # Accounts - CONNECTED DEVICES
   "/ACCOUNTS_BASE_URL_REPLACE/connected-devices":
     get:
       summary: List connected devices
@@ -1467,7 +1492,7 @@ paths:
         It also attempts to enrich the response with geolocation data based on IP. 
         Some fields may be null if the corresponding data could not be retrieved.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       responses:
@@ -1524,7 +1549,7 @@ paths:
                         type: string
                         example: /ACCOUNTS_BASE_URL_REPLACE/profile-get
 
-  # ACCOUNTS - DELETE ACCOUNT LINK
+  # Accounts - DELETE ACCOUNT LINK
   "/ACCOUNTS_BASE_URL_REPLACE/delete-account-link":
     post:
       summary: Send account deletion confirmation link
@@ -1532,7 +1557,7 @@ paths:
         This endpoint allows authenticated users to request a link containing a token to delete their account. 
         The link will be sent to the user's email address. All refresh tokens will be revoked immediately after the request.
       tags:
-        - ACCOUNTS
+        - Accounts
       security:
         - BearerAuth: []
       requestBody:
@@ -1564,7 +1589,7 @@ paths:
                         type: string
                         example: /ACCOUNTS_BASE_URL_REPLACE/delete-account
 
-  # ACCOUNTS - DELETE ACCOUNT
+  # Accounts - DELETE ACCOUNT
   "/ACCOUNTS_BASE_URL_REPLACE/delete":
     post:
       summary: Delete account
@@ -1574,7 +1599,7 @@ paths:
         During this period, the user can reactivate the account by changing their password. All active sessions and tokens are revoked immediately. 
         A confirmation email is sent once the deactivation is successfully completed.
       tags:
-        - ACCOUNTS
+        - Accounts
       requestBody:
         required: true
         content:
@@ -1650,7 +1675,7 @@ paths:
         - `categoryName` must not be blank, must have at least 3 characters, and must not exceed 255 characters.
         - A duplicate category is detected when the same user already has a category with the same `categoryName`.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: [ ]
       requestBody:
@@ -1702,7 +1727,7 @@ paths:
         All query parameters are optional and act as filters.
         Results are sorted by creation date in descending order.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: [ ]
       parameters:
@@ -1798,7 +1823,7 @@ paths:
         Retrieves a specific category by its unique identifier.
         The category must belong to the authenticated user.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: [ ]
       parameters:
@@ -1855,7 +1880,7 @@ paths:
         Updates the name of an existing category by its unique identifier.
         The category must belong to the authenticated user.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: [ ]
       parameters:
@@ -1909,7 +1934,7 @@ paths:
         The category must belong to the authenticated user.
         If the category does not exist or belongs to another user, a not found error is returned.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: [ ]
       parameters:
@@ -1940,7 +1965,7 @@ paths:
                     type: string
                     example: CATEGORY_DELETED_SUCCESSFULLY
 
-  # TASKS - CREATE
+  # Tasks - CREATE
   "/TASKS_BASE_URL_REPLACE":
     post:
       summary: Create task
@@ -1958,7 +1983,7 @@ paths:
         - `reminderTime` and `notifyActive` must match: either both are set or neither is set. You can't have a reminder without notification being active, and you can't have notification active without a reminder time.
         - A task is considered a duplicate when the same user already has a task with the same `taskName` and `dueDate`.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: []
       requestBody:
@@ -2066,7 +2091,7 @@ paths:
                         format: uuid
                         example: 464140a1-cbec-4935-a604-e7decf33d6d9
 
-    # TASKS - GET
+    # Tasks - GET
     get:
       summary: Get tasks
       description: >-
@@ -2074,7 +2099,7 @@ paths:
         All query parameters are optional and act as filters.
         Results are sorted by creation date in descending order.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: [ ]
       parameters:
@@ -2259,7 +2284,7 @@ paths:
                         type: integer
                         example: 48
 
-  # TASKS - GET BY ID
+  # Tasks - GET BY ID
   "/TASKS_BASE_URL_REPLACE/{id}":
     get:
       summary: Get task by ID
@@ -2268,7 +2293,7 @@ paths:
         The task must belong to the authenticated user.
         If the task does not exist or belongs to another user, a not found error is returned.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: [ ]
       parameters:
@@ -2366,7 +2391,7 @@ paths:
                         format: date-time
                         example: "2026-03-11T10:00:00"
 
-    # TASKS - UPDATE
+    # Tasks - UPDATE
     put:
       summary: Update task by ID
       description: >-
@@ -2378,7 +2403,7 @@ paths:
         The original creation date is preserved. Only the owner of the task can update it.
         If the task does not exist or belongs to another user, a not found error is returned.
       tags:
-        - TASKS
+        - Tasks
       security:
         - BearerAuth: [ ]
       parameters:
@@ -2494,7 +2519,7 @@ paths:
                     type: string
                     example: TASK_UPDATED_SUCCESSFULLY
 
-    # TASKS - DELETE
+    # Tasks - DELETE
     delete:
       summary: Delete task by ID
       description: >-
@@ -2504,7 +2529,7 @@ paths:
         If the task does not exist or does not belong to the user, a not found error is returned.
 
       tags:
-        - TASKS
+        - Tasks
 
       security:
         - BearerAuth: [ ]

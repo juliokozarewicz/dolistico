@@ -1,7 +1,0 @@
-{
-  "APPLICATION_TITLE_REPLACE": "dolistico",
-  "DOCUMENTATION_REPLACE": "v1/documentation",
-  "HELLOWORLD_BASE_URL_REPLACE": "v1/helloworld",
-  "ACCOUNTS_BASE_URL_REPLACE": "v1/accounts",
-  "TASKS_BASE_URL_REPLACE": "v1/tasks"
-}
