@@ -5,7 +5,6 @@ import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 

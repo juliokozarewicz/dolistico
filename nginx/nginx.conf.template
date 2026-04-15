@@ -236,7 +236,7 @@ http {
         # ------------------------------------------------ ( ***STATICS*** init)
 
         # ======================================================================
-        # [ DOCUMENTATION - Stoplight Elements ]
+        # [ DOCUMENTATION ]
         # ======================================================================
 
         location = /${DOCUMENTATION_BASE_URL} {
@@ -244,7 +244,7 @@ http {
         }
 
         location /${DOCUMENTATION_BASE_URL}/ {
-            alias /static/public/documentation/elements/;
+            alias /static/public/documentation/documentation/;
             index index.html;
             try_files $uri $uri/ =404;
             add_header Cache-Control "public";

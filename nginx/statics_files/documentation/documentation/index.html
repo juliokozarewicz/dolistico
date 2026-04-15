@@ -15,6 +15,11 @@
         }
         */
 
+        .scalar-powered-by,
+        a[href*="scalar"] {
+            display: none !important;
+        }
+
     </style>
 </head>
 <body>
@@ -53,9 +58,9 @@
 
         apiReferenceEl.dataset.configuration = JSON.stringify({
             
-            // Theme:
+            // Themes (alternate, default, moon, purple, solarized, bluePlanet, saturn, kepler, mars, deepSpace, laserwave)
             ///////////////////////////////////////////////////////////////////////////////////////
-            theme: 'kepler',
+            theme: 'default',
             layout: 'modern',
             spec: { content: yamlText },
             darkMode: true,
@@ -67,6 +72,11 @@
             agent: {
                 disabled: true,
             },
+
+            // Disable MCP
+            mcp: {
+              disabled: true,
+            },
             
             // Disable test/send buttom
             hideTestRequestButton: true,
@@ -76,6 +86,9 @@
 
             // Disable develop tools
             showDeveloperTools: 'never',
+
+            // Disable client buttom
+            hideClientButton: true,
 
         })
 
