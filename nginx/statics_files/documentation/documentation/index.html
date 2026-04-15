@@ -9,15 +9,19 @@
         body { margin: 0; padding: 0; }
         
         /* Disabled endpoints operations frame */
-        /*
         .endpoints-card { 
             display: none !important; 
         }
-        */
 
-        .scalar-powered-by,
-        a[href*="scalar"] {
+        /* Disabled footer link */
+        a[href*="scalar.com"] {
             display: none !important;
+        }
+
+        /* Footer size */
+        .darklight-reference {
+            padding: 18px !important;
+            padding-top: 12px !important;
         }
 
     </style>
@@ -57,16 +61,16 @@
         const apiReferenceEl = document.getElementById('api-reference');
 
         apiReferenceEl.dataset.configuration = JSON.stringify({
-            
-            // Themes (alternate, default, moon, purple, solarized, bluePlanet, saturn, kepler, mars, deepSpace, laserwave)
-            ///////////////////////////////////////////////////////////////////////////////////////
-            theme: 'default',
+
+            //////////////////////////////////////////////////// ( theme intit )
+            // Themes: default, kepler, alternate, moon, purple, solarized, bluePlanet, saturn, mars, deepSpace, laserwave
+            theme: 'kepler',
             layout: 'modern',
             spec: { content: yamlText },
             darkMode: true,
-            
-            // Read-only mode:
-            ///////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////// ( theme end )
+
+            //////////////////////////////////////////// ( read-only mode init )
             
             // Disable AI
             agent: {
@@ -89,6 +93,7 @@
 
             // Disable client buttom
             hideClientButton: true,
+            ///////////////////////////////////////////// ( read-only mode end )
 
         })
 
@@ -97,6 +102,36 @@
         document.body.appendChild(script);
 
         });
+
+        //////////////////////////////////////////////////////// ( footer init )
+        const replaceFooter = () => {
+            const links = document.querySelectorAll('a[href*="scalar.com"]');
+            links.forEach(link => {
+                const container = link.parentElement;
+                if (container.querySelector('.custom-theme-text')) return;
+                link.remove();
+                const custom = document.createElement('span');
+                custom.innerText = 'Select theme';
+                custom.className = 'custom-theme-text';
+                Object.assign(custom.style, {
+                    fontSize: '12px',
+                    color: '#888'
+                });
+                container.appendChild(custom);
+            });
+        };
+
+        const observer = new MutationObserver(() => {
+            replaceFooter();
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        replaceFooter();
+        ///////////////////////////////////////////////////////// ( footer end )
     
     </script>
 
