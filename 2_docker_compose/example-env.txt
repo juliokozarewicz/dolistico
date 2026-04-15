@@ -14,11 +14,11 @@ ACCOUNTS_PORT=3010
 TASKS_PORT=3011
 
 # Base URL
-DOCUMENTATION_BASE_URL=api/v1/documentation
-HELLOWORLD_BASE_URL=api/v1/helloworld
-EMAIL_SERVICE_BASE_URL=api/v1/emailservice
-ACCOUNTS_BASE_URL=api/v1/accounts
-TASKS_BASE_URL=api/v1/tasks
+DOCUMENTATION_BASE_URL=v1/documentation
+HELLOWORLD_BASE_URL=v1/helloworld
+EMAIL_SERVICE_BASE_URL=v1/emailservice
+ACCOUNTS_BASE_URL=v1/accounts
+TASKS_BASE_URL=v1/tasks
 #============================================================ ( config map end )
 
 #============================================================= ( database init )

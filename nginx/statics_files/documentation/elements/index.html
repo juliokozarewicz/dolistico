@@ -60,7 +60,7 @@
             let yamlText = await response.text();
 
             // Apply dynamic PUBLIC_DOMAIN_REPLACE
-            const PUBLIC_DOMAIN = `${window.location.origin}/api/v1`;
+            const PUBLIC_DOMAIN = `${window.location.origin}`;
             yamlText = yamlText.replace(/PUBLIC_DOMAIN_REPLACE/g, PUBLIC_DOMAIN);
 
             // Apply replacements
