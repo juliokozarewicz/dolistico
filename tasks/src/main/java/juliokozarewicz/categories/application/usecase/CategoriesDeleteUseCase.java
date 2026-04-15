@@ -1,16 +1,16 @@
-package juliokozarewicz.tasks.application.usecase;
+package juliokozarewicz.categories.application.usecase;
 
+import juliokozarewicz.categories.domain.repository.CategoriesRepository;
+import juliokozarewicz.categories.infrastructure.messaging.producer.CategoriesEventProducer;
 import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
-import juliokozarewicz.tasks.domain.repository.TasksRepository;
-import juliokozarewicz.tasks.infrastructure.messaging.producer.TasksEventProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class TasksDeleteUseCase {
+public class CategoriesDeleteUseCase {
 
     // ==================================================== ( constructor init )
 
@@ -18,18 +18,18 @@ public class TasksDeleteUseCase {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final TasksRepository tasksRepository;
-    private final TasksEventProducer tasksEventProducer;
+    private final CategoriesRepository categoriesRepository;
+    private final CategoriesEventProducer categoriesEventProducer;
 
-    public TasksDeleteUseCase(
+    public CategoriesDeleteUseCase(
 
-        TasksRepository tasksRepository,
-        TasksEventProducer tasksEventProducer
+        CategoriesRepository categoriesRepository,
+        CategoriesEventProducer categoriesEventProducer
 
     ) {
 
-        this.tasksRepository = tasksRepository;
-        this.tasksEventProducer = tasksEventProducer;
+        this.categoriesRepository = categoriesRepository;
+        this.categoriesEventProducer = categoriesEventProducer;
 
     }
 
@@ -47,12 +47,12 @@ public class TasksDeleteUseCase {
         UUID idUser = UUID.fromString((String) credentialsData.get("id"));
         UUID idDelete = UUID.fromString(idTask);
 
-        // Find existing task (ensures ownership)
-        var tasksEntity = tasksRepository.findByIdAndUser(idDelete, idUser)
-        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASK_NOT_FOUND));
+        // Find existing (ensures ownership)
+        var categoryEntity = categoriesRepository.findByIdAndUser(idDelete, idUser)
+        .orElseThrow(() -> new DomainException(DomainExceptionEnum.CATEGORY_NOT_FOUND));
 
         // Publish delete event to Kafka
-        tasksEventProducer.producerDelete(tasksEntity);
+        categoriesEventProducer.producerDelete(categoryEntity);
 
     }
 

@@ -68,7 +68,7 @@ public class CategoriesEventConsumer {
     // delete consumer
     @KafkaListener(
         topics = CategoriesMessagingTopicEnum.CATEGORIES_DELETE_PERSIST,
-        groupId = CategoriesMessagingTopicEnum.CATEGORIES_DELETE_PERSIST
+        groupId = CategoriesMessagingGroupEnum.CATEGORIES_GROUP_ID
     )
     public void consumerDelete (
 
