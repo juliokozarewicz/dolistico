@@ -108,9 +108,28 @@ info:
     
     ## Message Codes Reference
     
-    You can download the full list of `messageCode` values and their corresponding messages in JSON format here:
+    The complete list of `messageCode` values and their corresponding messages 
+    used by the API is available for download in JSON format.
+
+    These codes provide a consistent way to identify API responses, making it easier 
+    to implement application logic, handle errors, and support message localization.
+
+    [Download Message Codes](#)
     
-    [Download message codes JSON](#)
+    <br>
+    
+    # Postman
+    Here you will find the Postman collection for testing the API endpoints. The 
+    collection allows you to run requests in a practical and organized way, with 
+    preconfigured examples to make usage easier. It helps you validate responses, 
+    check API behavior, and simulate different scenarios.
+
+    It also supports more consistent and efficient testing for both development 
+    and system integration. Simply import the file into Postman, configure the 
+    required environment variables, and start testing the endpoints quickly and 
+    efficiently.
+  
+    [Download The Postman Collection](#)
 
 
 components:
