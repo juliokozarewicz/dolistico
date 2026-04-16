@@ -110,7 +110,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             return parsedJwt.getPayload();
 
         } catch (ExpiredJwtException e) {
-            throw new SecurityException("ACCESS_EXPIRED");
+            throw new SecurityException("TASKS_ACCESS_EXPIRED");
         } catch (Exception e) {
             log.warn("JWT validation failed: {}", e.getMessage());
             throw new SecurityException("Invalid JWT");
@@ -193,7 +193,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 accessCredential.isBlank() ||
                 accessCredential.length() > 4096
             ) {
-                buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
+                buildErrorResponse(response, 401, "TASKS_INVALID_CREDENTIALS");
                 return;
             }
             // --------------------------------------- (Get jwt from header end)
@@ -206,13 +206,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             } catch (SecurityException e) {
 
-                if ("ACCESS_EXPIRED".equals(e.getMessage())) {
+                if ("TASKS_ACCESS_EXPIRED".equals(e.getMessage())) {
                     buildErrorResponse(
-                        response, 401, "ACCESS_EXPIRED"
+                        response, 401, "TASKS_ACCESS_EXPIRED"
                     );
                 } else {
                     buildErrorResponse(
-                        response, 401, "INVALID_CREDENTIALS"
+                        response, 401, "TASKS_INVALID_CREDENTIALS"
                     );
                 }
                 return;
@@ -223,7 +223,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             // ---------------------------------------------- (Claim's map init)
             if (claims.get("id") == null ||
                 claims.get("level") == null) {
-                buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
+                buildErrorResponse(response, 401, "TASKS_INVALID_CREDENTIALS");
                 return;
             }
 
@@ -248,7 +248,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             log.error("Unexpected error in AuthenticationFilter", e);
-            buildErrorResponse(response, 500, "INTERNAL_SERVER_ERROR");
+            buildErrorResponse(response, 500, "TASKS_INTERNAL_SERVER_ERROR");
         }
 
     }

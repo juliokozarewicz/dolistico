@@ -105,7 +105,7 @@ public class TasksEntity {
         //------------------------------------------------------- (  user init )
 
         if (idUser == null) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+            throw new DomainException(DomainExceptionEnum.TASKS_INVALID_CREDENTIALS);
         }
 
         //-------------------------------------------------------- (  user end )
@@ -113,7 +113,7 @@ public class TasksEntity {
         //--------------------------------------------- (  priority rules init )
 
         if ( priority == null || priority < 0 || priority > 5 ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_PRIORITY);
+            throw new DomainException(DomainExceptionEnum.TASKS_INVALID_PRIORITY);
         }
 
         //---------------------------------------------- (  priority rules end )
@@ -125,14 +125,14 @@ public class TasksEntity {
             ( startTime != null && endTime == null ) ||
             ( startTime == null && endTime != null )
         ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+            throw new DomainException(DomainExceptionEnum.TASKS_INVALID_DATE_RANGE);
         }
 
         if ( startTime != null && endTime != null ) {
 
             // Check that startTime and endTime are on the same day
             if ( !startTime.toLocalDate().equals( endTime.toLocalDate() ) ) {
-                throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+                throw new DomainException(DomainExceptionEnum.TASKS_INVALID_DATE_RANGE);
             }
 
             // If dueDate exists, startTime and endTime must be on the same day as dueDate
@@ -141,29 +141,29 @@ public class TasksEntity {
                 ( !startTime.toLocalDate().equals( dueDate.toLocalDate() ) ||
                 !endTime.toLocalDate().equals(dueDate.toLocalDate()))
             ){
-                throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+                throw new DomainException(DomainExceptionEnum.TASKS_INVALID_DATE_RANGE);
             }
 
             // Ensure startTime is before endTime
             if (startTime.isAfter(endTime)) {
-                throw new DomainException(DomainExceptionEnum.INVALID_DATE_RANGE);
+                throw new DomainException(DomainExceptionEnum.TASKS_INVALID_DATE_RANGE);
             }
 
         }
 
         // All day validate
         if (Boolean.TRUE.equals(allDay) && (startTime != null || endTime != null)) {
-            throw new DomainException(DomainExceptionEnum.INVALID_ALLDAY);
+            throw new DomainException(DomainExceptionEnum.TASKS_INVALID_ALLDAY);
         }
 
         // Reminder time validate
         if (reminderTime != null && dueDate != null && reminderTime.isAfter(dueDate)) {
-            throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
+            throw new DomainException(DomainExceptionEnum.TASKS_INVALID_REMINDER);
         }
 
         // Notify / Reminder consistency (XOR)
         if ( (reminderTime != null) ^ notifyActive ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_REMINDER);
+            throw new DomainException(DomainExceptionEnum.TASKS_INVALID_REMINDER);
         }
 
         //-------------------------------------------------------- (  date end )

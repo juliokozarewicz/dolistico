@@ -49,7 +49,7 @@ public class CategoriesDeleteUseCase {
 
         // Find existing (ensures ownership)
         var categoryEntity = categoriesRepository.findByIdAndUser(idDelete, idUser)
-        .orElseThrow(() -> new DomainException(DomainExceptionEnum.CATEGORY_NOT_FOUND));
+        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASKS_CATEGORY_NOT_FOUND));
 
         // Publish delete event to Kafka
         categoriesEventProducer.producerDelete(categoryEntity);

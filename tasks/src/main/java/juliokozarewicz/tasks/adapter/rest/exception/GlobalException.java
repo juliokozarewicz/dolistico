@@ -68,13 +68,13 @@ public class GlobalException {
         });
 
         return ResponseEntity
-        .status(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
+        .status(GlobalExceptionEnum.TASKS_UNPROCESSABLE_ENTITY.statusCode)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
                 .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-                .statusCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.statusCode)
-                .messageCode(GlobalExceptionEnum.UNPROCESSABLE_ENTITY.messageCode)
+                .statusCode(GlobalExceptionEnum.TASKS_UNPROCESSABLE_ENTITY.statusCode)
+                .messageCode(GlobalExceptionEnum.TASKS_UNPROCESSABLE_ENTITY.messageCode)
                 .fieldErrors(fieldErrors)
             .build()
         );
@@ -96,13 +96,13 @@ public class GlobalException {
     public ResponseEntity<StandardResponseDTO> handleBadRequest(Exception ex) {
 
         return ResponseEntity
-        .status(GlobalExceptionEnum.BAD_REQUEST.statusCode)
+        .status(GlobalExceptionEnum.TASKS_BAD_REQUEST.statusCode)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalExceptionEnum.BAD_REQUEST.statusCode)
-            .messageCode(GlobalExceptionEnum.BAD_REQUEST.messageCode)
+            .statusCode(GlobalExceptionEnum.TASKS_BAD_REQUEST.statusCode)
+            .messageCode(GlobalExceptionEnum.TASKS_BAD_REQUEST.messageCode)
             .build()
         );
 
@@ -117,13 +117,13 @@ public class GlobalException {
         logger.error(ex.toString());
 
         return ResponseEntity
-        .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
+        .status(GlobalExceptionEnum.TASKS_INTERNAL_SERVER_ERROR.statusCode)
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)
-            .messageCode(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.messageCode)
+            .statusCode(GlobalExceptionEnum.TASKS_INTERNAL_SERVER_ERROR.statusCode)
+            .messageCode(GlobalExceptionEnum.TASKS_INTERNAL_SERVER_ERROR.messageCode)
             .build()
         );
 

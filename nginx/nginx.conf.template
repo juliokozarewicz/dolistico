@@ -210,25 +210,25 @@ http {
         location @too_many_request {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 429 '{"timestamp":"$time_iso8601", "statusCode": 429, "messageCode":"TOO_MANY_REQUESTS"}';
+            return 429 '{"timestamp":"$time_iso8601", "statusCode": 429, "messageCode":"TASKS_TOO_MANY_REQUESTS"}';
         }
 
         location @bad_request {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 400 '{"timestamp":"$time_iso8601", "statusCode": 400, "messageCode":"BAD_REQUEST"}';
+            return 400 '{"timestamp":"$time_iso8601", "statusCode": 400, "messageCode":"TASKS_BAD_REQUEST"}';
         }
 
         location @server_error {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 500 '{"timestamp":"$time_iso8601", "statusCode": 500, "messageCode":"INTERNAL_SERVER_ERROR"}';
+            return 500 '{"timestamp":"$time_iso8601", "statusCode": 500, "messageCode":"TASKS_INTERNAL_SERVER_ERROR"}';
         }
 
         location @service_unavailable {
             default_type application/json;
             add_header Content-Type 'application/json; charset=utf-8' always;
-            return 503 '{"timestamp":"$time_iso8601", "statusCode": 503, "messageCode":"SERVICE_UNAVAILABLE"}';
+            return 503 '{"timestamp":"$time_iso8601", "statusCode": 503, "messageCode":"TASKS_SERVICE_UNAVAILABLE"}';
         }
 
         # --------------------------------------------------------- (end errors)

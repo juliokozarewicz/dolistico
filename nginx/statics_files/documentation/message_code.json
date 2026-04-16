@@ -1,0 +1,43 @@
+{
+  "TASKS_INVALID_PRIORITY": "The provided priority is invalid.",
+  "TASKS_USER_NOT_FOUND": "User not found.",
+  "TASKS_INVALID_DATE": "The provided date is invalid.",
+  "TASKS_INVALID_DATE_RANGE": "The date range is invalid.",
+  "TASKS_INVALID_ALLDAY": "The 'all day' field is invalid.",
+  "TASKS_INVALID_REMINDER": "The reminder is invalid.",
+  "TASKS_DUPLICATED_TASK": "A task with these details already exists.",
+  "TASKS_NOT_FOUND": "Task not found.",
+  "TASKS_FIELD_CANNOT_BE_EMPTY": "One or more required fields are empty.",
+  "TASKS_TOO_MANY_CHARACTERS": "One or more fields exceed the allowed character limit.",
+  "TASKS_FORBIDDEN_CHARACTERS": "Invalid characters were used.",
+
+  "TASKS_DUPLICATED_CATEGORY": "A category with this name already exists.",
+  "TASKS_CATEGORY_NOT_FOUND": "Category not found.",
+
+  "TASKS_SERVICE_UNAVAILABLE": "The service is currently unavailable.",
+  "TASKS_INTERNAL_SERVER_ERROR": "An internal error occurred.",
+  "TASKS_TOO_MANY_REQUESTS": "Too many requests were made.",
+  "TASKS_UNPROCESSABLE_ENTITY": "The request could not be processed.",
+  "TASKS_NO_PERMISSION_TO_ACCESS": "Access to this resource is not allowed.",
+  "TASKS_PAYMENT_REQUIRED": "Payment is required to access this resource.",
+  "TASKS_ACCESS_EXPIRED": "The session has expired.",
+  "TASKS_INVALID_CREDENTIALS": "Invalid credentials.",
+  "TASKS_BAD_REQUEST": "The request is invalid.",
+
+  "TASKS_FIELD_CANNOT_BE_EMPTY_DTO": "Required fields are missing.",
+  "TASKS_TOO_MANY_CHARACTERS_DTO": "The value exceeds the allowed character limit.",
+  "TASKS_INVALID_PRIORITY_DTO": "The provided priority is invalid.",
+  "TASKS_TOO_FEW_CHARACTERS_DTO": "The value is below the minimum character requirement.",
+  "TASKS_FORBIDDEN_CHARACTERS_DTO": "The value contains invalid characters.",
+  "TASKS_INVALID_ID_DTO": "The provided identifier is invalid.",
+
+  "TASK_CREATED_SUCCESSFULLY": "Task created successfully.",
+  "TASKS_RETRIEVED_SUCCESSFULLY": "Tasks retrieved successfully.",
+  "TASKS_UPDATED_SUCCESSFULLY": "Tasks updated successfully.",
+  "TASKS_DELETED_SUCCESSFULLY": "Tasks deleted successfully.",
+
+  "CATEGORIES_CREATED_SUCCESSFULLY": "Category created successfully.",
+  "CATEGORIES_UPDATED_SUCCESSFULLY": "Category updated successfully.",
+  "CATEGORIES_RETRIEVED_SUCCESSFULLY": "Categories retrieved successfully.",
+  "CATEGORIES_DELETED_SUCCESSFULLY": "Category deleted successfully."
+}

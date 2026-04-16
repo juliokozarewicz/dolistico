@@ -70,7 +70,7 @@ info:
     {
         "timestamp": "2026-02-27T19:53:14Z",
         "statusCode": 401,
-        "messageCode": "INVALID_CREDENTIALS"
+        "messageCode": "TASKS_INVALID_CREDENTIALS"
     }
     ```
     
@@ -90,15 +90,15 @@ info:
     {
         "timestamp": "2026-02-27T19:55:12Z",
         "statusCode": 422,
-        "messageCode": "UNPROCESSABLE_ENTITY",
+        "messageCode": "TASKS_UNPROCESSABLE_ENTITY",
         "fieldErrors": [
             {
                 "field": "subject",
-                "fieldMessageCode": "FIELD_CANNOT_BE_EMPTY_DTO"
+                "fieldMessageCode": "TASKS_FIELD_CANNOT_BE_EMPTY_DTO"
             },
             {
                 "field": "message",
-                "fieldMessageCode": "FIELD_CANNOT_BE_EMPTY_DTO"
+                "fieldMessageCode": "TASKS_FIELD_CANNOT_BE_EMPTY_DTO"
             }
         ]
     }
@@ -114,7 +114,7 @@ info:
     These codes provide a consistent way to identify API responses, making it easier 
     to implement application logic, handle errors, and support message localization.
 
-    [Download Message Codes](#)
+    [Download Message Codes](PUBLIC_DOMAIN_REPLACE/message_code.json)
     
     <br>
     
@@ -128,8 +128,10 @@ info:
     and system integration. Simply import the file into Postman, configure the 
     required environment variables, and start testing the endpoints quickly and 
     efficiently.
-  
-    [Download The Postman Collection](#)
+    
+    <a href="PUBLIC_DOMAIN_REPLACE/postman_collection.json" target="_blank" download>
+      Download The Postman Collection
+    </a>
 
 
 components:
@@ -205,7 +207,7 @@ paths:
                     example: 403
                   messageCode:
                     type: string
-                    example: NO_PERMISSION_TO_ACCESS
+                    example: TASKS_NO_PERMISSION_TO_ACCESS
 
   ########################################################### ( helloworld end )
 
@@ -1728,7 +1730,7 @@ paths:
                     example: 201
                   messageCode:
                     type: string
-                    example: CATEGORY_CREATED_SUCCESSFULLY
+                    example: CATEGORIES_CREATED_SUCCESSFULLY
                   data:
                     type: object
                     properties:
@@ -1942,7 +1944,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: CATEGORY_UPDATED_SUCCESSFULLY
+                    example: CATEGORIES_UPDATED_SUCCESSFULLY
 
     # CATEGORIES - DELETE
     delete:
@@ -1981,7 +1983,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: CATEGORY_DELETED_SUCCESSFULLY
+                    example: CATEGORIES_DELETED_SUCCESSFULLY
 
   # Tasks - CREATE
   "/TASKS_BASE_URL_REPLACE":
@@ -2535,7 +2537,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: TASK_UPDATED_SUCCESSFULLY
+                    example: TASKS_UPDATED_SUCCESSFULLY
 
     # Tasks - DELETE
     delete:
@@ -2579,6 +2581,6 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: TASK_DELETED_SUCCESSFULLY
+                    example: TASKS_DELETED_SUCCESSFULLY
 
   ################################################################ ( tasks end )

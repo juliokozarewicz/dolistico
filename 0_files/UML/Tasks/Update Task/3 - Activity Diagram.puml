@@ -20,14 +20,14 @@ start
 :Intercept request;
 if (JWT present?) then (no)
     |Client|
-    :Receive 401 INVALID_CREDENTIALS;
+    :Receive 401 TASKS_INVALID_CREDENTIALS;
     stop
 else (yes)
     |AuthFilter|
     :Validate JWT signature & expiration;
     if (JWT valid?) then (no)
         |Client|
-        :Receive 401 ACCESS_EXPIRED;
+        :Receive 401 TASKS_ACCESS_EXPIRED;
         stop
     else (yes)
         |AuthFilter|
@@ -41,7 +41,7 @@ endif
 :Extract {id} from path variable;
 if (Invalid UUID format?) then (yes)
     |Client|
-    :Receive 400 BAD_REQUEST;
+    :Receive 400 TASKS_BAD_REQUEST;
     stop
 else (no)
     |TasksUpdateController|
@@ -49,7 +49,7 @@ else (no)
     :Run @Valid (BindingResult);
     if (DTO invalid?) then (yes)
         |Client|
-        :Receive 422 UNPROCESSABLE_ENTITY\n+ fieldErrors;
+        :Receive 422 TASKS_UNPROCESSABLE_ENTITY\n+ fieldErrors;
         stop
     else (no)
         |TasksUpdateUseCase|
@@ -65,7 +65,7 @@ endif
 :SELECT * FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?;
 if (DB error?) then (yes)
     |Client|
-    :Receive 503 SERVICE_UNAVAILABLE;
+    :Receive 503 TASKS_SERVICE_UNAVAILABLE;
     stop
 else (no)
 endif
@@ -73,7 +73,7 @@ endif
 |TasksRepositoryImpl|
 if (Result is empty?) then (yes)
     |Client|
-    :Receive 404 TASK_NOT_FOUND;
+    :Receive 404 TASKS_NOT_FOUND;
     stop
 else (no)
     |TasksRepositoryImpl|
@@ -85,7 +85,7 @@ endif
 :Call existsByTaskNameAndDueDateAndIdNot\n(taskName, dueDate, taskId);
 if (Duplicated task?) then (yes)
     |Client|
-    :Receive 409 DUPLICATED_TASK;
+    :Receive 409 TASKS_DUPLICATED_TASK;
     stop
 else (no)
     |TasksUpdateUseCase|
@@ -97,7 +97,7 @@ endif
 :Execute validateBusinessRules();
 if (idUser is null?) then (yes)
     |Client|
-    :Receive 401 INVALID_CREDENTIALS;
+    :Receive 401 TASKS_INVALID_CREDENTIALS;
     stop
 else (no)
 endif
@@ -105,7 +105,7 @@ endif
 |TasksEntity|
 if (priority null or < 0 or > 5?) then (yes)
     |Client|
-    :Receive 400 INVALID_PRIORITY;
+    :Receive 400 TASKS_INVALID_PRIORITY;
     stop
 else (no)
 endif
@@ -113,7 +113,7 @@ endif
 |TasksEntity|
 if (only one of startTime\nor endTime provided?) then (yes)
     |Client|
-    :Receive 400 INVALID_DATE_RANGE;
+    :Receive 400 TASKS_INVALID_DATE_RANGE;
     stop
 else (no)
 endif
@@ -122,7 +122,7 @@ endif
 if (both startTime\nand endTime set?) then (yes)
     if (different day OR startTime\nafter endTime OR date\nmismatches dueDate?) then (yes)
         |Client|
-        :Receive 400 INVALID_DATE_RANGE;
+        :Receive 400 TASKS_INVALID_DATE_RANGE;
         stop
     else (no)
     endif
@@ -132,7 +132,7 @@ endif
 |TasksEntity|
 if (allDay=true AND startTime\nor endTime is set?) then (yes)
     |Client|
-    :Receive 400 INVALID_ALLDAY;
+    :Receive 400 TASKS_INVALID_ALLDAY;
     stop
 else (no)
 endif
@@ -140,7 +140,7 @@ endif
 |TasksEntity|
 if (reminderTime\nis after dueDate?) then (yes)
     |Client|
-    :Receive 400 INVALID_REMINDER;
+    :Receive 400 TASKS_INVALID_REMINDER;
     stop
 else (no)
     |TasksEntity|
@@ -152,13 +152,13 @@ endif
 :kafkaTemplate.send(\n"tasks.update.persist.v1",\npayload).get(10s timeout);
 if (Timeout or Kafka error?) then (yes)
     |Client|
-    :Receive 503 SERVICE_UNAVAILABLE;
+    :Receive 503 TASKS_SERVICE_UNAVAILABLE;
     stop
 else (no)
     |TasksUpdateController|
     :Build data {idUpdated};
     :Build links\n{self: PUT /tasks/{id},\ncollection: GET /tasks,\ndetail: GET /tasks/{id}};
-    :Build StandardResponseDTO\n(200 TASK_UPDATED_SUCCESSFULLY);
+    :Build StandardResponseDTO\n(200 TASKS_UPDATED_SUCCESSFULLY);
 endif
 
 |Client|

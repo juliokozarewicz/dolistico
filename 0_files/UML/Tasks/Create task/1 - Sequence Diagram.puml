@@ -28,8 +28,8 @@ CLIENT -> NGINX  : POST /api/v1/tasks\n+ JWT header + JSON body
 NGINX  -> FILTER : forward request + JWT
 
 alt JWT missing or invalid
-    FILTER --> NGINX  : 401 INVALID_CREDENTIALS
-    NGINX  --> CLIENT : 401 INVALID_CREDENTIALS
+    FILTER --> NGINX  : 401 TASKS_INVALID_CREDENTIALS
+    NGINX  --> CLIENT : 401 TASKS_INVALID_CREDENTIALS
 else JWT valid
     FILTER -> FILTER  : extract claims (userId, level)
     FILTER -> CTRL    : request + credentialsData attribute
@@ -39,7 +39,7 @@ CTRL -> CTRL : read credentialsData (userId)
 CTRL -> CTRL : @Valid TasksCreateDTO\n(BindingResult)
 
 alt DTO validation failed
-    CTRL --> NGINX  : 422 UNPROCESSABLE_ENTITY + fieldErrors
+    CTRL --> NGINX  : 422 TASKS_UNPROCESSABLE_ENTITY + fieldErrors
     NGINX --> CLIENT : 422 error
 else DTO valid
     CTRL -> UC : execute(credentialsData, tasksCreateDTO)
@@ -56,8 +56,8 @@ IMPL --> REPO : boolean
 REPO --> UC  : boolean
 
 alt Task already exists
-    UC --> CTRL  : throws DomainException\nDUPLICATED_TASK
-    CTRL --> NGINX  : 409 DUPLICATED_TASK
+    UC --> CTRL  : throws DomainException\nTASKS_DUPLICATED_TASK
+    CTRL --> NGINX  : 409 TASKS_DUPLICATED_TASK
     NGINX --> CLIENT : 409 error
 else Not duplicated
     UC -> UC : generate idCreated (UUID)\n+ timeStamp (now)
@@ -66,7 +66,7 @@ else Not duplicated
 end
 
 alt Business rule violation
-    ENTITY --> UC   : throws DomainException\n(INVALID_PRIORITY /\nINVALID_DATE_RANGE /\nINVALID_ALLDAY /\nINVALID_REMINDER)
+    ENTITY --> UC   : throws DomainException\n(TASKS_INVALID_PRIORITY /\nTASKS_INVALID_DATE_RANGE /\nTASKS_INVALID_ALLDAY /\nTASKS_INVALID_REMINDER)
     UC --> CTRL     : propagates exception
     CTRL --> NGINX  : 400 error
     NGINX --> CLIENT : 400 error
@@ -81,7 +81,7 @@ alt Kafka send timeout / error
     KAFKA --> PRODUCER : exception
     PRODUCER --> UC    : throws InternalError
     UC --> CTRL        : propagates
-    CTRL --> NGINX     : 503 SERVICE_UNAVAILABLE
+    CTRL --> NGINX     : 503 TASKS_SERVICE_UNAVAILABLE
     NGINX --> CLIENT   : 503 error
 else Kafka received
     KAFKA --> PRODUCER : ack

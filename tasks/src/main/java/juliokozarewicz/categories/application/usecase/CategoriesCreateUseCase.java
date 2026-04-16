@@ -55,7 +55,7 @@ public class CategoriesCreateUseCase {
             idUser,
             categoriesCreateUpdateCommand.categoryName().toLowerCase().trim()
         )) {
-            throw new DomainException(DomainExceptionEnum.DUPLICATED_CATEGORY);
+            throw new DomainException(DomainExceptionEnum.TASKS_DUPLICATED_CATEGORY);
         }
 
         // Create category id and timestamp

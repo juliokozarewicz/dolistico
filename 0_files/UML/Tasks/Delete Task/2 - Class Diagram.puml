@@ -30,18 +30,18 @@ package "adapter.rest" {
     }
 
     enum GlobalSuccessEnum {
-        TASK_DELETED_SUCCESSFULLY
+        TASKS_DELETED_SUCCESSFULLY
         --
         + getStatusCode() : int
         + getMessageCode() : String
     }
 
     enum GlobalExceptionEnum {
-        INVALID_CREDENTIALS
-        TASK_NOT_FOUND
-        BAD_REQUEST
-        SERVICE_UNAVAILABLE
-        INTERNAL_SERVER_ERROR
+        TASKS_INVALID_CREDENTIALS
+        TASKS_NOT_FOUND
+        TASKS_BAD_REQUEST
+        TASKS_SERVICE_UNAVAILABLE
+        TASKS_INTERNAL_SERVER_ERROR
         --
         + getStatusCode() : int
         + getMessageCode() : String
@@ -89,9 +89,9 @@ package "domain" {
     }
 
     enum DomainExceptionEnum {
-        INVALID_CREDENTIALS
-        TASK_NOT_FOUND
-        NO_PERMISSION_TO_ACCESS
+        TASKS_INVALID_CREDENTIALS
+        TASKS_NOT_FOUND
+        TASKS_NO_PERMISSION_TO_ACCESS
     }
 
     interface TasksRepository {

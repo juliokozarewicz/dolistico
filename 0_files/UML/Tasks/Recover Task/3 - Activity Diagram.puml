@@ -20,14 +20,14 @@ start
 |AuthFilter|
 :Intercept request;
 if (JWT present?) then (no)
-    :Return 401\nINVALID_CREDENTIALS;
+    :Return 401\nTASKS_INVALID_CREDENTIALS;
     |Client|
     :Receive 401 error;
     stop
 else (yes)
     :Validate JWT signature\n& expiration;
     if (JWT valid?) then (no)
-        :Return 401\nACCESS_EXPIRED;
+        :Return 401\nTASKS_ACCESS_EXPIRED;
         |Client|
         :Receive 401 error;
         stop
@@ -42,7 +42,7 @@ endif
 :Parse query params\ninto TasksGetDTO;
 :Validate DTO\n(@Valid + BindingResult);
 if (DTO invalid?) then (yes)
-    :Return 422\nUNPROCESSABLE_ENTITY\n+ fieldErrors;
+    :Return 422\nTASKS_UNPROCESSABLE_ENTITY\n+ fieldErrors;
     |Client|
     :Receive 422 error;
     stop
@@ -54,9 +54,9 @@ endif
 :Extract userId\nfrom credentialsData;
 :Validate page size\n(max 100 items);
 if (page size > 100?) then (yes)
-    :Throw DomainException\nBAD_REQUEST;
+    :Throw DomainException\nTASKS_BAD_REQUEST;
     |TasksGetController|
-    :Return 400 BAD_REQUEST;
+    :Return 400 TASKS_BAD_REQUEST;
     |Client|
     :Receive 400 error;
     stop
@@ -83,7 +83,7 @@ end note
 if (DB error?) then (yes)
     :Throw exception;
     |TasksGetController|
-    :Return 503\nSERVICE_UNAVAILABLE;
+    :Return 503\nTASKS_SERVICE_UNAVAILABLE;
     |Client|
     :Receive 503 error;
     stop

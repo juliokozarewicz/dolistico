@@ -63,23 +63,23 @@ package "adapter.rest" {
     }
 
     enum GlobalSuccessEnum {
-        TASK_UPDATED_SUCCESSFULLY
+        TASKS_UPDATED_SUCCESSFULLY
         --
         + getStatusCode() : int
         + getMessageCode() : String
     }
 
     enum GlobalExceptionEnum {
-        INVALID_CREDENTIALS
-        TASK_NOT_FOUND
-        DUPLICATED_TASK
-        INVALID_PRIORITY
-        INVALID_DATE_RANGE
-        INVALID_ALLDAY
-        INVALID_REMINDER
-        UNPROCESSABLE_ENTITY
-        BAD_REQUEST
-        SERVICE_UNAVAILABLE
+        TASKS_INVALID_CREDENTIALS
+        TASKS_NOT_FOUND
+        TASKS_DUPLICATED_TASK
+        TASKS_INVALID_PRIORITY
+        TASKS_INVALID_DATE_RANGE
+        TASKS_INVALID_ALLDAY
+        TASKS_INVALID_REMINDER
+        TASKS_UNPROCESSABLE_ENTITY
+        TASKS_BAD_REQUEST
+        TASKS_SERVICE_UNAVAILABLE
         --
         + getStatusCode() : int
         + getMessageCode() : String
@@ -127,14 +127,14 @@ package "domain" {
     }
 
     enum DomainExceptionEnum {
-        INVALID_CREDENTIALS
-        INVALID_PRIORITY
-        INVALID_DATE_RANGE
-        INVALID_ALLDAY
-        INVALID_REMINDER
-        DUPLICATED_TASK
-        TASK_NOT_FOUND
-        NO_PERMISSION_TO_ACCESS
+        TASKS_INVALID_CREDENTIALS
+        TASKS_INVALID_PRIORITY
+        TASKS_INVALID_DATE_RANGE
+        TASKS_INVALID_ALLDAY
+        TASKS_INVALID_REMINDER
+        TASKS_DUPLICATED_TASK
+        TASKS_NOT_FOUND
+        TASKS_NO_PERMISSION_TO_ACCESS
     }
 
     interface TasksRepository {

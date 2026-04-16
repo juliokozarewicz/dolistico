@@ -57,7 +57,7 @@ public class CategoriesEntity {
         //------------------------------------------------------- (  user init )
 
         if (idUser == null) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+            throw new DomainException(DomainExceptionEnum.TASKS_INVALID_CREDENTIALS);
         }
 
         //-------------------------------------------------------- (  user end )
@@ -66,17 +66,17 @@ public class CategoriesEntity {
 
         // Must not be null or blank
         if (categoryName == null || categoryName.isBlank()) {
-            throw new DomainException(DomainExceptionEnum.FIELD_CANNOT_BE_EMPTY);
+            throw new DomainException(DomainExceptionEnum.TASKS_FIELD_CANNOT_BE_EMPTY);
         }
 
         // Max length: 255 characters
         if (categoryName.length() > 255) {
-            throw new DomainException(DomainExceptionEnum.TOO_MANY_CHARACTERS);
+            throw new DomainException(DomainExceptionEnum.TASKS_TOO_MANY_CHARACTERS);
         }
 
         // Forbidden characters validation (security)
         if (!categoryName.matches("^[^<>&'\"/]*$")) {
-            throw new DomainException(DomainExceptionEnum.FORBIDDEN_CHARACTERS);
+            throw new DomainException(DomainExceptionEnum.TASKS_FORBIDDEN_CHARACTERS);
         }
 
         // ----------------------------------------------- ( category name end )

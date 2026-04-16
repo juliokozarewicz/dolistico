@@ -61,7 +61,7 @@ public class TasksCreateUseCase {
             tasksCreateUpdateCommand.taskName().toLowerCase().trim(),
             tasksCreateUpdateCommand.dueDate()
         )) {
-            throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
+            throw new DomainException(DomainExceptionEnum.TASKS_DUPLICATED_TASK);
         }
 
         // Create task id and timestamp

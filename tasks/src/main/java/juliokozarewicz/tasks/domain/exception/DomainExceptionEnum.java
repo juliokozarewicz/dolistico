@@ -3,35 +3,35 @@ package juliokozarewicz.tasks.domain.exception;
 public enum DomainExceptionEnum {
 
     // =============================================== ( rest error codes init )
-    SERVICE_UNAVAILABLE,
-    INTERNAL_SERVER_ERROR,
-    TOO_MANY_REQUESTS,
-    UNPROCESSABLE_ENTITY,
-    NO_PERMISSION_TO_ACCESS,
-    PAYMENT_REQUIRED,
-    ACCESS_EXPIRED,
-    INVALID_CREDENTIALS,
-    BAD_REQUEST,
-    FIELD_CANNOT_BE_EMPTY,
-    TOO_MANY_CHARACTERS,
-    FORBIDDEN_CHARACTERS,
-    USER_NOT_FOUND,
+    TASKS_SERVICE_UNAVAILABLE,
+    TASKS_INTERNAL_SERVER_ERROR,
+    TASKS_TOO_MANY_REQUESTS,
+    TASKS_UNPROCESSABLE_ENTITY,
+    TASKS_NO_PERMISSION_TO_ACCESS,
+    TASKS_PAYMENT_REQUIRED,
+    TASKS_ACCESS_EXPIRED,
+    TASKS_INVALID_CREDENTIALS,
+    TASKS_BAD_REQUEST,
+    TASKS_FIELD_CANNOT_BE_EMPTY,
+    TASKS_TOO_MANY_CHARACTERS,
+    TASKS_FORBIDDEN_CHARACTERS,
+    TASKS_USER_NOT_FOUND,
     // ================================================ ( rest error codes end )
 
     // ============================================= ( domain error codes init )
 
     // Tasks,
-    INVALID_PRIORITY,
-    INVALID_DATE,
-    INVALID_DATE_RANGE,
-    INVALID_ALLDAY,
-    INVALID_REMINDER,
-    TASK_NOT_FOUND,
-    DUPLICATED_TASK,
+    TASKS_INVALID_PRIORITY,
+    TASKS_INVALID_DATE,
+    TASKS_INVALID_DATE_RANGE,
+    TASKS_INVALID_ALLDAY,
+    TASKS_INVALID_REMINDER,
+    TASKS_NOT_FOUND,
+    TASKS_DUPLICATED_TASK,
 
     // Categories
-    DUPLICATED_CATEGORY,
-    CATEGORY_NOT_FOUND,
+    TASKS_DUPLICATED_CATEGORY,
+    TASKS_CATEGORY_NOT_FOUND,
 
     // ============================================== ( domain error codes end )
 

@@ -49,7 +49,7 @@ public class TasksDeleteUseCase {
 
         // Find existing task (ensures ownership)
         var tasksEntity = tasksRepository.findByIdAndUser(idDelete, idUser)
-        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASK_NOT_FOUND));
+        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASKS_NOT_FOUND));
 
         // Publish delete event to Kafka
         tasksEventProducer.producerDelete(tasksEntity);

@@ -26,8 +26,8 @@ CLIENT -> NGINX   : GET /api/v1/tasks\n?page=0&size=20&taskName=x\n&priority=2&c
 NGINX  -> FILTER  : forward request + JWT header
 
 alt JWT invalid or missing
-    FILTER --> NGINX  : 401 INVALID_CREDENTIALS
-    NGINX  --> CLIENT : 401 INVALID_CREDENTIALS
+    FILTER --> NGINX  : 401 TASKS_INVALID_CREDENTIALS
+    NGINX  --> CLIENT : 401 TASKS_INVALID_CREDENTIALS
 else JWT valid
     FILTER -> FILTER  : extract claims\n(userId, level)
     FILTER -> CTRL    : request + credentialsData attribute

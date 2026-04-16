@@ -56,11 +56,11 @@ public class CategoriesGetByIdUseCase {
             categories.getUpdatedAt(),
             categories.getCategoryName()
         ))
-        .orElseThrow(() -> new DomainException(DomainExceptionEnum.CATEGORY_NOT_FOUND));
+        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASKS_CATEGORY_NOT_FOUND));
 
         // Category not found
         if  (categoriesByID == null) {
-            throw new DomainException(DomainExceptionEnum.CATEGORY_NOT_FOUND);
+            throw new DomainException(DomainExceptionEnum.TASKS_CATEGORY_NOT_FOUND);
         }
 
         // Return category by id

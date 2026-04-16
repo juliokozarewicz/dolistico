@@ -49,15 +49,15 @@ package "adapter.rest" {
     }
 
     class GlobalExceptionEnum <<enumeration>> {
-        INVALID_CREDENTIALS(401, ...)
-        DUPLICATED_TASK(409, ...)
-        INVALID_PRIORITY(400, ...)
-        INVALID_DATE_RANGE(400, ...)
-        INVALID_ALLDAY(400, ...)
-        INVALID_REMINDER(400, ...)
-        UNPROCESSABLE_ENTITY(422, ...)
-        SERVICE_UNAVAILABLE(503, ...)
-        INTERNAL_SERVER_ERROR(500, ...)
+        TASKS_INVALID_CREDENTIALS(401, ...)
+        TASKS_DUPLICATED_TASK(409, ...)
+        TASKS_INVALID_PRIORITY(400, ...)
+        TASKS_INVALID_DATE_RANGE(400, ...)
+        TASKS_INVALID_ALLDAY(400, ...)
+        TASKS_INVALID_REMINDER(400, ...)
+        TASKS_UNPROCESSABLE_ENTITY(422, ...)
+        TASKS_SERVICE_UNAVAILABLE(503, ...)
+        TASKS_INTERNAL_SERVER_ERROR(500, ...)
     }
 
     interface TasksCreateCommand {
@@ -120,14 +120,14 @@ package "domain" {
     }
 
     class DomainExceptionEnum <<enumeration>> {
-        INVALID_CREDENTIALS
-        INVALID_PRIORITY
-        INVALID_DATE_RANGE
-        INVALID_ALLDAY
-        INVALID_REMINDER
-        DUPLICATED_TASK
-        NO_PERMISSION_TO_ACCESS
-        PAYMENT_REQUIRED
+        TASKS_INVALID_CREDENTIALS
+        TASKS_INVALID_PRIORITY
+        TASKS_INVALID_DATE_RANGE
+        TASKS_INVALID_ALLDAY
+        TASKS_INVALID_REMINDER
+        TASKS_DUPLICATED_TASK
+        TASKS_NO_PERMISSION_TO_ACCESS
+        TASKS_PAYMENT_REQUIRED
     }
 
     interface TasksRepository {

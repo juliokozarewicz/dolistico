@@ -53,7 +53,7 @@ public class CategoriesUpdateUseCase {
 
         // Find existing category
         CategoriesEntity existingCategory = categoriesRepository.findByIdAndUser(idCategory, idUser)
-        .orElseThrow(() -> new DomainException(DomainExceptionEnum.CATEGORY_NOT_FOUND));
+        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASKS_CATEGORY_NOT_FOUND));
 
         // Duplicated check (exclude current id)
         if ( categoriesRepository.existsByCategoryNameAndAndIdNot(
@@ -61,7 +61,7 @@ public class CategoriesUpdateUseCase {
                 categoriesCreateUpdateCommand.categoryName().toLowerCase().trim(),
                 idCategory
         )) {
-            throw new DomainException(DomainExceptionEnum.DUPLICATED_CATEGORY);
+            throw new DomainException(DomainExceptionEnum.TASKS_DUPLICATED_CATEGORY);
         }
 
         // New timestamp for update

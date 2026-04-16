@@ -77,7 +77,7 @@ public class TasksGetByIdUseCase {
 
         // Task not found
         if  (taskByID == null) {
-            throw new DomainException(DomainExceptionEnum.TASK_NOT_FOUND);
+            throw new DomainException(DomainExceptionEnum.TASKS_NOT_FOUND);
         }
 
         // Return task by id

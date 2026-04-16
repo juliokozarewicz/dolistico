@@ -56,7 +56,7 @@ public class TasksUpdateUseCase {
 
         // Find existing task
         TasksEntity existingTask = tasksRepository.findByIdAndUser(taskId, idUser)
-        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASK_NOT_FOUND));
+        .orElseThrow(() -> new DomainException(DomainExceptionEnum.TASKS_NOT_FOUND));
 
         // Duplicated check (exclude current id)
         if ( tasksRepository.existsByTaskNameAndDueDateAndIdNot(
@@ -65,7 +65,7 @@ public class TasksUpdateUseCase {
                 tasksCreateUpdateCommand.dueDate(),
                 taskId
         )) {
-            throw new DomainException(DomainExceptionEnum.DUPLICATED_TASK);
+            throw new DomainException(DomainExceptionEnum.TASKS_DUPLICATED_TASK);
         }
 
         // New timestamp for update
