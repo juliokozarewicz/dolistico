@@ -77,8 +77,8 @@ info:
     <br>
     
     When validation fails for request inputs (such as request body, query parameters, 
-    path parameters, or form fields), the API returns a 422 Unprocessable Entity status code. 
-    In these cases, the response includes an additional field called fieldErrors.
+    path parameters, or form fields), the API returns a `422 Unprocessable Entity status code`. 
+    In these cases, the response includes an additional field called `fieldErrors`.
 
     This field contains a list of invalid fields along with their respective 
     error codes, allowing clients to identify exactly which inputs failed 
