@@ -113,11 +113,13 @@ info:
 
     These codes provide a consistent way to identify API responses, making it easier 
     to implement application logic, handle errors, and support message localization.
+    
+    <a href="PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/message_code.json" target="_blank" download>
+      Download Message Codes
+    </a>
 
-    [Download Message Codes](PUBLIC_DOMAIN_REPLACE/message_code.json)
-    
     <br>
-    
+
     # Postman
     Here you will find the Postman collection for testing the API endpoints. The 
     collection allows you to run requests in a practical and organized way, with 
@@ -129,7 +131,7 @@ info:
     required environment variables, and start testing the endpoints quickly and 
     efficiently.
     
-    <a href="PUBLIC_DOMAIN_REPLACE/postman_collection.json" target="_blank" download>
+    <a href="PUBLIC_DOMAIN_REPLACE/DOCUMENTATION_REPLACE/postman_collection.json" target="_blank" download>
       Download The Postman Collection
     </a>
 
