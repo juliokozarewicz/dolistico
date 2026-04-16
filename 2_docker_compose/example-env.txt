@@ -51,6 +51,11 @@ EMAIL_SMTP_AUTH=true
 EMAIL_START_TTLS=true
 #========================================================== ( emailservice end )
 
+#============================================================= ( keycloak init )
+KEYCLOAK_ADMIN_USER=
+KEYCLOAK_ADMIN_PASSWORD=
+#============================================================== ( keycloak end )
+
 #============================================================= ( accounts init )
 # Database
 ACCOUNTS_DATABASE_TYPE=postgresql
