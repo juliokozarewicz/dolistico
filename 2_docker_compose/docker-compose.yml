@@ -39,7 +39,7 @@ services:
         docker-entrypoint.sh postgres &
         until pg_isready -U ${DATABASE_ADMIN_USER} -d postgres -q; do sleep 1; done
         sleep 2
-        psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE accounts_database" 2>/dev/null || true
+        psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE keycloak" 2>/dev/null || true
         psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE tasks_database" 2>/dev/null || true
         wait
       '
@@ -110,6 +110,33 @@ services:
       - spring_net
     healthcheck:
       test: [ "CMD-SHELL", "printf 'security.protocol=SASL_PLAINTEXT\nsasl.mechanism=SCRAM-SHA-256\nsasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=\"${MESSAGING_ADMIN_USER}\" password=\"${MESSAGING_ADMIN_PASSWORD}\";\n' > /tmp/hc.properties && kafka-topics.sh --bootstrap-server localhost:${MESSAGING_PORT} --list --command-config /tmp/hc.properties 2>/dev/null || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.0
+    container_name: keycloak
+    command: start-dev
+    env_file:
+      - .env
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://database:5432/keycloak
+      KC_DB_USERNAME: ${DATABASE_ADMIN_USER}
+      KC_DB_PASSWORD: ${DATABASE_ADMIN_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+      - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - spring_net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${KEYCLOAK_PORT}/health/ready" ]
       interval: 30s
       timeout: 10s
       retries: 5
