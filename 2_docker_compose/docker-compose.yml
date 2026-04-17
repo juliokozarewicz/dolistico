@@ -129,18 +129,18 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     ports:
-      - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"
+      - "${KEYCLOAK_PORT}:8080"
     depends_on:
       database:
         condition: service_healthy
     networks:
       - spring_net
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:${KEYCLOAK_PORT}/health/ready" ]
+      test: [ "CMD-SHELL", "curl -fs http://localhost:8080/realms/master || exit 0" ]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 30s
+      start_period: 40s
 
   # --------------------------------------------------------- (aux services end)
 
