@@ -86,10 +86,10 @@ info:
       ],
       "meta": {
         "currentPage": 1,
-        "totalPages": 5,
-        "totalElementsCurrentPage": 10,
+        "totalPages": 1,
+        "totalElementsCurrentPage": 1,
         "pageSize": 10,
-        "totalElements": 48
+        "totalElements": 1
       }
     }
     ```
