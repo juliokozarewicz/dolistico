@@ -53,13 +53,53 @@ info:
     * **meta** — Provides additional contextual information, such as pagination details, 
       totals, or other metadata relevant to the request.
     * **links** — Contains navigation or related resource links (e.g., HATEOAS).
+    
+    Example:
+    
+    ```json
+    {
+      "timestamp": "2026-03-11T11:20:40Z",
+      "statusCode": 200,
+      "messageCode": "TASKS_RETRIEVED_SUCCESSFULLY",
+      "data": [
+        {
+          "idCreated": "464140a1-cbec-4935-a604-e7decf33d6d9",
+          "createdAt": "2026-03-11T09:00:00",
+          "updatedAt": "2026-03-11T10:00:00",
+          "taskName": "Finish backend documentation",
+          "description": "Write the API documentation for the tasks module.",
+          "category": {
+            "id": "0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e",
+            "categoryName": "Work"
+          },
+          "color": "blue",
+          "priority": 3,
+          "startTime": "2026-03-11T09:00:00",
+          "endTime": "2026-03-11T10:00:00",
+          "location": "Office meeting room",
+          "allDay": false,
+          "reminderTime": "2026-03-11T08:30:00",
+          "notifyActive": true,
+          "status": "pending",
+          "dueDate": "2026-03-11T10:00:00"
+        }
+      ],
+      "meta": {
+        "currentPage": 1,
+        "totalPages": 5,
+        "totalElementsCurrentPage": 10,
+        "pageSize": 10,
+        "totalElements": 48
+      }
+    }
+    ```
 
     <br>
-    
+
     ## Error Response Structure
-    
+
     Every error response contains the following base fields:
-    
+
     * **timestamp** — The date and time when the error occurred (ISO 8601 format).
     * **statusCode** — The HTTP status code returned by the server.
     * **messageCode** — A machine-readable code representing the error type.
@@ -2295,16 +2335,16 @@ paths:
                         example: 1
                       totalPages:
                         type: integer
-                        example: 5
+                        example: 1
                       totalElementsCurrentPage:
                         type: integer
-                        example: 10
+                        example: 1
                       pageSize:
                         type: integer
                         example: 10
                       totalElements:
                         type: integer
-                        example: 48
+                        example: 1
 
   # Tasks - GET BY ID
   "/TASKS_BASE_URL_REPLACE/{id}":
