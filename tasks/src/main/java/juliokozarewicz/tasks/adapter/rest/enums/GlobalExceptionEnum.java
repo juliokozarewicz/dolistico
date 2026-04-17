@@ -4,6 +4,18 @@ import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 
 public enum GlobalExceptionEnum {
 
+    // =============================================== ( rest error codes init )
+    SERVICE_UNAVAILABLE(503, "SERVICE_UNAVAILABLE", null),
+    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", null),
+    TOO_MANY_REQUESTS(429, "TOO_MANY_REQUESTS", null),
+    UNPROCESSABLE_ENTITY(422, "UNPROCESSABLE_ENTITY", null),
+    NO_PERMISSION_TO_ACCESS(403, "NO_PERMISSION_TO_ACCESS", DomainExceptionEnum.NO_PERMISSION_TO_ACCESS),
+    PAYMENT_REQUIRED(402, "PAYMENT_REQUIRED", DomainExceptionEnum.PAYMENT_REQUIRED),
+    ACCESS_EXPIRED(401, "ACCESS_EXPIRED", null),
+    INVALID_CREDENTIALS(401, "INVALID_CREDENTIALS", DomainExceptionEnum.INVALID_CREDENTIALS),
+    BAD_REQUEST(400, "BAD_REQUEST", null),
+    // ================================================ ( rest error codes end )
+
     // ============================================= ( domain error codes init )
 
     // tasks
@@ -21,20 +33,8 @@ public enum GlobalExceptionEnum {
 
     // categories
     TASKS_DUPLICATED_CATEGORY(409, "TASKS_DUPLICATED_CATEGORY", juliokozarewicz.tasks.domain.exception.DomainExceptionEnum.TASKS_DUPLICATED_CATEGORY),
-    TASKS_CATEGORY_NOT_FOUND(404, "TASKS_CATEGORY_NOT_FOUND", juliokozarewicz.tasks.domain.exception.DomainExceptionEnum.TASKS_CATEGORY_NOT_FOUND),
+    TASKS_CATEGORY_NOT_FOUND(404, "TASKS_CATEGORY_NOT_FOUND", juliokozarewicz.tasks.domain.exception.DomainExceptionEnum.TASKS_CATEGORY_NOT_FOUND);
     // ============================================== ( domain error codes end )
-
-    // =============================================== ( rest error codes init )
-    TASKS_SERVICE_UNAVAILABLE(503, "TASKS_SERVICE_UNAVAILABLE", null),
-    TASKS_INTERNAL_SERVER_ERROR(500, "TASKS_INTERNAL_SERVER_ERROR", null),
-    TASKS_TOO_MANY_REQUESTS(429, "TASKS_TOO_MANY_REQUESTS", null),
-    TASKS_UNPROCESSABLE_ENTITY(422, "TASKS_UNPROCESSABLE_ENTITY", null),
-    TASKS_NO_PERMISSION_TO_ACCESS(403, "TASKS_NO_PERMISSION_TO_ACCESS", DomainExceptionEnum.TASKS_NO_PERMISSION_TO_ACCESS),
-    TASKS_PAYMENT_REQUIRED(402, "TASKS_PAYMENT_REQUIRED", DomainExceptionEnum.TASKS_PAYMENT_REQUIRED),
-    TASKS_ACCESS_EXPIRED(401, "TASKS_ACCESS_EXPIRED", null),
-    TASKS_INVALID_CREDENTIALS(401, "TASKS_INVALID_CREDENTIALS", DomainExceptionEnum.TASKS_INVALID_CREDENTIALS),
-    TASKS_BAD_REQUEST(400, "TASKS_BAD_REQUEST", null);
-    // ================================================ ( rest error codes end )
 
     // ================================================ ( dto error codes init )
     public static final String TASKS_FIELD_CANNOT_BE_EMPTY_DTO = "TASKS_FIELD_CANNOT_BE_EMPTY_DTO";
@@ -63,7 +63,7 @@ public enum GlobalExceptionEnum {
         for (GlobalExceptionEnum e : values()) {
             if (e.domainError == domainError) return e;
         }
-        return TASKS_INTERNAL_SERVER_ERROR;
+        return INTERNAL_SERVER_ERROR;
     }
 
 }

@@ -27,8 +27,8 @@ CLIENT -> NGINX  : DELETE /api/v1/tasks/{id}\n+ JWT header
 NGINX  -> FILTER : forward request + JWT
 
 alt JWT missing or invalid
-    FILTER --> NGINX  : 401 TASKS_INVALID_CREDENTIALS
-    NGINX  --> CLIENT : 401 TASKS_INVALID_CREDENTIALS
+    FILTER --> NGINX  : 401 INVALID_CREDENTIALS
+    NGINX  --> CLIENT : 401 INVALID_CREDENTIALS
 else JWT valid
     FILTER -> FILTER  : extract claims (userId, level)
     FILTER -> CTRL    : request + credentialsData attribute
@@ -39,8 +39,8 @@ CTRL -> CTRL : extract {id} from path variable
 CTRL -> CTRL : validate UUID format
 
 alt Invalid UUID format
-    CTRL --> NGINX  : 400 TASKS_BAD_REQUEST
-    NGINX --> CLIENT : 400 TASKS_BAD_REQUEST
+    CTRL --> NGINX  : 400 BAD_REQUEST
+    NGINX --> CLIENT : 400 BAD_REQUEST
 else Valid UUID
     CTRL -> UC : execute(credentialsData, taskId)
 end
@@ -73,7 +73,7 @@ alt Kafka send timeout / error
     KAFKA --> PRODUCER : exception
     PRODUCER --> UC    : throws InternalError
     UC --> CTRL        : propagates
-    CTRL --> NGINX     : 503 TASKS_SERVICE_UNAVAILABLE
+    CTRL --> NGINX     : 503 SERVICE_UNAVAILABLE
     NGINX --> CLIENT   : 503 error
 else Kafka received
     KAFKA --> PRODUCER : ack

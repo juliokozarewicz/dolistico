@@ -110,7 +110,7 @@ info:
     {
         "timestamp": "2026-02-27T19:53:14Z",
         "statusCode": 401,
-        "messageCode": "TASKS_INVALID_CREDENTIALS"
+        "messageCode": "INVALID_CREDENTIALS"
     }
     ```
     
@@ -130,15 +130,15 @@ info:
     {
         "timestamp": "2026-02-27T19:55:12Z",
         "statusCode": 422,
-        "messageCode": "TASKS_UNPROCESSABLE_ENTITY",
+        "messageCode": "UNPROCESSABLE_ENTITY",
         "fieldErrors": [
             {
                 "field": "subject",
-                "fieldMessageCode": "TASKS_FIELD_CANNOT_BE_EMPTY_DTO"
+                "fieldMessageCode": "HELLOWORLD_FIELD_CANNOT_BE_EMPTY_DTO"
             },
             {
                 "field": "message",
-                "fieldMessageCode": "TASKS_FIELD_CANNOT_BE_EMPTY_DTO"
+                "fieldMessageCode": "HELLOWORLD_FIELD_CANNOT_BE_EMPTY_DTO"
             }
         ]
     }
@@ -223,7 +223,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: HELLO_WORLD_CREATED_SUCCESSFULLY
+                    example: HELLOWORLD_CREATED_SUCCESSFULLY
                   data:
                     type: object
                     properties:
@@ -249,7 +249,7 @@ paths:
                     example: 403
                   messageCode:
                     type: string
-                    example: TASKS_NO_PERMISSION_TO_ACCESS
+                    example: NO_PERMISSION_TO_ACCESS
 
   ########################################################### ( helloworld end )
 
@@ -1772,7 +1772,7 @@ paths:
                     example: 201
                   messageCode:
                     type: string
-                    example: CATEGORIES_CREATED_SUCCESSFULLY
+                    example: TASKS_CATEGORIES_CREATED_SUCCESSFULLY
                   data:
                     type: object
                     properties:
@@ -1837,7 +1837,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: CATEGORIES_RETRIEVED_SUCCESSFULLY
+                    example: TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY
                   data:
                     type: array
                     items:
@@ -1915,7 +1915,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: CATEGORIES_RETRIEVED_SUCCESSFULLY
+                    example: TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY
                   data:
                     type: object
                     properties:
@@ -1986,7 +1986,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: CATEGORIES_UPDATED_SUCCESSFULLY
+                    example: TASKS_CATEGORIES_UPDATED_SUCCESSFULLY
 
     # CATEGORIES - DELETE
     delete:
@@ -2025,7 +2025,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: CATEGORIES_DELETED_SUCCESSFULLY
+                    example: TASKS_CATEGORIES_DELETED_SUCCESSFULLY
 
   # Tasks - CREATE
   "/TASKS_BASE_URL_REPLACE":

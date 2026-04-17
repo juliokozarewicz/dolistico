@@ -20,14 +20,14 @@ start
 :Intercept request;
 if (JWT present?) then (no)
     |Client|
-    :Receive 401 TASKS_INVALID_CREDENTIALS;
+    :Receive 401 INVALID_CREDENTIALS;
     stop
 else (yes)
     |AuthFilter|
     :Validate JWT signature & expiration;
     if (JWT valid?) then (no)
         |Client|
-        :Receive 401 TASKS_ACCESS_EXPIRED;
+        :Receive 401 ACCESS_EXPIRED;
         stop
     else (yes)
         |AuthFilter|
@@ -41,7 +41,7 @@ endif
 :Extract {id} from path variable;
 if (Invalid UUID format?) then (yes)
     |Client|
-    :Receive 400 TASKS_BAD_REQUEST;
+    :Receive 400 BAD_REQUEST;
     stop
 else (no)
     |TasksDeleteUseCase|
@@ -56,7 +56,7 @@ endif
 :SELECT * FROM tasks.tasks\nWHERE id = ?\nAND id_user = ?;
 if (DB error?) then (yes)
     |Client|
-    :Receive 503 TASKS_SERVICE_UNAVAILABLE;
+    :Receive 503 SERVICE_UNAVAILABLE;
     stop
 else (no)
 endif
@@ -77,7 +77,7 @@ endif
 :kafkaTemplate.send(\n"tasks.delete.persist.v1",\npayload).get(10s timeout);
 if (Timeout or Kafka error?) then (yes)
     |Client|
-    :Receive 503 TASKS_SERVICE_UNAVAILABLE;
+    :Receive 503 SERVICE_UNAVAILABLE;
     stop
 else (no)
     |TasksDeleteController|

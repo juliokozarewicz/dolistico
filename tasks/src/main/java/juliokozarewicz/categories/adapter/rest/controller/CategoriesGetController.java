@@ -82,13 +82,13 @@ public class CategoriesGetController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.CATEGORIES_RETRIEVED_SUCCESSFULLY.getStatusCode())
+        .status(GlobalSuccessEnum.TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.CATEGORIES_RETRIEVED_SUCCESSFULLY.getStatusCode())
-            .messageCode(GlobalSuccessEnum.CATEGORIES_RETRIEVED_SUCCESSFULLY.getMessageCode())
+            .statusCode(GlobalSuccessEnum.TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY.getMessageCode())
             .data(content)
             .meta(metaData)
             .build()

@@ -68,13 +68,13 @@ public class CategoriesDeleteController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.CATEGORIES_DELETED_SUCCESSFULLY.getStatusCode())
+        .status(GlobalSuccessEnum.TASKS_CATEGORIES_DELETED_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.CATEGORIES_DELETED_SUCCESSFULLY.getStatusCode())
-            .messageCode(GlobalSuccessEnum.CATEGORIES_DELETED_SUCCESSFULLY.getMessageCode())
+            .statusCode(GlobalSuccessEnum.TASKS_CATEGORIES_DELETED_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.TASKS_CATEGORIES_DELETED_SUCCESSFULLY.getMessageCode())
             .build()
         );
 

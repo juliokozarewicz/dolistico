@@ -57,7 +57,7 @@ public class CategoriesEntity {
         //------------------------------------------------------- (  user init )
 
         if (idUser == null) {
-            throw new DomainException(DomainExceptionEnum.TASKS_INVALID_CREDENTIALS);
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
         }
 
         //-------------------------------------------------------- (  user end )

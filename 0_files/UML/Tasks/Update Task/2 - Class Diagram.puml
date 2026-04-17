@@ -70,16 +70,16 @@ package "adapter.rest" {
     }
 
     enum GlobalExceptionEnum {
-        TASKS_INVALID_CREDENTIALS
+        INVALID_CREDENTIALS
         TASKS_NOT_FOUND
         TASKS_DUPLICATED_TASK
         TASKS_INVALID_PRIORITY
         TASKS_INVALID_DATE_RANGE
         TASKS_INVALID_ALLDAY
         TASKS_INVALID_REMINDER
-        TASKS_UNPROCESSABLE_ENTITY
-        TASKS_BAD_REQUEST
-        TASKS_SERVICE_UNAVAILABLE
+        UNPROCESSABLE_ENTITY
+        BAD_REQUEST
+        SERVICE_UNAVAILABLE
         --
         + getStatusCode() : int
         + getMessageCode() : String
@@ -127,14 +127,14 @@ package "domain" {
     }
 
     enum DomainExceptionEnum {
-        TASKS_INVALID_CREDENTIALS
+        INVALID_CREDENTIALS
         TASKS_INVALID_PRIORITY
         TASKS_INVALID_DATE_RANGE
         TASKS_INVALID_ALLDAY
         TASKS_INVALID_REMINDER
         TASKS_DUPLICATED_TASK
         TASKS_NOT_FOUND
-        TASKS_NO_PERMISSION_TO_ACCESS
+        NO_PERMISSION_TO_ACCESS
     }
 
     interface TasksRepository {

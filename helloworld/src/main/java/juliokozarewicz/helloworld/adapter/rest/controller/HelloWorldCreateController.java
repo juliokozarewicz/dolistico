@@ -69,13 +69,13 @@ public class HelloWorldCreateController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.HELLO_WORLD_CREATED_SUCCESSFULLY.getStatusCode())
+        .status(GlobalSuccessEnum.HELLOWORLD_CREATED_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.HELLO_WORLD_CREATED_SUCCESSFULLY.getStatusCode())
-            .messageCode(GlobalSuccessEnum.HELLO_WORLD_CREATED_SUCCESSFULLY.getMessageCode())
+            .statusCode(GlobalSuccessEnum.HELLOWORLD_CREATED_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.HELLOWORLD_CREATED_SUCCESSFULLY.getMessageCode())
             .data(metaData)
             .links(customLinks)
             .build()

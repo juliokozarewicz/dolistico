@@ -76,13 +76,13 @@ public class CategoriesUpdateController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.CATEGORIES_UPDATED_SUCCESSFULLY.getStatusCode())
+        .status(GlobalSuccessEnum.TASKS_CATEGORIES_UPDATED_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.CATEGORIES_UPDATED_SUCCESSFULLY.getStatusCode())
-            .messageCode(GlobalSuccessEnum.CATEGORIES_UPDATED_SUCCESSFULLY.getMessageCode())
+            .statusCode(GlobalSuccessEnum.TASKS_CATEGORIES_UPDATED_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.TASKS_CATEGORIES_UPDATED_SUCCESSFULLY.getMessageCode())
             .build()
         );
 

@@ -20,14 +20,14 @@ start
 :Intercept request;
 if (JWT present?) then (no)
     |Client|
-    :Receive 401 TASKS_INVALID_CREDENTIALS;
+    :Receive 401 INVALID_CREDENTIALS;
     stop
 else (yes)
     |AuthFilter|
     :Validate JWT signature & expiration;
     if (JWT valid?) then (no)
         |Client|
-        :Receive 401 TASKS_ACCESS_EXPIRED;
+        :Receive 401 ACCESS_EXPIRED;
         stop
     else (yes)
         |AuthFilter|
@@ -42,7 +42,7 @@ endif
 :Run @Valid (BindingResult);
 if (DTO invalid?) then (yes)
     |Client|
-    :Receive 422 TASKS_UNPROCESSABLE_ENTITY\n+ fieldErrors;
+    :Receive 422 UNPROCESSABLE_ENTITY\n+ fieldErrors;
     stop
 else (no)
     |TasksCreateUseCase|
@@ -64,7 +64,7 @@ endif
 :Execute validateBusinessRules();
 if (idUser is null?) then (yes)
     |Client|
-    :Receive 401 TASKS_INVALID_CREDENTIALS;
+    :Receive 401 INVALID_CREDENTIALS;
     stop
 else (no)
 endif
@@ -119,7 +119,7 @@ endif
 :kafkaTemplate.send(\n"tasks.create.persist.v1",\npayload).get(10s timeout);
 if (Timeout or Kafka error?) then (yes)
     |Client|
-    :Receive 503 TASKS_SERVICE_UNAVAILABLE;
+    :Receive 503 SERVICE_UNAVAILABLE;
     stop
 else (no)
     |TasksCreateController|
