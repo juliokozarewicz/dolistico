@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @Validated
+@RequestMapping("${TASKS_BASE_URL}")
 public class CategoriesDeleteController {
 
     // ==================================================== ( constructor init )
@@ -44,7 +46,7 @@ public class CategoriesDeleteController {
 
     // ===================================================== ( constructor end )
 
-    @DeleteMapping("/${TASKS_BASE_URL}/category/{validationIdentityDTO}")
+    @DeleteMapping("/category/{validationIdentityDTO}")
     public ResponseEntity delete(
 
         // DTO error

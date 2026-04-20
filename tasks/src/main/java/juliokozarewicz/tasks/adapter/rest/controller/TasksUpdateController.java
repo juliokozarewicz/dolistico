@@ -12,10 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
@@ -23,7 +21,9 @@ import java.util.UUID;
 
 @RestController
 @Validated
-public class TasksUpdateController {
+@RequestMapping("${TASKS_BASE_URL}")
+public class
+TasksUpdateController {
 
     // ==================================================== ( constructor init )
 
@@ -48,7 +48,7 @@ public class TasksUpdateController {
 
     // ===================================================== ( constructor end )
 
-    @PutMapping("/${TASKS_BASE_URL}/{validationIdentityDTO}")
+    @PutMapping("/{validationIdentityDTO}")
     public ResponseEntity create (
 
         // DTO error

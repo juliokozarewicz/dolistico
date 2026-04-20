@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 @RestController
 @Validated
+@RequestMapping("${TASKS_BASE_URL}")
 public class CategoriesGetController {
 
     // ==================================================== ( constructor init )
@@ -46,7 +48,7 @@ public class CategoriesGetController {
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${TASKS_BASE_URL}/category")
+    @GetMapping("/category")
     public ResponseEntity create (
 
         // DTO error

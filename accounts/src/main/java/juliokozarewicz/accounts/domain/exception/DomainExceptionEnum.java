@@ -1,4 +1,4 @@
-package juliokozarewicz.helloworld.domain.exception;
+package juliokozarewicz.accounts.domain.exception;
 
 public enum DomainExceptionEnum {
 
@@ -12,12 +12,13 @@ public enum DomainExceptionEnum {
     ACCESS_EXPIRED,
     INVALID_CREDENTIALS,
     BAD_REQUEST,
+    FORBIDDEN_CHARACTERS,
     // ================================================ ( rest error codes end )
 
     // ============================================= ( domain error codes init )
 
-    // helloworld
-    HELLOWORLD_USER_NOT_FOUND
+    // accounts
+    ACCOUNTS_USER_NOT_FOUND,
 
     // ============================================== ( domain error codes end )
 

@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 @RestController
 @Validated
+@RequestMapping("${TASKS_BASE_URL}")
 public class TasksCreateController {
 
     // ==================================================== ( constructor init )
@@ -47,7 +49,7 @@ public class TasksCreateController {
 
     // ===================================================== ( constructor end )
 
-    @PostMapping("/${TASKS_BASE_URL}")
+    @PostMapping()
     public ResponseEntity create (
 
         // DTO error

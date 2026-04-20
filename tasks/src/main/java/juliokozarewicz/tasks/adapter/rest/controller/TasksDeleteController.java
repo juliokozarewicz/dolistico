@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 @RestController
 @Validated
+@RequestMapping("${TASKS_BASE_URL}")
 public class TasksDeleteController {
 
     // ==================================================== ( constructor init )
@@ -48,7 +50,7 @@ public class TasksDeleteController {
 
     // ===================================================== ( constructor end )
 
-    @DeleteMapping("/${TASKS_BASE_URL}/{validationIdentityDTO}")
+    @DeleteMapping("/{validationIdentityDTO}")
     public ResponseEntity delete(
 
         // DTO error

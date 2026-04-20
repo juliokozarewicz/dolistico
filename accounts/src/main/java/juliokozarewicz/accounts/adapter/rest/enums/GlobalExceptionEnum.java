@@ -1,6 +1,6 @@
-package juliokozarewicz.helloworld.adapter.rest.enums;
+package juliokozarewicz.accounts.adapter.rest.enums;
 
-import juliokozarewicz.helloworld.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 
 public enum GlobalExceptionEnum {
 
@@ -18,17 +18,17 @@ public enum GlobalExceptionEnum {
 
     // ============================================= ( domain error codes init )
 
-    // helloworld
-    HELLOWORLD_USER_NOT_FOUND(404, "HELLOWORLD_USER_NOT_FOUND", DomainExceptionEnum.HELLOWORLD_USER_NOT_FOUND);
+    // accounts
+    ACCOUNTS_USER_NOT_FOUND(404, "ACCOUNTS_USER_NOT_FOUND", DomainExceptionEnum.ACCOUNTS_USER_NOT_FOUND);
 
     // ============================================== ( domain error codes end )
 
     // ================================================ ( dto error codes init )
-    public static final String HELLOWORLD_FIELD_CANNOT_BE_EMPTY_DTO = "HELLOWORLD_FIELD_CANNOT_BE_EMPTY_DTO";
-    public static final String HELLOWORLD_TOO_MANY_CHARACTERS_DTO = "HELLOWORLD_TOO_MANY_CHARACTERS_DTO";
-    public static final String HELLOWORLD_TOO_FEW_CHARACTERS_DTO = "HELLOWORLD_TOO_FEW_CHARACTERS_DTO";
-    public static final String HELLOWORLD_FORBIDDEN_CHARACTERS_DTO = "HELLOWORLD_FORBIDDEN_CHARACTERS_DTO";
-    public static final String HELLOWORLD_INVALID_ID_DTO = "HELLOWORLD_INVALID_ID_DTO";
+    public static final String ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO = "ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO";
+    public static final String ACCOUNTS_TOO_MANY_CHARACTERS_DTO = "ACCOUNTS_TOO_MANY_CHARACTERS_DTO";
+    public static final String ACCOUNTS_TOO_FEW_CHARACTERS_DTO = "ACCOUNTS_TOO_FEW_CHARACTERS_DTO";
+    public static final String ACCOUNTS_FORBIDDEN_CHARACTERS_DTO = "ACCOUNTS_FORBIDDEN_CHARACTERS_DTO";
+    public static final String ACCOUNTS_INVALID_ID_DTO = "ACCOUNTS_INVALID_ID_DTO";
     // ================================================= ( dto error codes end )
 
     public final int statusCode;

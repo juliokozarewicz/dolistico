@@ -1,12 +1,12 @@
-package juliokozarewicz.helloworld.adapter.rest.enums;
+package juliokozarewicz.accounts.adapter.rest.enums;
 
 public enum GlobalSuccessEnum {
 
     // =========================================== ( domain success codes init )
 
-    // helloworld
-    HELLOWORLD_CREATED_SUCCESSFULLY(200, "HELLOWORLD_CREATED_SUCCESSFULLY"),
-    HELLOWORLD_RETRIEVED_SUCCESSFULLY(200, "HELLOWORLD_RETRIEVED_SUCCESSFULLY");
+    // accounts
+    ACCOUNTS_CREATED_SUCCESSFULLY(200, "ACCOUNTS_CREATED_SUCCESSFULLY"),
+    ACCOUNTS_RETRIEVED_SUCCESSFULLY(200, "ACCOUNTS_RETRIEVED_SUCCESSFULLY");
 
     // ============================================ ( domain success codes end )
 

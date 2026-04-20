@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 @RestController
 @Validated
+@RequestMapping("${TASKS_BASE_URL}")
 public class CategoriesGetByIdController {
 
     // ==================================================== ( constructor init )
@@ -45,7 +47,7 @@ public class CategoriesGetByIdController {
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${TASKS_BASE_URL}/category/{validationIdentityDTO}")
+    @GetMapping("/category/{validationIdentityDTO}")
     public ResponseEntity create (
 
         // DTO error
