@@ -77,7 +77,7 @@ form.addEventListener("submit", async (e) => {
   const successIcon = document.getElementById("success-icon");
   const body = document.body;
 
-  const url = `${window.location.origin}/api/v1/accounts/update-email`;
+  const url = `${window.location.origin}/v1/accounts/update-email`;
 
   const options = {
     method: "PATCH",

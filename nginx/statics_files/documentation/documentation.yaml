@@ -568,10 +568,10 @@ paths:
                     properties:
                       self:
                         type: string
-                        example: /api/v1/accounts/login
+                        example: /v1/accounts/login
                       next:
                         type: string
-                        example: /api/v1/accounts/login-confirmation
+                        example: /v1/accounts/login-confirmation
 
         "401":
           description: Invalid credentials provided.
@@ -668,10 +668,10 @@ paths:
                     properties:
                       self:
                         type: string
-                        example: /api/v1/accounts/login-confirmation
+                        example: /v1/accounts/login-confirmation
                       next:
                         type: string
-                        example: /api/v1/accounts/get-profile
+                        example: /v1/accounts/get-profile
 
         "401":
           description: Invalid login token or credentials.
@@ -1318,17 +1318,17 @@ paths:
                     properties:
                       self:
                         type: string
-                        example: /api/v1/accounts/address-delete
+                        example: /v1/accounts/address-delete
                       next:
                         type: string
-                        example: /api/v1/accounts/address-get
+                        example: /v1/accounts/address-get
               example:
                 statusCode: 200
                 statusMessage: success
                 message: Address deleted successfully.
                 links:
-                  self: /api/v1/accounts/address-delete
-                  next: /api/v1/accounts/address-get
+                  self: /v1/accounts/address-delete
+                  next: /v1/accounts/address-get
         "404":
           description: Address not found.
           content:

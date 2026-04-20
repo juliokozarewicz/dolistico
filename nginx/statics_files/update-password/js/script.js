@@ -33,7 +33,7 @@ document.getElementById("updatePasswordForm").addEventListener("submit", functio
     const token = params.get("token");
 
     // Call the API endpoint
-    const url = `${window.location.origin}/api/v1/accounts/update-password`;
+    const url = `${window.location.origin}/v1/accounts/update-password`;
 
     fetch(url, {
         method: "PATCH",

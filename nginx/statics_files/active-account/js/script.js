@@ -10,7 +10,7 @@ window.addEventListener("load", () => {
     const token = params.get("token");
 
     // Call the API endpoint
-    const url = `${window.location.origin}/api/v1/accounts/activate-account`;
+    const url = `${window.location.origin}/v1/accounts/activate-account`;
 
     fetch(url, {
         method: "POST",

@@ -15,7 +15,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/helloworld?message=test_message",
+              "raw": "{{base_url}}/v1/helloworld?message=test_message",
               "host": [
                 "{{base_url}}"
               ],
@@ -60,7 +60,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/signup",
+              "raw": "{{base_url}}/v1/accounts/signup",
               "host": [
                 "{{base_url}}"
               ],
@@ -95,7 +95,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/activate-account",
+              "raw": "{{base_url}}/v1/accounts/activate-account",
               "host": [
                 "{{base_url}}"
               ],
@@ -130,7 +130,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/update-password-link",
+              "raw": "{{base_url}}/v1/accounts/update-password-link",
               "host": [
                 "{{base_url}}"
               ],
@@ -165,7 +165,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/update-password",
+              "raw": "{{base_url}}/v1/accounts/update-password",
               "host": [
                 "{{base_url}}"
               ],
@@ -216,7 +216,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/login",
+              "raw": "{{base_url}}/v1/accounts/login",
               "host": [
                 "{{base_url}}"
               ],
@@ -268,7 +268,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/login-confirmation",
+              "raw": "{{base_url}}/v1/accounts/login-confirmation",
               "host": [
                 "{{base_url}}"
               ],
@@ -314,7 +314,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/refresh-login",
+              "raw": "{{base_url}}/v1/accounts/refresh-login",
               "host": [
                 "{{base_url}}"
               ],
@@ -363,7 +363,7 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/get-profile",
+              "raw": "{{base_url}}/v1/accounts/get-profile",
               "host": [
                 "{{base_url}}"
               ],
@@ -422,7 +422,7 @@
               ]
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/upload-avatar",
+              "raw": "{{base_url}}/v1/accounts/upload-avatar",
               "host": [
                 "{{base_url}}"
               ],
@@ -467,7 +467,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/update-profile",
+              "raw": "{{base_url}}/v1/accounts/update-profile",
               "host": [
                 "{{base_url}}"
               ],
@@ -512,7 +512,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/create-address",
+              "raw": "{{base_url}}/v1/accounts/create-address",
               "host": [
                 "{{base_url}}"
               ],
@@ -542,7 +542,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/get-address",
+              "raw": "{{base_url}}/v1/accounts/get-address",
               "host": [
                 "{{base_url}}"
               ],
@@ -578,7 +578,7 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/delete-address/019c3300-eea1-7745-83ab-4f9b634413d6",
+              "raw": "{{base_url}}/v1/accounts/delete-address/019c3300-eea1-7745-83ab-4f9b634413d6",
               "host": [
                 "{{base_url}}"
               ],
@@ -624,7 +624,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/update-email-link",
+              "raw": "{{base_url}}/v1/accounts/update-email-link",
               "host": [
                 "{{base_url}}"
               ],
@@ -662,7 +662,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/update-email",
+              "raw": "{{base_url}}/v1/accounts/update-email",
               "host": [
                 "{{base_url}}"
               ],
@@ -699,7 +699,7 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/connected-devices",
+              "raw": "{{base_url}}/v1/accounts/connected-devices",
               "host": [
                 "{{base_url}}"
               ],
@@ -735,7 +735,7 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/delete-account-link",
+              "raw": "{{base_url}}/v1/accounts/delete-account-link",
               "host": [
                 "{{base_url}}"
               ],
@@ -773,7 +773,7 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/api/v1/accounts/delete",
+              "raw": "{{base_url}}/v1/accounts/delete",
               "host": [
                 "{{base_url}}"
               ],
@@ -826,7 +826,7 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks/category",
+                  "raw": "{{base_url}}/v1/tasks/category",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -862,7 +862,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks/category?pageSize=10&pageNumber=1",
+                  "raw": "{{base_url}}/v1/tasks/category?pageSize=10&pageNumber=1",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -913,7 +913,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks/category/d7d95895-2ec0-4ecf-bf22-75bdcc699440",
+                  "raw": "{{base_url}}/v1/tasks/category/d7d95895-2ec0-4ecf-bf22-75bdcc699440",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -966,7 +966,7 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks/category/d7d95895-2ec0-4ecf-bf22-75bdcc699440",
+                  "raw": "{{base_url}}/v1/tasks/category/d7d95895-2ec0-4ecf-bf22-75bdcc699440",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -997,7 +997,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks/category/43578e00-f0bc-446b-8265-019d9dfe22a1",
+                  "raw": "{{base_url}}/v1/tasks/category/43578e00-f0bc-446b-8265-019d9dfe22a1",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -1042,7 +1042,7 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks",
+                  "raw": "{{base_url}}/v1/tasks",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -1071,7 +1071,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks?pageNumber=1&pageSize=10",
+                  "raw": "{{base_url}}/v1/tasks?pageNumber=1&pageSize=10",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -1145,7 +1145,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks/08fe85ec-7418-462d-b9f2-8faed4035722",
+                  "raw": "{{base_url}}/v1/tasks/08fe85ec-7418-462d-b9f2-8faed4035722",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -1184,7 +1184,7 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks/48a260be-9c66-4fc3-a89e-10a0afef380f",
+                  "raw": "{{base_url}}/v1/tasks/48a260be-9c66-4fc3-a89e-10a0afef380f",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -1214,7 +1214,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/v1/tasks/996fd74b-8825-443a-9cbc-5745ff1f773b",
+                  "raw": "{{base_url}}/v1/tasks/996fd74b-8825-443a-9cbc-5745ff1f773b",
                   "host": [
                     "{{base_url}}"
                   ],
