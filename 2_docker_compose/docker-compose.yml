@@ -1,6 +1,15 @@
 services:
 
-  # -------------------------------------------------------- (aux services init)
+  # ------------------------------------------------------------- (aux services init)
+
+  cloudflared:
+    container_name: cloudflared
+    image: cloudflare/cloudflared:latest
+    networks:
+      - spring_net
+    command: tunnel run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
 
   nginx:
     build: ../nginx
@@ -29,20 +38,12 @@ services:
 
   database:
     container_name: database
-    env_file: .env
+    env_file:
+      - .env
     image: postgres:17
     environment:
       POSTGRES_USER: ${DATABASE_ADMIN_USER}
       POSTGRES_PASSWORD: ${DATABASE_ADMIN_PASSWORD}
-    command: |
-      bash -c '
-        docker-entrypoint.sh postgres &
-        until pg_isready -U ${DATABASE_ADMIN_USER} -d postgres -q; do sleep 1; done
-        sleep 2
-        psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE keycloak" 2>/dev/null || true
-        psql -U ${DATABASE_ADMIN_USER} -d postgres -c "CREATE DATABASE tasks_database" 2>/dev/null || true
-        wait
-      '
     ports:
       - "${DATABASE_PORT}:${DATABASE_PORT}"
     volumes:
@@ -50,40 +51,60 @@ services:
     networks:
       - spring_net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_ADMIN_USER} -d postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_ADMIN_USER} -d postgres" ]
       interval: 30s
-      timeout: 10s
       retries: 5
       start_period: 10s
+      timeout: 10s
+
+  database-init:
+    container_name: database-init
+    image: postgres:17
+    env_file:
+      - .env
+    volumes:
+      - ./config/database/init.sh:/init.sh
+    networks:
+      - spring_net
+    depends_on:
+      database:
+        condition: service_healthy
+    entrypoint: [ "bash", "/init.sh" ]
+    restart: on-failure
 
   cache:
     container_name: cache
     env_file:
       - .env
     image: redis:latest
-    command: |
-      bash -c '
-        redis-server --port ${CACHE_PORT} --notify-keyspace-events Ex &
-        REDIS_PID=$!
-        sleep 2
-        redis-cli -p ${CACHE_PORT} ACL SETUSER default on ">${CACHE_ADMIN_PASSWORD}"
-        export REDISCLI_AUTH="${CACHE_ADMIN_PASSWORD}"
-        redis-cli -p ${CACHE_PORT} ACL SETUSER ${CACHE_ADMIN_USER} on ">${CACHE_ADMIN_PASSWORD}" allkeys allchannels allcommands
-        redis-cli -p ${CACHE_PORT} ACL SETUSER default off
-        wait $REDIS_PID
-      '
-    ports:
-      - "${CACHE_PORT}:${CACHE_PORT}"
+    command: redis-server --port ${CACHE_PORT} --notify-keyspace-events Ex
     volumes:
       - cache_data:/data
+    ports:
+      - "${CACHE_PORT}:${CACHE_PORT}"
     networks:
       - spring_net
     healthcheck:
-      test: [ "CMD-SHELL", "redis-cli -p ${CACHE_PORT} -a ${CACHE_ADMIN_PASSWORD} --user ${CACHE_ADMIN_USER} PING 2>/dev/null | grep PONG" ]
+      test: [ "CMD-SHELL", "redis-cli -p ${CACHE_PORT} PING | grep PONG" ]
       interval: 30s
       retries: 5
       start_period: 10s
       timeout: 10s
+
+  cache-init:
+    container_name: cache-init
+    image: redis:latest
+    env_file:
+      - .env
+    volumes:
+      - ./config/cache/init.sh:/init.sh
+    networks:
+      - spring_net
+    depends_on:
+      cache:
+        condition: service_healthy
+    entrypoint: [ "bash", "/init.sh" ]
+    restart: on-failure
 
   messaging:
     image: public.ecr.aws/bitnami/kafka:3.9
@@ -102,6 +123,9 @@ services:
       KAFKA_CLIENT_USERS: ${MESSAGING_ADMIN_USER}
       KAFKA_CLIENT_PASSWORDS: ${MESSAGING_ADMIN_PASSWORD}
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CFG_AUTHORIZER_CLASS_NAME: org.apache.kafka.metadata.authorizer.StandardAuthorizer
+      KAFKA_CFG_SUPER_USERS: User:${MESSAGING_ADMIN_USER};User:ANONYMOUS
+      KAFKA_CFG_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "false"
     ports:
       - "${MESSAGING_PORT}:${MESSAGING_PORT}"
     volumes:
@@ -115,50 +139,35 @@ services:
       retries: 5
       start_period: 30s
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0.0
-    container_name: keycloak
-    command: start-dev
+  messaging-init:
+    container_name: messaging-init
+    image: apache/kafka:latest
     env_file:
       - .env
-    environment:
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://database:${DATABASE_PORT}/keycloak
-      KC_DB_USERNAME: ${DATABASE_ADMIN_USER}
-      KC_DB_PASSWORD: ${DATABASE_ADMIN_PASSWORD}
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-    ports:
-      - "${KEYCLOAK_PORT}:8080"
-    depends_on:
-      database:
-        condition: service_healthy
+    volumes:
+      - ./config/messaging/init.sh:/init.sh
     networks:
       - spring_net
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -fs http://localhost:8080/realms/master || exit 0" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
+    depends_on:
+      messaging:
+        condition: service_healthy
+    entrypoint: [ "bash", "/init.sh" ]
+  # ------------------------------------------------------------- (aux services end)
 
-  # --------------------------------------------------------- (aux services end)
-
-  # ------------------------------------------------------------- (services end)
-
+  # ----------------------------------------------------------- ( main services init)
   helloworld:
     container_name: helloworld
     env_file:
       - .env
     build: ../helloworld
-    ports:
-      - "${HELLOWORLD_PORT}:${HELLOWORLD_PORT}"
+    expose:
+      - "${HELLOWORLD_PORT}"
     networks:
       - spring_net
     deploy:
       replicas: 1
     healthcheck:
-      test: [ "CMD-SHELL", "curl -fs http://localhost:${HELLOWORLD_PORT}/actuator/health/liveness || exit 1" ]
+      test: ["CMD-SHELL", "curl -fs http://localhost:${HELLOWORLD_PORT}/actuator/health/liveness || exit 1"]
       interval: 30s
       retries: 5
       start_period: 10s
@@ -169,17 +178,17 @@ services:
     build: ../emailservice
     env_file:
       - .env
-    ports:
-      - "${EMAILSERVICE_PORT}:${EMAILSERVICE_PORT}"
+    expose:
+      - "${EMAILSERVICE_PORT}"
     networks:
       - spring_net
     depends_on:
-      messaging:
-        condition: service_healthy
+      messaging-init:
+          condition: service_completed_successfully
     deploy:
       replicas: 1
     healthcheck:
-      test: [ "CMD-SHELL", "curl -fs http://localhost:${EMAILSERVICE_PORT}/actuator/health/liveness || exit 1" ]
+      test: ["CMD-SHELL", "curl -fs http://localhost:${EMAILSERVICE_PORT}/actuator/health/liveness || exit 1"]
       interval: 30s
       retries: 5
       start_period: 10s
@@ -190,25 +199,25 @@ services:
     build: ../accounts
     env_file:
       - .env
-    ports:
-      - "${ACCOUNTS_PORT}:${ACCOUNTS_PORT}"
+    expose:
+      - "${ACCOUNTS_PORT}"
     networks:
       - spring_net
     volumes:
       - accounts_static_files:/app/src/main/resources/static/public
     depends_on:
-      database:
-        condition: service_healthy
-      cache:
-        condition: service_healthy
-      messaging:
-        condition: service_healthy
+      database-init:
+        condition: service_completed_successfully
+      cache-init:
+        condition: service_completed_successfully
+      messaging-init:
+        condition: service_completed_successfully
       emailservice:
         condition: service_healthy
     deploy:
       replicas: 1
     healthcheck:
-      test: [ "CMD-SHELL", "curl -fs http://localhost:${ACCOUNTS_PORT}/actuator/health/liveness || exit 1" ]
+      test: ["CMD-SHELL", "curl -fs http://localhost:${ACCOUNTS_PORT}/actuator/health/liveness || exit 1"]
       interval: 30s
       retries: 5
       start_period: 10s
@@ -226,20 +235,17 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      cache:
-        condition: service_healthy
-      messaging:
-        condition: service_healthy
+      messaging-init:
+        condition: service_completed_successfully
     deploy:
       replicas: 1
     healthcheck:
-      test: [ "CMD-SHELL", "curl -fs http://localhost:${TASKS_PORT}/actuator/health/liveness || exit 1" ]
+      test: ["CMD-SHELL", "curl -fs http://localhost:${TASKS_PORT}/actuator/health/liveness || exit 1"]
       interval: 30s
       retries: 5
       start_period: 10s
       timeout: 10s
-
-  # ------------------------------------------------------------- (services end)
+  # ------------------------------------------------------------ ( main services end)
 
 volumes:
   database_data:
