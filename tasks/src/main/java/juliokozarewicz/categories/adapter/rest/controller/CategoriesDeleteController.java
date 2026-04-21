@@ -3,10 +3,11 @@ package juliokozarewicz.categories.adapter.rest.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.categories.adapter.rest.dto.ValidationIdentityDTO;
+import juliokozarewicz.categories.application.usecase.CategoriesDeleteUseCase;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
-import juliokozarewicz.categories.application.usecase.CategoriesDeleteUseCase;
-import org.springframework.beans.factory.annotation.Value;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
@@ -56,9 +56,13 @@ public class CategoriesDeleteController {
     ) {
 
         // Data for auth
-        Map<String, Object> credentialsData;
-        credentialsData = (Map<String, Object>)
-        request.getAttribute("credentialsData");
+        Object credentialsAttr = request.getAttribute("credentialsData");
+        if (!(credentialsAttr instanceof Map)) {
+            throw new DomainException(DomainExceptionEnum.ACCESS_EXPIRED);
+        }
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> credentialsData = (Map<String, Object>) credentialsAttr;
 
         // Call use case
         categoriesDeleteUseCase.execute(

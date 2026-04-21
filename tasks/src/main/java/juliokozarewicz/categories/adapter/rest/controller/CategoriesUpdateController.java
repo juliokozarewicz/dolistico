@@ -7,13 +7,11 @@ import juliokozarewicz.categories.application.usecase.CategoriesUpdateUseCase;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.ValidationIdentityDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
