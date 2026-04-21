@@ -1,15 +1,15 @@
 package juliokozarewicz.accounts.application.usecase;
 
-import juliokozarewicz.accounts.domain.entity.AccountsEntity;
+import juliokozarewicz.accounts.application.command.AccountsCreateCommand;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccountsCreateUseCase {
 
-    public String execute(String message) {
+    public String execute(AccountsCreateCommand command) {
 
-        AccountsEntity finalMessage = new AccountsEntity(message);
-        return finalMessage.getMessage();
+        String name = command.fullName() == null ? "" : command.fullName().trim();
+        return "Account received for " + (name.isEmpty() ? "<unknown>" : name);
 
     }
 

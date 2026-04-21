@@ -152,6 +152,33 @@ services:
       messaging:
         condition: service_healthy
     entrypoint: [ "bash", "/init.sh" ]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.0
+    container_name: keycloak
+    command: start-dev
+    env_file:
+      - .env
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://database:${DATABASE_PORT}/${KEYCLOAK_DATABASE_NAME}?currentSchema=${KEYCLOAK_DATABASE_SCHEMA}
+      KC_DB_USERNAME: ${KEYCLOAK_DATABASE_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_PASSWORD_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+      - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - spring_net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${KEYCLOAK_PORT}/health/ready" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
   # ------------------------------------------------------------- (aux services end)
 
   # ----------------------------------------------------------- ( main services init)

@@ -52,6 +52,12 @@ create_schema() {
 EOF
 }
 
+# ------------------------------------------------------------ ( keycloak init )
+create_user     "$KEYCLOAK_DATABASE_USER" "$KEYCLOAK_PASSWORD_PASSWORD"
+create_database "$KEYCLOAK_DATABASE_NAME" "$KEYCLOAK_DATABASE_USER"
+create_schema   "$KEYCLOAK_DATABASE_NAME" "$KEYCLOAK_DATABASE_SCHEMA" "$KEYCLOAK_DATABASE_USER"
+# ------------------------------------------------------------- ( keycloak end )
+
 # ------------------------------------------------------------ ( accounts init )
 create_user     "$ACCOUNTS_DATABASE_USER" "$ACCOUNTS_DATABASE_PASSWORD"
 create_database "$ACCOUNTS_DATABASE_NAME" "$ACCOUNTS_DATABASE_USER"

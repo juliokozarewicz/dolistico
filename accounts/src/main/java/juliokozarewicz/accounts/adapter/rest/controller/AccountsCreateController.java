@@ -13,11 +13,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RestController
 @Validated
@@ -46,28 +43,17 @@ public class AccountsCreateController {
 
     // ===================================================== ( constructor end )
 
-    @PostMapping()
-    public ResponseEntity handle (
+    @PostMapping("/signup")
+    public ResponseEntity<StandardResponseDTO> handle (
 
         // DTO error
-        @Valid AccountsCreateDTO accountsCreateDTO,
+        @Valid @org.springframework.web.bind.annotation.RequestBody AccountsCreateDTO accountsCreateDTO,
         BindingResult bindingResult
 
     ) {
 
-        // Call use case
-        String validatedMessage = accountsCreateUseCase.execute(accountsCreateDTO.message());
-
-        // Message
-        Map<String, Object> metaData = new LinkedHashMap<>();
-        metaData.put("message", validatedMessage);
-
-        // Links
-        Map<String, Object> customLinks = new LinkedHashMap<>();
-        customLinks.put("self", new LinkedHashMap<>() {{
-            put("href", "/" + accountsBaseURL);
-            put("method", "GET");
-        }});
+        // Call use case (no DB changes yet)
+        String validatedMessage = accountsCreateUseCase.execute(accountsCreateDTO);
 
         // Standard response
         return ResponseEntity
@@ -78,8 +64,6 @@ public class AccountsCreateController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.ACCOUNTS_CREATED_SUCCESSFULLY.getStatusCode())
             .messageCode(GlobalSuccessEnum.ACCOUNTS_CREATED_SUCCESSFULLY.getMessageCode())
-            .data(metaData)
-            .links(customLinks)
             .build()
         );
 

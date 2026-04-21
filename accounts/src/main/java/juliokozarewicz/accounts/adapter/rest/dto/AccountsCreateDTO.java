@@ -1,18 +1,26 @@
 package juliokozarewicz.accounts.adapter.rest.dto;
 
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalExceptionEnum;
 import juliokozarewicz.accounts.application.command.AccountsCreateCommand;
 
 public record AccountsCreateDTO(
 
-    @Size(min = 1, message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
-    @Size(max = 256, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
+    @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
+    @Size(min = 3, max = 256, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.ACCOUNTS_FORBIDDEN_CHARACTERS_DTO
     )
-    String message
+    String fullName,
+
+    @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
+    @Email(message = GlobalExceptionEnum.ACCOUNTS_FORBIDDEN_CHARACTERS_DTO)
+    @Size(max = 256, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
+    String email,
+
+    @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
+    @Size(min = 8, max = 128, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
+    String password
 
 ) implements AccountsCreateCommand {}
