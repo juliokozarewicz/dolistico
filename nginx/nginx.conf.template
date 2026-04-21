@@ -272,7 +272,7 @@ http {
         # ------------------------------------------------------ (accounts init)
 
         # [ ACCOUNTS ]
-        location /${ACCOUNTS_BASE_URL}/signup {
+        location /${ACCOUNTS_BASE_URL} {
             proxy_pass http://accounts_backend;
             limit_req zone=critical_zone burst=1 nodelay;
         }

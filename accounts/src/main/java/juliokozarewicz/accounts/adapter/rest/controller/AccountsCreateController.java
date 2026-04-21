@@ -43,7 +43,7 @@ public class AccountsCreateController {
 
     // ===================================================== ( constructor end )
 
-    @PostMapping("/signup")
+    @PostMapping()
     public ResponseEntity<StandardResponseDTO> handle (
 
         // DTO error

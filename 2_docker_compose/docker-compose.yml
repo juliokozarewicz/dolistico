@@ -233,12 +233,12 @@ services:
     volumes:
       - accounts_static_files:/app/src/main/resources/static/public
     depends_on:
-      database-init:
-        condition: service_completed_successfully
-      cache-init:
-        condition: service_completed_successfully
-      messaging-init:
-        condition: service_completed_successfully
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      messaging:
+        condition: service_healthy
       emailservice:
         condition: service_healthy
     deploy:
@@ -262,8 +262,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      messaging-init:
-        condition: service_completed_successfully
+      messaging:
+        condition: service_healthy
     deploy:
       replicas: 1
     healthcheck:
