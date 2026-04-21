@@ -66,7 +66,8 @@ public class CategoriesGetByIdController {
         Map<String, Object> credentialsData = (Map<String, Object>) credentialsAttr;
 
         // Call use case
-w            credentialsData,
+         CategoriesGetResponseCommand dataResponse = categoriesGetByIdUseCase.execute(
+            credentialsData,
             validationIdentityDTO.id()
         );
 
