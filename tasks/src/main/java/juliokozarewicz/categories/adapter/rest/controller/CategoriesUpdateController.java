@@ -2,7 +2,7 @@ package juliokozarewicz.categories.adapter.rest.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import juliokozarewicz.categories.adapter.rest.dto.CategoriesCreateUpadateDTO;
+import juliokozarewicz.categories.adapter.rest.dto.CategoriesCreateUpdateDTO;
 import juliokozarewicz.categories.application.usecase.CategoriesUpdateUseCase;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.dto.ValidationIdentityDTO;
@@ -29,8 +29,6 @@ public class CategoriesUpdateController {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${TASKS_BASE_URL}")
-    private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
     private final CategoriesUpdateUseCase categoriesUpdateUseCase;
@@ -52,7 +50,7 @@ public class CategoriesUpdateController {
 
         // DTO error
         @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
-        @Valid @RequestBody CategoriesCreateUpadateDTO categoriesCreateUpadateDTO,
+        @Valid @RequestBody CategoriesCreateUpdateDTO categoriesCreateUpdateDTO,
         BindingResult bindingResult,
 
         // Request for auth
@@ -69,7 +67,7 @@ public class CategoriesUpdateController {
         categoriesUpdateUseCase.execute(
             credentialsData,
             UUID.fromString(validationIdentityDTO.id()),
-            categoriesCreateUpadateDTO
+                categoriesCreateUpdateDTO
         );
 
         // Standard response

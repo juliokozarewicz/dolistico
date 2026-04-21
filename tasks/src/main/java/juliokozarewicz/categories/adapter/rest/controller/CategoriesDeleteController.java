@@ -28,8 +28,6 @@ public class CategoriesDeleteController {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${TASKS_BASE_URL}")
-    private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
     private final CategoriesDeleteUseCase categoriesDeleteUseCase;

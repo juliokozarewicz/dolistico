@@ -2,7 +2,7 @@ package juliokozarewicz.categories.adapter.rest.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import juliokozarewicz.categories.adapter.rest.dto.CategoriesCreateUpadateDTO;
+import juliokozarewicz.categories.adapter.rest.dto.CategoriesCreateUpdateDTO;
 import juliokozarewicz.categories.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.categories.application.usecase.CategoriesCreateUseCase;
@@ -31,8 +31,6 @@ public class CategoriesCreateController {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${TASKS_BASE_URL}")
-    private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
     private final CategoriesCreateUseCase categoriesCreateUseCase;
@@ -53,7 +51,7 @@ public class CategoriesCreateController {
     public ResponseEntity create (
 
         // DTO error
-        @Valid @RequestBody CategoriesCreateUpadateDTO categoriesCreateUpadateDTO,
+        @Valid @RequestBody CategoriesCreateUpdateDTO categoriesCreateUpdateDTO,
         BindingResult bindingResult,
 
         // Request for auth
@@ -69,7 +67,7 @@ public class CategoriesCreateController {
         // Call use case
         String idCreated = categoriesCreateUseCase.execute(
             credentialsData,
-            categoriesCreateUpadateDTO
+                categoriesCreateUpdateDTO
         );
 
         // data

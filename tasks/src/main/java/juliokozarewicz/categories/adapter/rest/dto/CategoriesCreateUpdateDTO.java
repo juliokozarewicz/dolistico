@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import juliokozarewicz.categories.application.command.CategoriesCreateUpdateCommand;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalExceptionEnum;
 
-public record CategoriesCreateUpadateDTO (
+public record CategoriesCreateUpdateDTO(
 
     @NotBlank(message = GlobalExceptionEnum.TASKS_FIELD_CANNOT_BE_EMPTY_DTO)
     @Size(min = 3, message = GlobalExceptionEnum.TASKS_TOO_FEW_CHARACTERS_DTO)

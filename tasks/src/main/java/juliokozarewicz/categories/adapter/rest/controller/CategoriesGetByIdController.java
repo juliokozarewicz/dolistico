@@ -29,8 +29,6 @@ public class CategoriesGetByIdController {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${TASKS_BASE_URL}")
-    private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
     private final CategoriesGetByIdUseCase categoriesGetByIdUseCase;

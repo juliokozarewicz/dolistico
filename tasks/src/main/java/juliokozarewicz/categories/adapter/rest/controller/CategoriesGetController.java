@@ -30,8 +30,6 @@ public class CategoriesGetController {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${TASKS_BASE_URL}")
-    private String tasksBaseURL;
     // -------------------------------------------------------------------------
 
     private final CategoriesGetUseCase categoriesGetUseCase;
