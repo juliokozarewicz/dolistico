@@ -166,19 +166,21 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_DATABASE_PASSWORD}
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
     ports:
-      - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"
+      - "${KEYCLOAK_PORT}:8080"
     depends_on:
       database-init:
         condition: service_completed_successfully
     networks:
       - spring_net
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:${KEYCLOAK_PORT}/health/ready" ]
+      test: [ "CMD-SHELL", "/opt/keycloak/bin/kc.sh show-config >/dev/null 2>&1 || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 30s
+      start_period: 180s
 
   keycloak-init:
     container_name: keycloak-init
