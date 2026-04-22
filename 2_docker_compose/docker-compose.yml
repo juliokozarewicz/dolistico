@@ -169,8 +169,8 @@ services:
     ports:
       - "${KEYCLOAK_PORT}:${KEYCLOAK_PORT}"
     depends_on:
-      database:
-        condition: service_healthy
+      database-init:
+        condition: service_completed_successfully
     networks:
       - spring_net
     healthcheck:
@@ -179,6 +179,20 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+
+  keycloak-init:
+    container_name: keycloak-init
+    image: quay.io/keycloak/keycloak:24.0.0
+    env_file:
+      - .env
+    volumes:
+      - ./config/keycloak/init.sh:/init.sh
+    networks:
+      - spring_net
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    entrypoint: [ "bash", "/init.sh" ]
   # ------------------------------------------------------------- (aux services end)
 
   # ----------------------------------------------------------- ( main services init)
@@ -233,12 +247,12 @@ services:
     volumes:
       - accounts_static_files:/app/src/main/resources/static/public
     depends_on:
-      database:
-        condition: service_healthy
-      cache:
-        condition: service_healthy
-      messaging:
-        condition: service_healthy
+      database-init:
+        condition: service_completed_successfully
+      cache-init:
+        condition: service_completed_successfully
+      messaging-init:
+        condition: service_completed_successfully
       emailservice:
         condition: service_healthy
     deploy:
@@ -260,10 +274,10 @@ services:
     networks:
       - spring_net
     depends_on:
-      database:
-        condition: service_healthy
-      messaging:
-        condition: service_healthy
+      database-init:
+        condition: service_completed_successfully
+      messaging-init:
+        condition: service_completed_successfully
     deploy:
       replicas: 1
     healthcheck:
