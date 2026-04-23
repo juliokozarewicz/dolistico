@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
@@ -47,13 +48,13 @@ public class AccountsCreateController {
     public ResponseEntity<StandardResponseDTO> handle (
 
         // DTO error
-        @Valid @org.springframework.web.bind.annotation.RequestBody AccountsCreateDTO accountsCreateDTO,
+        @Valid @RequestBody AccountsCreateDTO accountsCreateDTO,
         BindingResult bindingResult
 
     ) {
 
         // Call use case (no DB changes yet)
-        String validatedMessage = accountsCreateUseCase.execute(accountsCreateDTO);
+        accountsCreateUseCase.execute(accountsCreateDTO);
 
         // Standard response
         return ResponseEntity
