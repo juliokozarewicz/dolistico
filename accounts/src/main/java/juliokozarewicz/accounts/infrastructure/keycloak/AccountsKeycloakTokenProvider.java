@@ -22,13 +22,10 @@ public class AccountsKeycloakTokenProvider {
     // -------------------------------------------------------------------------
     @Value("${KEYCLOAK_PORT}")
     private String keycloakPort;
-
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
-
     @Value("${ACCOUNTS_KEYCLOAK_CLIENT_ID}")
     private String keycloakClientId;
-
     @Value("${ACCOUNTS_KEYCLOAK_CLIENT_SECRET}")
     private String keycloakClientSecret;
     // -------------------------------------------------------------------------
@@ -54,7 +51,6 @@ public class AccountsKeycloakTokenProvider {
     }
 
     // ===================================================== ( constructor end )
-
     /**
      * Returns a valid access token.
      *
@@ -63,63 +59,49 @@ public class AccountsKeycloakTokenProvider {
      * 2. If not present, fetch new token
      * 3. Store with dynamic TTL (based on expires_in - safety margin)
      */
-    public String getAccessToken() {
+    public synchronized String getAccessToken() {
 
-        // 1. Try Redis
+        // Try Redis
         Cache.ValueWrapper cachedToken = clientKeycloakTokenCache.get(cacheKey);
 
         if (cachedToken != null) {
             return (String) ((LinkedHashMap<?, ?>) cachedToken.get()).get("token");
         }
 
-        // 2. Cache miss → fetch new token
-        return fetchAndCacheToken();
-
-    }
-
-    /**
-     * Fetches a new token from Keycloak and stores it in Redis.
-     */
-    private synchronized String fetchAndCacheToken() {
-
-        // Double-check after acquiring lock (avoids thundering herd)
-        Cache.ValueWrapper cachedToken = clientKeycloakTokenCache.get(cacheKey);
-
-        if (cachedToken != null) {
-            return (String) ((LinkedHashMap<?, ?>) cachedToken.get()).get("token");
-        }
-
-        // 1. Build URL
+        // Build URL
         String url = "http://keycloak:8080/realms/" +
             keycloakRealm +
             "/protocol/openid-connect/token";
 
-        // 2. Build request body
+        // Build request body
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("client_id", keycloakClientId);
         body.add("client_secret", keycloakClientSecret);
         body.add("grant_type", "client_credentials");
 
-        // 3. Build headers
+        // Build headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
         HttpEntity<?> request = new HttpEntity<>(body, headers);
 
-        // 4. Call Keycloak
+        // Call Keycloak
         Map<String, Object> response = restTemplate.postForObject(
             url,
             request,
             Map.class
         );
 
-        // 5. Extract and store
+        // Extract
         String token = (String) response.get("access_token");
+
+        // Map
         LinkedHashMap<String, String> tokenMap = new LinkedHashMap<>();
         tokenMap.put("token", token);
+
+        // Store
         clientKeycloakTokenCache.put(cacheKey, tokenMap);
 
-        // 6. Return token
+        // Return token
         return token;
 
     }
