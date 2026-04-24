@@ -61,48 +61,59 @@ public class AccountsKeycloakTokenProvider {
      */
     public synchronized String getAccessToken() {
 
-        // Try Redis
-        Cache.ValueWrapper cachedToken = clientKeycloakTokenCache.get(cacheKey);
+        try {
 
-        if (cachedToken != null) {
-            return (String) ((LinkedHashMap<?, ?>) cachedToken.get()).get("token");
+            // Try Redis
+            Cache.ValueWrapper cachedToken = clientKeycloakTokenCache.get(cacheKey);
+
+            if (cachedToken != null) {
+                return (String) ((LinkedHashMap<?, ?>) cachedToken.get()).get("token");
+            }
+
+            // Build URL
+            String url = "http://keycloak:8080/realms/" +
+                    keycloakRealm +
+                    "/protocol/openid-connect/token";
+
+            // Build request body
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("client_id", keycloakClientId);
+            body.add("client_secret", keycloakClientSecret);
+            body.add("grant_type", "client_credentials");
+
+            // Build headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            HttpEntity<?> request = new HttpEntity<>(body, headers);
+
+            // Call Keycloak
+            Map<String, Object> response = restTemplate.postForObject(
+                    url,
+                    request,
+                    Map.class
+            );
+
+            // Extract
+            String token = (String) response.get("access_token");
+
+            // Map
+            LinkedHashMap<String, String> tokenMap = new LinkedHashMap<>();
+            tokenMap.put("token", token);
+
+            // Store
+            clientKeycloakTokenCache.put(cacheKey, tokenMap);
+
+            // Return token
+            return token;
+
+        } catch (Exception e) {
+
+            throw new InternalError(
+                "Error accessing Keycloak " +
+                "[ AccountsKeycloakTokenProvider.getAccessToken() ]: " + e
+            );
+
         }
-
-        // Build URL
-        String url = "http://keycloak:8080/realms/" +
-            keycloakRealm +
-            "/protocol/openid-connect/token";
-
-        // Build request body
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("client_id", keycloakClientId);
-        body.add("client_secret", keycloakClientSecret);
-        body.add("grant_type", "client_credentials");
-
-        // Build headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<?> request = new HttpEntity<>(body, headers);
-
-        // Call Keycloak
-        Map<String, Object> response = restTemplate.postForObject(
-            url,
-            request,
-            Map.class
-        );
-
-        // Extract
-        String token = (String) response.get("access_token");
-
-        // Map
-        LinkedHashMap<String, String> tokenMap = new LinkedHashMap<>();
-        tokenMap.put("token", token);
-
-        // Store
-        clientKeycloakTokenCache.put(cacheKey, tokenMap);
-
-        // Return token
-        return token;
 
     }
 
