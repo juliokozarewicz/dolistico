@@ -4,18 +4,20 @@ import jakarta.validation.ConstraintViolationException;
 import juliokozarewicz.accounts.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalExceptionEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
+import org.apache.tomcat.util.http.InvalidParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-import org.apache.tomcat.util.http.InvalidParameterException;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
@@ -114,7 +116,7 @@ public class GlobalException {
     public ResponseEntity<StandardResponseDTO> handleGeneric(Exception ex) {
 
         // logs
-        logger.error(ex.toString());
+        logger.error("[ INTERNAL ERROR ] : ", ex);
 
         return ResponseEntity
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)

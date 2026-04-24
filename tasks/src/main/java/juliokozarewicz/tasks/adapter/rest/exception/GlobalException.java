@@ -114,7 +114,7 @@ public class GlobalException {
     public ResponseEntity<StandardResponseDTO> handleGeneric(Exception ex) {
 
         // logs
-        logger.error(ex.toString());
+        logger.error("[ INTERNAL ERROR ] : ", ex);
 
         return ResponseEntity
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)

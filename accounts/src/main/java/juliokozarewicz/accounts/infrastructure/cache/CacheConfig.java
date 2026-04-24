@@ -1,4 +1,4 @@
-package juliokozarewicz.accounts.infrastructure;
+package juliokozarewicz.accounts.infrastructure.cache;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -42,19 +42,20 @@ public class CacheConfig {
         // Per-cache TTL overrides — each entry extends or replaces the default TTL
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
 
-        // Long-lived user data: profile and address rarely change
-        cacheConfigs.put("accounts.profileCache", defaultCacheConfig.entryTtl(Duration.ofDays(180)));
+        // Long-lived user data: Profile
+        cacheConfigs.put("accounts.profileCache", defaultCacheConfig.entryTtl( Duration.ofDays(180) ));
 
-        cacheConfigs.put("accounts.addressCache", defaultCacheConfig.entryTtl(Duration.ofDays(180)));
+        // Long-lived user data: Address
+        cacheConfigs.put("accounts.addressCache", defaultCacheConfig.entryTtl( Duration.ofDays(180) ));
 
         // Short-lived PIN verification — expires in 5 minutes for security
-        cacheConfigs.put("accounts.pinVerificationCache", defaultCacheConfig.entryTtl(Duration.ofMinutes(5)));
+        cacheConfigs.put("accounts.pinVerificationCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(5) ));
 
         // Holds state for accounts pending activation — kept for 3 days
-        cacheConfigs.put("accounts.notActivatedAccountCache", defaultCacheConfig.entryTtl(Duration.ofDays(3)));
+        cacheConfigs.put("accounts.notActivatedAccountCache", defaultCacheConfig.entryTtl( Duration.ofDays(3) ));
 
-        // Grace period after user-initiated account deletion — 32 days for recovery
-        cacheConfigs.put("accounts.deletedAccountByUserCache", defaultCacheConfig.entryTtl(Duration.ofDays(32)));
+        // Keycloak client token
+        cacheConfigs.put("accounts.clientKeycloakTokenCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(4) ));
 
         // Build the RedisCacheManager with the default config and all per-cache overrides
         return RedisCacheManager.builder(redisConnectionFactory)

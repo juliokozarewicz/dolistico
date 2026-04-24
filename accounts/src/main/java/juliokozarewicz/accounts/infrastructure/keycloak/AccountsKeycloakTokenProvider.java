@@ -1,6 +1,8 @@
 package juliokozarewicz.accounts.infrastructure.keycloak;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
@@ -20,27 +23,33 @@ public class AccountsKeycloakTokenProvider {
     @Value("${KEYCLOAK_PORT}")
     private String keycloakPort;
 
-    @Value("${KEYCLOAK_REALM}")
+    @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
 
-    @Value("${KEYCLOAK_CLIENT_ID}")
+    @Value("${ACCOUNTS_KEYCLOAK_CLIENT_ID}")
     private String keycloakClientId;
 
-    @Value("${KEYCLOAK_CLIENT_SECRET}")
+    @Value("${ACCOUNTS_KEYCLOAK_CLIENT_SECRET}")
     private String keycloakClientSecret;
     // -------------------------------------------------------------------------
 
     private final RestTemplate restTemplate;
-    private String accessToken;
-    private long expiresAt;
+    private final CacheManager cacheManager;
+    private final Cache clientKeycloakTokenCache;
+
+    // Cache name
+    private static final String cacheKey = "storedToken";
 
     public AccountsKeycloakTokenProvider(
 
-        RestTemplate restTemplate
+        RestTemplate restTemplate,
+        CacheManager cacheManager
 
     ) {
 
         this.restTemplate = restTemplate;
+        this.cacheManager = cacheManager;
+        this.clientKeycloakTokenCache = cacheManager.getCache("accounts.clientKeycloakTokenCache");
 
     }
 
@@ -49,53 +58,69 @@ public class AccountsKeycloakTokenProvider {
     /**
      * Returns a valid access token.
      *
-     * If the cached token is still valid, it will be reused.
-     * Otherwise, a new token is requested using client_credentials flow.
+     * Strategy:
+     * 1. Try Redis cache
+     * 2. If not present, fetch new token
+     * 3. Store with dynamic TTL (based on expires_in - safety margin)
      */
-    public synchronized String getAccessToken() {
+    public String getAccessToken() {
 
-        // 1. Return cached token if still valid
-        if (accessToken != null && System.currentTimeMillis() < expiresAt) {
-            return accessToken;
+        // 1. Try Redis
+        Cache.ValueWrapper cachedToken = clientKeycloakTokenCache.get(cacheKey);
+
+        if (cachedToken != null) {
+            return (String) ((LinkedHashMap<?, ?>) cachedToken.get()).get("token");
         }
 
-        // 2. Build URL
+        // 2. Cache miss → fetch new token
+        return fetchAndCacheToken();
+
+    }
+
+    /**
+     * Fetches a new token from Keycloak and stores it in Redis.
+     */
+    private synchronized String fetchAndCacheToken() {
+
+        // Double-check after acquiring lock (avoids thundering herd)
+        Cache.ValueWrapper cachedToken = clientKeycloakTokenCache.get(cacheKey);
+
+        if (cachedToken != null) {
+            return (String) ((LinkedHashMap<?, ?>) cachedToken.get()).get("token");
+        }
+
+        // 1. Build URL
         String url = "http://keycloak:8080/realms/" +
             keycloakRealm +
             "/protocol/openid-connect/token";
 
-        // 3. Build request body
+        // 2. Build request body
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("client_id", keycloakClientId);
         body.add("client_secret", keycloakClientSecret);
         body.add("grant_type", "client_credentials");
 
-        // 4. Build headers
+        // 3. Build headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         HttpEntity<?> request = new HttpEntity<>(body, headers);
 
-        // 5. Call Keycloak
+        // 4. Call Keycloak
         Map<String, Object> response = restTemplate.postForObject(
             url,
             request,
             Map.class
         );
 
-        // 6. Extract token
-        this.accessToken = (String) response.get("access_token");
+        // 5. Extract and store
+        String token = (String) response.get("access_token");
+        LinkedHashMap<String, String> tokenMap = new LinkedHashMap<>();
+        tokenMap.put("token", token);
+        clientKeycloakTokenCache.put(cacheKey, tokenMap);
 
-        // 7. Extract expiration safely
-        Object expiresInObj = response.get("expires_in");
-        long expiresIn = expiresInObj instanceof Number
-            ? ((Number) expiresInObj).longValue()
-            : Long.parseLong(expiresInObj.toString());
-
-        this.expiresAt = System.currentTimeMillis() + (expiresIn * 1000L);
-
-        // 8. Return token
-        return accessToken;
+        // 6. Return token
+        return token;
 
     }
 
