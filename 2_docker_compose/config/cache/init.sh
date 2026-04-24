@@ -32,7 +32,7 @@ create_user() {
   $REDIS_CLI ACL SETUSER "$user" on \
     ">$password" \
     resetkeys resetchannels \
-    ~$prefix-* \
+    ~$prefix.* \
     +@read +@write \
     +publish +subscribe +psubscribe \
     -scan -keys -type -ttl -pttl -@dangerous -@admin \

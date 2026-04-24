@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Map;
 
 @Service
@@ -35,8 +34,14 @@ public class AccountsKeycloakTokenProvider {
     private String accessToken;
     private long expiresAt;
 
-    public AccountsKeycloakTokenProvider(RestTemplate restTemplate) {
+    public AccountsKeycloakTokenProvider(
+
+        RestTemplate restTemplate
+
+    ) {
+
         this.restTemplate = restTemplate;
+
     }
 
     // ===================================================== ( constructor end )
@@ -73,9 +78,9 @@ public class AccountsKeycloakTokenProvider {
 
         // 5. Call Keycloak
         Map<String, Object> response = restTemplate.postForObject(
-                url,
-                request,
-                Map.class
+            url,
+            request,
+            Map.class
         );
 
         // 6. Extract token
@@ -84,8 +89,8 @@ public class AccountsKeycloakTokenProvider {
         // 7. Extract expiration safely
         Object expiresInObj = response.get("expires_in");
         long expiresIn = expiresInObj instanceof Number
-                ? ((Number) expiresInObj).longValue()
-                : Long.parseLong(expiresInObj.toString());
+            ? ((Number) expiresInObj).longValue()
+            : Long.parseLong(expiresInObj.toString());
 
         this.expiresAt = System.currentTimeMillis() + (expiresIn * 1000L);
 
