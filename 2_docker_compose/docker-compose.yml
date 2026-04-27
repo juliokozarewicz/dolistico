@@ -182,7 +182,7 @@ services:
 
   keycloak-init:
     container_name: keycloak-init
-    image: quay.io/keycloak/keycloak:24.0.0
+    image: curlimages/curl:latest
     env_file:
       - .env
     volumes:
@@ -192,7 +192,7 @@ services:
     depends_on:
       keycloak:
         condition: service_healthy
-    entrypoint: [ "bash", "/init.sh" ]
+    entrypoint: [ "sh", "/init.sh" ]
   # ------------------------------------------------------------- (aux services end)
 
   # ----------------------------------------------------------- ( main services init)
@@ -253,6 +253,8 @@ services:
         condition: service_completed_successfully
       messaging-init:
         condition: service_completed_successfully
+      keycloak-init:
+        condition: service_completed_successfully
       emailservice:
         condition: service_healthy
     deploy:
@@ -296,4 +298,5 @@ volumes:
 
 networks:
   spring_net:
+    name: spring_net
     driver: bridge

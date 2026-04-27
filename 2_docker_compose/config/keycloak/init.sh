@@ -6,8 +6,17 @@ KEYCLOAK_URL="http://keycloak:8080"
 
 # ------------------------------------------------------------ ( helpers init )
 wait_for_keycloak() {
-  echo "Waiting for Keycloak..."
-  until curl -sf "$KEYCLOAK_URL/health/ready" > /dev/null; do sleep 3; done
+  echo "Waiting for Keycloak (auth ready)..."
+
+  until curl -sf -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    -d "username=$KEYCLOAK_ADMIN_USER" \
+    -d "password=$KEYCLOAK_ADMIN_PASSWORD" > /dev/null; do
+    sleep 3
+  done
+
   echo "Keycloak is ready!"
 }
 
