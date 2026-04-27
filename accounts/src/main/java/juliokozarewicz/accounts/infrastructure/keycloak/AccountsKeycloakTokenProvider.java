@@ -22,10 +22,13 @@ public class AccountsKeycloakTokenProvider {
     // -------------------------------------------------------------------------
     @Value("${KEYCLOAK_PORT}")
     private String keycloakPort;
+
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
+
     @Value("${ACCOUNTS_KEYCLOAK_CLIENT_ID}")
     private String keycloakClientId;
+
     @Value("${ACCOUNTS_KEYCLOAK_CLIENT_SECRET}")
     private String keycloakClientSecret;
     // -------------------------------------------------------------------------
@@ -109,8 +112,7 @@ public class AccountsKeycloakTokenProvider {
         } catch (Exception e) {
 
             throw new InternalError(
-                "Error accessing Keycloak " +
-                "[ AccountsKeycloakTokenProvider.getAccessToken() ]: " + e
+                "Error accessing Keycloak [ AccountsKeycloakTokenProvider.getAccessToken() ]: " + e
             );
 
         }
