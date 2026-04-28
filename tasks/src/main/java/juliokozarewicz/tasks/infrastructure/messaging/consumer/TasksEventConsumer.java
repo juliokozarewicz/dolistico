@@ -1,10 +1,15 @@
 package juliokozarewicz.tasks.infrastructure.messaging.consumer;
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import juliokozarewicz.tasks.infrastructure.messaging.enums.TasksMessagingGroupEnum;
 import juliokozarewicz.tasks.infrastructure.messaging.enums.TasksMessagingTopicEnum;
+import juliokozarewicz.tasks.infrastructure.messaging.producer.TasksEventProducer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
@@ -18,6 +23,7 @@ public class TasksEventConsumer {
     // -------------------------------------------------------------------------
 
     // ==================================================== ( constructor init )
+    private static final Logger logger = LoggerFactory.getLogger(TasksEventConsumer.class);
     private final TasksRepository tasksRepository;
     private final ObjectMapper objectMapper;
 
@@ -56,10 +62,9 @@ public class TasksEventConsumer {
 
         } catch (Exception e) {
 
-            throw new InternalError(
-                "Error while consuming the Kafka message " +
-                "[ TasksEventConsumer.consumerCreateUpdate() ]: " + e
-            );
+            logger.error("Error consuming message: [ TasksEventConsumer.consumerCreateUpdate() ]: " + e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
 
@@ -87,10 +92,9 @@ public class TasksEventConsumer {
 
         } catch (Exception e) {
 
-            throw new InternalError(
-                "Error while consuming the Kafka message " +
-                "[ TasksEventConsumer.consumerDelete() ]: " + e
-            );
+            logger.error("Error consuming message: [ TasksEventConsumer.TasksEventConsumer() ]: " + e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
 

@@ -16,6 +16,7 @@ public enum DomainExceptionEnum {
     TASKS_TOO_MANY_CHARACTERS,
     TASKS_FORBIDDEN_CHARACTERS,
     TASKS_USER_NOT_FOUND,
+    INTERNAL_INSTABILITY,
     // ================================================ ( rest error codes end )
 
     // ============================================= ( domain error codes init )

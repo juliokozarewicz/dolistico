@@ -5,15 +5,16 @@ import juliokozarewicz.helloworld.domain.exception.DomainExceptionEnum;
 public enum GlobalExceptionEnum {
 
     // =============================================== ( rest error codes init )
-    SERVICE_UNAVAILABLE(503, "SERVICE_UNAVAILABLE", null),
-    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", null),
-    TOO_MANY_REQUESTS(429, "TOO_MANY_REQUESTS", null),
-    UNPROCESSABLE_ENTITY(422, "UNPROCESSABLE_ENTITY", null),
+    SERVICE_UNAVAILABLE(503, "SERVICE_UNAVAILABLE", DomainExceptionEnum.SERVICE_UNAVAILABLE),
+    INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", DomainExceptionEnum.INTERNAL_SERVER_ERROR),
+    TOO_MANY_REQUESTS(429, "TOO_MANY_REQUESTS", DomainExceptionEnum.TOO_MANY_REQUESTS),
+    UNPROCESSABLE_ENTITY(422, "UNPROCESSABLE_ENTITY", DomainExceptionEnum.UNPROCESSABLE_ENTITY),
     NO_PERMISSION_TO_ACCESS(403, "NO_PERMISSION_TO_ACCESS", DomainExceptionEnum.NO_PERMISSION_TO_ACCESS),
     PAYMENT_REQUIRED(402, "PAYMENT_REQUIRED", DomainExceptionEnum.PAYMENT_REQUIRED),
-    ACCESS_EXPIRED(401, "ACCESS_EXPIRED", null),
+    ACCESS_EXPIRED(401, "ACCESS_EXPIRED", DomainExceptionEnum.ACCESS_EXPIRED),
     INVALID_CREDENTIALS(401, "INVALID_CREDENTIALS", DomainExceptionEnum.INVALID_CREDENTIALS),
-    BAD_REQUEST(400, "BAD_REQUEST", null),
+    BAD_REQUEST(400, "BAD_REQUEST", DomainExceptionEnum.BAD_REQUEST),
+    INTERNAL_INSTABILITY(500, "INTERNAL_INSTABILITY", DomainExceptionEnum.INTERNAL_INSTABILITY),
     // ================================================ ( rest error codes end )
 
     // ============================================= ( domain error codes init )

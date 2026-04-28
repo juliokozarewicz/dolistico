@@ -2,6 +2,10 @@ package juliokozarewicz.categories.infrastructure.messaging.producer;
 
 import juliokozarewicz.categories.domain.entity.CategoriesEntity;
 import juliokozarewicz.categories.infrastructure.messaging.enums.CategoriesMessagingTopicEnum;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
@@ -16,6 +20,7 @@ public class CategoriesEventProducer {
     // -------------------------------------------------------------------------
 
     // ==================================================== ( constructor init )
+    private static final Logger logger = LoggerFactory.getLogger(CategoriesEventProducer.class);
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
@@ -48,14 +53,13 @@ public class CategoriesEventProducer {
             kafkaTemplate.send(
                 CategoriesMessagingTopicEnum.CATEGORIES_CREATE_UPDATE_PERSIST,
                 payload
-            ).get(10, TimeUnit.SECONDS);
+            ).get(5, TimeUnit.SECONDS);
 
         } catch (Exception e) {
 
-            throw new InternalError(
-                "Error while producing the Kafka message " +
-                "[ CategoriesEventProducer.producerCreateUpdate() ]: " + e
-            );
+            logger.error("Error producing message: [ CategoriesEventProducer.producerCreateUpdate() ]: " + e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
 
@@ -77,14 +81,13 @@ public class CategoriesEventProducer {
             kafkaTemplate.send(
                 CategoriesMessagingTopicEnum.CATEGORIES_DELETE_PERSIST,
                 payload
-            ).get(10, TimeUnit.SECONDS);
+            ).get(5, TimeUnit.SECONDS);
 
         } catch (Exception e) {
 
-            throw new InternalError(
-                "Error while producing the Kafka message " +
-                "[ CategoriesEventProducer.producerDelete() ]: " + e
-            );
+            logger.error("Error producing message: [ CategoriesEventProducer.producerDelete() ]: " + e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
 

@@ -57,8 +57,7 @@ public class CategoriesEventConsumer {
         } catch (Exception e) {
 
             throw new InternalError(
-                "Error while consuming the Kafka message " +
-                "[ CategoriesEventConsumer.consumerCreateUpdate() ]: " + e
+                "Error while consuming the Kafka message [ CategoriesEventConsumer.consumerCreateUpdate() ]: " + e
             );
 
         }
@@ -88,8 +87,7 @@ public class CategoriesEventConsumer {
         } catch (Exception e) {
 
             throw new InternalError(
-                "Error while consuming the Kafka message " +
-                "[ CategoriesEventConsumer.consumerDelete() ]: " + e
+                "Error while consuming the Kafka message [ CategoriesEventConsumer.consumerDelete() ]: " + e
             );
 
         }

@@ -2,7 +2,11 @@ package juliokozarewicz.tasks.infrastructure.messaging.producer;
 
 
 import juliokozarewicz.tasks.domain.entity.TasksEntity;
+import juliokozarewicz.tasks.domain.exception.DomainException;
+import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.tasks.infrastructure.messaging.enums.TasksMessagingTopicEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
@@ -17,6 +21,7 @@ public class TasksEventProducer {
     // -------------------------------------------------------------------------
 
     // ==================================================== ( constructor init )
+    private static final Logger logger = LoggerFactory.getLogger(TasksEventProducer.class);
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
@@ -49,14 +54,13 @@ public class TasksEventProducer {
             kafkaTemplate.send(
                 TasksMessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST,
                 payload
-            ).get(10, TimeUnit.SECONDS);
+            ).get(5, TimeUnit.SECONDS);
 
         } catch (Exception e) {
 
-            throw new InternalError(
-                "Error while producing the Kafka message " +
-                "[ TasksEventProducer.producerCreateUpdate() ]: " + e
-            );
+            logger.error("Error producing message: [ TasksEventProducer.producerCreateUpdate() ]: " + e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
 
@@ -78,14 +82,13 @@ public class TasksEventProducer {
             kafkaTemplate.send(
                 TasksMessagingTopicEnum.TASKS_DELETE_PERSIST,
                 payload
-            ).get(10, TimeUnit.SECONDS);
+            ).get(5, TimeUnit.SECONDS);
 
         } catch (Exception e) {
 
-            throw new InternalError(
-                "Error while producing the Kafka message " +
-                "[ TasksEventProducer.producerDelete() ]: " + e
-            );
+            logger.error("Error producing message: [ TasksEventProducer.producerDelete() ]: " + e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
 
