@@ -242,7 +242,7 @@ disable_admin_user() {
     "$KEYCLOAK_URL/admin/realms/master/users/$user_id" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
-    -d '{"enabled": false}' \
+    -d "{\"enabled\": false}" \
     && echo "Admin user disabled." || echo "Failed to disable admin user."
 }
 
