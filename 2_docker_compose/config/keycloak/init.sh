@@ -12,23 +12,22 @@ echo "***************************** [ INIT SCRIPT ] ****************************
 KEYCLOAK_URL="http://keycloak:8080"
 
 # ------------------------------------------------------------------------------
-# Wait until Keycloak is ready to accept authentication
+# Wait until Keycloak is ready to accept requests
 # ------------------------------------------------------------------------------
 wait_for_keycloak() {
   echo "Waiting for Keycloak..."
-  local retries=50
+  local retries=80
 
-  until curl -sf --max-time 60 -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "grant_type=password" \
-    -d "client_id=admin-cli" \
-    -d "username=$KEYCLOAK_ADMIN_USER" \
-    -d "password=$KEYCLOAK_ADMIN_PASSWORD" > /dev/null; do
+  until curl -sf --max-time 10 \
+    "$KEYCLOAK_URL/realms/master" > /dev/null; do
+
     retries=$((retries - 1))
+
     if [ "$retries" -le 0 ]; then
       echo "Keycloak did not become ready in time. Aborting."
       exit 1
     fi
+
     sleep 5
   done
 
@@ -36,16 +35,40 @@ wait_for_keycloak() {
 }
 
 # ------------------------------------------------------------------------------
-# Get admin token
+# Retrieve admin access token
 # ------------------------------------------------------------------------------
 get_admin_token() {
-  curl -sf --max-time 60 -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
+  curl -sf --max-time 60 -X POST \
+    "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
     -d "username=$KEYCLOAK_ADMIN_USER" \
     -d "password=$KEYCLOAK_ADMIN_PASSWORD" \
     | grep -o '"access_token":"[^"]*' | cut -d'"' -f4
+}
+
+# ------------------------------------------------------------------------------
+# Check if admin API is accessible
+# If not, assume bootstrap already ran and exit cleanly
+# ------------------------------------------------------------------------------
+admin_api_available() {
+  local token=$1
+
+  curl -sf --max-time 10 \
+    -H "Authorization: Bearer $token" \
+    "$KEYCLOAK_URL/admin/realms/master" > /dev/null
+}
+
+# ------------------------------------------------------------------------------
+# Check if realm exists
+# ------------------------------------------------------------------------------
+realm_exists() {
+  local token=$1
+
+  curl -sf --max-time 10 \
+    -H "Authorization: Bearer $token" \
+    "$KEYCLOAK_URL/admin/realms/$ACCOUNTS_KEYCLOAK_REALM" > /dev/null
 }
 
 # ------------------------------------------------------------------------------
@@ -57,7 +80,8 @@ create_realm() {
 
   echo "Creating realm: $realm"
 
-  curl -sf --max-time 60 -X POST "$KEYCLOAK_URL/admin/realms" \
+  curl -sf --max-time 60 -X POST \
+    "$KEYCLOAK_URL/admin/realms" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d "{\"realm\": \"$realm\", \"enabled\": true}" \
@@ -65,7 +89,7 @@ create_realm() {
 }
 
 # ------------------------------------------------------------------------------
-# Configure realm security policies (tokens + sessions)
+# Configure realm security policies (tokens, sessions, brute force protection)
 # ------------------------------------------------------------------------------
 configure_realm() {
   local token=$1
@@ -73,7 +97,8 @@ configure_realm() {
 
   echo "Configuring realm: $realm"
 
-  curl -sf --max-time 60 -X PUT "$KEYCLOAK_URL/admin/realms/$realm" \
+  response=$(curl -s --max-time 60 -X PUT \
+    "$KEYCLOAK_URL/admin/realms/$realm" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d "{
@@ -97,7 +122,16 @@ configure_realm() {
       \"minimumQuickLoginWaitSeconds\": 60,
       \"maxFailureWaitSeconds\": 900
     }" \
-    && echo "Realm configured." || echo "Realm configuration failed."
+    -w "\n%{http_code}")
+
+  http_code=$(echo "$response" | tail -n1)
+
+  if [ "$http_code" -ge 400 ]; then
+    echo "Realm configuration failed (HTTP $http_code)"
+    exit 1
+  fi
+
+  echo "Realm configured."
 }
 
 # ------------------------------------------------------------------------------
@@ -111,7 +145,8 @@ create_client() {
 
   echo "Creating client: $client_id"
 
-  curl -sf --max-time 60 -X POST "$KEYCLOAK_URL/admin/realms/$realm/clients" \
+  curl -sf --max-time 60 -X POST \
+    "$KEYCLOAK_URL/admin/realms/$realm/clients" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d "{
@@ -143,27 +178,32 @@ assign_service_account_roles() {
   echo "Assigning roles to service account..."
 
   local client_uuid
-  client_uuid=$(curl -sf --max-time 60 "$KEYCLOAK_URL/admin/realms/$realm/clients?clientId=$client_id" \
+  client_uuid=$(curl -sf --max-time 60 \
+    "$KEYCLOAK_URL/admin/realms/$realm/clients?clientId=$client_id" \
     -H "Authorization: Bearer $token" \
     | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 
   local sa_user_id
-  sa_user_id=$(curl -sf --max-time 60 "$KEYCLOAK_URL/admin/realms/$realm/clients/$client_uuid/service-account-user" \
+  sa_user_id=$(curl -sf --max-time 60 \
+    "$KEYCLOAK_URL/admin/realms/$realm/clients/$client_uuid/service-account-user" \
     -H "Authorization: Bearer $token" \
     | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 
   local realm_mgmt_id
-  realm_mgmt_id=$(curl -sf --max-time 60 "$KEYCLOAK_URL/admin/realms/$realm/clients?clientId=realm-management" \
+  realm_mgmt_id=$(curl -sf --max-time 60 \
+    "$KEYCLOAK_URL/admin/realms/$realm/clients?clientId=realm-management" \
     -H "Authorization: Bearer $token" \
     | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 
   for role in manage-users view-users query-users; do
     local role_json
 
-    role_json=$(curl -sf --max-time 60 "$KEYCLOAK_URL/admin/realms/$realm/clients/$realm_mgmt_id/roles/$role" \
+    role_json=$(curl -sf --max-time 60 \
+      "$KEYCLOAK_URL/admin/realms/$realm/clients/$realm_mgmt_id/roles/$role" \
       -H "Authorization: Bearer $token")
 
-    curl -sf --max-time 60 -X POST "$KEYCLOAK_URL/admin/realms/$realm/users/$sa_user_id/role-mappings/clients/$realm_mgmt_id" \
+    curl -sf --max-time 60 -X POST \
+      "$KEYCLOAK_URL/admin/realms/$realm/users/$sa_user_id/role-mappings/clients/$realm_mgmt_id" \
       -H "Authorization: Bearer $token" \
       -H "Content-Type: application/json" \
       -d "[$role_json]" \
@@ -172,7 +212,7 @@ assign_service_account_roles() {
 }
 
 # ------------------------------------------------------------------------------
-# DISABLE ADMIN USER
+# Disable admin user (final bootstrap step)
 # ------------------------------------------------------------------------------
 disable_admin_user() {
   local token=$1
@@ -180,7 +220,8 @@ disable_admin_user() {
   echo "Disabling admin user..."
 
   local user_id
-  user_id=$(curl -sf --max-time 60 "$KEYCLOAK_URL/admin/realms/master/users?username=$KEYCLOAK_ADMIN_USER" \
+  user_id=$(curl -sf --max-time 60 \
+    "$KEYCLOAK_URL/admin/realms/master/users?username=$KEYCLOAK_ADMIN_USER" \
     -H "Authorization: Bearer $token" \
     | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 
@@ -189,20 +230,12 @@ disable_admin_user() {
     return
   fi
 
-  curl -sf --max-time 60 -X PUT "$KEYCLOAK_URL/admin/realms/master/users/$user_id" \
+  curl -sf --max-time 60 -X PUT \
+    "$KEYCLOAK_URL/admin/realms/master/users/$user_id" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d '{"enabled": false}' \
     && echo "Admin user disabled." || echo "Failed to disable admin user."
-}
-
-admin_login_works() {
-  curl -sf --max-time 10 -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "grant_type=password" \
-    -d "client_id=admin-cli" \
-    -d "username=$KEYCLOAK_ADMIN_USER" \
-    -d "password=$KEYCLOAK_ADMIN_PASSWORD" > /dev/null
 }
 
 # ------------------------------------------------------------------------------
@@ -210,32 +243,40 @@ admin_login_works() {
 # ------------------------------------------------------------------------------
 wait_for_keycloak
 
-if admin_login_works; then
-  echo "Active administrator → run bootstrap..."
+TOKEN=$(get_admin_token)
 
-  TOKEN=$(get_admin_token)
-  create_realm "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
-
-  TOKEN=$(get_admin_token)
-  configure_realm "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
-
-  TOKEN=$(get_admin_token)
-  create_client "$TOKEN" \
-    "$ACCOUNTS_KEYCLOAK_REALM" \
-    "$ACCOUNTS_KEYCLOAK_CLIENT_ID" \
-    "$ACCOUNTS_KEYCLOAK_CLIENT_SECRET"
-
-  TOKEN=$(get_admin_token)
-  assign_service_account_roles \
-    "$TOKEN" \
-    "$ACCOUNTS_KEYCLOAK_REALM" \
-    "$ACCOUNTS_KEYCLOAK_CLIENT_ID"
-
-  TOKEN=$(get_admin_token)
-  disable_admin_user "$TOKEN"
-
-else
-  echo "The administrator has been disabled. Skipping bootstrap."
+# If token cannot be obtained, assume admin is already disabled
+if [ -z "$TOKEN" ]; then
+  echo "Admin unavailable (likely already disabled). Exiting."
+  exit 0
 fi
+
+# If admin API is not accessible, exit cleanly (idempotent behavior)
+if ! admin_api_available "$TOKEN"; then
+  echo "Admin access not available → bootstrap already executed. Exiting."
+  exit 0
+fi
+
+if realm_exists "$TOKEN"; then
+  echo "Realm already exists → bootstrap already applied. Exiting."
+  exit 0
+fi
+
+echo "Running bootstrap..."
+
+create_realm "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
+configure_realm "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
+
+create_client "$TOKEN" \
+  "$ACCOUNTS_KEYCLOAK_REALM" \
+  "$ACCOUNTS_KEYCLOAK_CLIENT_ID" \
+  "$ACCOUNTS_KEYCLOAK_CLIENT_SECRET"
+
+assign_service_account_roles \
+  "$TOKEN" \
+  "$ACCOUNTS_KEYCLOAK_REALM" \
+  "$ACCOUNTS_KEYCLOAK_CLIENT_ID"
+
+disable_admin_user "$TOKEN"
 
 echo "***************************** [ END SCRIPT ] *****************************"
