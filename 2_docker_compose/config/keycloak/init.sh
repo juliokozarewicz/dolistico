@@ -3,6 +3,12 @@ set -e
 
 echo "***************************** [ INIT SCRIPT ] ****************************"
 
+: "${KEYCLOAK_ADMIN_USER:?KEYCLOAK_ADMIN_USER is required}"
+: "${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD is required}"
+: "${ACCOUNTS_KEYCLOAK_REALM:?ACCOUNTS_KEYCLOAK_REALM is required}"
+: "${ACCOUNTS_KEYCLOAK_CLIENT_ID:?ACCOUNTS_KEYCLOAK_CLIENT_ID is required}"
+: "${ACCOUNTS_KEYCLOAK_CLIENT_SECRET:?ACCOUNTS_KEYCLOAK_CLIENT_SECRET is required}"
+
 KEYCLOAK_URL="http://keycloak:8080"
 
 # ------------------------------------------------------------------------------
@@ -10,13 +16,19 @@ KEYCLOAK_URL="http://keycloak:8080"
 # ------------------------------------------------------------------------------
 wait_for_keycloak() {
   echo "Waiting for Keycloak..."
+  local retries=30
 
-  until curl -sf -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
+  until curl -sf --max-time 5 -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
     -d "username=$KEYCLOAK_ADMIN_USER" \
     -d "password=$KEYCLOAK_ADMIN_PASSWORD" > /dev/null; do
+    retries=$((retries - 1))
+    if [ "$retries" -le 0 ]; then
+      echo "Keycloak did not become ready in time. Aborting."
+      exit 1
+    fi
     sleep 3
   done
 
@@ -27,7 +39,7 @@ wait_for_keycloak() {
 # Get admin token
 # ------------------------------------------------------------------------------
 get_admin_token() {
-  curl -sf -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
+  curl -sf --max-time 10 -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
@@ -45,7 +57,7 @@ create_realm() {
 
   echo "Creating realm: $realm"
 
-  curl -sf -X POST "$KEYCLOAK_URL/admin/realms" \
+  curl -sf --max-time 10 -X POST "$KEYCLOAK_URL/admin/realms" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d "{\"realm\": \"$realm\", \"enabled\": true}" \
@@ -61,7 +73,7 @@ configure_realm() {
 
   echo "Configuring realm: $realm"
 
-  curl -v -X PUT "$KEYCLOAK_URL/admin/realms/$realm" \
+  curl -sf --max-time 10 -X PUT "$KEYCLOAK_URL/admin/realms/$realm" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d "{
@@ -94,7 +106,7 @@ create_client() {
 
   echo "Creating client: $client_id"
 
-  curl -sf -X POST "$KEYCLOAK_URL/admin/realms/$realm/clients" \
+  curl -sf --max-time 10 -X POST "$KEYCLOAK_URL/admin/realms/$realm/clients" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d "{
@@ -126,27 +138,27 @@ assign_service_account_roles() {
   echo "Assigning roles to service account..."
 
   local client_uuid
-  client_uuid=$(curl -sf "$KEYCLOAK_URL/admin/realms/$realm/clients?clientId=$client_id" \
+  client_uuid=$(curl -sf --max-time 10 "$KEYCLOAK_URL/admin/realms/$realm/clients?clientId=$client_id" \
     -H "Authorization: Bearer $token" \
     | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 
   local sa_user_id
-  sa_user_id=$(curl -sf "$KEYCLOAK_URL/admin/realms/$realm/clients/$client_uuid/service-account-user" \
+  sa_user_id=$(curl -sf --max-time 10 "$KEYCLOAK_URL/admin/realms/$realm/clients/$client_uuid/service-account-user" \
     -H "Authorization: Bearer $token" \
     | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 
   local realm_mgmt_id
-  realm_mgmt_id=$(curl -sf "$KEYCLOAK_URL/admin/realms/$realm/clients?clientId=realm-management" \
+  realm_mgmt_id=$(curl -sf --max-time 10 "$KEYCLOAK_URL/admin/realms/$realm/clients?clientId=realm-management" \
     -H "Authorization: Bearer $token" \
     | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 
   for role in manage-users view-users query-users; do
     local role_json
 
-    role_json=$(curl -sf "$KEYCLOAK_URL/admin/realms/$realm/clients/$realm_mgmt_id/roles/$role" \
+    role_json=$(curl -sf --max-time 10 "$KEYCLOAK_URL/admin/realms/$realm/clients/$realm_mgmt_id/roles/$role" \
       -H "Authorization: Bearer $token")
 
-    curl -sf -X POST "$KEYCLOAK_URL/admin/realms/$realm/users/$sa_user_id/role-mappings/clients/$realm_mgmt_id" \
+    curl -sf --max-time 10 -X POST "$KEYCLOAK_URL/admin/realms/$realm/users/$sa_user_id/role-mappings/clients/$realm_mgmt_id" \
       -H "Authorization: Bearer $token" \
       -H "Content-Type: application/json" \
       -d "[$role_json]" \
