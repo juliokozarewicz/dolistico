@@ -16,7 +16,7 @@ KEYCLOAK_URL="http://keycloak:8080"
 # ------------------------------------------------------------------------------
 wait_for_keycloak() {
   echo "Waiting for Keycloak..."
-  local retries=30
+  local retries=50
 
   until curl -sf --max-time 60 -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
     -H "Content-Type: application/x-www-form-urlencoded" \
@@ -29,7 +29,7 @@ wait_for_keycloak() {
       echo "Keycloak did not become ready in time. Aborting."
       exit 1
     fi
-    sleep 3
+    sleep 5
   done
 
   echo "Keycloak is ready!"
@@ -211,7 +211,7 @@ admin_login_works() {
 wait_for_keycloak
 
 if admin_login_works; then
-  echo "Admin ativo → executando bootstrap..."
+  echo "Active administrator → run bootstrap..."
 
   TOKEN=$(get_admin_token)
   create_realm "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
