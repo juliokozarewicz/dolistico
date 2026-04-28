@@ -61,28 +61,22 @@ configure_realm() {
 
   echo "Configuring realm: $realm"
 
-  curl -sf -X PUT "$KEYCLOAK_URL/admin/realms/$realm" \
+  curl -v -X PUT "$KEYCLOAK_URL/admin/realms/$realm" \
     -H "Authorization: Bearer $token" \
     -H "Content-Type: application/json" \
     -d "{
       \"realm\": \"$realm\",
       \"enabled\": true,
-
       \"accessTokenLifespan\": 300,
-
       \"ssoSessionIdleTimeout\": 1296000,
       \"ssoSessionMaxLifespan\": 2592000,
-
       \"offlineSessionIdleTimeout\": 2592000,
       \"offlineSessionMaxLifespan\": 2592000,
-
       \"revokeRefreshToken\": true,
       \"refreshTokenMaxReuse\": 0,
-
       \"loginWithEmailAllowed\": true,
       \"duplicateEmailsAllowed\": false,
       \"registrationEmailAsUsername\": true,
-
       \"resetPasswordAllowed\": true,
       \"bruteForceProtected\": true
     }" \
