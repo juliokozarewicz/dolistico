@@ -1,5 +1,9 @@
 package juliokozarewicz.accounts.infrastructure.keycloak;
 
+import juliokozarewicz.accounts.domain.exception.DomainException;
+import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -33,6 +37,7 @@ public class AccountsKeycloakTokenProvider {
     private String keycloakClientSecret;
     // -------------------------------------------------------------------------
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakTokenProvider.class);
     private final RestTemplate restTemplate;
     private final CacheManager cacheManager;
     private final Cache clientKeycloakTokenCache;
@@ -75,8 +80,8 @@ public class AccountsKeycloakTokenProvider {
 
             // Build URL
             String url = "http://keycloak:8080/realms/" +
-                    keycloakRealm +
-                    "/protocol/openid-connect/token";
+                keycloakRealm +
+                "/protocol/openid-connect/token";
 
             // Build request body
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -91,9 +96,9 @@ public class AccountsKeycloakTokenProvider {
 
             // Call Keycloak
             Map<String, Object> response = restTemplate.postForObject(
-                    url,
-                    request,
-                    Map.class
+                url,
+                request,
+                Map.class
             );
 
             // Extract
@@ -111,9 +116,9 @@ public class AccountsKeycloakTokenProvider {
 
         } catch (Exception e) {
 
-            throw new InternalError(
-                "Error accessing Keycloak [ AccountsKeycloakTokenProvider.getAccessToken() ]: " + e
-            );
+            logger.error("Error accessing Keycloak [ AccountsKeycloakTokenProvider.getAccessToken() ]: " + e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
 

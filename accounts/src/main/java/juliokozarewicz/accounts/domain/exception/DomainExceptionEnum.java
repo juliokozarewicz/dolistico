@@ -13,6 +13,7 @@ public enum DomainExceptionEnum {
     INVALID_CREDENTIALS,
     BAD_REQUEST,
     FORBIDDEN_CHARACTERS,
+    INTERNAL_INSTABILITY,
     // ================================================ ( rest error codes end )
 
     // ============================================= ( domain error codes init )

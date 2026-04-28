@@ -16,10 +16,17 @@ KEYCLOAK_URL="http://keycloak:8080"
 # ------------------------------------------------------------------------------
 wait_for_keycloak() {
   echo "Waiting for Keycloak..."
-  local retries=80
+  local retries=100
 
   until curl -sf --max-time 10 \
-    "$KEYCLOAK_URL/realms/master" > /dev/null; do
+    -X POST \
+    "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "grant_type=password" \
+    -d "client_id=admin-cli" \
+    -d "username=$KEYCLOAK_ADMIN_USER" \
+    -d "password=$KEYCLOAK_ADMIN_PASSWORD" \
+    2>/dev/null | grep -q "access_token"; do
 
     retries=$((retries - 1))
 
@@ -28,6 +35,7 @@ wait_for_keycloak() {
       exit 1
     fi
 
+    echo "Still waiting... ($retries retries left)"
     sleep 5
   done
 

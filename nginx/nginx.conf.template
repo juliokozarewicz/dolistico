@@ -80,8 +80,8 @@ http {
 
     # Special log for DDOS attacks or limits reached
     log_format ddos '$remote_addr - $http_host "$request" $status [$time_local] '
-                    '"$http_user_agent" "$http_referer" '
-                    'req_time=$request_time upstream_time=$upstream_response_time';
+        '"$http_user_agent" "$http_referer" '
+        'req_time=$request_time upstream_time=$upstream_response_time';
     access_log /var/log/nginx/ddos.log ddos;
     access_log /dev/stdout ddos;
     error_log /dev/stderr;
