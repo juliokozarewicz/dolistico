@@ -5,11 +5,11 @@ echo "***************************** [ INIT SCRIPT ] ****************************
 
 KEYCLOAK_URL="http://keycloak:8080"
 
-# ------------------------------------------------------------
-# Wait until Keycloak is fully available and accepting auth
-# ------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Wait until Keycloak is ready to accept authentication
+# ------------------------------------------------------------------------------
 wait_for_keycloak() {
-  echo "Waiting for Keycloak (auth ready)..."
+  echo "Waiting for Keycloak..."
 
   until curl -sf -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
     -H "Content-Type: application/x-www-form-urlencoded" \
@@ -23,9 +23,9 @@ wait_for_keycloak() {
   echo "Keycloak is ready!"
 }
 
-# ------------------------------------------------------------
-# Get admin token from master realm
-# ------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Get admin token
+# ------------------------------------------------------------------------------
 get_admin_token() {
   curl -sf -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
     -H "Content-Type: application/x-www-form-urlencoded" \
@@ -36,9 +36,9 @@ get_admin_token() {
     | grep -o '"access_token":"[^"]*' | cut -d'"' -f4
 }
 
-# ------------------------------------------------------------
-# Create realm if not exists
-# ------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Create realm (idempotent)
+# ------------------------------------------------------------------------------
 create_realm() {
   local token=$1
   local realm=$2
@@ -52,14 +52,14 @@ create_realm() {
     && echo "Realm created." || echo "Realm already exists, skipping."
 }
 
-# ------------------------------------------------------------
-# Configure realm security policies
-# ------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Configure realm security policies (tokens + sessions)
+# ------------------------------------------------------------------------------
 configure_realm() {
   local token=$1
   local realm=$2
 
-  echo "Configuring realm security policies: $realm"
+  echo "Configuring realm: $realm"
 
   curl -sf -X PUT "$KEYCLOAK_URL/admin/realms/$realm" \
     -H "Authorization: Bearer $token" \
@@ -68,31 +68,30 @@ configure_realm() {
       \"realm\": \"$realm\",
       \"enabled\": true,
 
-      // ---------------- TOKEN SETTINGS ----------------
       \"accessTokenLifespan\": 300,
 
-      // ---------------- SSO SESSION (REFRESH TOKEN LIFETIME) ----------------
-      \"ssoSessionIdleTimeout\": 2592000,
+      \"ssoSessionIdleTimeout\": 1296000,
       \"ssoSessionMaxLifespan\": 2592000,
 
-      // Forces re-login after long inactivity
-      \"ssoSessionIdleTimeoutRememberMe\": 1209600,
+      \"offlineSessionIdleTimeout\": 2592000,
+      \"offlineSessionMaxLifespan\": 2592000,
 
-      // ---------------- EMAIL / USER POLICY ----------------
+      \"revokeRefreshToken\": true,
+      \"refreshTokenMaxReuse\": 0,
+
       \"loginWithEmailAllowed\": true,
       \"duplicateEmailsAllowed\": false,
       \"registrationEmailAsUsername\": true,
 
-      // ---------------- SECURITY ----------------
       \"resetPasswordAllowed\": true,
       \"bruteForceProtected\": true
     }" \
     && echo "Realm configured." || echo "Realm configuration failed."
 }
 
-# ------------------------------------------------------------
-# Create client application
-# ------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Create client (idempotent)
+# ------------------------------------------------------------------------------
 create_client() {
   local token=$1
   local realm=$2
@@ -109,27 +108,22 @@ create_client() {
       \"enabled\": true,
       \"clientAuthenticatorType\": \"client-secret\",
       \"secret\": \"$client_secret\",
-
       \"serviceAccountsEnabled\": true,
       \"standardFlowEnabled\": false,
       \"directAccessGrantsEnabled\": false,
       \"implicitFlowEnabled\": false,
       \"authorizationServicesEnabled\": false,
       \"publicClient\": false,
-
-      // ---------------- REFRESH TOKEN BEHAVIOR ----------------
       \"attributes\": {
-        \"use.refresh.tokens\": \"true\",
-        \"revoke.refresh.token\": \"true\",
-        \"refresh.token.max.reuse\": \"0\"
+        \"use.refresh.tokens\": \"true\"
       }
     }" \
     && echo "Client created." || echo "Client already exists, skipping."
 }
 
-# ------------------------------------------------------------
-# Assign roles to service account
-# ------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Assign roles to service account (idempotent)
+# ------------------------------------------------------------------------------
 assign_service_account_roles() {
   local token=$1
   local realm=$2
@@ -166,13 +160,12 @@ assign_service_account_roles() {
   done
 }
 
-# ------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # INIT FLOW
-# ------------------------------------------------------------
+# ------------------------------------------------------------------------------
 wait_for_keycloak
 
 TOKEN=$(get_admin_token)
-
 create_realm "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
 
 TOKEN=$(get_admin_token)
@@ -184,6 +177,7 @@ create_client "$TOKEN" \
   "$ACCOUNTS_KEYCLOAK_CLIENT_ID" \
   "$ACCOUNTS_KEYCLOAK_CLIENT_SECRET"
 
+TOKEN=$(get_admin_token)
 assign_service_account_roles \
   "$TOKEN" \
   "$ACCOUNTS_KEYCLOAK_REALM" \
