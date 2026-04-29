@@ -3,8 +3,8 @@ set -e
 
 echo "***************************** [ INIT SCRIPT ] ****************************"
 
-: "${KEYCLOAK_ADMIN_USER:?KEYCLOAK_ADMIN_USER is required}"
-: "${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD is required}"
+: "${KC_BOOTSTRAP_ADMIN_USERNAME:?KC_BOOTSTRAP_ADMIN_USERNAME is required}"
+: "${KC_BOOTSTRAP_ADMIN_PASSWORD:?KC_BOOTSTRAP_ADMIN_PASSWORD is required}"
 : "${ACCOUNTS_KEYCLOAK_REALM:?ACCOUNTS_KEYCLOAK_REALM is required}"
 : "${ACCOUNTS_KEYCLOAK_CLIENT_ID:?ACCOUNTS_KEYCLOAK_CLIENT_ID is required}"
 : "${ACCOUNTS_KEYCLOAK_CLIENT_SECRET:?ACCOUNTS_KEYCLOAK_CLIENT_SECRET is required}"
@@ -24,8 +24,8 @@ wait_for_keycloak() {
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    -d "username=$KEYCLOAK_ADMIN_USER" \
-    -d "password=$KEYCLOAK_ADMIN_PASSWORD" \
+    -d "username=$KC_BOOTSTRAP_ADMIN_USERNAME" \
+    -d "password=$KC_BOOTSTRAP_ADMIN_PASSWORD" \
     2>/dev/null | grep -q "access_token"; do
 
     retries=$((retries - 1))
@@ -51,8 +51,8 @@ get_admin_token() {
     -H "Content-Type: application/x-www-form-urlencoded" \
     -d "grant_type=password" \
     -d "client_id=admin-cli" \
-    -d "username=$KEYCLOAK_ADMIN_USER" \
-    -d "password=$KEYCLOAK_ADMIN_PASSWORD" \
+    -d "username=$KC_BOOTSTRAP_ADMIN_USERNAME" \
+    -d "password=$KC_BOOTSTRAP_ADMIN_PASSWORD" \
     | grep -o '"access_token":"[^"]*' | cut -d'"' -f4
 }
 
@@ -128,7 +128,8 @@ configure_realm() {
       \"waitIncrementSeconds\": 60,
       \"quickLoginCheckMilliSeconds\": 1000,
       \"minimumQuickLoginWaitSeconds\": 60,
-      \"maxFailureWaitSeconds\": 900
+      \"maxFailureWaitSeconds\": 900,
+      \"passwordPolicy\": \"length(12) and maxLength(128)\"
     }" \
     -w "\n%{http_code}")
 
@@ -229,7 +230,7 @@ disable_admin_user() {
 
   local user_id
   user_id=$(curl -sf --max-time 60 \
-    "$KEYCLOAK_URL/admin/realms/master/users?username=$KEYCLOAK_ADMIN_USER" \
+    "$KEYCLOAK_URL/admin/realms/master/users?username=$KC_BOOTSTRAP_ADMIN_USERNAME" \
     -H "Authorization: Bearer $token" \
     | grep -o '"id":"[^"]*' | head -1 | cut -d'"' -f4)
 

@@ -154,18 +154,31 @@ services:
     entrypoint: [ "bash", "/init.sh" ]
 
   keycloak:
-    image: quay.io/keycloak/keycloak:24.0.0
+    image: quay.io/keycloak/keycloak:26.6.0
     container_name: keycloak
     command: start-dev
     env_file:
       - .env
     environment:
+
+      # credentials
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+
+      # database
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://database:${DATABASE_PORT}/${KEYCLOAK_DATABASE_NAME}?currentSchema=${KEYCLOAK_DATABASE_SCHEMA}
       KC_DB_USERNAME: ${KEYCLOAK_DATABASE_USER}
       KC_DB_PASSWORD: ${KEYCLOAK_DATABASE_PASSWORD}
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+      # argon
+      KC_SPI_PASSWORD_HASHING_ARGON2_TYPE: id
+      KC_SPI_PASSWORD_HASHING_ARGON2_HASH_ITERATIONS: 5
+      KC_SPI_PASSWORD_HASHING_ARGON2_MEMORY: 19456
+      KC_SPI_PASSWORD_HASHING_ARGON2_PARALLELISM: 1
+      KC_SPI_PASSWORD_HASHING_ARGON2_HASH_LENGTH: 32
+      KC_SPI_PASSWORD_HASHING_ARGON2_SALT_LENGTH: 1
+
     ports:
       - "${KEYCLOAK_PORT}:8080"
     depends_on:

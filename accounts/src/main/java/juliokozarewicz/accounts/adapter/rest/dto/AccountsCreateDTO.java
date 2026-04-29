@@ -7,7 +7,7 @@ import juliokozarewicz.accounts.application.command.AccountsCreateCommand;
 public record AccountsCreateDTO(
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
-    @Size(min = 3, max = 256, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
+    @Size(min=3, max=256, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
     @Pattern(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.ACCOUNTS_FORBIDDEN_CHARACTERS_DTO
@@ -16,11 +16,11 @@ public record AccountsCreateDTO(
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
     @Email(message = GlobalExceptionEnum.ACCOUNTS_FORBIDDEN_CHARACTERS_DTO)
-    @Size(max = 256, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
+    @Size(max=256, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
     String email,
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
-    @Size(min = 8, max = 128, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
+    @Size(min=12, max=128, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
     String password
 
 ) implements AccountsCreateCommand {}
