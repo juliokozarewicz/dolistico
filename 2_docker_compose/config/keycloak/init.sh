@@ -16,17 +16,10 @@ KEYCLOAK_URL="http://keycloak:8080"
 # ------------------------------------------------------------------------------
 wait_for_keycloak() {
   echo "Waiting for Keycloak..."
-  local retries=50
+  local retries=10
 
   until curl -sf --max-time 10 \
-    -X POST \
-    "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "grant_type=password" \
-    -d "client_id=admin-cli" \
-    -d "username=$KC_BOOTSTRAP_ADMIN_USERNAME" \
-    -d "password=$KC_BOOTSTRAP_ADMIN_PASSWORD" \
-    2>/dev/null | grep -q "access_token"; do
+    "$KEYCLOAK_URL/realms/master" > /dev/null; do
 
     retries=$((retries - 1))
 
@@ -36,7 +29,7 @@ wait_for_keycloak() {
     fi
 
     echo "Still waiting... ($retries retries left)"
-    sleep 15
+    sleep 60
   done
 
   echo "Keycloak is ready!"
@@ -252,23 +245,17 @@ disable_admin_user() {
 # ------------------------------------------------------------------------------
 wait_for_keycloak
 
-TOKEN=$(get_admin_token)
-
-# If token cannot be obtained, assume admin is already disabled
-if [ -z "$TOKEN" ]; then
-  echo "Admin unavailable (likely already disabled). Exiting."
-  exit 0
-fi
-
-# If admin API is not accessible, exit cleanly (idempotent behavior)
-if ! admin_api_available "$TOKEN"; then
-  echo "Admin access not available → bootstrap already executed. Exiting."
-  exit 0
-fi
-
-if realm_exists "$TOKEN"; then
+if curl -sf --max-time 10 \
+  "$KEYCLOAK_URL/realms/$ACCOUNTS_KEYCLOAK_REALM" > /dev/null; then
   echo "Realm already exists → bootstrap already applied. Exiting."
   exit 0
+fi
+
+TOKEN=$(get_admin_token)
+
+if [ -z "$TOKEN" ]; then
+  echo "Failed to obtain admin token. Aborting."
+  exit 1
 fi
 
 echo "Running bootstrap..."
