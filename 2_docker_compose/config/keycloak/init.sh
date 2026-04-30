@@ -16,7 +16,7 @@ KEYCLOAK_URL="http://keycloak:8080"
 # ------------------------------------------------------------------------------
 wait_for_keycloak() {
   echo "Waiting for Keycloak..."
-  local retries=100
+  local retries=50
 
   until curl -sf --max-time 10 \
     -X POST \
@@ -36,7 +36,7 @@ wait_for_keycloak() {
     fi
 
     echo "Still waiting... ($retries retries left)"
-    sleep 5
+    sleep 15
   done
 
   echo "Keycloak is ready!"
