@@ -29,6 +29,7 @@ public enum GlobalExceptionEnum {
     public static final String ACCOUNTS_TOO_MANY_CHARACTERS_DTO = "ACCOUNTS_TOO_MANY_CHARACTERS_DTO";
     public static final String ACCOUNTS_TOO_FEW_CHARACTERS_DTO = "ACCOUNTS_TOO_FEW_CHARACTERS_DTO";
     public static final String ACCOUNTS_FORBIDDEN_CHARACTERS_DTO = "ACCOUNTS_FORBIDDEN_CHARACTERS_DTO";
+    public static final String ACCOUNTS_PASSWORD_REQUIREMENTS_DTO = "ACCOUNTS_PASSWORD_REQUIREMENTS_DTO";
     public static final String ACCOUNTS_INVALID_ID_DTO = "ACCOUNTS_INVALID_ID_DTO";
     // ================================================= ( dto error codes end )
 
