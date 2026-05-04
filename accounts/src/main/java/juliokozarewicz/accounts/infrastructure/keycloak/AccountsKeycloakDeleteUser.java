@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AccountsKeycloakGetUserByEmail {
+public class AccountsKeycloakDeleteUser {
 
     // ==================================================== ( constructor init )
 
@@ -25,13 +25,13 @@ public class AccountsKeycloakGetUserByEmail {
     private String keycloakRealm;
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakGetUserByEmail.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakDeleteUser.class);
     private final RestTemplate restTemplate;
 
     // Cache name
     private static final String cacheKey = "storedToken";
 
-    public AccountsKeycloakGetUserByEmail(
+    public AccountsKeycloakDeleteUser(
 
         RestTemplate restTemplate
 
@@ -43,45 +43,44 @@ public class AccountsKeycloakGetUserByEmail {
 
     // ===================================================== ( constructor end )
 
-    public String execute ( String clientToken, String userEmail ) {
+    public void execute (
+
+        String clientToken,
+        String userId
+
+    ) {
 
         try {
 
-            // Build Keycloak search URL
-            String url =
-                "http://keycloak:8080/admin/realms/" +
-                keycloakRealm +
-                "/users?email=" + userEmail;
+            // Build URL
+            String url = "http://keycloak:8080/admin/realms/" + keycloakRealm + "/users/" + userId;
 
             // Build headers
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(clientToken);
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
-            // Call Keycloak (returns list of users)
-            ResponseEntity<List> response = restTemplate.exchange(
+            // Call Keycloak
+            ResponseEntity<Void> response = restTemplate.exchange(
                 url,
-                HttpMethod.GET,
+                HttpMethod.DELETE,
                 request,
-                List.class
+                Void.class
             );
 
-            List<?> users = response.getBody();
+            // Validate response
+            if (!response.getStatusCode().is2xxSuccessful()) {
 
-            // If no users found, return null
-            if (users == null || users.isEmpty()) { return null; }
+                logger.error("Error deleting user in Keycloak. Status: " + response.getStatusCode());
+                throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
-            // Extract first user (Keycloak returns list of maps)
-            Map<String, Object> user =
-                (Map<String, Object>) users.get(0);
-
-            // Return userId
-            return (String) user.get("id");
+            }
 
         } catch (Exception e) {
 
-            logger.error("Error getting user by email in Keycloak", e);
+            logger.error("Error accessing Keycloak [ AccountsKeycloakDeleteUser.execute() ]: " + e);
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }

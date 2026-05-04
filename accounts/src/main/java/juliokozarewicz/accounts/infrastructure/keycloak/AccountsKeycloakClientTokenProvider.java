@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Service
-public class AccountsKeycloakTokenProvider {
+public class AccountsKeycloakClientTokenProvider {
 
     // ==================================================== ( constructor init )
 
@@ -35,7 +35,7 @@ public class AccountsKeycloakTokenProvider {
     private String keycloakClientSecret;
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakTokenProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakClientTokenProvider.class);
     private final RestTemplate restTemplate;
     private final CacheManager cacheManager;
     private final Cache clientKeycloakTokenCache;
@@ -43,7 +43,7 @@ public class AccountsKeycloakTokenProvider {
     // Cache name
     private static final String cacheKey = "storedToken";
 
-    public AccountsKeycloakTokenProvider(
+    public AccountsKeycloakClientTokenProvider(
 
         RestTemplate restTemplate,
         CacheManager cacheManager
@@ -74,7 +74,7 @@ public class AccountsKeycloakTokenProvider {
             Cache.ValueWrapper cachedToken = clientKeycloakTokenCache.get(cacheKey);
 
             if (cachedToken != null) {
-                return (String) ((LinkedHashMap<?, ?>) cachedToken.get()).get("token");
+                return (String) ((LinkedHashMap<?, ?>) cachedToken.get()).get("clientToken");
             }
 
             // Build URL
@@ -101,22 +101,21 @@ public class AccountsKeycloakTokenProvider {
             );
 
             // Extract
-            String token = (String) response.get("access_token");
+            String clientToken = (String) response.get("access_token");
 
             // Map
             LinkedHashMap<String, String> tokenMap = new LinkedHashMap<>();
-            tokenMap.put("token", token);
+            tokenMap.put("clientToken", clientToken);
 
             // Store
             clientKeycloakTokenCache.put(cacheKey, tokenMap);
 
             // Return token
-            return token;
+            return clientToken;
 
         } catch (Exception e) {
 
-            logger.error("Error accessing Keycloak [ AccountsKeycloakTokenProvider.getAccessToken() ]: " + e);
-
+            logger.error("Error accessing Keycloak [ AccountsKeycloakClientTokenProvider.getAccessToken() ]: " + e);
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }

@@ -16,7 +16,7 @@ KEYCLOAK_URL="http://keycloak:8080"
 # ------------------------------------------------------------------------------
 wait_for_keycloak() {
   echo "Waiting for Keycloak..."
-  local retries=5
+  local retries=6
 
   until curl -sf --max-time 10 \
     "$KEYCLOAK_URL/realms/master" > /dev/null; do

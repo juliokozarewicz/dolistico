@@ -3,9 +3,8 @@ package juliokozarewicz.accounts.application.usecase;
 import juliokozarewicz.accounts.application.command.AccountsCreateCommand;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakCreateUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUserByEmail;
-import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakTokenProvider;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakClientTokenProvider;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AccountsCreateUseCase {
@@ -16,13 +15,13 @@ public class AccountsCreateUseCase {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final AccountsKeycloakTokenProvider accountsTokenProvider;
+    private final AccountsKeycloakClientTokenProvider accountsTokenProvider;
     private final AccountsKeycloakCreateUser accountsKeycloakCreateUser;
     private final AccountsKeycloakGetUserByEmail accountsKeycloakGetUserByEmail;
 
     public AccountsCreateUseCase (
 
-        AccountsKeycloakTokenProvider accountsTokenProvider,
+        AccountsKeycloakClientTokenProvider accountsTokenProvider,
         AccountsKeycloakCreateUser accountsKeycloakCreateUser,
         AccountsKeycloakGetUserByEmail accountsKeycloakGetUserByEmail
 
@@ -45,6 +44,8 @@ public class AccountsCreateUseCase {
         // Get client token
         String clientToken = accountsTokenProvider.getAccessToken();
 
+        System.out.println("Client token: " + clientToken);
+
         // Check if user already exists
         String existingUserId = accountsKeycloakGetUserByEmail.execute(
             clientToken,
@@ -52,12 +53,10 @@ public class AccountsCreateUseCase {
         );
 
         // If user already exists, do nothing
-        if ( existingUserId != null ) {
-            return;
-        }
+        if ( existingUserId != null ) { return; }
 
         // Create user
-        String iduser = accountsKeycloakCreateUser.execute (
+        accountsKeycloakCreateUser.execute (
             clientToken,
             command.email(),
             command.password()

@@ -31,17 +31,18 @@ public class AccountsKeycloakCreateUser {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakCreateUser.class);
     private final RestTemplate restTemplate;
-
-    // Cache name
     private static final String cacheKey = "storedToken";
+    private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
 
     public AccountsKeycloakCreateUser(
 
-        RestTemplate restTemplate
+        RestTemplate restTemplate,
+        AccountsKeycloakDeleteUser accountsKeycloakDeleteUser
 
     ) {
 
         this.restTemplate = restTemplate;
+        this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
 
     }
 
@@ -50,8 +51,8 @@ public class AccountsKeycloakCreateUser {
     public String execute (
 
         String clientToken,
-        String email,
-        String password
+        String userEmail,
+        String userPassword
 
     ) {
 
@@ -62,15 +63,15 @@ public class AccountsKeycloakCreateUser {
 
             // Build request body
             Map<String, Object> createUserBody = new LinkedHashMap<>();
-            createUserBody.put("username", email);
-            createUserBody.put("email", email);
+            createUserBody.put("username", userEmail);
+            createUserBody.put("email", userEmail);
             createUserBody.put("enabled", true);
             createUserBody.put("emailVerified", false);
 
             // Password definition
             Map<String, Object> credential = new LinkedHashMap<>();
             credential.put("type", "password");
-            credential.put("value", password);
+            credential.put("value", userPassword);
             credential.put("temporary", false);
 
             // Add password map to createUserBody
@@ -95,13 +96,13 @@ public class AccountsKeycloakCreateUser {
             // Extract userId from Location header
             URI location = response.getHeaders().getLocation();
 
-            if (location == null) {
-
+            // ------------------------ ( delete user if getting id fails init )
+            if ( location == null ) {
+                accountsKeycloakDeleteUser.execute(clientToken, userEmail);
                 logger.error("Error in the Keycloak response: User ID was not returned.");
-
                 throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
-
             }
+            // ------------------------- ( delete user if getting id fails end )
 
             String path = location.getPath();
             String userId = path.substring(path.lastIndexOf("/") + 1);
@@ -112,7 +113,6 @@ public class AccountsKeycloakCreateUser {
         } catch (Exception e) {
 
             logger.error("Error accessing Keycloak [ AccountsKeycloakCreateUser.execute() ]: " + e);
-
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
