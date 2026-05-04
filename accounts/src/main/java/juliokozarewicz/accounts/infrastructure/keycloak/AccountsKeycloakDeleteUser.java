@@ -24,7 +24,7 @@ public class AccountsKeycloakDeleteUser {
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
 
-    @Value("${KC_BASE_URL}")
+    @Value("${KEYCLOAK_BASE_URL}")
     private String keycloakBaseURL;
     // -------------------------------------------------------------------------
 

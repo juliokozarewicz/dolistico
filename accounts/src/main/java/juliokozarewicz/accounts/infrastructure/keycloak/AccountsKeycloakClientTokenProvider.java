@@ -34,7 +34,7 @@ public class AccountsKeycloakClientTokenProvider {
     @Value("${ACCOUNTS_KEYCLOAK_CLIENT_SECRET}")
     private String keycloakClientSecret;
 
-    @Value("${KC_BASE_URL}")
+    @Value("${KEYCLOAK_BASE_URL}")
     private String keycloakBaseURL;
     // -------------------------------------------------------------------------
 
