@@ -44,6 +44,7 @@ services:
     environment:
       POSTGRES_USER: ${DATABASE_ADMIN_USER}
       POSTGRES_PASSWORD: ${DATABASE_ADMIN_PASSWORD}
+      POSTGRES_DB: postgres
     ports:
       - "${DATABASE_PORT}:${DATABASE_PORT}"
     volumes:

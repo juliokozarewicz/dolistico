@@ -1,6 +1,7 @@
 package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsCreateCommand;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakCreateUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakTokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,15 +15,18 @@ public class AccountsCreateUseCase {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final AccountsKeycloakTokenProvider tokenProvider;
+    private final AccountsKeycloakTokenProvider accountsTokenProvider;
+    private final AccountsKeycloakCreateUser accountsKeycloakCreateUser;
 
     public AccountsCreateUseCase(
 
-        AccountsKeycloakTokenProvider tokenProvider
+        AccountsKeycloakTokenProvider accountsTokenProvider,
+        AccountsKeycloakCreateUser accountsKeycloakCreateUser
 
     ) {
 
-        this.tokenProvider = tokenProvider;
+        this.accountsTokenProvider = accountsTokenProvider;
+        this.accountsKeycloakCreateUser = accountsKeycloakCreateUser;
 
     }
 
@@ -34,13 +38,17 @@ public class AccountsCreateUseCase {
 
     ) {
 
-        String name = command.fullName() == null ? "" : command.fullName().trim();
+        // Get client token
+        String clientToken = accountsTokenProvider.getAccessToken();
 
-        String token = tokenProvider.getAccessToken();
+        // Create user
+        String iduser = accountsKeycloakCreateUser.execute (
+            clientToken,
+            command.email(),
+            command.password()
+        );
 
-        System.out.println("Received token: " + token);
-
-        return "Account received for " + (name.isEmpty() ? "<unknown>" : name);
+        return iduser;
 
     }
 

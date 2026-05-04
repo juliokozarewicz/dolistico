@@ -24,8 +24,6 @@ public class AccountsKeycloakTokenProvider {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${KEYCLOAK_PORT}")
-    private String keycloakPort;
 
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
@@ -59,6 +57,7 @@ public class AccountsKeycloakTokenProvider {
     }
 
     // ===================================================== ( constructor end )
+
     /**
      * Returns a valid access token.
      *

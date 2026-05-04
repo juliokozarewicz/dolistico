@@ -20,7 +20,8 @@ public record AccountsCreateDTO(
     String email,
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
-    @Size(min=12, max=128, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
+    @Size(min=12, message = GlobalExceptionEnum.ACCOUNTS_TOO_FEW_CHARACTERS_DTO)
+    @Size(max=128, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
     String password
 
 ) implements AccountsCreateCommand {}
