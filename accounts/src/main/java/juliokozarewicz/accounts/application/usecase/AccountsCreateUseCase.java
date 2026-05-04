@@ -44,8 +44,6 @@ public class AccountsCreateUseCase {
         // Get client token
         String clientToken = accountsTokenProvider.getAccessToken();
 
-        System.out.println("Client token: " + clientToken);
-
         // Check if user already exists
         String existingUserId = accountsKeycloakGetUserByEmail.execute(
             clientToken,
