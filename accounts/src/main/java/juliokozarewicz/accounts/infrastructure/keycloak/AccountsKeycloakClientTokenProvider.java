@@ -7,13 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class AccountsKeycloakClientTokenProvider {
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakClientTokenProvider.class);
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
     private final CacheManager cacheManager;
     private final Cache clientKeycloakTokenCache;
 
@@ -48,12 +47,12 @@ public class AccountsKeycloakClientTokenProvider {
 
     public AccountsKeycloakClientTokenProvider(
 
-        RestTemplate restTemplate,
+        WebClient webClient,
         CacheManager cacheManager
 
     ) {
 
-        this.restTemplate = restTemplate;
+        this.webClient = webClient;
         this.cacheManager = cacheManager;
         this.clientKeycloakTokenCache = cacheManager.getCache("accounts.clientKeycloakTokenCache");
 
@@ -89,17 +88,14 @@ public class AccountsKeycloakClientTokenProvider {
             body.add("client_secret", keycloakClientSecret);
             body.add("grant_type", "client_credentials");
 
-            // Build headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            HttpEntity<?> request = new HttpEntity<>(body, headers);
-
             // Call Keycloak
-            Map<String, Object> response = restTemplate.postForObject(
-                url,
-                request,
-                Map.class
-            );
+            Map<String, Object> response = webClient.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .block();
 
             // Extract
             String clientToken = (String) response.get("access_token");

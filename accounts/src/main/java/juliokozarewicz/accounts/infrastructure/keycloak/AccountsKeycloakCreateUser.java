@@ -5,14 +5,11 @@ import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
+import org.springframework.web.reactive.function.client.WebClient;
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,19 +30,19 @@ public class AccountsKeycloakCreateUser {
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakCreateUser.class);
-    private final RestTemplate restTemplate;
     private static final String cacheKey = "storedToken";
     private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
+    private final WebClient webClient;
 
     public AccountsKeycloakCreateUser(
 
-        RestTemplate restTemplate,
+        WebClient webClient,
         AccountsKeycloakDeleteUser accountsKeycloakDeleteUser
 
     ) {
 
-        this.restTemplate = restTemplate;
         this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
+        this.webClient = webClient;
 
     }
 
@@ -81,20 +78,14 @@ public class AccountsKeycloakCreateUser {
             createUserBody.put("credentials", List.of(credential));
 
             // Build headers
-             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(clientToken);
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<Map<String, Object>> request =
-                new HttpEntity<>(createUserBody, headers);
-
-            // Call Keycloak
-            ResponseEntity<Void> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                request,
-                Void.class
-            );
+            ResponseEntity<Void> response = webClient.post()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(createUserBody)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
 
             // Extract userId from Location header
             URI location = response.getHeaders().getLocation();

@@ -7,12 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class AccountsKeycloakDeleteUser {
@@ -29,18 +24,16 @@ public class AccountsKeycloakDeleteUser {
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakDeleteUser.class);
-    private final RestTemplate restTemplate;
-
-    // Cache name
+    private final WebClient webClient;
     private static final String cacheKey = "storedToken";
 
     public AccountsKeycloakDeleteUser(
 
-        RestTemplate restTemplate
+        WebClient webClient
 
     ) {
 
-        this.restTemplate = restTemplate;
+        this.webClient = webClient;
 
     }
 
@@ -66,12 +59,12 @@ public class AccountsKeycloakDeleteUser {
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
             // Call Keycloak
-            ResponseEntity<Void> response = restTemplate.exchange(
-                url,
-                HttpMethod.DELETE,
-                request,
-                Void.class
-            );
+            ResponseEntity<Void> response = webClient.delete()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
 
             // Validate response
             if (!response.getStatusCode().is2xxSuccessful()) {
