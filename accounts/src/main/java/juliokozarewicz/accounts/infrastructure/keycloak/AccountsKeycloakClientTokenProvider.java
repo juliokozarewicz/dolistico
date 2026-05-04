@@ -80,7 +80,7 @@ public class AccountsKeycloakClientTokenProvider {
             }
 
             // Build URL
-            String url = keycloakBaseURL + "/" + keycloakRealm + "/protocol/openid-connect/token";
+            String url = keycloakBaseURL + "/realms/" + keycloakRealm + "/protocol/openid-connect/token";
 
             // Build request body
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
