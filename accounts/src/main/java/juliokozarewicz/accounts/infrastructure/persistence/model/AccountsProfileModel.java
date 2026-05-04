@@ -26,31 +26,31 @@ class AccountsProfileModel {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @Column(length = 555, nullable = true)
+    @Column(length = 555)
     private String profileImage;
 
-    @Column(length = 256, nullable = true)
+    @Column(length = 256)
     private String fullName;
 
-    @Column(length = 25, nullable = true)
+    @Column(length = 25)
     private String phone;
 
-    @Column(length = 256, nullable = true)
+    @Column(length = 256)
     private String identityDocument;
 
-    @Column(length = 256, nullable = true)
+    @Column(length = 256)
     private String gender;
 
-    @Column(length = 50, nullable = true)
+    @Column(length = 50)
     private String birthdate;
 
-    @Column(length = 256, nullable = true)
+    @Column(length = 256)
     private String biography;
 
-    @Column(length = 50, nullable = true)
+    @Column(length = 50)
     private String language;
 
-    @Column(length = 100, nullable = true)
+    @Column(length = 100)
     private String theme;
 
 }

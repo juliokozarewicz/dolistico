@@ -33,6 +33,9 @@ public class AccountsKeycloakClientTokenProvider {
 
     @Value("${ACCOUNTS_KEYCLOAK_CLIENT_SECRET}")
     private String keycloakClientSecret;
+
+    @Value("${KC_BASE_URL}")
+    private String keycloakBaseURL;
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakClientTokenProvider.class);
@@ -78,9 +81,7 @@ public class AccountsKeycloakClientTokenProvider {
             }
 
             // Build URL
-            String url = "http://keycloak:8080/realms/" +
-                keycloakRealm +
-                "/protocol/openid-connect/token";
+            String url = keycloakBaseURL + keycloakRealm + "/protocol/openid-connect/token";
 
             // Build request body
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

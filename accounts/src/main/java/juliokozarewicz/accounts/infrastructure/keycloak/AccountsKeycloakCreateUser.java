@@ -27,6 +27,9 @@ public class AccountsKeycloakCreateUser {
     // -------------------------------------------------------------------------
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
+
+    @Value("${KC_BASE_URL}")
+    private String keycloakBaseURL;
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakCreateUser.class);
@@ -59,7 +62,7 @@ public class AccountsKeycloakCreateUser {
         try {
 
             // Build URL
-            String url = "http://keycloak:8080/admin/realms/" + keycloakRealm + "/users";
+            String url = keycloakBaseURL + "/admin/realms/" + keycloakRealm + "/users";
 
             // Build request body
             Map<String, Object> createUserBody = new LinkedHashMap<>();

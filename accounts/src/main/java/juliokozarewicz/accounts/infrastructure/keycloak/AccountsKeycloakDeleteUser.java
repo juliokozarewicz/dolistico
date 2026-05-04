@@ -23,6 +23,9 @@ public class AccountsKeycloakDeleteUser {
     // -------------------------------------------------------------------------
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
+
+    @Value("${KC_BASE_URL}")
+    private String keycloakBaseURL;
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakDeleteUser.class);
@@ -53,7 +56,7 @@ public class AccountsKeycloakDeleteUser {
         try {
 
             // Build URL
-            String url = "http://keycloak:8080/admin/realms/" + keycloakRealm + "/users/" + userId;
+            String url = keycloakBaseURL + "/admin/realms/" + keycloakRealm + "/users/" + userId;
 
             // Build headers
             HttpHeaders headers = new HttpHeaders();

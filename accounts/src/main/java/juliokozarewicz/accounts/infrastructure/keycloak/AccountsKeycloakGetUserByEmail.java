@@ -23,6 +23,9 @@ public class AccountsKeycloakGetUserByEmail {
     // -------------------------------------------------------------------------
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
+
+    @Value("${KC_BASE_URL}")
+    private String keycloakBaseURL;
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakGetUserByEmail.class);
@@ -48,10 +51,7 @@ public class AccountsKeycloakGetUserByEmail {
         try {
 
             // Build Keycloak search URL
-            String url =
-                "http://keycloak:8080/admin/realms/" +
-                keycloakRealm +
-                "/users?email=" + userEmail;
+            String url = keycloakBaseURL + "/admin/realms/" + keycloakRealm + "/users?email=" + userEmail;
 
             // Build headers
             HttpHeaders headers = new HttpHeaders();
