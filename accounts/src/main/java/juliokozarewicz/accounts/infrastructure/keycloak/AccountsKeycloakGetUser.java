@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AccountsKeycloakGetUserByEmail {
+public class AccountsKeycloakGetUser {
 
     // ==================================================== ( constructor init )
 
@@ -25,13 +25,13 @@ public class AccountsKeycloakGetUserByEmail {
     private String keycloakBaseURL;
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakGetUserByEmail.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakGetUser.class);
     private final WebClient webClient;
 
     // Cache name
     private static final String cacheKey = "storedToken";
 
-    public AccountsKeycloakGetUserByEmail(
+    public AccountsKeycloakGetUser(
 
         WebClient webClient
 
@@ -43,7 +43,7 @@ public class AccountsKeycloakGetUserByEmail {
 
     // ===================================================== ( constructor end )
 
-    public String execute ( String clientToken, String userEmail ) {
+    public String getUserByEmail(String clientToken, String userEmail ) {
 
         try {
 

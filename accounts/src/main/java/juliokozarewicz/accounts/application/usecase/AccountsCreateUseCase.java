@@ -2,7 +2,7 @@ package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsCreateCommand;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakCreateUser;
-import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUserByEmail;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakClientTokenProvider;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +17,19 @@ public class AccountsCreateUseCase {
 
     private final AccountsKeycloakClientTokenProvider accountsTokenProvider;
     private final AccountsKeycloakCreateUser accountsKeycloakCreateUser;
-    private final AccountsKeycloakGetUserByEmail accountsKeycloakGetUserByEmail;
+    private final AccountsKeycloakGetUser accountsKeycloakGetUser;
 
     public AccountsCreateUseCase (
 
         AccountsKeycloakClientTokenProvider accountsTokenProvider,
         AccountsKeycloakCreateUser accountsKeycloakCreateUser,
-        AccountsKeycloakGetUserByEmail accountsKeycloakGetUserByEmail
+        AccountsKeycloakGetUser accountsKeycloakGetUser
 
     ) {
 
         this.accountsTokenProvider = accountsTokenProvider;
         this.accountsKeycloakCreateUser = accountsKeycloakCreateUser;
-        this.accountsKeycloakGetUserByEmail = accountsKeycloakGetUserByEmail;
+        this.accountsKeycloakGetUser = accountsKeycloakGetUser;
 
     }
 
@@ -45,7 +45,7 @@ public class AccountsCreateUseCase {
         String clientToken = accountsTokenProvider.getAccessToken();
 
         // Check if user already exists
-        String existingUserId = accountsKeycloakGetUserByEmail.execute(
+        String existingUserId = accountsKeycloakGetUser.getUserByEmail(
             clientToken,
             command.email()
         );
