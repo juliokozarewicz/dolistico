@@ -40,6 +40,13 @@ dependencies {
 	// Inputs Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// Database
+	implementation 'org.springframework.boot:spring-boot-starter-flyway'   // Flyway
+	implementation "org.flywaydb:flyway-database-postgresql"               // Flyway
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA
+	implementation 'org.postgresql:postgresql'                             // Postgresql
+	runtimeOnly 'com.h2database:h2'                                        // H2 DB test
+
 	// Cache
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }

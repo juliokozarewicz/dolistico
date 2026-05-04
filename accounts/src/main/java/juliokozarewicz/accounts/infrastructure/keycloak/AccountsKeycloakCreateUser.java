@@ -104,6 +104,8 @@ public class AccountsKeycloakCreateUser {
             }
             // ------------------------- ( delete user if getting id fails end )
 
+            // ##### Producing a message for profile creation
+
             String path = location.getPath();
             String userId = path.substring(path.lastIndexOf("/") + 1);
 
