@@ -23,7 +23,6 @@ public class AccountsKeycloakClientTokenProvider {
 
     // Env
     // -------------------------------------------------------------------------
-
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
 
@@ -45,7 +44,7 @@ public class AccountsKeycloakClientTokenProvider {
     // Cache name
     private static final String cacheKey = "storedToken";
 
-    public AccountsKeycloakClientTokenProvider(
+    public AccountsKeycloakClientTokenProvider (
 
         WebClient webClient,
         CacheManager cacheManager

@@ -22,21 +22,21 @@ public class AccountsCreateUseCase {
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakCreateUser.class);
-    private final AccountsKeycloakClientTokenProvider accountsTokenProvider;
+    private final AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider;
     private final AccountsKeycloakCreateUser accountsKeycloakCreateUser;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
 
     public AccountsCreateUseCase (
 
-        AccountsKeycloakClientTokenProvider accountsTokenProvider,
+        AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider,
         AccountsKeycloakCreateUser accountsKeycloakCreateUser,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsKeycloakDeleteUser accountsKeycloakDeleteUser
 
     ) {
 
-        this.accountsTokenProvider = accountsTokenProvider;
+        this.accountsKeycloakClientTokenProvider = accountsKeycloakClientTokenProvider;
         this.accountsKeycloakCreateUser = accountsKeycloakCreateUser;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
@@ -52,7 +52,7 @@ public class AccountsCreateUseCase {
     ) {
 
         // Get client token
-        String clientToken = accountsTokenProvider.getAccessToken();
+        String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
         // Password cleanup
         char[] password = command.password();
