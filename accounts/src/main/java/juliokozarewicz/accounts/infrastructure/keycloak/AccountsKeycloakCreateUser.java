@@ -48,56 +48,45 @@ public class AccountsKeycloakCreateUser {
 
     ) {
 
-        try {
+        // Build Keycloak admin user creation endpoint
+        String url = keycloakBaseURL + "/admin/realms/" + keycloakRealm + "/users";
 
-            // Build Keycloak admin user creation endpoint
-            String url = keycloakBaseURL + "/admin/realms/" + keycloakRealm + "/users";
+        // Request payload for Keycloak user creation
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("username", userEmail);
+        body.put("email", userEmail);
+        body.put("enabled", true);
+        body.put("emailVerified", false);
 
-            // Request payload for Keycloak user creation
-            Map<String, Object> body = new LinkedHashMap<>();
-            body.put("username", userEmail);
-            body.put("email", userEmail);
-            body.put("enabled", true);
-            body.put("emailVerified", false);
+        // Credential (password) configuration
+        Map<String, Object> credential = new LinkedHashMap<>();
+        credential.put("type", "password");
+        credential.put("value", new String(userPassword));
+        credential.put("temporary", false);
+        body.put("credentials", List.of(credential));
 
-            // Credential (password) configuration
-            Map<String, Object> credential = new LinkedHashMap<>();
-            credential.put("type", "password");
-            credential.put("value", new String(userPassword));
-            credential.put("temporary", false);
-            body.put("credentials", List.of(credential));
+        // Execute HTTP POST request to Keycloak Admin API
+        ResponseEntity<Void> response = webClient.post()
+            .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .retrieve()
+            .toBodilessEntity()
+            .block();
 
-            // Execute HTTP POST request to Keycloak Admin API
-            ResponseEntity<Void> response = webClient.post()
-                .uri(url)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(body)
-                .retrieve()
-                .toBodilessEntity()
-                .block();
-
-            // Validate response contains Location header (user ID reference)
-            if (response == null || response.getHeaders().getLocation() == null) {
-                throw new IllegalStateException("Keycloak did not return user location");
-            }
-
-            // Extract user ID from Location header URL
-            URI location = response.getHeaders().getLocation();
-
-            // Return user id created
-            return location.getPath().substring(
-                location.getPath().lastIndexOf("/") + 1
-            );
-
-        } finally {
-
-            // Cleanup password
-            if (userPassword != null) {
-                java.util.Arrays.fill(userPassword, '\0');
-            }
-
+        // Validate response contains Location header (user ID reference)
+        if (response == null || response.getHeaders().getLocation() == null) {
+            throw new IllegalStateException();
         }
+
+        // Extract user ID from Location header URL
+        URI location = response.getHeaders().getLocation();
+
+        // Return user id created
+        return location.getPath().substring(
+            location.getPath().lastIndexOf("/") + 1
+        );
 
     }
 

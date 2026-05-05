@@ -4,6 +4,6 @@ public interface AccountsCreateCommand {
 
     String fullName();
     String email();
-    char[] password();
+    char[] userPassword();
 
 }

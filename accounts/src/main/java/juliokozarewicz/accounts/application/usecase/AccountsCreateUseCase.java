@@ -55,7 +55,7 @@ public class AccountsCreateUseCase {
         String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
         // Password cleanup
-        char[] password = command.password();
+        char[] password = command.userPassword();
 
         try {
 
@@ -79,7 +79,7 @@ public class AccountsCreateUseCase {
 
         }
 
-        // Conflict error (409)
+        // Conflict error - ignore (409)
         catch (WebClientResponseException.Conflict ignored) { return; }
 
         // Fallback (500)
@@ -88,6 +88,15 @@ public class AccountsCreateUseCase {
             logger.error("Error accessing Keycloak [ AccountsKeycloakCreateUser.execute() ]: " + e);
             accountsKeycloakDeleteUser.execute(clientToken, command.email());
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+        // Cleanup password
+        finally {
+
+            if (password != null) {
+                java.util.Arrays.fill(password, '\0');
+            }
 
         }
 

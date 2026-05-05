@@ -30,13 +30,14 @@ public record AccountsCreateDTO(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.ACCOUNTS_FORBIDDEN_CHARACTERS_DTO
     )
-    char[] password
+    String password
 
 ) implements AccountsCreateCommand {
 
     @Override
-    public char[] password() {
-        return password.clone();
+    public char[] userPassword() {
+        char[] chars = password.toCharArray();
+        return chars;
     }
 
 }
