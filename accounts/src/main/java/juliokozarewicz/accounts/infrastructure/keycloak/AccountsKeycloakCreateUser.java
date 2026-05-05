@@ -52,7 +52,7 @@ public class AccountsKeycloakCreateUser {
 
         String clientToken,
         String userEmail,
-        String userPassword
+        char[] userPassword
 
     ) {
 
@@ -71,7 +71,7 @@ public class AccountsKeycloakCreateUser {
             // Password definition
             Map<String, Object> credential = new LinkedHashMap<>();
             credential.put("type", "password");
-            credential.put("value", userPassword);
+            credential.put("value", new String(userPassword));
             credential.put("temporary", false);
 
             // Add password map to createUserBody
@@ -106,10 +106,21 @@ public class AccountsKeycloakCreateUser {
             // Return user id
             return userId;
 
+        } catch (org.springframework.web.reactive.function.client.WebClientResponseException.Conflict e) {
+
+            throw new DomainException(DomainExceptionEnum.ACCOUNTS_USER_ALREADY_EXISTS);
+
         } catch (Exception e) {
 
             logger.error("Error accessing Keycloak [ AccountsKeycloakCreateUser.execute() ]: " + e);
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        } finally {
+
+            // Clean password
+            if (userPassword != null) {
+                java.util.Arrays.fill(userPassword, '\0');
+            }
 
         }
 

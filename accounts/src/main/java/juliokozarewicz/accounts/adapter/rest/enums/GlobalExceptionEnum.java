@@ -20,6 +20,7 @@ public enum GlobalExceptionEnum {
     // ============================================= ( domain error codes init )
 
     // accounts
+    ACCOUNTS_USER_ALREADY_EXISTS(409, "ACCOUNTS_USER_ALREADY_EXISTS", DomainExceptionEnum.ACCOUNTS_USER_ALREADY_EXISTS),
     ACCOUNTS_USER_NOT_FOUND(404, "ACCOUNTS_USER_NOT_FOUND", DomainExceptionEnum.ACCOUNTS_USER_NOT_FOUND);
 
     // ============================================== ( domain error codes end )

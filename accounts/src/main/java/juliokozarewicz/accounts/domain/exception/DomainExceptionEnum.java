@@ -20,6 +20,7 @@ public enum DomainExceptionEnum {
 
     // accounts
     ACCOUNTS_USER_NOT_FOUND,
+    ACCOUNTS_USER_ALREADY_EXISTS,
 
     // ============================================== ( domain error codes end )
 
