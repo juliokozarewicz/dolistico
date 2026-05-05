@@ -79,13 +79,13 @@ public class AccountsCreateUseCase {
 
         }
 
-        // Conflict error - ignore (409)
+        // Keycloak conflict error - ignore (409)
         catch (WebClientResponseException.Conflict ignored) { return; }
 
         // Fallback (500)
         catch (Exception e) {
 
-            logger.error("Error accessing Keycloak [ AccountsKeycloakCreateUser.execute() ]: " + e);
+            logger.error("Keycloak error [ AccountsKeycloakCreateUser.execute() ]: " + e);
             accountsKeycloakDeleteUser.execute(clientToken, command.email());
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
