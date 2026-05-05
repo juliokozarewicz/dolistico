@@ -1,5 +1,9 @@
 package juliokozarewicz.accounts.infrastructure.keycloak;
 
+import juliokozarewicz.accounts.domain.exception.DomainException;
+import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,6 +29,7 @@ public class AccountsKeycloakCreateUser {
     private String keycloakBaseURL;
     // -------------------------------------------------------------------------
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakCreateUser.class);
     private static final String cacheKey = "storedToken";
     private final WebClient webClient;
 
@@ -77,7 +82,8 @@ public class AccountsKeycloakCreateUser {
 
         // Validate response contains Location header (user ID reference)
         if (response == null || response.getHeaders().getLocation() == null) {
-            throw new IllegalStateException();
+            logger.error("Error in the Keycloak response, user ID was not returned: [ AccountsKeycloakCreateUser.execute() ].");
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
         }
 
         // Extract user ID from Location header URL

@@ -21,7 +21,7 @@ public class AccountsCreateUseCase {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakCreateUser.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsCreateUseCase.class);
     private final AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider;
     private final AccountsKeycloakCreateUser accountsKeycloakCreateUser;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
@@ -88,7 +88,7 @@ public class AccountsCreateUseCase {
         // Fallback (500)
         catch (Exception e) {
 
-            logger.error("Keycloak error [ AccountsKeycloakCreateUser.execute() ]: " + e);
+            logger.error("Keycloak error [ AccountsCreateUseCase.execute() ]: " + e);
 
             // Rollback in a recent account with error
             if (idUserCreated != null) {
