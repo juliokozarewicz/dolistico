@@ -57,6 +57,9 @@ public class AccountsCreateUseCase {
         // Password cleanup
         char[] password = command.userPassword();
 
+        // Recent account
+        String idUserCreated = null;
+
         try {
 
             // Check if user already exists
@@ -69,7 +72,7 @@ public class AccountsCreateUseCase {
             if ( existingUserId != null ) { return; }
 
             // Create user
-            String idUserCreated = accountsKeycloakCreateUser.execute(
+            idUserCreated = accountsKeycloakCreateUser.execute(
                 clientToken,
                 command.email(),
                 password
@@ -86,7 +89,30 @@ public class AccountsCreateUseCase {
         catch (Exception e) {
 
             logger.error("Keycloak error [ AccountsKeycloakCreateUser.execute() ]: " + e);
-            accountsKeycloakDeleteUser.execute(clientToken, command.email());
+
+            // Rollback in a recent account with error
+            if (idUserCreated != null) {
+
+                accountsKeycloakDeleteUser.execute(clientToken, idUserCreated);
+
+            } else {
+
+                try {
+
+                    String orphanId = accountsKeycloakGetUser.getUserByEmail(clientToken, command.email());
+
+                    if (orphanId != null) {
+
+                        accountsKeycloakDeleteUser.execute(clientToken, orphanId);
+
+                    }
+
+                } catch (Exception rollbackEx) {
+                    logger.error("Orphan user in Keycloak, manual cleanup required for: "
+                        + command.email() + " | " + rollbackEx);
+                }
+            }
+
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
