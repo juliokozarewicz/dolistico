@@ -92,25 +92,7 @@ public class AccountsCreateUseCase {
 
             // Rollback in a recent account with error
             if (idUserCreated != null) {
-
                 accountsKeycloakDeleteUser.execute(clientToken, idUserCreated);
-
-            } else {
-
-                try {
-
-                    String orphanId = accountsKeycloakGetUser.getUserByEmail(clientToken, command.email());
-
-                    if (orphanId != null) {
-
-                        accountsKeycloakDeleteUser.execute(clientToken, orphanId);
-
-                    }
-
-                } catch (Exception rollbackEx) {
-                    logger.error("Orphan user in Keycloak, manual cleanup required for: "
-                        + command.email() + " | " + rollbackEx);
-                }
             }
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
