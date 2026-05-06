@@ -11,12 +11,9 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Builder
-class AccountsProfileModel {
+public class AccountsProfileModel {
 
     @Id
-    @Column(updatable = false, nullable = false)
-    private UUID id;
-
     @Column(updatable = false, nullable = false)
     private UUID idUser;
 
@@ -26,7 +23,7 @@ class AccountsProfileModel {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @Column(length = 555)
+    @Column(length = 512)
     private String profileImage;
 
     @Column(length = 256)

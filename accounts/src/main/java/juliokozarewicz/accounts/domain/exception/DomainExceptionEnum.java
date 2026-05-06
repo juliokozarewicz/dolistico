@@ -14,6 +14,7 @@ public enum DomainExceptionEnum {
     BAD_REQUEST,
     FORBIDDEN_CHARACTERS,
     INTERNAL_INSTABILITY,
+    BUSINESS_RULES_VIOLATION,
     // ================================================ ( rest error codes end )
 
     // ============================================= ( domain error codes init )

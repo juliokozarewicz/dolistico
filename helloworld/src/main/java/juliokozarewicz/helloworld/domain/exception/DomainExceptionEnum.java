@@ -12,6 +12,7 @@ public enum DomainExceptionEnum {
     ACCESS_EXPIRED,
     INVALID_CREDENTIALS,
     BAD_REQUEST,
+    BUSINESS_RULES_VIOLATION,
     INTERNAL_INSTABILITY,
     // ================================================ ( rest error codes end )
 

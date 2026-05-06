@@ -20,6 +20,12 @@ import java.util.UUID;
 @Repository
 public class TasksRepositoryImpl implements TasksRepository {
 
+    // ==================================================== ( constructor init )
+
+    // Env
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
     private final TasksRepositoryJPA tasksRepositoryJPA;
     private final CategoriesRepositoryJPA categoriesRepositoryJPA;
 
@@ -31,20 +37,9 @@ public class TasksRepositoryImpl implements TasksRepository {
         this.categoriesRepositoryJPA = categoriesRepositoryJPA;
     }
 
-    @Override
-    public boolean existsByIdUserAndTaskNameAndDueDate(
-        UUID idUser,
-        String taskName,
-        LocalDateTime dueDate
-    ) {
-        return tasksRepositoryJPA.existsByIdUserAndTaskNameAndDueDate(
-            idUser,
-            taskName,
-            dueDate
-        );
-    }
+    // ===================================================== ( constructor end )
 
-    // =============================================== ( categories helpers init )
+    // ======================================================== ( helpers init )
 
     private CategoriesModel getCategory(UUID idCategory, UUID idUser) {
     return idCategory == null
@@ -57,7 +52,7 @@ public class TasksRepositoryImpl implements TasksRepository {
         ? model.getCategory().getCategoryName()
         : null;
     }
-    // ================================================ ( categories helpers end )
+    // ========================================================= ( helpers end )
 
     // ======================================================== ( mappers init )
 
@@ -110,9 +105,24 @@ public class TasksRepositoryImpl implements TasksRepository {
 
     // ========================================================= ( mappers end )
 
+    // Persist data
     @Override
     public void save(TasksEntity tasksEntity) {
         tasksRepositoryJPA.save(toModel(tasksEntity));
+    }
+
+    // Find by user, taskname and due date
+    @Override
+    public boolean existsByIdUserAndTaskNameAndDueDate(
+        UUID idUser,
+        String taskName,
+        LocalDateTime dueDate
+    ) {
+        return tasksRepositoryJPA.existsByIdUserAndTaskNameAndDueDate(
+            idUser,
+            taskName,
+            dueDate
+        );
     }
 
     // Find all by user
@@ -128,7 +138,6 @@ public class TasksRepositoryImpl implements TasksRepository {
         LocalDate dueDateEnd,
         Pageable pageable
     ) {
-
         var spec = TasksGetUserSpecification.filter(
             taskName,
             category,
@@ -140,16 +149,13 @@ public class TasksRepositoryImpl implements TasksRepository {
             idUser
         );
 
-        return tasksRepositoryJPA
-            .findAll(spec, pageable)
-            .map(this::toEntity);
+        return tasksRepositoryJPA.findAll(spec, pageable).map(this::toEntity);
     }
 
     // Find by id and user
     @Override
     public Optional<TasksEntity> findByIdAndUser(UUID idTask, UUID idUser) {
-        return tasksRepositoryJPA.findByIdAndIdUser(idTask, idUser)
-            .map(this::toEntity);
+        return tasksRepositoryJPA.findByIdAndIdUser(idTask, idUser).map(this::toEntity);
     }
 
     // Exist by task name and due date and id not

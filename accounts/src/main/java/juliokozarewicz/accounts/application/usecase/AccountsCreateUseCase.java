@@ -1,8 +1,10 @@
 package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsCreateCommand;
+import juliokozarewicz.accounts.domain.entity.AccountsProfileEntity;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.domain.repository.AccountsProfileRepository;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakCreateUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakDeleteUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
@@ -11,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import java.time.Instant;
+import java.util.UUID;
 
 @Service
 public class AccountsCreateUseCase {
@@ -26,13 +31,15 @@ public class AccountsCreateUseCase {
     private final AccountsKeycloakCreateUser accountsKeycloakCreateUser;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
+    private final AccountsProfileRepository accountsProfileRepository;
 
     public AccountsCreateUseCase (
 
         AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider,
         AccountsKeycloakCreateUser accountsKeycloakCreateUser,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
-        AccountsKeycloakDeleteUser accountsKeycloakDeleteUser
+        AccountsKeycloakDeleteUser accountsKeycloakDeleteUser,
+        AccountsProfileRepository accountsProfileRepository
 
     ) {
 
@@ -40,6 +47,7 @@ public class AccountsCreateUseCase {
         this.accountsKeycloakCreateUser = accountsKeycloakCreateUser;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
+        this.accountsProfileRepository = accountsProfileRepository;
 
     }
 
@@ -78,7 +86,26 @@ public class AccountsCreateUseCase {
                 password
             );
 
-            // ##### Create user profile table
+            // Create user profile table
+
+            Instant timeStamp = Instant.now();
+
+            AccountsProfileEntity profile = new AccountsProfileEntity(
+                UUID.fromString(idUserCreated),
+                timeStamp,
+                timeStamp,
+                null,
+                command.fullName(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            );
+
+            accountsProfileRepository.save(profile);
 
         }
 

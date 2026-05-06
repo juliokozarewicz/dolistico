@@ -15,6 +15,7 @@ public enum GlobalExceptionEnum {
     ACCESS_EXPIRED(401, "ACCESS_EXPIRED", DomainExceptionEnum.ACCESS_EXPIRED),
     INVALID_CREDENTIALS(401, "INVALID_CREDENTIALS", DomainExceptionEnum.INVALID_CREDENTIALS),
     BAD_REQUEST(400, "BAD_REQUEST", DomainExceptionEnum.BAD_REQUEST),
+    BUSINESS_RULES_VIOLATION(400, "BUSINESS_RULES_VIOLATION", DomainExceptionEnum.BUSINESS_RULES_VIOLATION),
     // ================================================ ( rest error codes end )
 
     // ============================================= ( domain error codes init )
