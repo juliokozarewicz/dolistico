@@ -6,6 +6,7 @@ public enum GlobalSuccessEnum {
 
     // accounts
     ACCOUNTS_CREATED_SUCCESSFULLY(200, "ACCOUNTS_CREATED_SUCCESSFULLY"),
+    ACCOUNTS_PASSWORD_RESET_LINK_SENT_SUCCESSFULLY(200, "ACCOUNTS_PASSWORD_RESET_LINK_SENT_SUCCESSFULLY"),
     ACCOUNTS_RETRIEVED_SUCCESSFULLY(200, "ACCOUNTS_RETRIEVED_SUCCESSFULLY");
 
     // ============================================ ( domain success codes end )
@@ -21,8 +22,8 @@ public enum GlobalSuccessEnum {
     public int getStatusCode() {
         return statusCode;
     }
-
     public String getMessageCode() {
         return messageCode;
     }
+
 }
