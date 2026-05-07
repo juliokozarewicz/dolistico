@@ -1,4 +1,4 @@
-package juliokozarewicz.tasks.infrastructure.filter;
+package juliokozarewicz.tasks.infrastructure.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
