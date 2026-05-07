@@ -21,8 +21,8 @@ public enum GlobalSuccessEnum {
     public int getStatusCode() {
         return statusCode;
     }
-
     public String getMessageCode() {
         return messageCode;
     }
+
 }
