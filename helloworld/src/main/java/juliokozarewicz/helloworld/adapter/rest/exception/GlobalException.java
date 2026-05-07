@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -25,8 +26,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalException {
 
-    private static final Logger logger = LoggerFactory.getLogger(
-        GlobalException.class);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalException.class);
 
     // ======================================================= ( business INIT )
     @ExceptionHandler({juliokozarewicz.helloworld.domain.exception.DomainException.class})
@@ -110,10 +110,19 @@ public class GlobalException {
 
     // =================================================== ( fallback 500 INIT )
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardResponseDTO> handleGeneric(Exception ex) {
+    public ResponseEntity<StandardResponseDTO> handleGeneric(
+        Exception ex,
+        HttpServletRequest request
+    ) {
 
         // logs
-        logger.error("[ INTERNAL ERROR ] : ", ex);
+        logger.atError()
+            .addKeyValue("method", request.getMethod())
+            .addKeyValue("url", request.getRequestURI())
+            .addKeyValue("ip", request.getRemoteAddr())
+            .addKeyValue("agent", request.getHeader("User-Agent"))
+            .addKeyValue("statusCode", 500)
+            .log("[ INTERNAL ERROR ]", ex);
 
         return ResponseEntity
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)

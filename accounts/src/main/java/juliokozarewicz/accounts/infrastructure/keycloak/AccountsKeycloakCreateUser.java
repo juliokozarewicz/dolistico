@@ -82,7 +82,12 @@ public class AccountsKeycloakCreateUser {
 
         // Validate response contains Location header (user ID reference)
         if (response == null || response.getHeaders().getLocation() == null) {
-            logger.error("Error in the Keycloak response, user ID was not returned: [ AccountsKeycloakCreateUser.execute() ].");
+
+            // Logs
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .log("Error in the Keycloak response, user ID was not returned: [ AccountsKeycloakCreateUser.execute() ]");
+
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
         }
 

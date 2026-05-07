@@ -114,7 +114,8 @@ public class AccountsCreateUseCase {
         // Fallback (500)
         catch (Exception e) {
 
-            logger.error("Keycloak error [ AccountsCreateUseCase.execute() ]: " + e);
+            // Logs
+            logger.atError().log("Create user account error [ AccountsCreateUseCase.execute() ]", e);
 
             // Rollback in a recent account with error
             if (idUserCreated != null) {

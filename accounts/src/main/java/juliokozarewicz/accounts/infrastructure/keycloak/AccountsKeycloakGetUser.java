@@ -75,7 +75,12 @@ public class AccountsKeycloakGetUser {
 
         } catch (Exception e) {
 
-            logger.error("Error getting user by email in Keycloak", e);
+            // Logs
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .addKeyValue("email", userEmail)
+            .log("Error getting user by email in Keycloak [ AccountsKeycloakGetUser.getUserByEmail() ]", e);
+
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }

@@ -62,7 +62,12 @@ public class TasksEventConsumer {
 
         } catch (Exception e) {
 
-            logger.error("Error consuming message: [ TasksEventConsumer.consumerCreateUpdate() ]: " + e);
+            // Logs
+            logger.atError()
+            .addKeyValue("topic", record.topic())
+            .addKeyValue("partition", record.partition())
+            .addKeyValue("offset", record.offset())
+            .log("Error consuming message: [ TasksEventConsumer.consumerCreateUpdate() ]", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
@@ -92,7 +97,12 @@ public class TasksEventConsumer {
 
         } catch (Exception e) {
 
-            logger.error("Error consuming message: [ TasksEventConsumer.TasksEventConsumer() ]: " + e);
+            // Logs
+            logger.atError()
+            .addKeyValue("topic", record.topic())
+            .addKeyValue("partition", record.partition())
+            .addKeyValue("offset", record.offset())
+            .log("Error consuming message: [ TasksEventConsumer.consumerDelete() ]", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

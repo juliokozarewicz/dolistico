@@ -37,6 +37,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
 	// Mapper
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'

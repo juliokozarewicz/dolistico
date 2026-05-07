@@ -1,5 +1,6 @@
 package juliokozarewicz.tasks.adapter.rest.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import juliokozarewicz.tasks.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.tasks.adapter.rest.enums.GlobalExceptionEnum;
@@ -111,10 +112,19 @@ public class GlobalException {
 
     // =================================================== ( fallback 500 INIT )
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardResponseDTO> handleGeneric(Exception ex) {
+    public ResponseEntity<StandardResponseDTO> handleGeneric(
+        Exception ex,
+        HttpServletRequest request
+    ) {
 
         // logs
-        logger.error("[ INTERNAL ERROR ] : ", ex);
+        logger.atError()
+            .addKeyValue("method", request.getMethod())
+            .addKeyValue("url", request.getRequestURI())
+            .addKeyValue("ip", request.getRemoteAddr())
+            .addKeyValue("agent", request.getHeader("User-Agent"))
+            .addKeyValue("statusCode", 500)
+            .log("[ INTERNAL ERROR ]", ex);
 
         return ResponseEntity
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)

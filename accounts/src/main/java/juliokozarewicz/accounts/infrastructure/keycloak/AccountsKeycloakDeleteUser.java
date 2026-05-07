@@ -69,14 +69,23 @@ public class AccountsKeycloakDeleteUser {
             // Validate response
             if (!response.getStatusCode().is2xxSuccessful()) {
 
-                logger.error("Error deleting user in Keycloak. Status: " + response.getStatusCode());
+                // Logs
+                logger.atError()
+                .addKeyValue("realm", keycloakRealm)
+                .addKeyValue("statusCode", response.getStatusCode().value())
+                .log("Error deleting user in Keycloak: [ AccountsKeycloakDeleteUser.execute() ]");
+
                 throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
             }
 
         } catch (Exception e) {
 
-            logger.error("Error accessing Keycloak [ AccountsKeycloakDeleteUser.execute() ]: " + e);
+            // Logs
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .log("Error accessing Keycloak [ AccountsKeycloakDeleteUser.execute() ]", e);
+
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
         }
