@@ -87,7 +87,6 @@ public class AccountsCreateUseCase {
             );
 
             // Create user profile table
-
             Instant timeStamp = Instant.now();
 
             AccountsProfileEntity profile = new AccountsProfileEntity(

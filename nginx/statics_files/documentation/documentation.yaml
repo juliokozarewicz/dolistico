@@ -254,6 +254,85 @@ paths:
   ########################################################### ( helloworld end )
 
   ############################################################ ( accounts init )
+
+  # ACCOUNTS - CREATE
+  "/ACCOUNTS_BASE_URL_REPLACE":
+    post:
+      summary: Create account
+      description: |-
+        Creates a new user account.
+
+        **Field rules:**
+
+        - `fullName` — Required. Must be between 3 and 256 characters.
+          The following characters are not allowed: `< > & ' " /`
+
+        - `email` — Required. Must be a valid email address format.
+          Maximum 256 characters.
+
+        - `password` — Required. Must be between 12 and 128 characters.
+          Must contain at least one uppercase letter, one lowercase letter,
+          one digit, and one special character (`! @ # $ % ^ & *`).
+          The following characters are not allowed: `< > & ' " /`
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fullName
+                - email
+                - password
+              properties:
+                fullName:
+                  type: string
+                  description: >-
+                    Full name of the user. Must be between 3 and 256 characters.
+                    The characters `< > & ' " /` are not allowed.
+                  minLength: 3
+                  maxLength: 256
+                  example: Jane Doe
+                email:
+                  type: string
+                  format: email
+                  description: >-
+                    Valid email address. Maximum 256 characters.
+                    Used as the account identifier and login username.
+                  maxLength: 256
+                  example: jane.doe@example.com
+                password:
+                  type: string
+                  format: password
+                  description: >-
+                    Account password. Must be between 12 and 128 characters and contain
+                    at least one uppercase letter, one lowercase letter, one digit, and
+                    one special character (! @ # $ % ^ & *).
+                    The characters `< > & ' " /` are not allowed.
+                  minLength: 12
+                  maxLength: 128
+                  example: "MyStr0ng!Pass"
+      responses:
+        "201":
+          description: Account created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-07T10:00:00Z"
+                  statusCode:
+                    type: integer
+                    example: 201
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_CREATED_SUCCESSFULLY
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )

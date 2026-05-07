@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +30,6 @@ public class AccountsKeycloakGetUser {
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakGetUser.class);
     private final WebClient webClient;
 
-    // Cache name
-    private static final String cacheKey = "storedToken";
-
     public AccountsKeycloakGetUser(
 
         WebClient webClient
@@ -48,11 +47,18 @@ public class AccountsKeycloakGetUser {
         try {
 
             // Build Keycloak search URL
-            String url = keycloakBaseURL + "/admin/realms/" + keycloakRealm + "/users?email=" + userEmail;
+            URI uri = UriComponentsBuilder
+                .fromUriString(keycloakBaseURL)
+                .pathSegment("admin", "realms", keycloakRealm, "users")
+                .queryParam("email", userEmail)
+                .queryParam("exact", true)
+                .encode()
+                .build()
+                .toUri();
 
             // Get user
             List<?> users = webClient.get()
-                .uri(url)
+                .uri(uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
                 .retrieve()
                 .bodyToMono(List.class)
