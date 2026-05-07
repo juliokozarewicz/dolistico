@@ -1,6 +1,5 @@
-package juliokozarewicz.tasks.infrastructure.configuration;
+package juliokozarewicz.tasks.infrastructure.security;
 
-import juliokozarewicz.tasks.infrastructure.security.AuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
