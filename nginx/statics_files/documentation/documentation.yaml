@@ -260,20 +260,7 @@ paths:
     post:
       summary: Create account
       description: |-
-        Creates a new user account.
-
-        **Field rules:**
-
-        - `fullName` — Required. Must be between 3 and 256 characters.
-          The following characters are not allowed: `< > & ' " /`
-
-        - `email` — Required. Must be a valid email address format.
-          Maximum 256 characters.
-
-        - `password` — Required. Must be between 12 and 256 characters.
-          Must contain at least one uppercase letter, one lowercase letter,
-          one digit, and one special character (`! @ # $ % ^ & *`).
-          The following characters are not allowed: `< > & ' " /`
+        Creates a new user account by registering the user's information, initializing default settings and permissions.
       tags:
         - Accounts
       requestBody:
