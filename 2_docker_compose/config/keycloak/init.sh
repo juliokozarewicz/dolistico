@@ -123,7 +123,7 @@ configure_realm() {
       \"quickLoginCheckMilliSeconds\": 1000,
       \"minimumQuickLoginWaitSeconds\": 60,
       \"maxFailureWaitSeconds\": 900,
-      \"passwordPolicy\": \"length(12) and maxLength(128)\"
+      \"passwordPolicy\": \"length(12) and maxLength(256)\"
     }" \
     -w "\n%{http_code}")
 

@@ -270,7 +270,7 @@ paths:
         - `email` — Required. Must be a valid email address format.
           Maximum 256 characters.
 
-        - `password` — Required. Must be between 12 and 128 characters.
+        - `password` — Required. Must be between 12 and 256 characters.
           Must contain at least one uppercase letter, one lowercase letter,
           one digit, and one special character (`! @ # $ % ^ & *`).
           The following characters are not allowed: `< > & ' " /`
@@ -307,12 +307,12 @@ paths:
                   type: string
                   format: password
                   description: >-
-                    Account password. Must be between 12 and 128 characters and contain
+                    Account password. Must be between 12 and 256 characters and contain
                     at least one uppercase letter, one lowercase letter, one digit, and
                     one special character (! @ # $ % ^ & *).
                     The characters `< > & ' " /` are not allowed.
                   minLength: 12
-                  maxLength: 128
+                  maxLength: 256
                   example: "MyStr0ng!Pass"
       responses:
         "201":
