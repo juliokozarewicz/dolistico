@@ -56,13 +56,13 @@ public class AccountsUpdatePasswordLinkController {
 
         // Standard response
         return ResponseEntity
-        .status(GlobalSuccessEnum.ACCOUNTS_PASSWORD_RESET_LINK_SUCCESSFULLY.getStatusCode())
+        .status(GlobalSuccessEnum.ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY.getStatusCode())
         .contentType(MediaType.APPLICATION_JSON)
         .body(
             new StandardResponseDTO.Builder()
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
-            .statusCode(GlobalSuccessEnum.ACCOUNTS_PASSWORD_RESET_LINK_SUCCESSFULLY.getStatusCode())
-            .messageCode(GlobalSuccessEnum.ACCOUNTS_PASSWORD_RESET_LINK_SUCCESSFULLY.getMessageCode())
+            .statusCode(GlobalSuccessEnum.ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY.getStatusCode())
+            .messageCode(GlobalSuccessEnum.ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY.getMessageCode())
             .build()
         );
 
