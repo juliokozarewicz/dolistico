@@ -1,12 +1,15 @@
 package juliokozarewicz.accounts.infrastructure.security;
 
+import org.springframework.stereotype.Component;
+
 import java.security.SecureRandom;
 
+@Component
 public class TokenGenerator {
 
-    private static final SecureRandom random = new SecureRandom();
+    private final SecureRandom random = new SecureRandom();
 
-    public static String generate512Hex() {
+    public String generate512Hex() {
         byte[] bytes = new byte[256];
 
         random.nextBytes(bytes);
