@@ -50,7 +50,7 @@ public class AccountsUpdatePasswordLinkController {
 
     ) {
 
-        // Call use case (no DB changes yet)
+        // Call use case
         accountsUpdatePasswordLinkUseCase.execute(accountsUpdatePasswordLinkDTO);
 
         // Standard response
