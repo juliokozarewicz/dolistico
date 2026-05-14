@@ -50,6 +50,11 @@ dependencies {
 
 	// Cache
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Messaging
+    implementation 'org.springframework.boot:spring-boot-starter-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
 }
 
 tasks.named('test') {

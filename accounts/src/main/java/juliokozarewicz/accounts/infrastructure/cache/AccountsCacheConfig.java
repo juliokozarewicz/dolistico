@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class CacheConfig {
+public class AccountsCacheConfig {
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
@@ -45,14 +45,11 @@ public class CacheConfig {
         // Long-lived user data: Profile
         cacheConfigs.put("accounts.profileCache", defaultCacheConfig.entryTtl( Duration.ofDays(180) ));
 
-        // Long-lived user data: Address
-        cacheConfigs.put("accounts.addressCache", defaultCacheConfig.entryTtl( Duration.ofDays(180) ));
-
         // Short-lived PIN verification — expires in 5 minutes for security
         cacheConfigs.put("accounts.pinVerificationCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(5) ));
 
-        // Holds state for accounts pending activation — kept for 3 days
-        cacheConfigs.put("accounts.notActivatedAccountCache", defaultCacheConfig.entryTtl( Duration.ofDays(3) ));
+        // Holds state for accounts pending activation — kept for 7 days
+        cacheConfigs.put("accounts.notActivatedAccountCache", defaultCacheConfig.entryTtl( Duration.ofDays(7) ));
 
         // Keycloak client token
         cacheConfigs.put("accounts.clientKeycloakTokenCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(4) ));

@@ -11,6 +11,8 @@ import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakClientTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -32,6 +34,8 @@ public class AccountsCreateUseCase {
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
     private final AccountsProfileRepository accountsProfileRepository;
+    private final CacheManager cacheManager;
+    private final Cache notActivatedAccountCache;
 
     public AccountsCreateUseCase (
 
@@ -39,7 +43,8 @@ public class AccountsCreateUseCase {
         AccountsKeycloakCreateUser accountsKeycloakCreateUser,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsKeycloakDeleteUser accountsKeycloakDeleteUser,
-        AccountsProfileRepository accountsProfileRepository
+        AccountsProfileRepository accountsProfileRepository,
+        CacheManager cacheManager
 
     ) {
 
@@ -48,6 +53,8 @@ public class AccountsCreateUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
         this.accountsProfileRepository = accountsProfileRepository;
+        this.cacheManager = cacheManager;
+        this.notActivatedAccountCache = cacheManager.getCache("accounts.notActivatedAccountCache");
 
     }
 
@@ -105,6 +112,8 @@ public class AccountsCreateUseCase {
             );
 
             accountsProfileRepository.save(profile);
+
+            notActivatedAccountCache.put(idUserCreated, timeStamp);
 
         }
 
