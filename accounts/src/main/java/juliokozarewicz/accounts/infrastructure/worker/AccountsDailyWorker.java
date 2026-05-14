@@ -1,19 +1,44 @@
 package juliokozarewicz.accounts.infrastructure.worker;
 
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakClientTokenProvider;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetInactiveUsers;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AccountsDailyWorker {
 
-    @Scheduled(cron = "0 50 12 * * *", zone = "America/Sao_Paulo")
+    // ==================================================== ( constructor init )
+
+    // Env
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    private final AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider;
+    private final AccountsKeycloakGetInactiveUsers accountsKeycloakGetInactiveUsers;
+
+    public AccountsDailyWorker(
+
+        AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider,
+        AccountsKeycloakGetInactiveUsers accountsKeycloakGetInactiveUsers
+
+    ) {
+
+        this.accountsKeycloakClientTokenProvider = accountsKeycloakClientTokenProvider;
+        this.accountsKeycloakGetInactiveUsers = accountsKeycloakGetInactiveUsers;
+
+    }
+
+    // ===================================================== ( constructor end )
+
+    @Scheduled(cron = "0 27 17 * * *", zone = "America/Sao_Paulo")
     public void deleteAccountExpiredJob() {
 
-        System.out.println("#################################################");
-        System.out.println("#################################################");
-        System.out.println("                    Running                      ");
-        System.out.println("#################################################");
-        System.out.println("#################################################");
+        // Login client Keycloak
+        String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
+
+        // Get and delete expired users
+        accountsKeycloakGetInactiveUsers.getInactiveUsers(clientToken);
 
     }
 
