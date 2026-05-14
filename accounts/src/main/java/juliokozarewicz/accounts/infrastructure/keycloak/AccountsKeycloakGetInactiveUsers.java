@@ -25,6 +25,12 @@ public class AccountsKeycloakGetInactiveUsers {
     @Value("${ACCOUNTS_KEYCLOAK_REALM}")
     private String keycloakRealm;
 
+    @Value("${KC_BOOTSTRAP_ADMIN_USERNAME}")
+    private String keycloakadminUser;
+
+    @Value("${ACCOUNTS_KEYCLOAK_CLIENT_ID}")
+    private String keycloakClientId;
+
     @Value("${KEYCLOAK_BASE_URL}")
     private String keycloakBaseURL;
     // -------------------------------------------------------------------------
@@ -74,7 +80,7 @@ public class AccountsKeycloakGetInactiveUsers {
                     .uri(uri)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
                     .retrieve()
-                    .bodyToMono(List.class)
+                    .bodyToMono(new org.springframework.core.ParameterizedTypeReference<List<Map<String, Object>>>() {})
                     .block();
 
                 // Stop pagination if no users are returned
@@ -82,6 +88,20 @@ public class AccountsKeycloakGetInactiveUsers {
 
                 // Process users
                 for (Map<String, Object> user : users) {
+
+                    // If is system users
+                    String username = (String) user.get("username");
+
+                    if ( username != null &&
+
+                        (
+                            username.equals("service-account-" + keycloakClientId) ||
+                            username.equals(keycloakadminUser)
+                        )
+
+                    ) {
+                        continue;
+                    }
 
                     String userId = (String) user.get("id");
                     Boolean emailVerified = (Boolean) user.get("emailVerified");

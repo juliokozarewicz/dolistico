@@ -31,7 +31,7 @@ public class AccountsDailyWorker {
 
     // ===================================================== ( constructor end )
 
-    @Scheduled(cron = "0 27 17 * * *", zone = "America/Sao_Paulo")
+    @Scheduled(cron = "0 29 18 * * *", zone = "America/Sao_Paulo")
     public void deleteAccountExpiredJob() {
 
         // Login client Keycloak
