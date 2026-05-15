@@ -4,6 +4,8 @@ import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetInact
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+
 @Component
 public class AccountsDailyWorker {
 
@@ -27,7 +29,7 @@ public class AccountsDailyWorker {
 
     // ===================================================== ( constructor end )
 
-    @Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
+    @Scheduled(cron = "0 0 6 * * *", zone = "UTC")
     public void deleteAccountExpiredJob() {
 
         // Get and delete expired users

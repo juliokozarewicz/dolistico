@@ -81,6 +81,7 @@ public class AccountsKeycloakGetInactiveUsers {
                     .pathSegment("admin", "realms", keycloakRealm, "users")
                     .queryParam("first", first)
                     .queryParam("max", max)
+                    .queryParam("emailVerified", false)
                     .encode()
                     .build()
                     .toUri();
