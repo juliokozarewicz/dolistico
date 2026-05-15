@@ -27,7 +27,7 @@ public class AccountsDailyWorker {
 
     // ===================================================== ( constructor end )
 
-    @Scheduled(cron = "0 40 10 * * *", zone = "America/Sao_Paulo")
+    @Scheduled(cron = "0 0 3 * * *", zone = "America/Sao_Paulo")
     public void deleteAccountExpiredJob() {
 
         // Get and delete expired users
