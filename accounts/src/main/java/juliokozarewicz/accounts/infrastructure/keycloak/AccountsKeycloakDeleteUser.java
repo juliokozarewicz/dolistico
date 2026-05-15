@@ -26,13 +26,16 @@ public class AccountsKeycloakDeleteUser {
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakDeleteUser.class);
     private final WebClient webClient;
     private static final String cacheKey = "storedToken";
+    private final AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider;
 
-    public AccountsKeycloakDeleteUser(
+    public AccountsKeycloakDeleteUser (
 
+        AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider,
         WebClient webClient
 
     ) {
 
+        this.accountsKeycloakClientTokenProvider = accountsKeycloakClientTokenProvider;
         this.webClient = webClient;
 
     }
@@ -41,12 +44,14 @@ public class AccountsKeycloakDeleteUser {
 
     public void execute (
 
-        String clientToken,
         String userId
 
     ) {
 
         try {
+
+            // Login client Keycloak
+            String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
             // Build URL
             String url = keycloakBaseURL + "/admin/realms/" + keycloakRealm + "/users/" + userId;

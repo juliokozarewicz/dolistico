@@ -2,6 +2,7 @@ package juliokozarewicz.accounts.infrastructure.keycloak;
 
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,22 +38,31 @@ public class AccountsKeycloakGetInactiveUsers {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakGetInactiveUsers.class);
     private final WebClient webClient;
+    private final AccountsEventProducer accountsEventProducer;
+    private final AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider;
 
     public AccountsKeycloakGetInactiveUsers(
 
-        WebClient webClient
+        WebClient webClient,
+        AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider,
+        AccountsEventProducer accountsEventProducer
 
     ) {
 
         this.webClient = webClient;
+        this.accountsKeycloakClientTokenProvider = accountsKeycloakClientTokenProvider;
+        this.accountsEventProducer = accountsEventProducer;
 
     }
 
     // ===================================================== ( constructor end )
 
-    public void getInactiveUsers(String clientToken) {
+    public void getInactiveUsers() {
 
         try {
+
+            // Login client Keycloak
+            String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
             // Calculate timestamp for accounts created 7 days ago
             long sevenDaysAgoMillis = Instant.now()
@@ -121,8 +131,8 @@ public class AccountsKeycloakGetInactiveUsers {
 
                     ) {
 
-                        // ##### Temporary print
-                        System.out.println("User to delete: " + userId);
+                        // Create message
+                        accountsEventProducer.producerDeleteAccountNotActivated(userId);
 
                     }
 

@@ -29,22 +29,28 @@ public class AccountsKeycloakGetUser {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakGetUser.class);
     private final WebClient webClient;
+    private final AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider;
 
     public AccountsKeycloakGetUser(
 
+        AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider,
         WebClient webClient
 
     ) {
 
+        this.accountsKeycloakClientTokenProvider = accountsKeycloakClientTokenProvider;
         this.webClient = webClient;
 
     }
 
     // ===================================================== ( constructor end )
 
-    public String getUserByEmail(String clientToken, String userEmail ) {
+    public String getUserByEmail( String userEmail ) {
 
         try {
+
+            // Login client Keycloak
+            String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
             // Build Keycloak search URL
             URI uri = UriComponentsBuilder

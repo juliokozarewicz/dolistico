@@ -6,16 +6,15 @@ import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.tasks.domain.repository.TasksRepository;
 import juliokozarewicz.tasks.infrastructure.messaging.enums.TasksMessagingGroupEnum;
 import juliokozarewicz.tasks.infrastructure.messaging.enums.TasksMessagingTopicEnum;
-import juliokozarewicz.tasks.infrastructure.messaging.producer.TasksEventProducer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
-@Service
+@Component
 public class TasksEventConsumer {
 
     // Env

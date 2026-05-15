@@ -32,14 +32,17 @@ public class AccountsKeycloakCreateUser {
     private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakCreateUser.class);
     private static final String cacheKey = "storedToken";
     private final WebClient webClient;
+    private final AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider;
 
     public AccountsKeycloakCreateUser(
 
-        WebClient webClient
+        WebClient webClient,
+        AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider
 
     ) {
 
         this.webClient = webClient;
+        this.accountsKeycloakClientTokenProvider = accountsKeycloakClientTokenProvider;
 
     }
 
@@ -47,11 +50,13 @@ public class AccountsKeycloakCreateUser {
 
     public String execute(
 
-        String clientToken,
         String userEmail,
         char[] userPassword
 
     ) {
+
+        // Login client Keycloak
+        String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
         // Build Keycloak admin user creation endpoint
         String url = keycloakBaseURL + "/admin/realms/" + keycloakRealm + "/users";

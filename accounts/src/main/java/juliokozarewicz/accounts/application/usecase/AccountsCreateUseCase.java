@@ -8,14 +8,12 @@ import juliokozarewicz.accounts.domain.repository.AccountsProfileRepository;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakCreateUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakDeleteUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
-import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakClientTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-
 import java.time.Instant;
 import java.util.UUID;
 
@@ -29,7 +27,6 @@ public class AccountsCreateUseCase {
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsCreateUseCase.class);
-    private final AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider;
     private final AccountsKeycloakCreateUser accountsKeycloakCreateUser;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
@@ -39,7 +36,6 @@ public class AccountsCreateUseCase {
 
     public AccountsCreateUseCase (
 
-        AccountsKeycloakClientTokenProvider accountsKeycloakClientTokenProvider,
         AccountsKeycloakCreateUser accountsKeycloakCreateUser,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsKeycloakDeleteUser accountsKeycloakDeleteUser,
@@ -48,7 +44,6 @@ public class AccountsCreateUseCase {
 
     ) {
 
-        this.accountsKeycloakClientTokenProvider = accountsKeycloakClientTokenProvider;
         this.accountsKeycloakCreateUser = accountsKeycloakCreateUser;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
@@ -66,9 +61,6 @@ public class AccountsCreateUseCase {
 
     ) {
 
-        // Get client token
-        String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
-
         // Password cleanup
         char[] password = command.userPassword();
 
@@ -79,7 +71,6 @@ public class AccountsCreateUseCase {
 
             // Check if user already exists
             String existingUserId = accountsKeycloakGetUser.getUserByEmail(
-                clientToken,
                 command.email()
             );
 
@@ -88,7 +79,6 @@ public class AccountsCreateUseCase {
 
             // Create user
             idUserCreated = accountsKeycloakCreateUser.execute(
-                clientToken,
                 command.email(),
                 password
             );
@@ -128,7 +118,7 @@ public class AccountsCreateUseCase {
 
             // Rollback in a recent account with error
             if (idUserCreated != null) {
-                accountsKeycloakDeleteUser.execute(clientToken, idUserCreated);
+                accountsKeycloakDeleteUser.execute(idUserCreated);
             }
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);

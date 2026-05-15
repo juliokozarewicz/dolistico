@@ -2,14 +2,15 @@ package juliokozarewicz.accounts.infrastructure.messaging.producer;
 
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
-import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingGroupEnum;
 import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingTopicEnum;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+import java.util.concurrent.TimeUnit;
 
+@Component
 public class AccountsEventProducer {
 
     // ==================================================== ( constructor init )
@@ -19,33 +20,40 @@ public class AccountsEventProducer {
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsEventProducer.class);
+    private final KafkaTemplate<String, byte[]> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     public AccountsEventProducer (
 
+        KafkaTemplate<String, byte[]> kafkaTemplate,
+        ObjectMapper objectMapper
+
     ) {
+
+        this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
 
     }
 
     // ===================================================== ( constructor end )
 
     // Delete account not activated producer
-    @KafkaListener(
-        topics = AccountsMessagingTopicEnum.ACCOUNTS_NOT_ACTIVATED_DELETE,
-        groupId = AccountsMessagingGroupEnum.ACCOUNTS_GROUP_ID
-    )
     public void producerDeleteAccountNotActivated (
 
-        ConsumerRecord<String, byte[]> record,
-        Acknowledgment ack
+        String idUser
 
     ) {
 
         try {
 
-            // Create message
-            byte[] payload = record.value();
+            // Convert object to JSON bytes
+            byte[] payload = objectMapper.writeValueAsBytes(idUser);
 
-            ack.acknowledge();
+            // Send as raw bytes
+            kafkaTemplate.send(
+                AccountsMessagingTopicEnum.ACCOUNTS_NOT_ACTIVATED_DELETE,
+                payload
+            ).get(5, TimeUnit.SECONDS);
 
         } catch (Exception e) {
 
