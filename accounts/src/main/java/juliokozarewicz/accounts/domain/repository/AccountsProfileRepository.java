@@ -6,4 +6,6 @@ public interface AccountsProfileRepository {
 
     void save(AccountsProfileEntity accountsProfileEntity);
 
+    void delete(String idUser);
+
 }

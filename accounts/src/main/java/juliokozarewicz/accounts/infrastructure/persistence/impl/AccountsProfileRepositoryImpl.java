@@ -6,6 +6,8 @@ import juliokozarewicz.accounts.infrastructure.persistence.jpa.AccountsProfileRe
 import juliokozarewicz.accounts.infrastructure.persistence.model.AccountsProfileModel;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 public class AccountsProfileRepositoryImpl implements AccountsProfileRepository {
 
@@ -55,4 +57,10 @@ public class AccountsProfileRepositoryImpl implements AccountsProfileRepository 
     public void save(AccountsProfileEntity accountsProfileEntity) {
         accountsProfileRepositoryJPA.save(toModel(accountsProfileEntity));
     }
+
+    @Override
+    public void delete(String idUser) {
+        accountsProfileRepositoryJPA.deleteById(UUID.fromString(idUser));
+    }
+
 }

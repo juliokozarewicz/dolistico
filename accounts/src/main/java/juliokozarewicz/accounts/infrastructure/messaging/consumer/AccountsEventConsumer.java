@@ -2,6 +2,7 @@ package juliokozarewicz.accounts.infrastructure.messaging.consumer;
 
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.domain.repository.AccountsProfileRepository;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakDeleteUser;
 import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingGroupEnum;
 import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingTopicEnum;
@@ -24,16 +25,19 @@ public class AccountsEventConsumer {
     private static final Logger logger = LoggerFactory.getLogger(AccountsEventConsumer.class);
     private final ObjectMapper objectMapper;
     private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
+    private final AccountsProfileRepository accountsProfileRepository;
 
     public AccountsEventConsumer (
 
         ObjectMapper objectMapper,
-        AccountsKeycloakDeleteUser accountsKeycloakDeleteUser
+        AccountsKeycloakDeleteUser accountsKeycloakDeleteUser,
+        AccountsProfileRepository accountsProfileRepository
 
     ) {
 
         this.objectMapper = objectMapper;
         this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
+        this.accountsProfileRepository = accountsProfileRepository;
 
     }
     // ===================================================== ( constructor end )
@@ -60,6 +64,9 @@ public class AccountsEventConsumer {
 
             // Delete expired account
             accountsKeycloakDeleteUser.execute(userId);
+
+            // Get and delete expired account profile
+            accountsProfileRepository.delete(userId);
 
             ack.acknowledge();
 
