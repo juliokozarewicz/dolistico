@@ -36,6 +36,16 @@ public class AccountsUpdatePasswordLinkUseCase {
         // Generate token for verification
         String generatedToken = tokenGenerator.generate512Hex();
 
+        // ##### Get user id by email
+
+        // ##### Null verification
+
+        // ###### Save token with email in cache
+
+        // ##### Create URL with token
+
+        // ##### Send email with URL to the user
+
         System.out.println("#################################################");
         System.out.println( generatedToken );
         System.out.println("#################################################");
