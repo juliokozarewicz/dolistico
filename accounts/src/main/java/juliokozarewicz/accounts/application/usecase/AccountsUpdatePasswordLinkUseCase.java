@@ -1,6 +1,7 @@
 package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordLinkCommand;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,17 @@ public class AccountsUpdatePasswordLinkUseCase {
     // -------------------------------------------------------------------------
 
     private final TokenGenerator tokenGenerator;
+    private final AccountsKeycloakGetUser accountsKeycloakGetUser;
 
     public AccountsUpdatePasswordLinkUseCase(
 
-        TokenGenerator tokenGenerator
+        TokenGenerator tokenGenerator,
+        AccountsKeycloakGetUser accountsKeycloakGetUser
 
     ) {
 
         this.tokenGenerator = tokenGenerator;
+        this.accountsKeycloakGetUser = accountsKeycloakGetUser;
 
     }
 
@@ -36,9 +40,13 @@ public class AccountsUpdatePasswordLinkUseCase {
         // Generate token for verification
         String generatedToken = tokenGenerator.generate512Hex();
 
-        // ##### Get user id by email
+        // Get user id by email
+        String existingUserId = accountsKeycloakGetUser.getUserByEmail(
+            accountsUpdatePasswordLinkCommand.email()
+        );
 
-        // ##### Null verification
+        // Null verification
+        if (existingUserId == null) { return; }
 
         // ###### Save token with email in cache
 
