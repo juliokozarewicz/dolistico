@@ -74,6 +74,7 @@ public class AccountsUpdatePasswordLinkUseCase {
             .toUriString();
 
         // ##### Create email message with URL
+        accountsEventProducer.producerUpdateEmailLink(updatePasswordURL);
 
     }
 
