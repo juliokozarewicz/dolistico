@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
 @RestController
 @Validated
@@ -44,14 +45,23 @@ public class AccountsUpdatePasswordLinkController {
     @PostMapping("/update-password")
     public ResponseEntity<StandardResponseDTO> handle (
 
+        // Locale from Accept-Language
+        Locale locale,
+
         // DTO error
         @Valid @RequestBody AccountsUpdatePasswordLinkDTO accountsUpdatePasswordLinkDTO,
         BindingResult bindingResult
 
     ) {
 
+        // Get language
+        String languageTag = locale.toLanguageTag();
+
         // Call use case
-        accountsUpdatePasswordLinkUseCase.execute(accountsUpdatePasswordLinkDTO);
+        accountsUpdatePasswordLinkUseCase.execute(
+            languageTag,
+            accountsUpdatePasswordLinkDTO
+        );
 
         // Standard response
         return ResponseEntity

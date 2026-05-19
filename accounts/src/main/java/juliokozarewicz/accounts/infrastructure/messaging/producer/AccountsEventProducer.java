@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -40,14 +42,21 @@ public class AccountsEventProducer {
     // Send simple email producer
     public void producerSendEmailLink(
 
+        String languageTag,
+        String email,
         String commandURL
 
     ) {
 
         try {
 
+            // Create JSON payload
+            Map<String, String> emailMessageMap = new LinkedHashMap<>();
+            emailMessageMap.put("recipientEmail", email);
+            emailMessageMap.put("message", "##### message");
+
             // Convert object to bytes
-            byte[] payload = objectMapper.writeValueAsBytes(commandURL);
+            byte[] payload = objectMapper.writeValueAsBytes(emailMessageMap);
 
             // Send as raw bytes
             kafkaTemplate.send(

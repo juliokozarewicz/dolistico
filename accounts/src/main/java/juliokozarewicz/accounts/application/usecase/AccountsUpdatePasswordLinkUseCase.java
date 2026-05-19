@@ -48,6 +48,7 @@ public class AccountsUpdatePasswordLinkUseCase {
 
     public void execute(
 
+        String languageTag,
         AccountsUpdatePasswordLinkCommand accountsUpdatePasswordLinkCommand
 
     ) {
@@ -74,7 +75,11 @@ public class AccountsUpdatePasswordLinkUseCase {
             .toUriString();
 
         // Create email message with URL
-        accountsEventProducer.producerSendEmailLink(updatePasswordURL);
+        accountsEventProducer.producerSendEmailLink(
+            languageTag,
+            accountsUpdatePasswordLinkCommand.email(),
+            updatePasswordURL
+        );
 
     }
 
