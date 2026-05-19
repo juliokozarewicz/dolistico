@@ -2,6 +2,7 @@ package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordLinkCommand;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
 import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -24,12 +25,14 @@ public class AccountsUpdatePasswordLinkUseCase {
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
+    private final AccountsEventProducer accountsEventProducer;
 
     public AccountsUpdatePasswordLinkUseCase(
 
         TokenGenerator tokenGenerator,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        AccountsEventProducer accountsEventProducer
 
     ) {
 
@@ -37,6 +40,7 @@ public class AccountsUpdatePasswordLinkUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.cacheManager = cacheManager;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
+        this.accountsEventProducer = accountsEventProducer;
 
     }
 
@@ -69,11 +73,7 @@ public class AccountsUpdatePasswordLinkUseCase {
             .build()
             .toUriString();
 
-        // ##### Create message with URL
-
-        System.out.println("#################################################");
-        System.out.println( generatedToken );
-        System.out.println("#################################################");
+        // ##### Create email message with URL
 
     }
 

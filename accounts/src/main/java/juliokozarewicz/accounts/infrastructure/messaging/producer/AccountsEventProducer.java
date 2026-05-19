@@ -37,6 +37,37 @@ public class AccountsEventProducer {
 
     // ===================================================== ( constructor end )
 
+    // Send email to update password producer
+    public void producerUpdateEmailLink (
+
+        String updatePasswordURL
+
+    ) {
+
+        try {
+
+            // Convert object to bytes
+            byte[] payload = objectMapper.writeValueAsBytes(updatePasswordURL);
+
+            // Send as raw bytes
+            kafkaTemplate.send(
+                AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL,
+                payload
+            ).get(5, TimeUnit.SECONDS);
+
+        } catch (Exception e) {
+
+            // Logs
+            logger.atError()
+            .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
+            .log("Error producing message: [ AccountsEventProducer.producerUpdateEmailLink() ]", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+    }
+
     // Delete account not activated producer
     public void producerDeleteAccountNotActivated (
 
@@ -46,7 +77,7 @@ public class AccountsEventProducer {
 
         try {
 
-            // Convert object to JSON bytes
+            // Convert object to bytes
             byte[] payload = objectMapper.writeValueAsBytes(idUser);
 
             // Send as raw bytes
