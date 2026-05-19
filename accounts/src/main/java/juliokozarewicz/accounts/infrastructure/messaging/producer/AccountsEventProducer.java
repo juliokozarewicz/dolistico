@@ -37,17 +37,17 @@ public class AccountsEventProducer {
 
     // ===================================================== ( constructor end )
 
-    // Send email to update password producer
-    public void producerUpdateEmailLink (
+    // Send simple email producer
+    public void producerSendEmailLink(
 
-        String updatePasswordURL
+        String commandURL
 
     ) {
 
         try {
 
             // Convert object to bytes
-            byte[] payload = objectMapper.writeValueAsBytes(updatePasswordURL);
+            byte[] payload = objectMapper.writeValueAsBytes(commandURL);
 
             // Send as raw bytes
             kafkaTemplate.send(
