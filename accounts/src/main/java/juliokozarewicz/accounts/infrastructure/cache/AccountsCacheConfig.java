@@ -45,11 +45,11 @@ public class AccountsCacheConfig {
         // Long-lived user data: Profile
         cacheConfigs.put("accounts.profileCache", defaultCacheConfig.entryTtl( Duration.ofDays(180) ));
 
+        // Short-lived token verification — expires in 5 minutes for security
+        cacheConfigs.put("accounts.tokenVerificationCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(5) ));
+
         // Short-lived PIN verification — expires in 5 minutes for security
         cacheConfigs.put("accounts.pinVerificationCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(5) ));
-
-        // Holds state for accounts pending activation — kept for 7 days
-        cacheConfigs.put("accounts.notActivatedAccountCache", defaultCacheConfig.entryTtl( Duration.ofDays(7) ));
 
         // Keycloak client token
         cacheConfigs.put("accounts.clientKeycloakTokenCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(4) ));

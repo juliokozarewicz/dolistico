@@ -3,7 +3,11 @@ package juliokozarewicz.accounts.application.usecase;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordLinkCommand;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class AccountsUpdatePasswordLinkUseCase {
@@ -12,20 +16,27 @@ public class AccountsUpdatePasswordLinkUseCase {
 
     // Env
     // -------------------------------------------------------------------------
+    @Value("${UPDATE_PASSWORD_URL}")
+    private String updatePasswordBaseURL;
     // -------------------------------------------------------------------------
 
     private final TokenGenerator tokenGenerator;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
+    private final CacheManager cacheManager;
+    private final Cache tokenVerificationCache;
 
     public AccountsUpdatePasswordLinkUseCase(
 
         TokenGenerator tokenGenerator,
-        AccountsKeycloakGetUser accountsKeycloakGetUser
+        AccountsKeycloakGetUser accountsKeycloakGetUser,
+        CacheManager cacheManager
 
     ) {
 
         this.tokenGenerator = tokenGenerator;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
+        this.cacheManager = cacheManager;
+        this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
 
     }
 
@@ -46,13 +57,19 @@ public class AccountsUpdatePasswordLinkUseCase {
         );
 
         // Null verification
-        if (existingUserId == null) { return; }
+        if ( existingUserId == null ) { return; }
 
-        // ###### Save token with email in cache
+        // save token with email in cache
+        tokenVerificationCache.put(generatedToken, existingUserId);
 
-        // ##### Create URL with token
+        // Create URL with token
+        String updatePasswordURL = UriComponentsBuilder
+            .fromUriString(updatePasswordBaseURL)
+            .queryParam("token", generatedToken)
+            .build()
+            .toUriString();
 
-        // ##### Send email with URL to the user
+        // ##### Create message with URL
 
         System.out.println("#################################################");
         System.out.println( generatedToken );
