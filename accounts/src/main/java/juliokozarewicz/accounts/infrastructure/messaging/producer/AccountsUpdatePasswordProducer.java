@@ -134,11 +134,10 @@ public class AccountsUpdatePasswordProducer {
                         .append("</div>")
 
                         .append("<div style='")
-                            .append("font-size:8px;")
+                            .append("font-size:10px;")
                             .append("padding-top:30px;")
                             .append("padding-left:5px;")
-                            .append("padding-bottom:30px;")
-                            .append("margin-bottom:40px;")
+                            .append("padding-bottom:40px;")
                             .append("opacity:0.7;")
                             .append("'>")
                             .append(messageSource.getMessage("email_footer_message", null, locale))
