@@ -75,6 +75,7 @@ public class EmailServiceEventConsumer {
             mailMessage.setTo(email);
             mailMessage.setSubject(subject);
             mailMessage.setText(message, true);
+            javaMailSender.send(mimeMessage);
 
             ack.acknowledge();
 
