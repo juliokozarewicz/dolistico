@@ -96,6 +96,7 @@ public class AccountsUpdatePasswordProducer {
                             .append("text-align:center;")
                             .append("color:#ffffff;")
                             .append("text-decoration:none;")
+                            .append("font-weight:bold;")
                             .append("border-radius:6px;")
                             .append("font-size:15px;")
                             .append("padding-top:10px;")
@@ -134,8 +135,9 @@ public class AccountsUpdatePasswordProducer {
 
                         .append("<div style='")
                             .append("font-size:10px;")
-                            .append("padding-top:30px;")
+                            .append("padding-top:10px;")
                             .append("padding-left:5px;")
+                            .append("padding-bottom:30px;")
                             .append("margin-bottom:30px;")
                             .append("opacity:0.7;")
                             .append("'>")
