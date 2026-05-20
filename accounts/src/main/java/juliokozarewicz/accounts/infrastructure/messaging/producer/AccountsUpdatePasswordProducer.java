@@ -155,7 +155,7 @@ public class AccountsUpdatePasswordProducer {
             emailMessageMap.put(
                 "subject",
                 messageSource.getMessage(
-                    "email_subject_account_service",
+                    "email_subject_update_password",
                     null,
                     locale
                 )
