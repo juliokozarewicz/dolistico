@@ -119,11 +119,19 @@ public class GlobalException {
         HttpServletRequest request
     ) {
 
+        // Get user address
+        String userAddr = request.getHeader("X-Forwarded-For");
+        if (userAddr == null || userAddr.isBlank()) {
+            userAddr = request.getRemoteAddr(); // fallback
+        } else if (userAddr.contains(",")) {
+            userAddr = userAddr.split(",")[0].trim();
+        }
+
         // logs
         logger.atError()
             .addKeyValue("method", request.getMethod())
             .addKeyValue("url", request.getRequestURI())
-            .addKeyValue("ip", request.getRemoteAddr())
+            .addKeyValue("ip", userAddr)
             .addKeyValue("agent", request.getHeader("User-Agent"))
             .addKeyValue("statusCode", 500)
             .log("[ INTERNAL ERROR ]", ex);

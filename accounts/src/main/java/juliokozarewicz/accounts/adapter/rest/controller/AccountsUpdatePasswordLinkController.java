@@ -54,12 +54,9 @@ public class AccountsUpdatePasswordLinkController {
 
     ) {
 
-        // Get language
-        String languageTag = locale.toLanguageTag();
-
         // Call use case
         accountsUpdatePasswordLinkUseCase.execute(
-            languageTag,
+            locale,
             accountsUpdatePasswordLinkDTO
         );
 

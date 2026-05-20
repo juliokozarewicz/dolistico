@@ -10,6 +10,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Locale;
+
 @Service
 public class AccountsUpdatePasswordLinkUseCase {
 
@@ -48,7 +50,7 @@ public class AccountsUpdatePasswordLinkUseCase {
 
     public void execute(
 
-        String languageTag,
+        Locale locale,
         AccountsUpdatePasswordLinkCommand accountsUpdatePasswordLinkCommand
 
     ) {
@@ -76,7 +78,7 @@ public class AccountsUpdatePasswordLinkUseCase {
 
         // Create email message with URL
         accountsEventProducer.producerSendEmailLink(
-            languageTag,
+            locale,
             accountsUpdatePasswordLinkCommand.email(),
             updatePasswordURL
         );

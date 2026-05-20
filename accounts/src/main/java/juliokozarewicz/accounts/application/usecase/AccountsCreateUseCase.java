@@ -74,8 +74,18 @@ public class AccountsCreateUseCase {
                 command.email()
             );
 
-            // If user already exists, do nothing
-            if ( existingUserId != null ) { return; }
+            // Check if user already exists
+            if (existingUserId != null) {
+
+                // ##### If email is already verified, send email notification
+                if (accountsKeycloakGetUser.isAccountVerifiedById(existingUserId)) {
+                    return;
+                }
+
+                // If user exists but is not verified or banned, do nothing
+                return;
+
+            }
 
             // Create user
             idUserCreated = accountsKeycloakCreateUser.execute(

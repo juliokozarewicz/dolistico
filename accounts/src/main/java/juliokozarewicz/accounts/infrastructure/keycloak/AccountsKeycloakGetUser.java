@@ -45,14 +45,37 @@ public class AccountsKeycloakGetUser {
 
     // ===================================================== ( constructor end )
 
+    // ======================================================== ( helpers init )
+
+    private Map<String, Object> getUserById(String idUser) {
+
+        String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
+
+        URI uri = UriComponentsBuilder
+            .fromUriString(keycloakBaseURL)
+            .pathSegment("admin", "realms", keycloakRealm, "users", idUser)
+            .encode()
+            .build()
+            .toUri();
+
+        return webClient.get()
+        .uri(uri)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
+        .retrieve()
+        .bodyToMono(Map.class)
+        .block();
+
+    }
+
+    // ========================================================= ( helpers end )
+
+    // Get user id by email
     public String getUserByEmail( String userEmail ) {
 
         try {
 
-            // Login client Keycloak
             String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
-            // Build Keycloak search URL
             URI uri = UriComponentsBuilder
                 .fromUriString(keycloakBaseURL)
                 .pathSegment("admin", "realms", keycloakRealm, "users")
@@ -62,8 +85,7 @@ public class AccountsKeycloakGetUser {
                 .build()
                 .toUri();
 
-            // Get user
-            List<?> users = webClient.get()
+            List<Map<String, Object>> users = webClient.get()
                 .uri(uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
                 .retrieve()
@@ -85,6 +107,58 @@ public class AccountsKeycloakGetUser {
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
             .log("Error getting user by email in Keycloak [ AccountsKeycloakGetUser.getUserByEmail() ]", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+    }
+
+    // Check if user email is verified by user ID
+    public boolean isAccountVerifiedById(String idUser) {
+
+        try {
+
+            Map<String, Object> user = getUserById(idUser);
+
+            if (user == null || user.isEmpty()) {
+                return false;
+            }
+
+            return Boolean.TRUE.equals(user.get("emailVerified"));
+
+        } catch (Exception e) {
+
+            // Logs
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .log("Error checking account email verification in Keycloak [ AccountsKeycloakGetUser.isAccountVerifiedById() ]", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+    }
+
+    // Check if user account is enabled (active) by user ID
+    public boolean isAccountEnabledById(String idUser) {
+
+        try {
+
+            Map<String, Object> user = getUserById(idUser);
+
+            if (user == null || user.isEmpty()) {
+                return false;
+            }
+
+            return Boolean.TRUE.equals(user.get("enabled"));
+
+        } catch (Exception e) {
+
+            // Logs
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .log("Error checking account enabled status in Keycloak [ AccountsKeycloakGetUser.isAccountEnabledById() ]", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
