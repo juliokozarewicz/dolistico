@@ -25,6 +25,9 @@ public class EmailServiceEventConsumer {
     // -------------------------------------------------------------------------
     @Value("${EMAIL_SERVICE_ADDRESS_USER}")
     private String fromEmail;
+
+    @Value("${APPLICATION_TITLE}")
+    private String applicationTitle;
     // -------------------------------------------------------------------------
 
     // ==================================================== ( constructor init )
@@ -71,7 +74,7 @@ public class EmailServiceEventConsumer {
             // Send simple email
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mailMessage = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            mailMessage.setFrom(fromEmail);
+            mailMessage.setFrom(fromEmail, applicationTitle.toUpperCase());
             mailMessage.setTo(email);
             mailMessage.setSubject(subject);
             mailMessage.setText(message, true);
