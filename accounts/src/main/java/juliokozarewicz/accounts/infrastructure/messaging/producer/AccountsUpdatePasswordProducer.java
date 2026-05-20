@@ -154,7 +154,7 @@ public class AccountsUpdatePasswordProducer {
             emailMessageMap.put("recipientEmail", email);
             emailMessageMap.put(
                 "subject",
-                "[ " + applicationTitle.toUpperCase() + " ] - " + messageSource.getMessage(
+                messageSource.getMessage(
                     "email_subject_account_service",
                     null,
                     locale
