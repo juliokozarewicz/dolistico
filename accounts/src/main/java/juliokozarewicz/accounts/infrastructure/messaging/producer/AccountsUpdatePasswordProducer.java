@@ -67,7 +67,6 @@ public class AccountsUpdatePasswordProducer {
                     .append("padding:0;")
                     .append("width:100%;")
                     .append("font-family:Arial;")
-                    .append("background:#f5f5f5;")
                 .append("'>")
 
                     // Container principal
@@ -75,12 +74,13 @@ public class AccountsUpdatePasswordProducer {
                         .append("width:100%;")
                         .append("max-width:100%;")
                         .append("box-sizing:border-box;")
-                        .append("background:#ffffff;")
                     .append("'>")
 
                         .append("<p>")
                             .append(messageSource.getMessage("email_greeting", null, locale))
                         .append("</p>")
+
+                        .append("<br/>")
 
                         .append("<p>")
                             .append(messageSource.getMessage("email_reset_password_click", null, locale))
@@ -98,12 +98,14 @@ public class AccountsUpdatePasswordProducer {
                             .append("border-radius:6px;")
                             .append("font-size:15px;")
                             .append("padding-top:10px;")
-                            .append("padding-right:10px;")
+                            .append("padding-right:20px;")
                             .append("padding-bottom:10px;")
-                            .append("padding-left:10px;")
+                            .append("padding-left:20px;")
                             .append("'>")
                             .append(messageSource.getMessage("email_click_here_link", null, locale))
                         .append("</a>")
+
+                        .append("<br/>")
 
                         .append("<p>")
                             .append(messageSource.getMessage("email_closing", null, locale))
