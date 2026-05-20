@@ -26,7 +26,7 @@ public class HelloWorldCreateController {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${HELLOWORLD_BASE_URL}")
+    @Value("${HELLO_WORLD_BASE_URL}")
     private String helloWorldBaseURL;
     // -------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ public class HelloWorldCreateController {
 
     // ===================================================== ( constructor end )
 
-    @GetMapping("/${HELLOWORLD_BASE_URL}")
+    @GetMapping("/${HELLO_WORLD_BASE_URL}")
     public ResponseEntity handle (
 
         // DTO error

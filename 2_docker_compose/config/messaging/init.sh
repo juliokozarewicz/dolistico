@@ -72,9 +72,18 @@ $KAFKA_BIN/kafka-topics.sh \
 
 # --------------------------------------------------------- ( call create init )
 
-create_user "$ACCOUNTS_MESSAGING_USER" "$ACCOUNTS_MESSAGING_PASSWORD" "accounts"
 create_user "$TASKS_MESSAGING_USER"    "$TASKS_MESSAGING_PASSWORD"    "tasks"
+create_user "$ACCOUNTS_MESSAGING_USER" "$ACCOUNTS_MESSAGING_PASSWORD" "accounts"
+create_user "$EMAIL_SERVICE_MESSAGING_USER" "$EMAIL_SERVICE_MESSAGING_PASSWORD" "email.service"
 
 # ---------------------------------------------------------- ( call create end )
+
+# ---------------------------------------------------------- ( post rules init )
+$KAFKA_BIN/kafka-acls.sh \
+    --bootstrap-server "$BOOTSTRAP" --command-config "$ADMIN_CONFIG" \
+    --add --allow-principal "User:${EMAIL_SERVICE_MESSAGING_USER}" \
+    --operation READ --operation DESCRIBE \
+    --topic "send.simple.email.v1"
+# ----------------------------------------------------------- ( post rules end )
 
 echo "***************************** [ END SCRIPT ] *****************************"

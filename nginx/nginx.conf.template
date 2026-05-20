@@ -39,8 +39,8 @@ http {
 
     upstream helloworld_backend {
         zone helloworld_backend 64k;
-        #####  server helloworld.production.svc.cluster.local:${HELLOWORLD_PORT};
-        server helloworld:${HELLOWORLD_PORT};
+        #####  server helloworld.production.svc.cluster.local:${HELLO_WORLD_PORT};
+        server helloworld:${HELLO_WORLD_PORT};
     }
 
     upstream accounts_backend {
@@ -256,13 +256,13 @@ http {
         # --------------------------------------------------- (hello world init)
 
         # [ HELLO WORLD - Static Files ]
-        location /${HELLOWORLD_BASE_URL}/static {
+        location /${HELLO_WORLD_BASE_URL}/static {
             proxy_pass http://helloworld_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ HELLO WORLD - Helloworld ]
-        location /${HELLOWORLD_BASE_URL} {
+        location /${HELLO_WORLD_BASE_URL} {
             proxy_pass http://helloworld_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }

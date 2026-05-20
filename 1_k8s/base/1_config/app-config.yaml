@@ -27,12 +27,12 @@ data:
     # -------------------------------------------------------- ( services init )
 
     # Helloworld
-    HELLOWORLD_BASE_URL: "api/v1/helloworld"
-    HELLOWORLD_PORT: "3001"
+    HELLO_WORLD_BASE_URL: "api/v1/helloworld"
+    HELLO_WORLD_PORT: "3001"
 
     # Emailservice
     EMAILSERVICE_BASE_URL: "api/v1/emailservice"
-    EMAILSERVICE_PORT: "3002"
+    EMAIL_SERVICE_PORT: "3002"
 
     # Accounts
     ACCOUNTS_BASE_URL: "api/v1/accounts"

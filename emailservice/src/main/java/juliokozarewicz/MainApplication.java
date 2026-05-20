@@ -1,13 +1,13 @@
-package juliokozarewicz.emailservice;
+package juliokozarewicz;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EmailManagementServiceApplication {
+public class MainApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EmailManagementServiceApplication.class, args);
+		SpringApplication.run(MainApplication.class, args);
 	}
 
 }

@@ -17,11 +17,11 @@ spec:
           image: busybox
           command: ["sh", "-c", "until nc -z helloworld $HELLOWORLD_PORT; do sleep 2; done"]
           env:
-            - name: HELLOWORLD_PORT
+            - name: HELLO_WORLD_PORT
               valueFrom:
                 configMapKeyRef:
                   name: app-config
-                  key: HELLOWORLD_PORT
+                  key: HELLO_WORLD_PORT
         - name: wait-for-tasks
           image: busybox
           command: ["sh", "-c", "until nc -z tasks $TASKS_PORT; do sleep 2; done"]

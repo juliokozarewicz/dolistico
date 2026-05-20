@@ -216,13 +216,13 @@ services:
       - .env
     build: ../helloworld
     expose:
-      - "${HELLOWORLD_PORT}"
+      - "${HELLO_WORLD_PORT}"
     networks:
       - spring_net
     deploy:
       replicas: 1
     healthcheck:
-      test: ["CMD-SHELL", "curl -fs http://localhost:${HELLOWORLD_PORT}/actuator/health/liveness || exit 1"]
+      test: ["CMD-SHELL", "curl -fs http://localhost:${HELLO_WORLD_PORT}/actuator/health/liveness || exit 1"]
       interval: 30s
       retries: 5
       start_period: 10s
@@ -234,7 +234,7 @@ services:
     env_file:
       - .env
     expose:
-      - "${EMAILSERVICE_PORT}"
+      - "${EMAIL_SERVICE_PORT}"
     networks:
       - spring_net
     depends_on:
@@ -243,7 +243,7 @@ services:
     deploy:
       replicas: 1
     healthcheck:
-      test: ["CMD-SHELL", "curl -fs http://localhost:${EMAILSERVICE_PORT}/actuator/health/liveness || exit 1"]
+      test: ["CMD-SHELL", "curl -fs http://localhost:${EMAIL_SERVICE_PORT}/actuator/health/liveness || exit 1"]
       interval: 30s
       retries: 5
       start_period: 10s

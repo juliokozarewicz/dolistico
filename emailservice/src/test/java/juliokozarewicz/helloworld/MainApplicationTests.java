@@ -1,10 +1,10 @@
-package juliokozarewicz.emailservice;
+package juliokozarewicz.helloworld;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EmailManagementServiceApplicationTests {
+class MainApplicationTests {
 
 	@Test
 	void contextLoads() {
