@@ -37,8 +37,8 @@ http {
 
     # -------------------------------------------- (upstream load balancer init)
 
-    upstream helloworld_backend {
-        zone helloworld_backend 64k;
+    upstream hello_world_backend {
+        zone hello_world_backend 64k;
         #####  server helloworld.production.svc.cluster.local:${HELLO_WORLD_PORT};
         server helloworld:${HELLO_WORLD_PORT};
     }
@@ -257,13 +257,13 @@ http {
 
         # [ HELLO WORLD - Static Files ]
         location /${HELLO_WORLD_BASE_URL}/static {
-            proxy_pass http://helloworld_backend;
+            proxy_pass http://hello_world_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
         # [ HELLO WORLD - Helloworld ]
         location /${HELLO_WORLD_BASE_URL} {
-            proxy_pass http://helloworld_backend;
+            proxy_pass http://hello_world_backend;
             limit_req zone=general_zone burst=5 nodelay;
         }
 
