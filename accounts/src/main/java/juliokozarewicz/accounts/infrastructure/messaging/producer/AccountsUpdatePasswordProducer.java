@@ -82,8 +82,6 @@ public class AccountsUpdatePasswordProducer {
                             .append(messageSource.getMessage("email_greeting", null, locale))
                         .append("</p>")
 
-                        .append("<br/>")
-
                         .append("<p>")
                             .append(messageSource.getMessage("email_reset_password_click", null, locale))
                         .append("</p>")
@@ -106,8 +104,6 @@ public class AccountsUpdatePasswordProducer {
                             .append("'>")
                             .append(messageSource.getMessage("email_click_here_link", null, locale))
                         .append("</a>")
-
-                        .append("<br/><br/>")
 
                         .append("<p>")
                             .append(messageSource.getMessage("email_closing", null, locale))
