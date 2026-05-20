@@ -176,7 +176,7 @@ public class AccountsUpdatePasswordProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsEventProducer.producerSendEmailLink() ]", e);
+            .log("Error producing message: [ AccountsUpdatePasswordProducer.execute() ]", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
