@@ -320,6 +320,46 @@ paths:
                     type: string
                     example: ACCOUNTS_CREATED_SUCCESSFULLY
 
+  # ACCOUNTS - UPDATE PASSWORD LINK
+  "/ACCOUNTS_BASE_URL_REPLACE/update-password":
+    post:
+      summary: Request password reset link
+      description: Sends a password reset link to the provided email address.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 256
+                  example: johndoe@email.com
+      responses:
+        "200":
+          description: Request processed successfully. A reset link will be sent if the email is registered.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
