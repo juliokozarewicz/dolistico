@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class AccountsUpdatePasswordProducer {
+public class AccountsUpdatePasswordLinkProducer {
 
     // ==================================================== ( constructor init )
 
@@ -26,12 +26,12 @@ public class AccountsUpdatePasswordProducer {
     private String applicationTitle;
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdatePasswordProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdatePasswordLinkProducer.class);
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
 
-    public AccountsUpdatePasswordProducer(
+    public AccountsUpdatePasswordLinkProducer(
 
         KafkaTemplate<String, byte[]> kafkaTemplate,
         ObjectMapper objectMapper,
@@ -70,20 +70,32 @@ public class AccountsUpdatePasswordProducer {
                 .append("'>")
 
                     // Container principal
-                    .append("<div style='")
+                    .append("<section style='")
                         .append("width:100%;")
                         .append("max-width:100%;")
                         .append("box-sizing:border-box;")
                     .append("'>")
 
                         .append("<p>")
-                            .append(messageSource.getMessage("email_greeting", null, locale))
+                            .append(
+                                messageSource.getMessage(
+                                    "email_greeting",
+                                    null,
+                                    locale
+                                )
+                            )
                         .append("</p>")
 
                         .append("<br/>")
 
                         .append("<p>")
-                            .append(messageSource.getMessage("email_reset_password_click", null, locale))
+                            .append(
+                                messageSource.getMessage(
+                                    "email_reset_password_click",
+                                    null,
+                                    locale
+                                )
+                            )
                         .append("</p>")
 
                         .append("<a href='").append(commandURL).append("' ")
@@ -91,8 +103,9 @@ public class AccountsUpdatePasswordProducer {
                             .append("display:inline-block;")
                             .append("box-sizing:border-box;")
                             .append("background:#000000;")
-                            .append("text-align:center;")
                             .append("color:#ffffff;")
+                            .append("border: 3px solid #ffffff;")
+                            .append("text-align:center;")
                             .append("text-decoration:none;")
                             .append("font-weight:bold;")
                             .append("border-radius:6px;")
@@ -102,30 +115,43 @@ public class AccountsUpdatePasswordProducer {
                             .append("padding-bottom:10px;")
                             .append("padding-left:20px;")
                             .append("'>")
-                            .append(messageSource.getMessage("email_click_here_link", null, locale))
+                            .append(
+                                messageSource.getMessage(
+                                    "email_click_here_link",
+                                    null,
+                                    locale
+                                )
+                            )
                         .append("</a>")
 
                         .append("<br/>")
+                        .append("<br/>")
 
                         .append("<p>")
-                            .append(messageSource.getMessage("email_closing", null, locale))
+                            .append(
+                                messageSource.getMessage(
+                                    "email_closing",
+                                    null,
+                                    locale
+                                )
+                            )
                         .append("</p>")
 
-                    .append("</div>")
+                    .append("</section>")
 
                     // Footer
                     .append("<div style='")
                         .append("display:block;")
-                        .append("border-radius:6px;")
                         .append("width:100%;")
                         .append("background:#000000;")
                         .append("color:#ffffff;")
+                        .append("padding-right:3px;")
+                        .append("padding-left:3px;")
                     .append("'>")
 
                         .append("<div style='")
                             .append("font-weight:600;")
                             .append("padding-top:40px;")
-                            .append("padding-left:5px;")
                             .append("font-size:18px;")
                             .append("'>")
                             .append(applicationTitle.toUpperCase())
@@ -134,11 +160,16 @@ public class AccountsUpdatePasswordProducer {
                         .append("<div style='")
                             .append("font-size:10px;")
                             .append("padding-top:30px;")
-                            .append("padding-left:5px;")
                             .append("padding-bottom:40px;")
                             .append("opacity:0.7;")
                             .append("'>")
-                            .append(messageSource.getMessage("email_footer_message", null, locale))
+                            .append(
+                                messageSource.getMessage(
+                                    "email_footer_message",
+                                    null,
+                                    locale
+                                )
+                            )
                         .append("</div>")
 
                     .append("</div>")
@@ -173,7 +204,7 @@ public class AccountsUpdatePasswordProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsUpdatePasswordProducer.execute() ]", e);
+            .log("Error producing message: [ AccountsUpdatePasswordLinkProducer.execute() ]", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

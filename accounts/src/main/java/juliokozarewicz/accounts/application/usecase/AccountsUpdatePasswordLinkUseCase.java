@@ -2,7 +2,7 @@ package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordLinkCommand;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
-import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordLinkProducer;
 import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -27,14 +27,14 @@ public class AccountsUpdatePasswordLinkUseCase {
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
-    private final AccountsUpdatePasswordProducer accountsUpdatePasswordProducer;
+    private final AccountsUpdatePasswordLinkProducer accountsUpdatePasswordLinkProducer;
 
     public AccountsUpdatePasswordLinkUseCase(
 
         TokenGenerator tokenGenerator,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         CacheManager cacheManager,
-        AccountsUpdatePasswordProducer accountsUpdatePasswordProducer
+        AccountsUpdatePasswordLinkProducer accountsUpdatePasswordLinkProducer
 
     ) {
 
@@ -42,7 +42,7 @@ public class AccountsUpdatePasswordLinkUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.cacheManager = cacheManager;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
-        this.accountsUpdatePasswordProducer = accountsUpdatePasswordProducer;
+        this.accountsUpdatePasswordLinkProducer = accountsUpdatePasswordLinkProducer;
 
     }
 
@@ -77,7 +77,7 @@ public class AccountsUpdatePasswordLinkUseCase {
             .toUriString();
 
         // Create email message with URL
-        accountsUpdatePasswordProducer.execute(
+        accountsUpdatePasswordLinkProducer.execute(
             locale,
             accountsUpdatePasswordLinkCommand.email(),
             updatePasswordURL
