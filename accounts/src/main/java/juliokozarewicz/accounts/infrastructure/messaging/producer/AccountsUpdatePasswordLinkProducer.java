@@ -7,9 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
+
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -58,124 +61,58 @@ public class AccountsUpdatePasswordLinkProducer {
 
         try {
 
-            // Email message
-            StringBuilder message = new StringBuilder();
+            // Load email template
+            ClassPathResource resource = new ClassPathResource(
+                "templates/email/AccountsUpdatePasswordLink.html"
+            );
 
-            message.append("<html>")
-                .append("<body style='")
-                    .append("margin:0;")
-                    .append("padding:0;")
-                    .append("width:100%;")
-                    .append("font-family:Arial;")
-                .append("'>")
+            String message = new String(
+                resource.getInputStream().readAllBytes(),
+                StandardCharsets.UTF_8
+            );
 
-                    // Container principal
-                    .append("<section style='")
-                        .append("width:100%;")
-                        .append("max-width:100%;")
-                        .append("box-sizing:border-box;")
-                    .append("'>")
+            // Replace variables
+            message = message
 
-                        .append("<p>")
-                            .append(
-                                messageSource.getMessage(
-                                    "email_greeting",
-                                    null,
-                                    locale
-                                )
-                            )
-                        .append("</p>")
+                .replace(
+                    "{{ language }}",
+                    locale.getLanguage()
+                )
 
-                        .append("<br/>")
+                .replace(
+                    "{{ email_greeting }}",
+                    messageSource.getMessage("email_greeting", null, locale)
+                )
 
-                        .append("<p>")
-                            .append(
-                                messageSource.getMessage(
-                                    "email_reset_password_click",
-                                    null,
-                                    locale
-                                )
-                            )
-                        .append("</p>")
+                .replace(
+                    "{{ email_reset_password_click }}",
+                    messageSource.getMessage("email_reset_password_click", null, locale)
+                )
 
-                        .append("<a href='").append(commandURL).append("' ")
-                            .append("style='")
-                            .append("display:inline-block;")
-                            .append("box-sizing:border-box;")
-                            .append("background:#000000;")
-                            .append("color:#ffffff;")
-                            .append("border: 3px solid #ffffff;")
-                            .append("text-align:center;")
-                            .append("text-decoration:none;")
-                            .append("font-weight:bold;")
-                            .append("border-radius:6px;")
-                            .append("font-size:15px;")
-                            .append("padding-top:10px;")
-                            .append("padding-right:20px;")
-                            .append("padding-bottom:10px;")
-                            .append("padding-left:20px;")
-                            .append("'>")
-                            .append(
-                                messageSource.getMessage(
-                                    "email_click_here_link",
-                                    null,
-                                    locale
-                                )
-                            )
-                        .append("</a>")
+                .replace(
+                    "{{ email_click_here_link }}",
+                    messageSource.getMessage("email_click_here_link", null, locale)
+                )
 
-                        .append("<br/>")
-                        .append("<br/>")
+                .replace(
+                    "{{ email_closing }}",
+                    messageSource.getMessage("email_closing", null, locale)
+                )
 
-                        .append("<p>")
-                            .append(
-                                messageSource.getMessage(
-                                    "email_closing",
-                                    null,
-                                    locale
-                                )
-                            )
-                        .append("</p>")
+                .replace(
+                    "{{ email_footer_message }}",
+                    messageSource.getMessage("email_footer_message", null, locale)
+                )
 
-                    .append("</section>")
+                .replace(
+                    "{{ applicationTitle }}",
+                    applicationTitle.toUpperCase()
+                )
 
-                    // Footer
-                    .append("<div style='")
-                        .append("display:block;")
-                        .append("width:100%;")
-                        .append("background:#000000;")
-                        .append("color:#ffffff;")
-                        .append("padding-right:3px;")
-                        .append("padding-left:3px;")
-                    .append("'>")
-
-                        .append("<div style='")
-                            .append("font-weight:600;")
-                            .append("padding-top:40px;")
-                            .append("font-size:18px;")
-                            .append("'>")
-                            .append(applicationTitle.toUpperCase())
-                        .append("</div>")
-
-                        .append("<div style='")
-                            .append("font-size:10px;")
-                            .append("padding-top:30px;")
-                            .append("padding-bottom:40px;")
-                            .append("opacity:0.7;")
-                            .append("'>")
-                            .append(
-                                messageSource.getMessage(
-                                    "email_footer_message",
-                                    null,
-                                    locale
-                                )
-                            )
-                        .append("</div>")
-
-                    .append("</div>")
-
-                .append("</body>")
-            .append("</html>");
+                .replace(
+                    "{{ commandURL }}",
+                    commandURL
+                );
 
             // Create JSON payload
             Map<String, String> emailMessageMap = new LinkedHashMap<>();
