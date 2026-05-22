@@ -8,6 +8,8 @@ import juliokozarewicz.accounts.domain.repository.AccountsProfileRepository;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakCreateUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakDeleteUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsAlreadyExistProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsWelcomeProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
@@ -15,6 +17,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import java.time.Instant;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -31,8 +34,9 @@ public class AccountsCreateUseCase {
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
     private final AccountsProfileRepository accountsProfileRepository;
+    private final AccountsAlreadyExistProducer accountsAlreadyExistProducer;
+    private final AccountsWelcomeProducer accountsWelcomeProducer;
     private final CacheManager cacheManager;
-    private final Cache notActivatedAccountCache;
 
     public AccountsCreateUseCase (
 
@@ -40,6 +44,8 @@ public class AccountsCreateUseCase {
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsKeycloakDeleteUser accountsKeycloakDeleteUser,
         AccountsProfileRepository accountsProfileRepository,
+        AccountsAlreadyExistProducer accountsAlreadyExistProducer,
+        AccountsWelcomeProducer accountsWelcomeProducer,
         CacheManager cacheManager
 
     ) {
@@ -48,8 +54,9 @@ public class AccountsCreateUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
         this.accountsProfileRepository = accountsProfileRepository;
+        this.accountsAlreadyExistProducer = accountsAlreadyExistProducer;
+        this.accountsWelcomeProducer = accountsWelcomeProducer;
         this.cacheManager = cacheManager;
-        this.notActivatedAccountCache = cacheManager.getCache("accounts.notActivatedAccountCache");
 
     }
 
@@ -57,6 +64,7 @@ public class AccountsCreateUseCase {
 
     public void execute(
 
+        Locale locale,
         AccountsCreateCommand command
 
     ) {
@@ -77,8 +85,9 @@ public class AccountsCreateUseCase {
             // Check if user already exists
             if (existingUserId != null) {
 
-                // ##### If email is already verified, send email notification
+                // If email is already verified, send email notification
                 if (accountsKeycloakGetUser.isAccountVerifiedById(existingUserId)) {
+                    accountsAlreadyExistProducer.execute(locale, command.email());
                     return;
                 }
 
@@ -111,9 +120,11 @@ public class AccountsCreateUseCase {
                 null
             );
 
+            // Create profile
             accountsProfileRepository.save(profile);
 
-            notActivatedAccountCache.put(idUserCreated, timeStamp);
+            // Welcome message
+            accountsWelcomeProducer.execute(locale, command.email());
 
         }
 
