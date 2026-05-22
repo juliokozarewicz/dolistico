@@ -88,7 +88,6 @@ public class AccountsCreateUseCase {
                 // If email is already verified, send email notification
                 if (accountsKeycloakGetUser.isAccountVerifiedById(existingUserId)) {
                     accountsAlreadyExistProducer.execute(locale, command.email());
-                    return;
                 }
 
                 // If user exists but is not verified or banned, do nothing
