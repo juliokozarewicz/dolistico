@@ -65,7 +65,7 @@ public class AccountsWelcomeProducer {
 
             // Main template
             ClassPathResource templateResource = new ClassPathResource(
-                    "templates/email/AccountsAlreadyExist.html"
+                    "templates/email/AccountsWelcome.html"
             );
 
             String message = new String(
