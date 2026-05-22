@@ -61,56 +61,69 @@ public class AccountsUpdatePasswordLinkProducer {
 
         try {
 
-            // Load email template
-            ClassPathResource resource = new ClassPathResource(
+            // Main template
+            ClassPathResource templateResource = new ClassPathResource(
                 "templates/email/AccountsUpdatePasswordLink.html"
             );
 
             String message = new String(
-                resource.getInputStream().readAllBytes(),
+                templateResource.getInputStream().readAllBytes(),
                 StandardCharsets.UTF_8
             );
+
+            // Footer template
+            ClassPathResource footerResource = new ClassPathResource(
+                "templates/email/Footer.html"
+            );
+
+            String footer = new String(
+                footerResource.getInputStream().readAllBytes(),
+                StandardCharsets.UTF_8
+            );
+
+            // Replace footer first
+            message = message.replace("{{footer}}", footer);
 
             // Replace variables
             message = message
 
                 .replace(
-                    "{{ language }}",
+                    "{{language}}",
                     locale.getLanguage()
                 )
 
                 .replace(
-                    "{{ email_greeting }}",
+                    "{{email_greeting}}",
                     messageSource.getMessage("email_greeting", null, locale)
                 )
 
                 .replace(
-                    "{{ email_reset_password_click }}",
+                    "{{email_reset_password_click}}",
                     messageSource.getMessage("email_reset_password_click", null, locale)
                 )
 
                 .replace(
-                    "{{ email_click_here_link }}",
+                    "{{email_click_here_link}}",
                     messageSource.getMessage("email_click_here_link", null, locale)
                 )
 
                 .replace(
-                    "{{ email_closing }}",
+                    "{{email_closing}}",
                     messageSource.getMessage("email_closing", null, locale)
                 )
 
                 .replace(
-                    "{{ email_footer_message }}",
+                    "{{email_footer_message}}",
                     messageSource.getMessage("email_footer_message", null, locale)
                 )
 
                 .replace(
-                    "{{ applicationTitle }}",
+                    "{{applicationTitle}}",
                     applicationTitle.toUpperCase()
                 )
 
                 .replace(
-                    "{{ commandURL }}",
+                    "{{commandURL}}",
                     commandURL
                 );
 
