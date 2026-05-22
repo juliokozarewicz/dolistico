@@ -28,7 +28,7 @@ public class AccountsUpdatePasswordLinkProducer {
     @Value("${APPLICATION_TITLE}")
     private String applicationTitle;
 
-    @Value("${APPLICATION_TITLE}")
+    @Value("${PUBLIC_DOMAIN}")
     private String publicDomain;
     // -------------------------------------------------------------------------
 
