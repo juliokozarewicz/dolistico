@@ -27,6 +27,9 @@ public class AccountsUpdatePasswordLinkProducer {
     // -------------------------------------------------------------------------
     @Value("${APPLICATION_TITLE}")
     private String applicationTitle;
+
+    @Value("${APPLICATION_TITLE}")
+    private String publicDomain;
     // -------------------------------------------------------------------------
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsUpdatePasswordLinkProducer.class);
@@ -86,6 +89,11 @@ public class AccountsUpdatePasswordLinkProducer {
 
             // Replace variables
             message = message
+
+                .replace(
+                    "{{publicDomain}}",
+                    publicDomain.split(",")[0].trim()
+                )
 
                 .replace(
                     "{{language}}",

@@ -8,7 +8,7 @@ RUN rm -f /etc/nginx/conf.d/*
 RUN apt-get update && apt-get install -y gettext-base
 
 # Statics
-COPY statics_files /static/public
+COPY static /static/public
 
 # Nginx conf
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
@@ -17,7 +17,11 @@ COPY nginx.conf.template /etc/nginx/nginx.conf.template
 RUN mkdir -p /var/log/nginx /tmp/nginx_cache
 
 # Run
-CMD export PUBLIC_DOMAIN=$(echo "$PUBLIC_DOMAIN" | tr ',' ' ') && \
+CMD export PUBLIC_DOMAIN=$(echo "$PUBLIC_DOMAIN" \
+| tr ',' '\n' \
+| sed 's/^[[:space:]]*//;s/[[:space:]]*$//' \
+| grep -v '^$' \
+| tr '\n' ' ') && \
 envsubst ' \
 \
 $PUBLIC_DOMAIN \

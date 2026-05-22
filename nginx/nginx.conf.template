@@ -234,6 +234,18 @@ http {
         # --------------------------------------------------------- (end errors)
 
         # ----------------------------------------------------- ( STATICS init )
+
+        # ----------------------------------------------- ( icons statics init )
+
+        location /static/public/icon/ {
+            alias /static/public/icon/;
+            autoindex off;
+            expires 30d;
+            add_header Cache-Control "public";
+        }
+
+        # ----------------------------------------------- ( icons statics init )
+
         # --------------------------------------- ( documentation statics init )
 
         location = /${DOCUMENTATION_BASE_URL} {
@@ -251,6 +263,7 @@ http {
 
         }
         # ---------------------------------------- ( documentation statics end )
+
         # ------------------------------------------------------ ( STATICS end )
 
         # --------------------------------------------------- (hello world init)
