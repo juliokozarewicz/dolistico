@@ -15,7 +15,7 @@ public record AccountsCreateDTO(
     String fullName,
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
-    @Email(message = GlobalExceptionEnum.ACCOUNTS_FORBIDDEN_CHARACTERS_DTO)
+    @Email(message = GlobalExceptionEnum.ACCOUNTS_INVALID_EMAIL_DTO)
     @Size(max=256, message = GlobalExceptionEnum.ACCOUNTS_TOO_MANY_CHARACTERS_DTO)
     String email,
 

@@ -1,6 +1,8 @@
 package juliokozarewicz.accounts.application.usecase;
 
+import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordLinkCommand;
+import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordLinkProducer;
 import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
@@ -9,7 +11,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.util.Locale;
 
 @Service
@@ -66,8 +67,14 @@ public class AccountsUpdatePasswordLinkUseCase {
         // Null verification
         if ( existingUserId == null ) { return; }
 
+        // Create cache command
+        AccountsUpdatePasswordCacheCommand cacheCommand = new AccountsUpdatePasswordCacheCommand(
+            existingUserId,
+            AccountsUpdateEnum.ACCOUNTS_UPDATE_PASSWORD.getReasonCode()
+        );
+
         // save token with email in cache
-        tokenVerificationCache.put(generatedToken, existingUserId);
+        tokenVerificationCache.put(generatedToken, cacheCommand);
 
         // Create URL with token
         String updatePasswordURL = UriComponentsBuilder

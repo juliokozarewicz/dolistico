@@ -2,6 +2,7 @@ package juliokozarewicz.emailservice.infrastructure.messaging.consumer;
 
 
 import jakarta.mail.internet.MimeMessage;
+import juliokozarewicz.emailservice.application.command.EmailServiceSendEmailCommand;
 import juliokozarewicz.emailservice.domain.exception.DomainException;
 import juliokozarewicz.emailservice.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.emailservice.infrastructure.messaging.enums.EmailServiceMessagingGroupEnum;
@@ -15,7 +16,6 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 @Component
@@ -66,10 +66,10 @@ public class EmailServiceEventConsumer {
             byte[] payload = record.value();
 
             // Deserialize
-            JsonNode emailMessageMap = objectMapper.readTree(payload);
-            String email = emailMessageMap.get("recipientEmail").asText();
-            String subject = emailMessageMap.get("subject").asText();
-            String message = emailMessageMap.get("message").asText();
+            EmailServiceSendEmailCommand emailMessageMap = objectMapper.readValue( payload, EmailServiceSendEmailCommand.class);
+            String email = emailMessageMap.recipientEmail();
+            String subject = emailMessageMap.subject();
+            String message = emailMessageMap.messages();
 
             // Send simple email
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();

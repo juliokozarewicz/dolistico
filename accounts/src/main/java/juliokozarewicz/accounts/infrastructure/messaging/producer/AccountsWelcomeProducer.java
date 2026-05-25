@@ -1,5 +1,6 @@
 package juliokozarewicz.accounts.infrastructure.messaging.producer;
 
+import juliokozarewicz.accounts.application.command.AccountsSendEmailCommand;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingTopicEnum;
@@ -13,9 +14,7 @@ import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -125,17 +124,11 @@ public class AccountsWelcomeProducer {
                     );
 
             // Create JSON payload
-            Map<String, String> emailMessageMap = new LinkedHashMap<>();
-            emailMessageMap.put("recipientEmail", email);
-            emailMessageMap.put(
-                "subject",
-                messageSource.getMessage(
-                    "email_welcome_subject",
-                    null,
-                    locale
-                )
+            AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(
+                email,
+                messageSource.getMessage("email_welcome_subject", null, locale),
+                message.toString()
             );
-            emailMessageMap.put("message", message.toString());
 
             // Convert object to bytes
             byte[] payload = objectMapper.writeValueAsBytes(emailMessageMap);

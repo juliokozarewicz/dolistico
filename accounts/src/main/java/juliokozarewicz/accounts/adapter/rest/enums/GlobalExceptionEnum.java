@@ -28,6 +28,7 @@ public enum GlobalExceptionEnum {
 
     // ================================================ ( dto error codes init )
     public static final String ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO = "ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO";
+    public static final String ACCOUNTS_INVALID_EMAIL_DTO = "ACCOUNTS_INVALID_EMAIL_DTO";
     public static final String ACCOUNTS_TOO_MANY_CHARACTERS_DTO = "ACCOUNTS_TOO_MANY_CHARACTERS_DTO";
     public static final String ACCOUNTS_TOO_FEW_CHARACTERS_DTO = "ACCOUNTS_TOO_FEW_CHARACTERS_DTO";
     public static final String ACCOUNTS_FORBIDDEN_CHARACTERS_DTO = "ACCOUNTS_FORBIDDEN_CHARACTERS_DTO";
