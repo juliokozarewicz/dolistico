@@ -5,7 +5,7 @@ import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheC
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
-import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailProducer;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -23,14 +23,17 @@ public class AccountsUpdatePasswordUseCase {
 
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
+    private final AccountsUpdateEmailProducer accountsUpdateEmailProducer;
 
     public AccountsUpdatePasswordUseCase(
 
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        AccountsUpdateEmailProducer accountsUpdateEmailProducer
 
     ) {
 
         this.cacheManager = cacheManager;
+        this.accountsUpdateEmailProducer = accountsUpdateEmailProducer;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
 
     }

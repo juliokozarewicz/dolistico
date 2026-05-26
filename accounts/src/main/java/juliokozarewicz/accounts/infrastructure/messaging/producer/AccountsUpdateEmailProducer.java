@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class AccountsWelcomeProducer {
+public class AccountsUpdateEmailProducer {
 
     // ==================================================== ( constructor init )
 
@@ -31,12 +31,12 @@ public class AccountsWelcomeProducer {
     private String publicDomain;
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsWelcomeProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdateEmailProducer.class);
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
 
-    public AccountsWelcomeProducer(
+    public AccountsUpdateEmailProducer(
 
         KafkaTemplate<String, byte[]> kafkaTemplate,
         ObjectMapper objectMapper,
@@ -64,7 +64,7 @@ public class AccountsWelcomeProducer {
 
             // Main template
             ClassPathResource templateResource = new ClassPathResource(
-                    "templates/email/AccountsWelcome.html"
+                    "templates/email/AccountsUpdateEmail.html"
             );
 
             String message = new String(
@@ -104,8 +104,8 @@ public class AccountsWelcomeProducer {
                     )
 
                     .replace(
-                            "{{email_welcome_message}}",
-                            messageSource.getMessage("email_welcome_message", null, locale)
+                            "{{email_update_password_success}}",
+                            messageSource.getMessage("email_update_password_success", null, locale)
                     )
 
                     .replace(
@@ -126,7 +126,7 @@ public class AccountsWelcomeProducer {
             // Create JSON payload
             AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(
                 email,
-                messageSource.getMessage("email_welcome_subject", null, locale),
+                messageSource.getMessage("email_already_exist_subject", null, locale),
                 message.toString()
             );
 
@@ -144,7 +144,7 @@ public class AccountsWelcomeProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsWelcomeProducer.execute() ]", e);
+            .log("Error producing message: [ AccountsUpdateEmailProducer.execute() ]", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

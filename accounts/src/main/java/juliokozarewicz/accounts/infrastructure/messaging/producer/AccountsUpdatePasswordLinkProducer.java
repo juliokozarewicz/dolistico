@@ -120,13 +120,13 @@ public class AccountsUpdatePasswordLinkProducer {
                 )
 
                 .replace(
-                    "{{email_footer_message}}",
-                    messageSource.getMessage("email_footer_message", null, locale)
+                    "{{applicationTitle}}",
+                    applicationTitle.toUpperCase()
                 )
 
                 .replace(
-                    "{{applicationTitle}}",
-                    applicationTitle.toUpperCase()
+                    "{{email_footer_message}}",
+                    messageSource.getMessage("email_footer_message", null, locale)
                 )
 
                 .replace(
