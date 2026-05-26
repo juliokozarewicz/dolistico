@@ -1,6 +1,5 @@
 package juliokozarewicz.accounts.application.usecase;
 
-import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordDTO;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
@@ -11,6 +10,7 @@ import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdate
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
+
 import java.util.Locale;
 
 @Service
@@ -83,7 +83,8 @@ public class AccountsUpdatePasswordUseCase {
             // Clean token cache
             tokenVerificationCache.evict(accountsUpdatePasswordCommand.token());
 
-            // ##### Verify email update
+            // Update verify email
+            accountsKeycloakUpdateUser.updateVerifyEmail( cachedData.idUser() );
 
             // Send email notification
             accountsUpdateEmailProducer.execute(

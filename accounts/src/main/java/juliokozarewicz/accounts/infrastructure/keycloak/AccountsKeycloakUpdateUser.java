@@ -186,6 +186,7 @@ public class AccountsKeycloakUpdateUser {
                 .log("Error updating email in Keycloak [ AccountsKeycloakUpdateUser.updateEmail() ]");
 
                 throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
             }
 
             // Builds response payload containing previous email
@@ -201,6 +202,67 @@ public class AccountsKeycloakUpdateUser {
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
             .log("Exception updating email in Keycloak [ AccountsKeycloakUpdateUser.updateEmail() ] : ", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+    }
+
+    // Updates user emailVerified flag in Keycloak and returns id and email
+    public void updateVerifyEmail(
+
+        String idUser
+
+    ) {
+
+        try {
+
+            // Retrieves access token for authentication
+            String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
+
+            // Retrieves current user data before update
+            Map<String, Object> user = getUserById(clientToken, idUser);
+            String email = user != null ? (String) user.get("email") : null;
+
+            // Keycloak endpoint for user update
+            String url = keycloakBaseURL
+                + "/admin/realms/"
+                + keycloakRealm
+                + "/users/"
+                + idUser;
+
+            // Request body for email verification update
+            Map<String, Object> body = new LinkedHashMap<>();
+            body.put("emailVerified", true);
+
+            // Executes emailVerified update request
+            ResponseEntity<Void> response = webClient.put()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+
+            // Validates response success
+            if (response == null || !response.getStatusCode().is2xxSuccessful()) {
+
+                logger.atError()
+                .addKeyValue("realm", keycloakRealm)
+                .log("Error updating emailVerified in Keycloak [ AccountsKeycloakUpdateUser.updateVerifyEmail() ]");
+
+                throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+            }
+
+        } catch (Exception e) {
+
+            // Logs unexpected errors during emailVerified update
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .log("Exception updating emailVerified in Keycloak [ AccountsKeycloakUpdateUser.updateVerifyEmail() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
