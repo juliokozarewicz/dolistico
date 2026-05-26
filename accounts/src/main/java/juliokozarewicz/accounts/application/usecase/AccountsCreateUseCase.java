@@ -65,12 +65,12 @@ public class AccountsCreateUseCase {
     public void execute(
 
         Locale locale,
-        AccountsCreateCommand command
+        AccountsCreateCommand accountsCreateCommand
 
     ) {
 
         // Password cleanup
-        char[] password = command.userPassword();
+        char[] password = accountsCreateCommand.userPassword();
 
         // Recent account
         String idUserCreated = null;
@@ -79,18 +79,18 @@ public class AccountsCreateUseCase {
 
             // Check if user already exists
             String existingUserId = accountsKeycloakGetUser.getUserByEmail(
-                command.email()
+                accountsCreateCommand.email()
             );
 
             // Check if user already exists and send email notification
             if (existingUserId != null) {
-                accountsAlreadyExistProducer.execute(locale, command.email());
+                accountsAlreadyExistProducer.execute(locale, accountsCreateCommand.email());
                 return;
             }
 
             // Create user
             idUserCreated = accountsKeycloakCreateUser.execute(
-                command.email(),
+                accountsCreateCommand.email(),
                 password
             );
 
@@ -102,7 +102,7 @@ public class AccountsCreateUseCase {
                 timeStamp,
                 timeStamp,
                 null,
-                command.fullName(),
+                accountsCreateCommand.fullName(),
                 null,
                 null,
                 null,
@@ -116,7 +116,7 @@ public class AccountsCreateUseCase {
             accountsProfileRepository.save(profile);
 
             // Welcome message
-            accountsWelcomeProducer.execute(locale, command.email());
+            accountsWelcomeProducer.execute(locale, accountsCreateCommand.email());
 
         }
 

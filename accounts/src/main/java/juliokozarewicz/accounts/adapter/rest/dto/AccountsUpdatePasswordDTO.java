@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalExceptionEnum;
+import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCommand;
 
 public record AccountsUpdatePasswordDTO(
 
@@ -28,4 +29,12 @@ public record AccountsUpdatePasswordDTO(
     )
     String newPassword
 
-) {}
+) implements AccountsUpdatePasswordCommand {
+
+    @Override
+    public char[] userPassword() {
+        char[] chars = newPassword.toCharArray();
+        return chars;
+    }
+
+}

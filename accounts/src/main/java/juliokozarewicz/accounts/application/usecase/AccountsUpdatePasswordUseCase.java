@@ -2,6 +2,7 @@ package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordDTO;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheCommand;
+import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
@@ -46,42 +47,58 @@ public class AccountsUpdatePasswordUseCase {
     public void execute(
 
         Locale locale,
-        AccountsUpdatePasswordDTO accountsUpdatePasswordDTO
+        AccountsUpdatePasswordCommand accountsUpdatePasswordCommand
 
     ) {
 
-        // Retrieve stored token cache
-        var cachedToken = tokenVerificationCache.get(accountsUpdatePasswordDTO.token());
+        // Password cleanup
+        char[] newPassword = accountsUpdatePasswordCommand.userPassword();
 
-        // Null verification
-        if (cachedToken == null) {
-            throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
+        try {
+
+            // Retrieve stored token cache
+            var cachedToken = tokenVerificationCache.get(accountsUpdatePasswordCommand.token());
+
+            // Null verification
+            if (cachedToken == null) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
+            }
+
+            // Reason verification
+            AccountsUpdatePasswordCacheCommand cachedData = (AccountsUpdatePasswordCacheCommand) cachedToken.get();
+
+            if (
+                !AccountsUpdateEnum.ACCOUNTS_UPDATE_PASSWORD.getReasonCode()
+                .equals(cachedData.reason())
+            ) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
+            }
+
+            // Update password via Keycloak
+            var result = accountsKeycloakUpdateUser.updatePassword(
+                cachedData.idUser(),
+                accountsUpdatePasswordCommand.newPassword()
+            );
+
+            // Clean token cache
+            tokenVerificationCache.evict(accountsUpdatePasswordCommand.token());
+
+            // Send email notification
+            accountsUpdateEmailProducer.execute(
+                locale,
+                result.get("email").toString()
+            );
+
         }
 
-        // Reason verification
-        AccountsUpdatePasswordCacheCommand cachedData = (AccountsUpdatePasswordCacheCommand) cachedToken.get();
+        // Cleanup password
+        finally {
 
-        if (
-            !AccountsUpdateEnum.ACCOUNTS_UPDATE_PASSWORD.getReasonCode()
-            .equals( cachedData.reason() )
-        ) {
-            throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
+            if (newPassword != null) {
+                java.util.Arrays.fill(newPassword, '\0');
+            }
+
         }
-
-        // Update password via Keycloak
-        var result = accountsKeycloakUpdateUser.updatePassword(
-            cachedData.idUser(),
-            accountsUpdatePasswordDTO.newPassword()
-        );
-
-        // Clean token cache
-        tokenVerificationCache.evict(accountsUpdatePasswordDTO.token());
-
-        // Send email notification
-        accountsUpdateEmailProducer.execute(
-            locale,
-            result.get("email").toString()
-        );
 
     }
 
