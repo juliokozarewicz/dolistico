@@ -104,8 +104,8 @@ public class AccountsAlreadyExistProducer {
                     )
 
                     .replace(
-                            "{{email_already_exist_message}}",
-                            messageSource.getMessage("email_already_exist_message", null, locale)
+                            "{{email_account_already_exist_message}}",
+                            messageSource.getMessage("email_account_already_exist_message", null, locale)
                     )
 
                     .replace(
@@ -126,7 +126,7 @@ public class AccountsAlreadyExistProducer {
             // Create JSON payload
             AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(
                 email,
-                messageSource.getMessage("email_already_exist_subject", null, locale),
+                messageSource.getMessage("email_account_already_exist_subject", null, locale),
                 message.toString()
             );
 

@@ -83,6 +83,8 @@ public class AccountsUpdatePasswordUseCase {
             // Clean token cache
             tokenVerificationCache.evict(accountsUpdatePasswordCommand.token());
 
+            // ##### Verify email update
+
             // Send email notification
             accountsUpdateEmailProducer.execute(
                 locale,

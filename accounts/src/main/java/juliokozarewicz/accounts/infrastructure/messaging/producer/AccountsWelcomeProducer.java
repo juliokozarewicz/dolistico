@@ -104,8 +104,8 @@ public class AccountsWelcomeProducer {
                     )
 
                     .replace(
-                            "{{email_welcome_message}}",
-                            messageSource.getMessage("email_welcome_message", null, locale)
+                            "{{email_account_welcome_message}}",
+                            messageSource.getMessage("email_account_welcome_message", null, locale)
                     )
 
                     .replace(
@@ -126,7 +126,7 @@ public class AccountsWelcomeProducer {
             // Create JSON payload
             AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(
                 email,
-                messageSource.getMessage("email_welcome_subject", null, locale),
+                messageSource.getMessage("email_account_welcome_subject", null, locale),
                 message.toString()
             );
 

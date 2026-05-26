@@ -105,8 +105,8 @@ public class AccountsUpdatePasswordLinkProducer {
                 )
 
                 .replace(
-                    "{{email_reset_password_click}}",
-                    messageSource.getMessage("email_reset_password_click", null, locale)
+                    "{{email_account_reset_password_click}}",
+                    messageSource.getMessage("email_account_reset_password_click", null, locale)
                 )
 
                 .replace(
@@ -137,7 +137,7 @@ public class AccountsUpdatePasswordLinkProducer {
             // Create JSON payload
             AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(
                 email,
-                messageSource.getMessage("email_subject_update_password", null, locale),
+                messageSource.getMessage("email_account_subject_update_password", null, locale),
                 message.toString()
             );
 

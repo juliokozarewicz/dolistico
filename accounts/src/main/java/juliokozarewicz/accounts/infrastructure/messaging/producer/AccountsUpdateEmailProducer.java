@@ -104,8 +104,8 @@ public class AccountsUpdateEmailProducer {
                     )
 
                     .replace(
-                            "{{email_update_password_success}}",
-                            messageSource.getMessage("email_update_password_success", null, locale)
+                            "{{email_account_update_password_success}}",
+                            messageSource.getMessage("email_account_update_password_success", null, locale)
                     )
 
                     .replace(
@@ -126,7 +126,7 @@ public class AccountsUpdateEmailProducer {
             // Create JSON payload
             AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(
                 email,
-                messageSource.getMessage("email_already_exist_subject", null, locale),
+                messageSource.getMessage("email_account_subject_update_password", null, locale),
                 message.toString()
             );
 
