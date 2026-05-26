@@ -67,7 +67,7 @@ public class AccountsUpdatePasswordUseCase {
         // Clean token cache
         tokenVerificationCache.evict(accountsUpdatePasswordDTO.token());
 
-        // Send email notification
+        // ##### Send email notification
 
     }
 
