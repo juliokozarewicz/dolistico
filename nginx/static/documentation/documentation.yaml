@@ -372,11 +372,6 @@ paths:
         - A confirmation email is sent to the user.
 
         **Business rules:**
-
-        - `token` must be a valid hexadecimal string between 126 and 1024 characters.
-        - `newPassword` must be between 12 and 256 characters and contain at least one uppercase letter,
-          one lowercase letter, one digit, and one special character (`! @ # $ % ^ & *`).
-          The characters `< > & ' " /` are not allowed.
         - If the token is expired, not found, or was issued for a different purpose, the request is rejected.
       tags:
         - Accounts
