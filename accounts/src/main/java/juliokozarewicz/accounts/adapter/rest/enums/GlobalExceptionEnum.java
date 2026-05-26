@@ -22,6 +22,7 @@ public enum GlobalExceptionEnum {
 
     // accounts
     ACCOUNTS_USER_ALREADY_EXISTS(409, "ACCOUNTS_USER_ALREADY_EXISTS", DomainExceptionEnum.ACCOUNTS_USER_ALREADY_EXISTS),
+    ACCOUNTS_EXPIRED_LINK(404, "ACCOUNTS_EXPIRED_LINK", DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK),
     ACCOUNTS_USER_NOT_FOUND(404, "ACCOUNTS_USER_NOT_FOUND", DomainExceptionEnum.ACCOUNTS_USER_NOT_FOUND);
 
     // ============================================== ( domain error codes end )
@@ -34,6 +35,7 @@ public enum GlobalExceptionEnum {
     public static final String ACCOUNTS_FORBIDDEN_CHARACTERS_DTO = "ACCOUNTS_FORBIDDEN_CHARACTERS_DTO";
     public static final String ACCOUNTS_PASSWORD_REQUIREMENTS_DTO = "ACCOUNTS_PASSWORD_REQUIREMENTS_DTO";
     public static final String ACCOUNTS_INVALID_ID_DTO = "ACCOUNTS_INVALID_ID_DTO";
+    public static final String ACCOUNTS_INVALID_TOKEN_DTO = "ACCOUNTS_INVALID_TOKEN_DTO";
     // ================================================= ( dto error codes end )
 
     public final int statusCode;
