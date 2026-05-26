@@ -89,7 +89,7 @@ public class AccountsKeycloakDeleteUser {
             // Logs
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
-            .log("Error accessing Keycloak [ AccountsKeycloakDeleteUser.execute() ]", e);
+            .log("Error accessing Keycloak [ AccountsKeycloakDeleteUser.execute() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

@@ -60,7 +60,7 @@ public class CategoriesEventProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", CategoriesMessagingTopicEnum.CATEGORIES_CREATE_UPDATE_PERSIST)
-            .log("Error producing message: [ CategoriesEventProducer.producerCreateUpdate() ]", e);
+            .log("Error producing message: [ CategoriesEventProducer.producerCreateUpdate() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
@@ -91,7 +91,7 @@ public class CategoriesEventProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", CategoriesMessagingTopicEnum.CATEGORIES_DELETE_PERSIST)
-            .log("Error producing message: [ CategoriesEventProducer.producerDelete() ]", e);
+            .log("Error producing message: [ CategoriesEventProducer.producerDelete() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

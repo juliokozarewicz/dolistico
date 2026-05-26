@@ -144,7 +144,7 @@ public class AccountsWelcomeProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsWelcomeProducer.execute() ]", e);
+            .log("Error producing message: [ AccountsWelcomeProducer.execute() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

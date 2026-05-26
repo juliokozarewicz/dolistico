@@ -149,7 +149,7 @@ public class AccountsKeycloakGetInactiveUsers {
             // Logs
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
-            .log("Error getting inactive users in Keycloak [ AccountsKeycloakGetInactiveUsers.getInactiveUsers() ]", e);
+            .log("Error getting inactive users in Keycloak [ AccountsKeycloakGetInactiveUsers.getInactiveUsers() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

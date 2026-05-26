@@ -89,7 +89,7 @@ public class EmailServiceEventConsumer {
             .addKeyValue("topic", record.topic())
             .addKeyValue("partition", record.partition())
             .addKeyValue("offset", record.offset())
-            .log("Error consuming message: [ EmailServiceEventConsumer.consumerSendSimpleEmail() ]", e);
+            .log("Error consuming message: [ EmailServiceEventConsumer.consumerSendSimpleEmail() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

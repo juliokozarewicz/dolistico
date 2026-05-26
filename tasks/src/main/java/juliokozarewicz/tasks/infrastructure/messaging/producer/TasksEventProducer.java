@@ -61,7 +61,7 @@ public class TasksEventProducer {
             // logs
             logger.atError()
             .addKeyValue("topic", TasksMessagingTopicEnum.TASKS_CREATE_UPDATE_PERSIST)
-            .log("Error producing message: [ TasksEventProducer.producerCreateUpdate() ]", e);
+            .log("Error producing message: [ TasksEventProducer.producerCreateUpdate() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
@@ -92,7 +92,7 @@ public class TasksEventProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", TasksMessagingTopicEnum.TASKS_DELETE_PERSIST)
-            .log("Error producing message: [ TasksEventProducer.producerDelete() ]", e);
+            .log("Error producing message: [ TasksEventProducer.producerDelete() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

@@ -61,7 +61,7 @@ public class AccountsKafkaService {
 
             // logs
             logger.error("Error creating message for broker in account " +
-                "service [ AccountsKafkaService.sendSimpleEmailMessage() ]: " + e);
+                "service [ AccountsKafkaService.sendSimpleEmailMessage() ] : " + e);
 
             errorHandler.customErrorThrow(
                 500,

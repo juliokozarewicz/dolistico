@@ -131,7 +131,7 @@ public class GlobalException {
             .addKeyValue("ip", userAddr)
             .addKeyValue("agent", request.getHeader("User-Agent"))
             .addKeyValue("statusCode", 500)
-            .log("[ INTERNAL ERROR ]", ex);
+            .log("[ INTERNAL ERROR ] : ", ex);
 
         return ResponseEntity
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)

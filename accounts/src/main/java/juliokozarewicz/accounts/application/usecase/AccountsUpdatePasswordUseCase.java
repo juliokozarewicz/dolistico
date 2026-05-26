@@ -5,11 +5,11 @@ import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheC
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailProducer;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
-
 import java.util.Locale;
 
 @Service
@@ -24,16 +24,19 @@ public class AccountsUpdatePasswordUseCase {
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
     private final AccountsUpdateEmailProducer accountsUpdateEmailProducer;
+    private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
 
     public AccountsUpdatePasswordUseCase(
 
         CacheManager cacheManager,
-        AccountsUpdateEmailProducer accountsUpdateEmailProducer
+        AccountsUpdateEmailProducer accountsUpdateEmailProducer,
+        AccountsKeycloakUpdateUser accountsKeycloakUpdateUser
 
     ) {
 
         this.cacheManager = cacheManager;
         this.accountsUpdateEmailProducer = accountsUpdateEmailProducer;
+        this.accountsKeycloakUpdateUser = accountsKeycloakUpdateUser;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
 
     }
@@ -65,12 +68,20 @@ public class AccountsUpdatePasswordUseCase {
             throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
         }
 
-        // ##### Update password via Keycloak
+        // Update password via Keycloak
+        var result = accountsKeycloakUpdateUser.updatePassword(
+            cachedData.idUser(),
+            accountsUpdatePasswordDTO.newPassword()
+        );
 
         // Clean token cache
         tokenVerificationCache.evict(accountsUpdatePasswordDTO.token());
 
-        // ##### Send email notification
+        // Send email notification
+        accountsUpdateEmailProducer.execute(
+            locale,
+            result.get("email").toString()
+        );
 
     }
 

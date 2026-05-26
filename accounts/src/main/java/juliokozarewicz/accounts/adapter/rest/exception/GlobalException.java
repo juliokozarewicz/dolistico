@@ -129,12 +129,12 @@ public class GlobalException {
 
         // logs
         logger.atError()
-            .addKeyValue("method", request.getMethod())
-            .addKeyValue("url", request.getRequestURI())
-            .addKeyValue("ip", userAddr)
-            .addKeyValue("agent", request.getHeader("User-Agent"))
-            .addKeyValue("statusCode", 500)
-            .log("[ INTERNAL ERROR ]", ex);
+        .addKeyValue("method", request.getMethod())
+        .addKeyValue("url", request.getRequestURI())
+        .addKeyValue("ip", userAddr)
+        .addKeyValue("agent", request.getHeader("User-Agent"))
+        .addKeyValue("statusCode", 500)
+        .log("[ INTERNAL ERROR ] : ", ex);
 
         return ResponseEntity
         .status(GlobalExceptionEnum.INTERNAL_SERVER_ERROR.statusCode)

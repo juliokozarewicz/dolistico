@@ -77,7 +77,7 @@ public class AccountsEventConsumer {
             .addKeyValue("topic", record.topic())
             .addKeyValue("partition", record.partition())
             .addKeyValue("offset", record.offset())
-            .log("Error consuming message: [ AccountsEventConsumer.consumerDeleteAccountNotActivated() ]", e);
+            .log("Error consuming message: [ AccountsEventConsumer.consumerDeleteAccountNotActivated() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

@@ -144,7 +144,7 @@ public class AccountsAlreadyExistProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsAlreadyExistProducer.execute() ]", e);
+            .log("Error producing message: [ AccountsAlreadyExistProducer.execute() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

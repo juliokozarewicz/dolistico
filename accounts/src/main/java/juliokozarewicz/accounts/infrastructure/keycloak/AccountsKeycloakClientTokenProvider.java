@@ -116,7 +116,7 @@ public class AccountsKeycloakClientTokenProvider {
             .addKeyValue("realm", keycloakRealm)
             .addKeyValue("clientId", keycloakClientId)
             .addKeyValue("keycloakUrl", keycloakBaseURL)
-            .log("Error accessing Keycloak [ AccountsKeycloakClientTokenProvider.getAccessToken() ]", e);
+            .log("Error accessing Keycloak [ AccountsKeycloakClientTokenProvider.getAccessToken() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

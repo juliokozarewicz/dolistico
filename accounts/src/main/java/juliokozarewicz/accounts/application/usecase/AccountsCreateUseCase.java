@@ -127,7 +127,7 @@ public class AccountsCreateUseCase {
         catch (Exception e) {
 
             // Logs
-            logger.atError().log("Create user account error [ AccountsCreateUseCase.execute() ]", e);
+            logger.atError().log("Create user account error [ AccountsCreateUseCase.execute() ] : ", e);
 
             // Rollback in a recent account with error
             if (idUserCreated != null) {

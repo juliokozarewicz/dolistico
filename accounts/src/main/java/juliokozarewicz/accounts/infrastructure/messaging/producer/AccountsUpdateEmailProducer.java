@@ -144,7 +144,7 @@ public class AccountsUpdateEmailProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsUpdateEmailProducer.execute() ]", e);
+            .log("Error producing message: [ AccountsUpdateEmailProducer.execute() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

@@ -26,6 +26,6 @@ public record AccountsUpdatePasswordDTO(
         regexp = "^[^<>&'\"/]*$",
         message = GlobalExceptionEnum.ACCOUNTS_FORBIDDEN_CHARACTERS_DTO
     )
-    String password
+    String newPassword
 
 ) {}

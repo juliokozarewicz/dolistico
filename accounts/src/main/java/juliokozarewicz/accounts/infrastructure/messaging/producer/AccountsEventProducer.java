@@ -67,7 +67,7 @@ public class AccountsEventProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.ACCOUNTS_NOT_ACTIVATED_DELETE)
-            .log("Error producing message: [ AccountsEventProducer.producerDeleteAccountNotActivated() ]", e);
+            .log("Error producing message: [ AccountsEventProducer.producerDeleteAccountNotActivated() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
