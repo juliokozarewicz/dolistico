@@ -360,6 +360,72 @@ paths:
                     type: string
                     example: ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY
 
+    # ACCOUNTS - UPDATE PASSWORD CONFIRM
+    patch:
+      summary: Update password
+      description: |-
+        Finalizes the password reset flow by validating the token received by email
+        and updating the user's password.
+
+        After a successful update:
+        - The token is immediately invalidated (single use).
+        - A confirmation email is sent to the user.
+
+        **Business rules:**
+
+        - `token` must be a valid hexadecimal string between 126 and 1024 characters.
+        - `newPassword` must be between 12 and 256 characters and contain at least one uppercase letter,
+          one lowercase letter, one digit, and one special character (`! @ # $ % ^ & *`).
+          The characters `< > & ' " /` are not allowed.
+        - If the token is expired, not found, or was issued for a different purpose, the request is rejected.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - newPassword
+              properties:
+                token:
+                  type: string
+                  description: >-
+                    Hexadecimal token received via email link. Must be between 126 and 1024 characters.
+                  minLength: 126
+                  maxLength: 1024
+                  example: "a3f9c2e1b7d04f8a..."
+                newPassword:
+                  type: string
+                  format: password
+                  description: >-
+                    New password. Must be between 12 and 256 characters and contain at least
+                    one uppercase letter, one lowercase letter, one digit, and one special character
+                    (! @ # $ % ^ & *). The characters < > & ' " / are not allowed.
+                  minLength: 12
+                  maxLength: 256
+                  example: "MyStr0ng!Pass"
+      responses:
+        "200":
+          description: Password updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_UPDATE_PASSWORD_SUCCESSFULLY
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
