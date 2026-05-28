@@ -4,6 +4,7 @@ import juliokozarewicz.accounts.application.command.AccountsLoginRequestCommand;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLoginService;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUserBannedProducer;
 import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
@@ -12,6 +13,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 public class AccountsLoginRequestUseCase {
@@ -27,6 +29,7 @@ public class AccountsLoginRequestUseCase {
     private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsUserBannedProducer accountsUserBannedProducer;
+    private final AccountsKeycloakLoginService accountsKeycloakLoginService;
     private final TokenGenerator tokenGenerator;
 
     public AccountsLoginRequestUseCase(
@@ -35,6 +38,7 @@ public class AccountsLoginRequestUseCase {
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsUserBannedProducer accountsUserBannedProducer,
+        AccountsKeycloakLoginService accountsKeycloakLoginService,
         TokenGenerator tokenGenerator
 
     ) {
@@ -45,6 +49,7 @@ public class AccountsLoginRequestUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsUserBannedProducer = accountsUserBannedProducer;
         this.tokenGenerator = tokenGenerator;
+        this.accountsKeycloakLoginService = accountsKeycloakLoginService;
 
     }
 
@@ -62,16 +67,28 @@ public class AccountsLoginRequestUseCase {
 
         try {
 
-            // ##### Get user refresh token by auth (email + pass) from Keycloak
-            String existingUserId = "";
+            // Get user refresh token by auth (email + pass) from Keycloak
+            Map<String, Object> keycloakResponse = accountsKeycloakLoginService.createUserLogin(
+                accountsLoginRequestCommand.email(),
+                new String(password)
+            );
 
-            // ##### Null user verification
-            if (existingUserId == null) {
+            // Null user verification
+            if (keycloakResponse == null || keycloakResponse.isEmpty()) {
+                throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+            }
+
+            // Extract access token
+            String accessToken = (String) keycloakResponse.get("access_token");
+
+            if (accessToken == null || accessToken.isBlank()) {
                 throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
             }
 
             // Account banned (send email to user)
-            if (accountsKeycloakGetUser.isAccountBannedById(existingUserId) ) {
+            String existingUserId = accountsKeycloakLoginService.idUserExtract(accessToken);
+
+            if ( accountsKeycloakGetUser.isAccountBannedById(existingUserId) ) {
                 accountsUserBannedProducer.execute(locale, accountsLoginRequestCommand.email());
                 throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
             }
