@@ -85,6 +85,13 @@ public class AccountsLoginRequestUseCase {
                 throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
             }
 
+            // Extract refresh token
+            String refreshToken = (String) keycloakResponse.get("refresh_token");
+
+            if (refreshToken == null || refreshToken.isBlank()) {
+                throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+            }
+
             // Account banned (send email to user)
             String existingUserId = accountsKeycloakLoginService.idUserExtract(accessToken);
 
