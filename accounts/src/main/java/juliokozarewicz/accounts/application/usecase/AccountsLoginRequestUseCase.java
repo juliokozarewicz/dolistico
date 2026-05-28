@@ -82,7 +82,7 @@ public class AccountsLoginRequestUseCase {
             // Create user pin
             String generatedPin = tokenGenerator.generatePin();
 
-            // ##### Storage token + pin + user refresh token in cache
+            // ##### Storage token + pin + user refresh token encrypted in cache
 
             // ##### Send email to user with url (token + pin)
 
