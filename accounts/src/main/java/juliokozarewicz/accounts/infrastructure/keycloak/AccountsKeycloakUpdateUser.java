@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -49,7 +50,11 @@ public class AccountsKeycloakUpdateUser {
 
     // ======================================================== ( helpers init )
 
-    private Map<String, Object> getUserById(String clientToken, String idUser) {
+    private Map<String, Object> getUserById(
+
+        String clientToken,
+        String idUser
+    ) {
 
         URI uri = UriComponentsBuilder
             .fromUriString(keycloakBaseURL)
@@ -165,8 +170,8 @@ public class AccountsKeycloakUpdateUser {
 
             // Request body for email update
             Map<String, Object> body = new LinkedHashMap<>();
-            body.put("email", newEmail);
-            body.put("username", newEmail);
+            body.put("email", newEmail.toLowerCase(Locale.ROOT));
+            body.put("username", newEmail.toLowerCase(Locale.ROOT));
 
             // Executes email update request
             ResponseEntity<Void> response = webClient.put()

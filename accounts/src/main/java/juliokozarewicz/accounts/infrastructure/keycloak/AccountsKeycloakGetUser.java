@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -47,7 +48,12 @@ public class AccountsKeycloakGetUser {
 
     // ======================================================== ( helpers init )
 
-    private Map<String, Object> getUserById(String clientToken, String idUser) {
+    private Map<String, Object> getUserById(
+
+        String clientToken,
+        String idUser
+
+    ) {
 
         URI uri = UriComponentsBuilder
             .fromUriString(keycloakBaseURL)
@@ -68,7 +74,11 @@ public class AccountsKeycloakGetUser {
     // ========================================================= ( helpers end )
 
     // Get user id by email
-    public String getUserByEmail( String userEmail ) {
+    public String getUserByEmail(
+
+        String userEmail
+
+    ) {
 
         try {
 
@@ -77,7 +87,7 @@ public class AccountsKeycloakGetUser {
             URI uri = UriComponentsBuilder
                 .fromUriString(keycloakBaseURL)
                 .pathSegment("admin", "realms", keycloakRealm, "users")
-                .queryParam("email", userEmail)
+                .queryParam("email", userEmail.toLowerCase(Locale.ROOT))
                 .queryParam("exact", true)
                 .encode()
                 .build()
@@ -113,7 +123,11 @@ public class AccountsKeycloakGetUser {
     }
 
     // Check if user email is verified by user ID
-    public boolean isAccountVerifiedById(String idUser) {
+    public boolean isAccountVerifiedById(
+
+        String idUser
+
+    ) {
 
         try {
 
@@ -141,7 +155,11 @@ public class AccountsKeycloakGetUser {
     }
 
     // Check if user account is enabled (active) by user ID
-    public boolean isAccountEnabledById(String idUser) {
+    public boolean isAccountBannedById(
+
+        String idUser
+
+    ) {
 
         try {
 
@@ -160,7 +178,7 @@ public class AccountsKeycloakGetUser {
             // Logs
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
-            .log("Error checking account enabled status in Keycloak [ AccountsKeycloakGetUser.isAccountEnabledById() ] : ", e);
+            .log("Error checking account banned status in Keycloak [ AccountsKeycloakGetUser.isAccountBannedById() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

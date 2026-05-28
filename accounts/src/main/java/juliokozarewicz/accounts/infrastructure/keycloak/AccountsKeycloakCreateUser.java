@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -63,8 +64,8 @@ public class AccountsKeycloakCreateUser {
 
         // Request payload for Keycloak user creation
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("username", userEmail);
-        body.put("email", userEmail);
+        body.put("username", userEmail.toLowerCase(Locale.ROOT));
+        body.put("email", userEmail.toLowerCase(Locale.ROOT));
         body.put("enabled", true);
         body.put("emailVerified", false);
 
