@@ -24,4 +24,9 @@ public class TokenGenerator {
 
     }
 
+    public String generatePin() {
+        int pin = random.nextInt(10_000_000);
+        return String.format("%06d", pin);
+    }
+
 }

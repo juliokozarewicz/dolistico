@@ -6,6 +6,7 @@ import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUserBannedProducer;
+import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,15 @@ public class AccountsLoginRequestUseCase {
     private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsUserBannedProducer accountsUserBannedProducer;
+    private final TokenGenerator tokenGenerator;
 
     public AccountsLoginRequestUseCase(
 
         CacheManager cacheManager,
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
-        AccountsUserBannedProducer accountsUserBannedProducer
+        AccountsUserBannedProducer accountsUserBannedProducer,
+        TokenGenerator tokenGenerator
 
     ) {
 
@@ -41,6 +44,7 @@ public class AccountsLoginRequestUseCase {
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsUserBannedProducer = accountsUserBannedProducer;
+        this.tokenGenerator = tokenGenerator;
 
     }
 
@@ -58,12 +62,10 @@ public class AccountsLoginRequestUseCase {
 
         try {
 
-            // Get user by email from Keycloak
-            String existingUserId = accountsKeycloakGetUser.getUserByEmail(
-                accountsLoginRequestCommand.email()
-            );
+            // ##### Get user refresh token by auth (email + pass) from Keycloak
+            String existingUserId = "";
 
-            // Null user verification
+            // ##### Null user verification
             if (existingUserId == null) {
                 throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
             }
@@ -74,8 +76,14 @@ public class AccountsLoginRequestUseCase {
                 throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
             }
 
-            // ##### Create user login request token
-            // ##### Create user pin
+            // Create user login request token
+            String generatedToken = tokenGenerator.generate512Hex();
+
+            // Create user pin
+            String generatedPin = tokenGenerator.generatePin();
+
+            // ##### Storage token + pin + user refresh token in cache
+
             // ##### Send email to user with url (token + pin)
 
         }
