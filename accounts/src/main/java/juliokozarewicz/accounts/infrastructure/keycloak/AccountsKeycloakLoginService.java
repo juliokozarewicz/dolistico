@@ -88,32 +88,28 @@ public class AccountsKeycloakLoginService {
 
     ) {
 
-        try {
+        MultiValueMap<String, String> formData = baseFormData();
+        formData.add("grant_type", "password");
+        formData.add("username", userEmail);
+        formData.add("password", userPassword);
+        formData.add("scope", "openid");
 
-            MultiValueMap<String, String> formData = baseFormData();
-            formData.add("grant_type", "password");
-            formData.add("username", userEmail);
-            formData.add("password", userPassword);
-            formData.add("scope", "openid");
-
-            return webClient.post()
+        return webClient.post()
             .uri(tokenEndpoint())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(BodyInserters.fromFormData(formData))
-            .retrieve()
-            .bodyToMono(Map.class)
+            .exchangeToMono(response -> {
+
+                if (response.statusCode().is2xxSuccessful()) {
+                    return response.bodyToMono(Map.class);
+                }
+
+                return response.bodyToMono(String.class)
+                    .defaultIfEmpty("")
+                    .doOnNext(body -> logger.error("Keycloak error: {}", body))
+                    .thenReturn(null);
+            })
             .block();
-
-        } catch (Exception e) {
-
-            logger.atError()
-            .addKeyValue("realm", keycloakRealm)
-            .log("Error generating user tokens in Keycloak [ AccountsKeycloakLoginService.createUserLogin() ] : ", e);
-
-            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
-
-        }
-
     }
 
     // Refresh tokens using a valid refresh_token
