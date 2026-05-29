@@ -42,7 +42,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     // Keys
     // -------------------------------------------------------------------------
-    @Value("${SECRET_KEY}")
+    @Value("${ACCOUNTS_SECRET_KEY}")
     private String secretKey;
 
     @Value("${PUBLIC_KEY}")

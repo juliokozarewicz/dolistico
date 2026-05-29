@@ -48,9 +48,6 @@ public class AccountsCacheConfig {
         // Short-lived token verification — expires in 5 minutes for security
         cacheConfigs.put("accounts.tokenVerificationCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(5) ));
 
-        // Short-lived PIN verification — expires in 5 minutes for security
-        cacheConfigs.put("accounts.pinVerificationCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(5) ));
-
         // Keycloak client token
         cacheConfigs.put("accounts.clientKeycloakTokenCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(4) ));
 

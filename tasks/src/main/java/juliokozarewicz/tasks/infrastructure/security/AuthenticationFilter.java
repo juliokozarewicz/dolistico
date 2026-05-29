@@ -43,7 +43,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private PublicKey rsaPublicKey;
     private List<String> publicPaths;
 
-    @Value("${SECRET_KEY}")
+    @Value("${ACCOUNTS_SECRET_KEY}")
     private String secretKey;
 
     @Value("${PUBLIC_KEY}")

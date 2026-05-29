@@ -32,10 +32,10 @@ public class AccountsKeycloakLoginService {
     @Value("${KEYCLOAK_BASE_URL}")
     private String keycloakBaseURL;
 
-    @Value("${KEYCLOAK_CLIENT_ID}")
+    @Value("${ACCOUNTS_KEYCLOAK_CLIENT_ID}")
     private String clientId;
 
-    @Value("${KEYCLOAK_CLIENT_SECRET}")
+    @Value("${ACCOUNTS_SECRET_KEY}")
     private String clientSecret;
 
     // -------------------------------------------------------------------------

@@ -1,13 +1,15 @@
 package juliokozarewicz.accounts.application.usecase;
 
+import juliokozarewicz.accounts.application.command.AccountsLoginCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsLoginRequestCommand;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLoginService;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsLoginRequestProducer;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUserBannedProducer;
-import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
+import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,8 @@ public class AccountsLoginRequestUseCase {
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsUserBannedProducer accountsUserBannedProducer;
     private final AccountsKeycloakLoginService accountsKeycloakLoginService;
-    private final TokenGenerator tokenGenerator;
+    private final Encryption encryption;
+    private final AccountsLoginRequestProducer accountsLoginRequestProducer;
 
     public AccountsLoginRequestUseCase(
 
@@ -39,7 +42,8 @@ public class AccountsLoginRequestUseCase {
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsUserBannedProducer accountsUserBannedProducer,
         AccountsKeycloakLoginService accountsKeycloakLoginService,
-        TokenGenerator tokenGenerator
+        Encryption encryption,
+        AccountsLoginRequestProducer accountsLoginRequestProducer
 
     ) {
 
@@ -48,8 +52,9 @@ public class AccountsLoginRequestUseCase {
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsUserBannedProducer = accountsUserBannedProducer;
-        this.tokenGenerator = tokenGenerator;
+        this.encryption = encryption;
         this.accountsKeycloakLoginService = accountsKeycloakLoginService;
+        this.accountsLoginRequestProducer = accountsLoginRequestProducer;
 
     }
 
@@ -86,9 +91,10 @@ public class AccountsLoginRequestUseCase {
             }
 
             // Extract refresh token
-            String refreshToken = (String) keycloakResponse.get("refresh_token");
+            String refreshTokenRaw = (String) keycloakResponse.get("refresh_token");
+            String refreshTokenEncrypted = encryption.encrypt(refreshTokenRaw);
 
-            if (refreshToken == null || refreshToken.isBlank()) {
+            if (refreshTokenRaw == null || refreshTokenRaw.isBlank()) {
                 throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
             }
 
@@ -101,14 +107,33 @@ public class AccountsLoginRequestUseCase {
             }
 
             // Create user login request token
-            String generatedToken = tokenGenerator.generate512Hex();
+            String generatedToken = encryption.generate512Hex();
 
             // Create user pin
-            String generatedPin = tokenGenerator.generatePin();
+            String generatedPin = encryption.generatePin();
 
-            // ##### Storage token + pin + user refresh token encrypted in cache
+            // Storage token + pin + user refresh token encrypted in cache
+            AccountsLoginCacheCommand loginRequestData = new AccountsLoginCacheCommand(
+                generatedPin,
+                refreshTokenEncrypted
+            );
 
-            // ##### Send email to user with url (token + pin)
+            tokenVerificationCache.put(generatedToken, loginRequestData);
+
+            System.out.println("*********************************************");
+            System.out.println("*********************************************");
+            System.out.println(refreshTokenRaw);
+            System.out.println("---------------------------------------------");
+            System.out.println(refreshTokenEncrypted);
+            System.out.println("*********************************************");
+            System.out.println("*********************************************");
+
+            // Send email to user with url (token + pin)
+            accountsLoginRequestProducer.execute(
+                locale,
+                accountsLoginRequestCommand.email(),
+                generatedPin
+            );
 
         }
 

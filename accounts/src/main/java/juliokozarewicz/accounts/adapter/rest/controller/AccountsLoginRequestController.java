@@ -1,9 +1,9 @@
 package juliokozarewicz.accounts.adapter.rest.controller;
 
 import jakarta.validation.Valid;
+import juliokozarewicz.accounts.adapter.rest.dto.AccountsLoginRequestDTO;
 import juliokozarewicz.accounts.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalSuccessEnum;
-import juliokozarewicz.accounts.application.command.AccountsLoginRequestCommand;
 import juliokozarewicz.accounts.application.usecase.AccountsLoginRequestUseCase;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +49,7 @@ public class AccountsLoginRequestController {
         Locale locale,
 
         // DTO error
-        @Valid @RequestBody AccountsLoginRequestCommand accountsLoginRequestCommand,
+        @Valid @RequestBody AccountsLoginRequestDTO accountsLoginRequestDTO,
         BindingResult bindingResult
 
     ) {
@@ -57,7 +57,7 @@ public class AccountsLoginRequestController {
         // Call use case
         accountsLoginRequestUseCase.execute(
             locale,
-            accountsLoginRequestCommand
+            accountsLoginRequestDTO
         );
 
         // Standard response

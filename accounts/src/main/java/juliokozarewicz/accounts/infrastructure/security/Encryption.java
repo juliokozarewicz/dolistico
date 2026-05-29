@@ -1,9 +1,7 @@
-package juliokozarewicz.accounts.services;
+package juliokozarewicz.accounts.infrastructure.security;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -15,29 +13,18 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @Component
-public class EncryptionService {
+public class Encryption {
 
     // ====================================================== (Constructor init)
 
     // Keys
     // -------------------------------------------------------------------------
     @Value("${ACCOUNTS_SECRET_KEY}")
-    private String secretKey;
+    private String AccountsSecretKey;
     // -------------------------------------------------------------------------
-
-    // Argon v2
-    private static final PasswordEncoder encoder = new Argon2PasswordEncoder(
-        16,  // salt length (bytes)
-        32,              // hash length (bytes)
-        2,               // parallelism (threads)
-        131072,          // memory (KB) -> 64MB
-        6                // iterations
-    );
 
     private static final SecureRandom secureRandom = new SecureRandom();
     private SecretKey aesKey;
-
-    public EncryptionService() {}
 
     // ======================================================= (Constructor end)
 
@@ -48,13 +35,12 @@ public class EncryptionService {
         try {
 
             MessageDigest sha = MessageDigest.getInstance("SHA-256");
-            byte[] keyBytes = sha.digest(secretKey.getBytes(StandardCharsets.UTF_8));
+            byte[] keyBytes = sha.digest(AccountsSecretKey.getBytes(StandardCharsets.UTF_8));
             this.aesKey = new SecretKeySpec(keyBytes, "AES");
 
         } catch (Exception e) {
 
-            throw new SecurityException("Failed to initialize AES key " +
-                "[ EncryptionService.init() ]: ");
+            throw new SecurityException("Failed to initialize AES key [ Encryption.init() ]: ", e);
 
         }
 
@@ -83,8 +69,7 @@ public class EncryptionService {
 
         } catch (Exception e) {
 
-            throw new SecurityException("Error encrypting " +
-                "[ EncryptionService.encrypt() ]: ");
+            throw new SecurityException("Error encrypting [ Encryption.encrypt() ]: ");
 
         }
 
@@ -113,56 +98,36 @@ public class EncryptionService {
 
         } catch (Exception e) {
 
-            throw new SecurityException("Error decrypting " +
-                "[ EncryptionService.decrypt() ]");
+            throw new SecurityException("Error decrypting [ Encryption.decrypt() ]");
 
         }
 
     }
     // =========================================================== (decrypt end)
 
-    // ==================================================== (Password hash init)
-    public String hashPassword(String password) {
-
-        String hashedPassword = encoder.encode(password);
-
-        return hashedPassword;
-
-    }
-    // ===================================================== (Password hash end)
-
-    // ================================================ (Compare passwords init)
-    public boolean matchPasswords(String password, String storedHash) {
-
-        boolean passwordsCompared = encoder.matches(
-            password,
-            storedHash
-        );
-
-        return passwordsCompared;
-
-    }
-    // ================================================= (Compare passwords end)
-
     // ===================================================== (Create token init)
-    public String createToken() {
+    public String generate512Hex() {
 
-        try {
+        byte[] bytes = new byte[256];
+        secureRandom.nextBytes(bytes);
+        StringBuilder sb = new StringBuilder();
 
-            SecureRandom secureRandom = new SecureRandom();
-            // byte[] bytes = new byte[192]; /* 256 characters */
-            byte[] bytes = new byte[96]; /* 128 characters */
-            secureRandom.nextBytes(bytes);
-            return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-
-        } catch (Exception e) {
-
-            throw new SecurityException("Error creating token " +
-                "[ EncryptionService.createToken() ]");
-
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
         }
+
+        return sb.toString();
 
     }
     // ====================================================== (Create token end)
+
+    // ======================================================= (Create pin init)
+    public String generatePin() {
+
+        int pin = secureRandom.nextInt(10_000_000);
+        return String.format("%06d", pin);
+
+    }
+    // ======================================================== (Create pin end)
 
 }

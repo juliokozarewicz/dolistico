@@ -5,7 +5,7 @@ import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordLinkCo
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordLinkProducer;
-import juliokozarewicz.accounts.infrastructure.security.TokenGenerator;
+import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -24,7 +24,7 @@ public class AccountsUpdatePasswordLinkUseCase {
     private String updatePasswordBaseURL;
     // -------------------------------------------------------------------------
 
-    private final TokenGenerator tokenGenerator;
+    private final Encryption encryption;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
@@ -32,14 +32,14 @@ public class AccountsUpdatePasswordLinkUseCase {
 
     public AccountsUpdatePasswordLinkUseCase(
 
-        TokenGenerator tokenGenerator,
+        Encryption encryption,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         CacheManager cacheManager,
         AccountsUpdatePasswordLinkProducer accountsUpdatePasswordLinkProducer
 
     ) {
 
-        this.tokenGenerator = tokenGenerator;
+        this.encryption = encryption;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.cacheManager = cacheManager;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
@@ -57,7 +57,7 @@ public class AccountsUpdatePasswordLinkUseCase {
     ) {
 
         // Generate token for verification
-        String generatedToken = tokenGenerator.generate512Hex();
+        String generatedToken = encryption.generate512Hex();
 
         // Get user id by email
         String existingUserId = accountsKeycloakGetUser.getUserByEmail(
