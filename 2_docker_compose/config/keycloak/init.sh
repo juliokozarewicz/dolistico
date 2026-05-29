@@ -159,7 +159,7 @@ create_client() {
       \"secret\": \"$client_secret\",
       \"serviceAccountsEnabled\": true,
       \"standardFlowEnabled\": false,
-      \"directAccessGrantsEnabled\": false,
+      \"directAccessGrantsEnabled\": true,
       \"implicitFlowEnabled\": false,
       \"authorizationServicesEnabled\": false,
       \"publicClient\": false,
