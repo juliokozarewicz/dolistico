@@ -99,7 +99,7 @@ public class AccountsKeycloakLoginService {
             return webClient.post()
             .uri(tokenEndpoint())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(BodyInserters.fromValue(formData))
+            .body(BodyInserters.fromFormData(formData))
             .retrieve()
             .bodyToMono(Map.class)
             .block();
