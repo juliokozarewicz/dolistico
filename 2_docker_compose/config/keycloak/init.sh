@@ -106,7 +106,6 @@ configure_realm() {
       \"realm\": \"$realm\",
       \"enabled\": true,
       \"verifyEmail\": false,
-      \"userProfileEnabled\": false,
       \"accessTokenLifespan\": 300,
       \"ssoSessionIdleTimeout\": 1296000,
       \"ssoSessionMaxLifespan\": 2592000,
