@@ -12,6 +12,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
 
 import java.net.URI;
@@ -19,7 +20,7 @@ import java.util.Base64;
 import java.util.Map;
 
 @Service
-public class AccountsKeycloakLoginService {
+public class AccountsKeycloakLogin {
 
     // ==================================================== ( constructor init )
 
@@ -35,15 +36,15 @@ public class AccountsKeycloakLoginService {
     @Value("${ACCOUNTS_KEYCLOAK_CLIENT_ID}")
     private String clientId;
 
-    @Value("${ACCOUNTS_SECRET_KEY}")
+    @Value("${ACCOUNTS_KEYCLOAK_CLIENT_SECRET}")
     private String clientSecret;
 
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakLoginService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsKeycloakLogin.class);
     private final WebClient webClient;
 
-    public AccountsKeycloakLoginService(
+    public AccountsKeycloakLogin(
 
         WebClient webClient
 
@@ -95,21 +96,24 @@ public class AccountsKeycloakLoginService {
         formData.add("scope", "openid");
 
         return webClient.post()
-            .uri(tokenEndpoint())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(BodyInserters.fromFormData(formData))
-            .exchangeToMono(response -> {
+        .uri(tokenEndpoint())
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        .body(BodyInserters.fromFormData(formData))
+        .exchangeToMono(response -> {
 
-                if (response.statusCode().is2xxSuccessful()) {
-                    return response.bodyToMono(Map.class);
-                }
+            if (response.statusCode().is2xxSuccessful()) {
+                return response.bodyToMono(Map.class);
+            }
 
-                return response.bodyToMono(String.class)
-                    .defaultIfEmpty("")
-                    .doOnNext(body -> logger.error("Keycloak error: {}", body))
-                    .thenReturn(null);
-            })
-            .block();
+            return response.bodyToMono(String.class)
+            .defaultIfEmpty("")
+            .doOnNext(body -> logger.error("Keycloak error: {}", body))
+            .then(Mono.empty());
+
+        })
+
+        .block();
+
     }
 
     // Refresh tokens using a valid refresh_token
@@ -133,7 +137,7 @@ public class AccountsKeycloakLoginService {
 
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
-            .log("Error refreshing user login in Keycloak [ AccountsKeycloakLoginService.refreshUserLogin() ]", e);
+            .log("Error refreshing user login in Keycloak [ AccountsKeycloakLogin.refreshUserLogin() ]", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
@@ -169,7 +173,7 @@ public class AccountsKeycloakLoginService {
 
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
-            .log("Error extracting user id from JWT in Keycloak [ AccountsKeycloakLoginService.idUserExtract() ]", e);
+            .log("Error extracting user id from JWT in Keycloak [ AccountsKeycloakLogin.idUserExtract() ]", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

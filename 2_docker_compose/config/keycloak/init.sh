@@ -215,6 +215,28 @@ assign_service_account_roles() {
 }
 
 # ------------------------------------------------------------------------------
+# Disable VERIFY_PROFILE required action (prevents "Account is not fully set up")
+# ------------------------------------------------------------------------------
+disable_verify_profile() {
+  local token=$1
+  local realm=$2
+
+  echo "Disabling VERIFY_PROFILE required action..."
+
+  curl -sf --max-time 60 -X PUT \
+    "$KEYCLOAK_URL/admin/realms/$realm/authentication/required-actions/VERIFY_PROFILE" \
+    -H "Authorization: Bearer $token" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "alias": "VERIFY_PROFILE",
+      "name": "Verify Profile",
+      "enabled": false,
+      "defaultAction": false
+    }' \
+    && echo "VERIFY_PROFILE disabled." || echo "Failed to disable VERIFY_PROFILE."
+}
+
+# ------------------------------------------------------------------------------
 # Disable admin user (final bootstrap step)
 # ------------------------------------------------------------------------------
 disable_admin_user() {
@@ -264,6 +286,7 @@ echo "Running bootstrap..."
 
 create_realm "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
 configure_realm "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
+disable_verify_profile "$TOKEN" "$ACCOUNTS_KEYCLOAK_REALM"
 
 create_client "$TOKEN" \
   "$ACCOUNTS_KEYCLOAK_REALM" \

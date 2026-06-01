@@ -68,6 +68,9 @@ public class AccountsKeycloakCreateUser {
         body.put("email", userEmail.toLowerCase(Locale.ROOT));
         body.put("enabled", true);
         body.put("emailVerified", false);
+        body.put("firstName", "");
+        body.put("lastName", "");
+        body.put("requiredActions", List.of());
 
         // Credential (password) configuration
         Map<String, Object> credential = new LinkedHashMap<>();

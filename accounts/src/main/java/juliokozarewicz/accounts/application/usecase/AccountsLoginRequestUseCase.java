@@ -5,7 +5,7 @@ import juliokozarewicz.accounts.application.command.AccountsLoginRequestCommand;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
-import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLoginService;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogin;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsLoginRequestProducer;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUserBannedProducer;
@@ -31,7 +31,7 @@ public class AccountsLoginRequestUseCase {
     private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsUserBannedProducer accountsUserBannedProducer;
-    private final AccountsKeycloakLoginService accountsKeycloakLoginService;
+    private final AccountsKeycloakLogin accountsKeycloakLogin;
     private final Encryption encryption;
     private final AccountsLoginRequestProducer accountsLoginRequestProducer;
 
@@ -41,7 +41,7 @@ public class AccountsLoginRequestUseCase {
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsUserBannedProducer accountsUserBannedProducer,
-        AccountsKeycloakLoginService accountsKeycloakLoginService,
+        AccountsKeycloakLogin accountsKeycloakLogin,
         Encryption encryption,
         AccountsLoginRequestProducer accountsLoginRequestProducer
 
@@ -53,7 +53,7 @@ public class AccountsLoginRequestUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsUserBannedProducer = accountsUserBannedProducer;
         this.encryption = encryption;
-        this.accountsKeycloakLoginService = accountsKeycloakLoginService;
+        this.accountsKeycloakLogin = accountsKeycloakLogin;
         this.accountsLoginRequestProducer = accountsLoginRequestProducer;
 
     }
@@ -73,7 +73,7 @@ public class AccountsLoginRequestUseCase {
         try {
 
             // Get user refresh token by auth (email + pass) from Keycloak
-            Map<String, Object> keycloakResponse = accountsKeycloakLoginService.createUserLogin(
+            Map<String, Object> keycloakResponse = accountsKeycloakLogin.createUserLogin(
                 accountsLoginRequestCommand.email(),
                 new String(password)
             );
@@ -99,7 +99,7 @@ public class AccountsLoginRequestUseCase {
             }
 
             // Account banned (send email to user)
-            String existingUserId = accountsKeycloakLoginService.idUserExtract(accessToken);
+            String existingUserId = accountsKeycloakLogin.idUserExtract(accessToken);
 
             if ( accountsKeycloakGetUser.isAccountBannedById(existingUserId) ) {
                 accountsUserBannedProducer.execute(locale, accountsLoginRequestCommand.email());
