@@ -111,7 +111,7 @@ public class AccountsLoginRequestProducer {
 
                 .replace(
                     "{{commandPIN}}",
-                    messageSource.getMessage("commandPIN", null, locale)
+                    commandPIN
                 )
 
                 .replace(

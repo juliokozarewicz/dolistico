@@ -120,14 +120,6 @@ public class AccountsLoginRequestUseCase {
 
             tokenVerificationCache.put(generatedToken, loginRequestData);
 
-            System.out.println("*********************************************");
-            System.out.println("*********************************************");
-            System.out.println(refreshTokenRaw);
-            System.out.println("---------------------------------------------");
-            System.out.println(refreshTokenEncrypted);
-            System.out.println("*********************************************");
-            System.out.println("*********************************************");
-
             // Send email to user with url (token + pin)
             accountsLoginRequestProducer.execute(
                 locale,
