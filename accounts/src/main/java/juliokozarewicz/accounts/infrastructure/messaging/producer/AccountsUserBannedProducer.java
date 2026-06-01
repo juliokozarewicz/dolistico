@@ -64,7 +64,7 @@ public class AccountsUserBannedProducer {
 
             // Main template
             ClassPathResource templateResource = new ClassPathResource(
-                    "templates/email/AccountsAlreadyExist.html"
+                    "templates/email/AccountsUserBanned.html"
             );
 
             String message = new String(
