@@ -1,6 +1,8 @@
 package juliokozarewicz.accounts.adapter.rest.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import juliokozarewicz.accounts.adapter.rest.dto.AccountsRequestDTO;
 import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordDTO;
 import juliokozarewicz.accounts.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalSuccessEnum;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
+import java.util.Optional;
 
 @RestController
 @Validated
@@ -26,14 +29,17 @@ public class AccountsUpdatePasswordController {
     // -------------------------------------------------------------------------
 
     private final AccountsUpdatePasswordUseCase accountsUpdatePasswordUseCase;
+    private final AccountsRequestDTO accountsRequestDTO;
 
     public AccountsUpdatePasswordController(
 
-        AccountsUpdatePasswordUseCase accountsUpdatePasswordUseCase
+        AccountsUpdatePasswordUseCase accountsUpdatePasswordUseCase,
+        AccountsRequestDTO accountsRequestDTO
 
     ) {
 
         this.accountsUpdatePasswordUseCase = accountsUpdatePasswordUseCase;
+        this.accountsRequestDTO = accountsRequestDTO;
 
     }
 
@@ -47,12 +53,30 @@ public class AccountsUpdatePasswordController {
 
         // DTO error
         @Valid @RequestBody AccountsUpdatePasswordDTO accountsUpdatePasswordDTO,
-        BindingResult bindingResult
+        BindingResult bindingResult,
+
+        HttpServletRequest request
 
     ) {
 
+        // Request data
+        // ---------------------------------------------------------------------
+        String userIp = Optional.ofNullable(request.getHeader("X-Forwarded-For"))
+            .filter(ip -> !ip.isBlank())
+            .map(ip -> ip.contains(",") ? ip.split(",")[0].trim() : ip)
+            .orElse(request.getRemoteAddr());
+
+        String userAgent = request.getHeader("User-Agent");
+
+        //validation request data
+        accountsRequestDTO.validateUserIp(userIp);
+        accountsRequestDTO.validateUserAgent(userAgent);
+        // ---------------------------------------------------------------------
+
         // Call use case
         accountsUpdatePasswordUseCase.execute(
+            userIp,
+            userAgent,
             locale,
             accountsUpdatePasswordDTO
         );

@@ -1,16 +1,21 @@
 package juliokozarewicz.accounts.application.usecase;
 
+import juliokozarewicz.accounts.application.command.AccountsCreateLogCommand;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
+import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingTopicEnum;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailProducer;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 @Service
@@ -26,18 +31,21 @@ public class AccountsUpdatePasswordUseCase {
     private final Cache tokenVerificationCache;
     private final AccountsUpdateEmailProducer accountsUpdateEmailProducer;
     private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
+    private final AccountsEventProducer accountsEventProducer;
 
     public AccountsUpdatePasswordUseCase(
 
         CacheManager cacheManager,
         AccountsUpdateEmailProducer accountsUpdateEmailProducer,
-        AccountsKeycloakUpdateUser accountsKeycloakUpdateUser
+        AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
+        AccountsEventProducer accountsEventProducer
 
     ) {
 
         this.cacheManager = cacheManager;
         this.accountsUpdateEmailProducer = accountsUpdateEmailProducer;
         this.accountsKeycloakUpdateUser = accountsKeycloakUpdateUser;
+        this.accountsEventProducer = accountsEventProducer;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
 
     }
@@ -46,6 +54,8 @@ public class AccountsUpdatePasswordUseCase {
 
     public void execute(
 
+        String userIp,
+        String userAgent,
         Locale locale,
         AccountsUpdatePasswordCommand accountsUpdatePasswordCommand
 
@@ -91,6 +101,19 @@ public class AccountsUpdatePasswordUseCase {
                 locale,
                 result.get("email").toString()
             );
+
+            // Create user account log
+            AccountsCreateLogCommand logData = new AccountsCreateLogCommand(
+                cachedData.idUser(),
+                userIp,
+                userAgent,
+                AccountsUpdateEnum.ACCOUNTS_UPDATE_PASSWORD.getReasonCode(),
+                ZonedDateTime.now(ZoneOffset.UTC).toInstant(),
+                null,
+                null
+            );
+
+            accountsEventProducer.accountLogProducer(logData);
 
         }
 

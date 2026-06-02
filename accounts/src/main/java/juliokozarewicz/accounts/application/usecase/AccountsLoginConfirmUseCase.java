@@ -96,6 +96,8 @@ public class AccountsLoginConfirmUseCase {
 
         // ##### Email notification for new device login
 
+        // ##### Create user account log
+
         // Return credentials
         Map<String, Object> response = new java.util.LinkedHashMap<>();
         response.put("access", "access-token-encrypted");

@@ -133,7 +133,7 @@ public class AccountsKeycloakGetInactiveUsers {
                     ) {
 
                         // Create message
-                        accountsEventProducer.producerDeleteAccountNotActivated(userId);
+                        accountsEventProducer.deleteAccountNotActivatedProducer(userId);
 
                     }
 
