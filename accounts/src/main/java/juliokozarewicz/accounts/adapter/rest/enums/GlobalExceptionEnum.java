@@ -23,7 +23,8 @@ public enum GlobalExceptionEnum {
     // accounts
     ACCOUNTS_USER_ALREADY_EXISTS(409, "ACCOUNTS_USER_ALREADY_EXISTS", DomainExceptionEnum.ACCOUNTS_USER_ALREADY_EXISTS),
     ACCOUNTS_EXPIRED_LINK(404, "ACCOUNTS_EXPIRED_LINK", DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK),
-    ACCOUNTS_USER_NOT_FOUND(404, "ACCOUNTS_USER_NOT_FOUND", DomainExceptionEnum.ACCOUNTS_USER_NOT_FOUND);
+    ACCOUNTS_USER_NOT_FOUND(404, "ACCOUNTS_USER_NOT_FOUND", DomainExceptionEnum.ACCOUNTS_USER_NOT_FOUND),
+    ACCOUNTS_INVALID_PIN(404, "ACCOUNTS_INVALID_PIN", DomainExceptionEnum.ACCOUNTS_INVALID_PIN);
 
     // ============================================== ( domain error codes end )
 

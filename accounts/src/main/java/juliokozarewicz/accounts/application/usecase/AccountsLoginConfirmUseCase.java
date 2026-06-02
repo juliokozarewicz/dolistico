@@ -1,6 +1,10 @@
 package juliokozarewicz.accounts.application.usecase;
 
+import juliokozarewicz.accounts.application.command.AccountsLoginCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsLoginConfirmCommand;
+import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
+import juliokozarewicz.accounts.domain.exception.DomainException;
+import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogin;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
@@ -60,15 +64,31 @@ public class AccountsLoginConfirmUseCase {
 
     ) {
 
-        // ##### Find cached token
+        // Find cached token
+        var cachedToken = tokenVerificationCache.get(accountsLoginConfirmCommand.token());
 
-        // ##### If token not exist, return invalid token code
+        // If token not exist, return invalid credentials
+        if ( cachedToken == null ) {
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
 
-        // ##### Reason verification
+        // Reason verification
+        AccountsLoginCacheCommand cachedData = (AccountsLoginCacheCommand) cachedToken.get();
 
-        // ##### Compares the provided PIN with the stored PIN (decrypted)
+        if (
+            !AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode()
+            .equals(cachedData.reason())
+        ) {
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
 
-        // ##### If the PIN doesn't match, return a invalid PIN code
+        // Compares the provided PIN with the stored PIN (decrypted)
+        boolean pinMatch = cachedData.pin().equals(accountsLoginConfirmCommand.pin());
+
+        // If the PIN doesn't match, return a invalid PIN code
+        if ( !pinMatch ) {
+            throw new DomainException(DomainExceptionEnum.ACCOUNTS_INVALID_PIN);
+        }
 
         // ##### Retrieve credentials from the refresh token stored in the cache (decrypted)
 
