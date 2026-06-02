@@ -94,6 +94,8 @@ public class AccountsLoginConfirmUseCase {
 
         // ##### If the credentials are null, return invalid credentials.
 
+        // ##### Email notification for new device login
+
         // Return credentials
         Map<String, Object> response = new java.util.LinkedHashMap<>();
         response.put("access", "access-token-encrypted");

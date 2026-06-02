@@ -124,8 +124,8 @@ public class Encryption {
     // ======================================================= (Create pin init)
     public String generatePin() {
 
-        int pin = secureRandom.nextInt(1_000_000);
-        return String.format("%06d", pin);
+        int pin = secureRandom.nextInt(900_000) + 100_000;
+        return String.valueOf(pin);
 
     }
     // ======================================================== (Create pin end)
