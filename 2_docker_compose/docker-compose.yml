@@ -154,6 +154,26 @@ services:
         condition: service_healthy
     entrypoint: [ "bash", "/init.sh" ]
 
+  messagingui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8085:8080"
+    networks:
+      - spring_net
+    depends_on:
+      messaging:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: messaging:${MESSAGING_PORT}
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: SCRAM-SHA-256
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: >
+        org.apache.kafka.common.security.scram.ScramLoginModule required
+        username="${MESSAGING_ADMIN_USER}"
+        password="${MESSAGING_ADMIN_PASSWORD}";
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.6.0
     container_name: keycloak
