@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
-
 import java.net.URI;
 import java.util.Base64;
 import java.util.Map;
@@ -89,30 +88,42 @@ public class AccountsKeycloakLogin {
 
     ) {
 
-        MultiValueMap<String, String> formData = baseFormData();
-        formData.add("grant_type", "password");
-        formData.add("username", userEmail);
-        formData.add("password", userPassword);
-        formData.add("scope", "openid");
+        try {
 
-        return webClient.post()
-        .uri(tokenEndpoint())
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .body(BodyInserters.fromFormData(formData))
-        .exchangeToMono(response -> {
+            MultiValueMap<String, String> formData = baseFormData();
+            formData.add("grant_type", "password");
+            formData.add("username", userEmail);
+            formData.add("password", userPassword);
+            formData.add("scope", "openid");
 
-            if (response.statusCode().is2xxSuccessful()) {
-                return response.bodyToMono(Map.class);
-            }
+            return webClient.post()
+            .uri(tokenEndpoint())
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .body(BodyInserters.fromFormData(formData))
+            .exchangeToMono(response -> {
 
-            return response.bodyToMono(String.class)
-            .defaultIfEmpty("")
-            .doOnNext(body -> logger.error("Keycloak error: {}", body))
-            .then(Mono.empty());
+                if (response.statusCode().is2xxSuccessful()) {
+                    return response.bodyToMono(Map.class);
+                }
 
-        })
+                if (response.statusCode().is4xxClientError()) {
+                    return Mono.empty();
+                }
 
-        .block();
+                return response.createException().flatMap(Mono::error);
+
+            })
+            .block();
+
+        } catch (Exception e) {
+
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .log("Error creating user login in Keycloak [ AccountsKeycloakLogin.createUserLogin() ] : ", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
 
     }
 
@@ -137,7 +148,7 @@ public class AccountsKeycloakLogin {
 
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
-            .log("Error refreshing user login in Keycloak [ AccountsKeycloakLogin.refreshUserLogin() ]", e);
+            .log("Error refreshing user login in Keycloak [ AccountsKeycloakLogin.refreshUserLogin() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
@@ -173,7 +184,7 @@ public class AccountsKeycloakLogin {
 
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
-            .log("Error extracting user id from JWT in Keycloak [ AccountsKeycloakLogin.idUserExtract() ]", e);
+            .log("Error extracting user id from JWT in Keycloak [ AccountsKeycloakLogin.idUserExtract() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
