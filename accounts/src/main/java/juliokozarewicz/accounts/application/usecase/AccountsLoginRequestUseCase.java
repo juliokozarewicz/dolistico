@@ -110,11 +110,12 @@ public class AccountsLoginRequestUseCase {
             String generatedToken = encryption.generate512Hex();
 
             // Create user pin
-            String generatedPin = encryption.generatePin();
+            String generatedPinRaw = encryption.generatePin();
+            String generatedPinEncrypted = encryption.encrypt(generatedPinRaw);
 
             // Storage token + pin + user refresh token encrypted in cache
             AccountsLoginCacheCommand loginRequestData = new AccountsLoginCacheCommand(
-                generatedPin,
+                generatedPinEncrypted,
                 refreshTokenEncrypted
             );
 
@@ -124,7 +125,7 @@ public class AccountsLoginRequestUseCase {
             accountsLoginRequestProducer.execute(
                 locale,
                 accountsLoginRequestCommand.email(),
-                generatedPin
+                generatedPinRaw
             );
 
         }
