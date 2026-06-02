@@ -421,7 +421,7 @@ paths:
                     type: string
                     example: ACCOUNTS_UPDATE_PASSWORD_SUCCESSFULLY
 
-  "/ACCOUNTS_BASE_URL_REPLACE/login-request":
+  "/ACCOUNTS_BASE_URL_REPLACE/auth/initiate":
     post:
       summary: Request account login
       description: >-
