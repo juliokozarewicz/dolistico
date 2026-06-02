@@ -2,11 +2,9 @@ package juliokozarewicz.accounts.adapter.rest.controller;
 
 import jakarta.validation.Valid;
 import juliokozarewicz.accounts.adapter.rest.dto.AccountsLoginConfirmDTO;
-import juliokozarewicz.accounts.adapter.rest.dto.AccountsLoginRequestDTO;
 import juliokozarewicz.accounts.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.accounts.application.usecase.AccountsLoginConfirmUseCase;
-import juliokozarewicz.accounts.application.usecase.AccountsLoginRequestUseCase;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
