@@ -42,7 +42,7 @@ public class AccountsLoginRequestController {
 
     // ===================================================== ( constructor end )
 
-    @PostMapping("/auth/initiate")
+    @PostMapping("/login/request")
     public ResponseEntity<StandardResponseDTO> handle (
 
         // Locale from Accept-Language
