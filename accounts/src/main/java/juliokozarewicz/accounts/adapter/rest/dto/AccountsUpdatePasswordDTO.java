@@ -9,10 +9,9 @@ import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordComman
 public record AccountsUpdatePasswordDTO(
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
-    @Size( min = 126, max = 1024, message = GlobalExceptionEnum.ACCOUNTS_INVALID_TOKEN_DTO)
     @Pattern(
-        regexp = "^[a-fA-F0-9]+$",
-        message = GlobalExceptionEnum.ACCOUNTS_FORBIDDEN_CHARACTERS_DTO
+        regexp = "^[a-fA-F0-9]{126,1024}$",
+        message = GlobalExceptionEnum.ACCOUNTS_INVALID_TOKEN_DTO
     )
     String token,
 
