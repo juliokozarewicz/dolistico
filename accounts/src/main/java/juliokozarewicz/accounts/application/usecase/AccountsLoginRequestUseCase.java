@@ -2,6 +2,7 @@ package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsLoginCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsLoginRequestCommand;
+import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
@@ -109,10 +110,11 @@ public class AccountsLoginRequestUseCase {
             String generatedPinRaw = encryption.generatePin();
             String generatedPinEncrypted = encryption.encrypt(generatedPinRaw);
 
-            // Storage token + pin + user refresh token encrypted in cache
+            // Storage token + pin + user refresh token encrypted + reason in cache
             AccountsLoginCacheCommand loginRequestData = new AccountsLoginCacheCommand(
                 generatedPinEncrypted,
-                refreshTokenEncrypted
+                refreshTokenEncrypted,
+                AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode()
             );
 
             tokenVerificationCache.put(generatedToken, loginRequestData);

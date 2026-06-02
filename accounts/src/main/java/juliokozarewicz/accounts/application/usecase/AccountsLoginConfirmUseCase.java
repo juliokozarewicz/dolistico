@@ -64,6 +64,8 @@ public class AccountsLoginConfirmUseCase {
 
         // ##### If token not exist, return invalid token code
 
+        // ##### Reason verification
+
         // ##### Compares the provided PIN with the stored PIN (decrypted)
 
         // ##### If the PIN doesn't match, return a invalid PIN code

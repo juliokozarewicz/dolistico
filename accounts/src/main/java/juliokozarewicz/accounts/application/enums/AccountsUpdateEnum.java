@@ -5,6 +5,7 @@ public enum AccountsUpdateEnum {
     // =========================================== ( domain success codes init )
 
     // accounts
+    ACCOUNTS_LOGIN("ACCOUNTS_LOGIN"),
     ACCOUNTS_UPDATE_PASSWORD("ACCOUNTS_UPDATE_PASSWORD"),
     ACCOUNTS_UPDATE_EMAIL("ACCOUNTS_UPDATE_EMAIL"),
     ACCOUNTS_DELETE("ACCOUNTS_DELETE"),;
