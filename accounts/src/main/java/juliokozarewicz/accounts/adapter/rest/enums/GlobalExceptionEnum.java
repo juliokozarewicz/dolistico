@@ -36,6 +36,7 @@ public enum GlobalExceptionEnum {
     public static final String ACCOUNTS_PASSWORD_REQUIREMENTS_DTO = "ACCOUNTS_PASSWORD_REQUIREMENTS_DTO";
     public static final String ACCOUNTS_INVALID_ID_DTO = "ACCOUNTS_INVALID_ID_DTO";
     public static final String ACCOUNTS_INVALID_TOKEN_DTO = "ACCOUNTS_INVALID_TOKEN_DTO";
+    public static final String ACCOUNTS_INVALID_PIN_DTO = "ACCOUNTS_INVALID_PIN_DTO";
     // ================================================= ( dto error codes end )
 
     public final int statusCode;

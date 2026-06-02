@@ -6,7 +6,6 @@ import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogin;
-import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsLoginRequestProducer;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUserBannedProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
@@ -28,7 +27,6 @@ public class AccountsLoginRequestUseCase {
 
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
-    private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsUserBannedProducer accountsUserBannedProducer;
     private final AccountsKeycloakLogin accountsKeycloakLogin;
@@ -38,7 +36,6 @@ public class AccountsLoginRequestUseCase {
     public AccountsLoginRequestUseCase(
 
         CacheManager cacheManager,
-        AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsUserBannedProducer accountsUserBannedProducer,
         AccountsKeycloakLogin accountsKeycloakLogin,
@@ -48,7 +45,6 @@ public class AccountsLoginRequestUseCase {
     ) {
 
         this.cacheManager = cacheManager;
-        this.accountsKeycloakUpdateUser = accountsKeycloakUpdateUser;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsUserBannedProducer = accountsUserBannedProducer;
