@@ -421,6 +421,56 @@ paths:
                     type: string
                     example: ACCOUNTS_UPDATE_PASSWORD_SUCCESSFULLY
 
+  "/ACCOUNTS_BASE_URL_REPLACE/login-request":
+    post:
+      summary: Request account login
+      description: >-
+        Initiates the account authentication process using the user's email address
+        and password. The system validates the submitted credentials, checks the
+        account status, and evaluates any configured security requirements. Upon
+        successful authentication, the login request is processed and the user is
+        authorized to continue through the authentication flow.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 256
+                  example: user@example.com
+                password:
+                  type: string
+                  minLength: 12
+                  maxLength: 256
+                  example: StrongPassword123!
+      responses:
+        "200":
+          description: Login request processed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-03-05T11:38:17Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_LOGIN_REQUEST_SUCCESSFULLY
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
