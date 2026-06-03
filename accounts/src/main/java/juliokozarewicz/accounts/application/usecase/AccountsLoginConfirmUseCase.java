@@ -150,7 +150,8 @@ public class AccountsLoginConfirmUseCase {
 
         accountsEventProducer.accountLogProducer(logData);
 
-        // ##### Revoke cache
+        // Revoke cache
+        tokenVerificationCache.evict(accountsLoginConfirmCommand.token());
 
         // ##### Email notification for new device login
 
