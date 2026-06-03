@@ -10,7 +10,6 @@ import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogin;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
-import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUserBannedProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -34,32 +33,29 @@ public class AccountsLoginConfirmUseCase {
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
     private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
-    private final AccountsKeycloakGetUser accountsKeycloakGetUser;
-    private final AccountsUserBannedProducer accountsUserBannedProducer;
     private final AccountsKeycloakLogin accountsKeycloakLogin;
     private final Encryption encryption;
     private final AccountsEventProducer accountsEventProducer;
+    private final AccountsKeycloakGetUser accountsKeycloakGetUser;
 
     public AccountsLoginConfirmUseCase(
 
         CacheManager cacheManager,
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
-        AccountsKeycloakGetUser accountsKeycloakGetUser,
-        AccountsUserBannedProducer accountsUserBannedProducer,
         AccountsKeycloakLogin accountsKeycloakLogin,
         Encryption encryption,
-        AccountsEventProducer accountsEventProducer
+        AccountsEventProducer accountsEventProducer,
+        AccountsKeycloakGetUser accountsKeycloakGetUser
 
     ) {
 
         this.cacheManager = cacheManager;
         this.accountsKeycloakUpdateUser = accountsKeycloakUpdateUser;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
-        this.accountsKeycloakGetUser = accountsKeycloakGetUser;
-        this.accountsUserBannedProducer = accountsUserBannedProducer;
         this.encryption = encryption;
         this.accountsKeycloakLogin = accountsKeycloakLogin;
         this.accountsEventProducer = accountsEventProducer;
+        this.accountsKeycloakGetUser = accountsKeycloakGetUser;
 
     }
 
@@ -139,6 +135,11 @@ public class AccountsLoginConfirmUseCase {
 
         // User ID extract
         String idUser = accountsKeycloakLogin.idUserExtract(accessToken);
+
+        // Account banned
+        if ( accountsKeycloakGetUser.isAccountBannedById(idUser) ) {
+            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+        }
 
         // Create user account log
         AccountsCreateLogCommand logData = new AccountsCreateLogCommand(

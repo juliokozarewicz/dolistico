@@ -6,6 +6,7 @@ import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordComman
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogoutUserGlobally;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
@@ -33,6 +34,7 @@ public class AccountsUpdatePasswordUseCase {
     private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
     private final AccountsEventProducer accountsEventProducer;
     private final AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally;
+    private final AccountsKeycloakGetUser accountsKeycloakGetUser;
 
     public AccountsUpdatePasswordUseCase(
 
@@ -40,7 +42,8 @@ public class AccountsUpdatePasswordUseCase {
         AccountsUpdateEmailProducer accountsUpdateEmailProducer,
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
         AccountsEventProducer accountsEventProducer,
-        AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally
+        AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally,
+        AccountsKeycloakGetUser accountsKeycloakGetUser
 
     ) {
 
@@ -49,6 +52,7 @@ public class AccountsUpdatePasswordUseCase {
         this.accountsKeycloakUpdateUser = accountsKeycloakUpdateUser;
         this.accountsEventProducer = accountsEventProducer;
         this.accountsKeycloakLogoutUserGlobally = accountsKeycloakLogoutUserGlobally;
+        this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
 
     }
@@ -87,9 +91,17 @@ public class AccountsUpdatePasswordUseCase {
                 throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
             }
 
+            // User ID extract
+            String idUser = cachedData.idUser();
+
+            // Account banned
+            if ( accountsKeycloakGetUser.isAccountBannedById(idUser) ) {
+                throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+            }
+
             // Update password via Keycloak
             var result = accountsKeycloakUpdateUser.updatePassword(
-                cachedData.idUser(),
+                idUser,
                 accountsUpdatePasswordCommand.newPassword()
             );
 
@@ -97,7 +109,7 @@ public class AccountsUpdatePasswordUseCase {
             tokenVerificationCache.evict(accountsUpdatePasswordCommand.token());
 
             // Update verify email
-            accountsKeycloakUpdateUser.updateVerifyEmail( cachedData.idUser() );
+            accountsKeycloakUpdateUser.updateVerifyEmail(idUser);
 
             // Send email notification
             accountsUpdateEmailProducer.execute(
@@ -107,7 +119,7 @@ public class AccountsUpdatePasswordUseCase {
 
             // Create user account log
             AccountsCreateLogCommand logData = new AccountsCreateLogCommand(
-                cachedData.idUser(),
+                idUser,
                 userIp,
                 userAgent,
                 AccountsUpdateEnum.ACCOUNTS_UPDATE_PASSWORD.getReasonCode(),
@@ -119,7 +131,7 @@ public class AccountsUpdatePasswordUseCase {
             accountsEventProducer.accountLogProducer(logData);
 
             // Revoke all user access
-            accountsKeycloakLogoutUserGlobally.execute(cachedData.idUser());
+            accountsKeycloakLogoutUserGlobally.execute(idUser);
 
             // Revoke cache
             tokenVerificationCache.evict(accountsUpdatePasswordCommand.token());

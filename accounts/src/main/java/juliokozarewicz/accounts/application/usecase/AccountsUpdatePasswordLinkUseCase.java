@@ -3,6 +3,8 @@ package juliokozarewicz.accounts.application.usecase;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordLinkCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
+import juliokozarewicz.accounts.domain.exception.DomainException;
+import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordLinkProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
@@ -66,6 +68,11 @@ public class AccountsUpdatePasswordLinkUseCase {
 
         // Null verification
         if ( existingUserId == null ) { return; }
+
+        // Account banned
+        if ( accountsKeycloakGetUser.isAccountBannedById(existingUserId) ) {
+            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+        }
 
         // Create cache command
         AccountsUpdatePasswordCacheCommand cacheCommand = new AccountsUpdatePasswordCacheCommand(
