@@ -1,5 +1,6 @@
 package juliokozarewicz.accounts.application.usecase;
 
+import juliokozarewicz.accounts.application.command.AccountsCreateLogCommand;
 import juliokozarewicz.accounts.application.command.AccountsLoginCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsLoginConfirmCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
@@ -8,12 +9,15 @@ import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogin;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUserBannedProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Map;
 
@@ -33,6 +37,7 @@ public class AccountsLoginConfirmUseCase {
     private final AccountsUserBannedProducer accountsUserBannedProducer;
     private final AccountsKeycloakLogin accountsKeycloakLogin;
     private final Encryption encryption;
+    private final AccountsEventProducer accountsEventProducer;
 
     public AccountsLoginConfirmUseCase(
 
@@ -41,7 +46,8 @@ public class AccountsLoginConfirmUseCase {
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         AccountsUserBannedProducer accountsUserBannedProducer,
         AccountsKeycloakLogin accountsKeycloakLogin,
-        Encryption encryption
+        Encryption encryption,
+        AccountsEventProducer accountsEventProducer
 
     ) {
 
@@ -52,6 +58,7 @@ public class AccountsLoginConfirmUseCase {
         this.accountsUserBannedProducer = accountsUserBannedProducer;
         this.encryption = encryption;
         this.accountsKeycloakLogin = accountsKeycloakLogin;
+        this.accountsEventProducer = accountsEventProducer;
 
     }
 
@@ -59,6 +66,8 @@ public class AccountsLoginConfirmUseCase {
 
     public Map<String, Object> execute(
 
+        String userIp,
+        String userAgent,
         Locale locale,
         AccountsLoginConfirmCommand accountsLoginConfirmCommand
 
@@ -68,7 +77,7 @@ public class AccountsLoginConfirmUseCase {
         var cachedToken = tokenVerificationCache.get(accountsLoginConfirmCommand.token());
 
         // If token not exist, return invalid credentials
-        if ( cachedToken == null ) {
+        if ( cachedToken == null || cachedToken.get() == null ) {
             throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
         }
 
@@ -76,29 +85,58 @@ public class AccountsLoginConfirmUseCase {
         AccountsLoginCacheCommand cachedData = (AccountsLoginCacheCommand) cachedToken.get();
 
         if (
-            !AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode()
-            .equals(cachedData.reason())
+            cachedData.reason() == null ||
+            cachedData.reason().trim().isEmpty() ||
+            !AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode().equals(cachedData.reason())
         ) {
             throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
         }
 
         // Compares the provided PIN with the stored PIN (decrypted)
-        boolean pinMatch = cachedData.pin().equals(accountsLoginConfirmCommand.pin());
+        boolean pinMatch = java.util.Objects.equals(cachedData.pin(), accountsLoginConfirmCommand.pin());
 
         // If the PIN doesn't match, return a invalid PIN code
         if ( !pinMatch ) {
             throw new DomainException(DomainExceptionEnum.ACCOUNTS_INVALID_PIN);
         }
 
-        // ##### Retrieve credentials from the refresh token stored in the cache (decrypted)
+        // Retrieve refresh token from cache and decrypt
+        String refreshTokenEncrypted = cachedData.refreshToken();
 
-        // ##### If the credentials are null, return invalid credentials.
+        if (
+            refreshTokenEncrypted == null ||
+            refreshTokenEncrypted.trim().isEmpty()
+        ) {
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
+
+        String refreshTokenDecrypted = encryption.decrypt(refreshTokenEncrypted);
+
+        if (
+            refreshTokenDecrypted == null ||
+            refreshTokenDecrypted.trim().isEmpty()
+        ) {
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
+
+        // ##### Refresh credentials in Keycloak
 
         // ##### Email notification for new device login
 
         // ##### Create user account log
+        AccountsCreateLogCommand logData = new AccountsCreateLogCommand(
+            "#####",
+            userIp,
+            userAgent,
+            AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode(),
+            ZonedDateTime.now(ZoneOffset.UTC).toInstant(),
+            null,
+            null
+        );
 
-        // Return credentials
+        accountsEventProducer.accountLogProducer(logData);
+
+        // ##### Return credentials
         Map<String, Object> response = new java.util.LinkedHashMap<>();
         response.put("access", "access-token-encrypted");
         response.put("refresh", "refresh-token-encrypted");

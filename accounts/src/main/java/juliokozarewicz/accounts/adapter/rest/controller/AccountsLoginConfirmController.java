@@ -1,7 +1,9 @@
 package juliokozarewicz.accounts.adapter.rest.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.accounts.adapter.rest.dto.AccountsLoginConfirmDTO;
+import juliokozarewicz.accounts.adapter.rest.dto.AccountsRequestDTO;
 import juliokozarewicz.accounts.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.accounts.application.usecase.AccountsLoginConfirmUseCase;
@@ -18,6 +20,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @Validated
@@ -31,14 +34,17 @@ public class AccountsLoginConfirmController {
     // -------------------------------------------------------------------------
 
     private final AccountsLoginConfirmUseCase accountsLoginConfirmUseCase;
+    private final AccountsRequestDTO accountsRequestDTO;
 
     public AccountsLoginConfirmController(
 
-        AccountsLoginConfirmUseCase accountsLoginConfirmUseCase
+        AccountsLoginConfirmUseCase accountsLoginConfirmUseCase,
+        AccountsRequestDTO accountsRequestDTO
 
     ) {
 
         this.accountsLoginConfirmUseCase = accountsLoginConfirmUseCase;
+        this.accountsRequestDTO = accountsRequestDTO;
 
     }
 
@@ -52,12 +58,30 @@ public class AccountsLoginConfirmController {
 
         // DTO error
         @Valid @RequestBody AccountsLoginConfirmDTO accountsLoginConfirmDTO,
-        BindingResult bindingResult
+        BindingResult bindingResult,
+
+        HttpServletRequest request
 
     ) {
 
+        // Request data
+        // ---------------------------------------------------------------------
+        String userIp = Optional.ofNullable(request.getHeader("X-Forwarded-For"))
+            .filter(ip -> !ip.isBlank())
+            .map(ip -> ip.contains(",") ? ip.split(",")[0].trim() : ip)
+            .orElse(request.getRemoteAddr());
+
+        String userAgent = request.getHeader("User-Agent");
+
+        //validation request data
+        accountsRequestDTO.validateUserIp(userIp);
+        accountsRequestDTO.validateUserAgent(userAgent);
+        // ---------------------------------------------------------------------
+
         // Call use case
         Map<String, Object> credentials = accountsLoginConfirmUseCase.execute(
+            userIp,
+            userAgent,
             locale,
             accountsLoginConfirmDTO
         );
