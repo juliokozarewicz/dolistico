@@ -137,9 +137,12 @@ public class AccountsLoginConfirmUseCase {
         Number expiresIn = (Number) userCredentials.get("expires_in");
         Number refreshExpiresIn = (Number) userCredentials.get("refresh_expires_in");
 
+        // User ID extract
+        String idUser = accountsKeycloakLogin.idUserExtract(accessToken);
+
         // Create user account log
         AccountsCreateLogCommand logData = new AccountsCreateLogCommand(
-            accountsKeycloakLogin.idUserExtract(accessToken),
+            idUser,
             userIp,
             userAgent,
             AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode(),
@@ -149,6 +152,9 @@ public class AccountsLoginConfirmUseCase {
         );
 
         accountsEventProducer.accountLogProducer(logData);
+
+        // Update verify email
+        accountsKeycloakUpdateUser.updateVerifyEmail(idUser);
 
         // Revoke cache
         tokenVerificationCache.evict(accountsLoginConfirmCommand.token());
