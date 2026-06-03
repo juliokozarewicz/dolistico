@@ -125,12 +125,17 @@ public class AccountsLoginConfirmUseCase {
 
         // Refresh credentials in Keycloak
         Map<String, Object> userCredentials = accountsKeycloakLogin.refreshUserLogin(refreshTokenDecrypted);
+
+        // Null user verification
+        if (userCredentials == null || userCredentials.isEmpty()) {
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
+
+        // Add credentials to userCredentials
         String accessToken = (String) userCredentials.get("access_token");
         String refreshToken = (String) userCredentials.get("refresh_token");
         Number expiresIn = (Number) userCredentials.get("expires_in");
         Number refreshExpiresIn = (Number) userCredentials.get("refresh_expires_in");
-
-        // ##### Email notification for new device login
 
         // Create user account log
         AccountsCreateLogCommand logData = new AccountsCreateLogCommand(
@@ -144,6 +149,10 @@ public class AccountsLoginConfirmUseCase {
         );
 
         accountsEventProducer.accountLogProducer(logData);
+
+        // ##### Revoke cache
+
+        // ##### Email notification for new device login
 
         // Return credentials
         Map<String, Object> response = new java.util.LinkedHashMap<>();

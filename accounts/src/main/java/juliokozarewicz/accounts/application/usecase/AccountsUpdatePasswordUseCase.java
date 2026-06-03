@@ -121,6 +121,8 @@ public class AccountsUpdatePasswordUseCase {
             // Revoke all user access
             accountsKeycloakLogoutUserGlobally.execute(cachedData.idUser());
 
+            // ##### Revoke cache
+
         }
 
         // Cleanup password
