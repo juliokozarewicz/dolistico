@@ -34,10 +34,10 @@ public class AccountsEventLogModel {
     @Column(updatable = false, nullable = false)
     private Instant createdAt;
 
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false)
     private String oldValue;
 
-    @Column(updatable = false, nullable = false)
+    @Column(updatable = false)
     private String newValue;
 
 }
