@@ -6,8 +6,8 @@ import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordComman
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogoutUserGlobally;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
-import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingTopicEnum;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailProducer;
 import org.springframework.cache.Cache;
@@ -32,13 +32,15 @@ public class AccountsUpdatePasswordUseCase {
     private final AccountsUpdateEmailProducer accountsUpdateEmailProducer;
     private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
     private final AccountsEventProducer accountsEventProducer;
+    private final AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally;
 
     public AccountsUpdatePasswordUseCase(
 
         CacheManager cacheManager,
         AccountsUpdateEmailProducer accountsUpdateEmailProducer,
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
-        AccountsEventProducer accountsEventProducer
+        AccountsEventProducer accountsEventProducer,
+        AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally
 
     ) {
 
@@ -46,6 +48,7 @@ public class AccountsUpdatePasswordUseCase {
         this.accountsUpdateEmailProducer = accountsUpdateEmailProducer;
         this.accountsKeycloakUpdateUser = accountsKeycloakUpdateUser;
         this.accountsEventProducer = accountsEventProducer;
+        this.accountsKeycloakLogoutUserGlobally = accountsKeycloakLogoutUserGlobally;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
 
     }
@@ -114,6 +117,9 @@ public class AccountsUpdatePasswordUseCase {
             );
 
             accountsEventProducer.accountLogProducer(logData);
+
+            // Revoke all user access
+            accountsKeycloakLogoutUserGlobally.execute(cachedData.idUser());
 
         }
 

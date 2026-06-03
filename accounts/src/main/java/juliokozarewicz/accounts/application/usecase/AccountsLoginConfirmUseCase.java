@@ -16,6 +16,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Locale;
@@ -119,13 +120,18 @@ public class AccountsLoginConfirmUseCase {
             throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
         }
 
-        // ##### Refresh credentials in Keycloak
+        // Refresh credentials in Keycloak
+        Map<String, Object> userCredentials = accountsKeycloakLogin.refreshUserLogin(refreshTokenDecrypted);
+        String accessToken = (String) userCredentials.get("access_token");
+        String refreshToken = (String) userCredentials.get("refresh_token");
+        Number expiresIn = (Number) userCredentials.get("expires_in");
+        Number refreshExpiresIn = (Number) userCredentials.get("refresh_expires_in");
 
         // ##### Email notification for new device login
 
-        // ##### Create user account log
+        // Create user account log
         AccountsCreateLogCommand logData = new AccountsCreateLogCommand(
-            "#####",
+            accountsKeycloakLogin.idUserExtract(accessToken),
             userIp,
             userAgent,
             AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode(),
@@ -136,12 +142,12 @@ public class AccountsLoginConfirmUseCase {
 
         accountsEventProducer.accountLogProducer(logData);
 
-        // ##### Return credentials
+        // Return credentials
         Map<String, Object> response = new java.util.LinkedHashMap<>();
-        response.put("access", "access-token-encrypted");
-        response.put("refresh", "refresh-token-encrypted");
-        response.put("accessExpiresIn", 123123);
-        response.put("RefreshExpiresIn", 123123);
+        response.put("access", encryption.encrypt(accessToken));
+        response.put("refresh", encryption.encrypt(refreshToken));
+        response.put("accessExpiresAt", Instant.now().plusSeconds(expiresIn.longValue()));
+        response.put("refreshExpiresAt", Instant.now().plusSeconds(refreshExpiresIn.longValue()));
         return response;
 
     }

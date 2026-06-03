@@ -5,6 +5,7 @@ import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -78,6 +79,8 @@ public class AccountsKeycloakLogin {
         return formData;
     }
 
+    private static final ParameterizedTypeReference<Map<String, Object>> MAP_TYPE = new ParameterizedTypeReference<>() {};
+
     // ================================================ ( internal helpers end )
 
     // Returns Keycloak token response (access_token + refresh_token)
@@ -103,7 +106,7 @@ public class AccountsKeycloakLogin {
             .exchangeToMono(response -> {
 
                 if (response.statusCode().is2xxSuccessful()) {
-                    return response.bodyToMono(Map.class);
+                    return response.bodyToMono(MAP_TYPE);
                 }
 
                 if (response.statusCode().is4xxClientError()) {
@@ -128,7 +131,11 @@ public class AccountsKeycloakLogin {
     }
 
     // Refresh tokens using a valid refresh_token
-    public Map<String, Object> refreshUserLogin(String refreshToken) {
+    public Map<String, Object> refreshUserLogin(
+
+        String refreshToken
+
+    ) {
 
         try {
 
@@ -139,9 +146,20 @@ public class AccountsKeycloakLogin {
             return webClient.post()
             .uri(tokenEndpoint())
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(BodyInserters.fromValue(formData))
-            .retrieve()
-            .bodyToMono(Map.class)
+            .body(BodyInserters.fromFormData(formData))
+            .exchangeToMono(response -> {
+
+                if (response.statusCode().is2xxSuccessful()) {
+                    return response.bodyToMono(MAP_TYPE);
+                }
+
+                if (response.statusCode().is4xxClientError()) {
+                    return Mono.empty();
+                }
+
+                return response.createException().flatMap(Mono::error);
+
+            })
             .block();
 
         } catch (Exception e) {
@@ -185,6 +203,49 @@ public class AccountsKeycloakLogin {
             logger.atError()
             .addKeyValue("realm", keycloakRealm)
             .log("Error extracting user id from JWT in Keycloak [ AccountsKeycloakLogin.idUserExtract() ] : ", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+    }
+
+    // Logout current session (invalidate refresh token)
+    public void logoutUser(
+
+        String refreshToken
+
+    ) {
+
+        try {
+
+            MultiValueMap<String, String> formData = baseFormData();
+            formData.add("refresh_token", refreshToken);
+
+            webClient.post()
+            .uri(UriComponentsBuilder
+                .fromUriString(keycloakBaseURL)
+                .pathSegment(
+                    "realms",
+                    keycloakRealm,
+                    "protocol",
+                    "openid-connect",
+                    "logout"
+                )
+                .build()
+                .toUri()
+            )
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .body(BodyInserters.fromFormData(formData))
+            .retrieve()
+            .toBodilessEntity()
+            .block();
+
+        } catch (Exception e) {
+
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .log("Error logging out user in Keycloak [ AccountsKeycloakLogin.logoutUser() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 
