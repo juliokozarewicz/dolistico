@@ -1,7 +1,9 @@
 package juliokozarewicz.accounts.infrastructure.messaging.consumer;
 
+import juliokozarewicz.accounts.application.command.AccountsCreateLogCommand;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.domain.repository.AccountsEventLogRepository;
 import juliokozarewicz.accounts.domain.repository.AccountsProfileRepository;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakDeleteUser;
 import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingGroupEnum;
@@ -26,18 +28,21 @@ public class AccountsEventConsumer {
     private final ObjectMapper objectMapper;
     private final AccountsKeycloakDeleteUser accountsKeycloakDeleteUser;
     private final AccountsProfileRepository accountsProfileRepository;
+    private final AccountsEventLogRepository accountsEventLogRepository;
 
     public AccountsEventConsumer (
 
         ObjectMapper objectMapper,
         AccountsKeycloakDeleteUser accountsKeycloakDeleteUser,
-        AccountsProfileRepository accountsProfileRepository
+        AccountsProfileRepository accountsProfileRepository,
+        AccountsEventLogRepository accountsEventLogRepository
 
     ) {
 
         this.objectMapper = objectMapper;
         this.accountsKeycloakDeleteUser = accountsKeycloakDeleteUser;
         this.accountsProfileRepository = accountsProfileRepository;
+        this.accountsEventLogRepository = accountsEventLogRepository;
 
     }
     // ===================================================== ( constructor end )
@@ -78,6 +83,48 @@ public class AccountsEventConsumer {
             .addKeyValue("partition", record.partition())
             .addKeyValue("offset", record.offset())
             .log("Error consuming message: [ AccountsEventConsumer.consumerDeleteAccountNotActivated() ] : ", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+    }
+
+    // Create account event log
+    @KafkaListener(
+        topics = AccountsMessagingTopicEnum.ACCOUNTS_CREATE_LOG,
+        groupId = AccountsMessagingGroupEnum.ACCOUNTS_GROUP_ID
+    )
+    public void consumerCreateAccountLog (
+
+        ConsumerRecord<String, byte[]> record,
+        Acknowledgment ack
+
+    ) {
+
+        try {
+
+            // Payload
+            byte[] payload = record.value();
+
+            // Deserialize command
+            AccountsCreateLogCommand command = objectMapper.readValue(
+                payload,
+                AccountsCreateLogCommand.class
+            );
+
+            // Save log
+            accountsEventLogRepository.save(command);
+
+            ack.acknowledge();
+
+        } catch (Exception e) {
+
+            logger.atError()
+            .addKeyValue("topic", record.topic())
+            .addKeyValue("partition", record.partition())
+            .addKeyValue("offset", record.offset())
+            .log("Error consuming message: [ AccountsEventConsumer.consumerCreateAccountLog() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

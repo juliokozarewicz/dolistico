@@ -15,3 +15,15 @@ CREATE TABLE IF NOT EXISTS accounts.accounts_profile (
     language VARCHAR(50),
     theme VARCHAR(100)
 );
+
+-- ACCOUNT LOG
+CREATE TABLE IF NOT EXISTS accounts.accounts_event_log (
+    id UUID PRIMARY KEY,
+    id_user UUID NOT NULL,
+    ip_address VARCHAR(256) NOT NULL,
+    agent VARCHAR(512) NOT NULL,
+    update_type VARCHAR(256) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    old_value TEXT NOT NULL,
+    new_value TEXT NOT NULL
+);
