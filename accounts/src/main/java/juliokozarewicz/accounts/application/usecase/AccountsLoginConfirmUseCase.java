@@ -154,7 +154,7 @@ public class AccountsLoginConfirmUseCase {
 
         accountsEventProducer.accountLogProducer(logData);
 
-        // Update verify email
+        // ##### Update verify email
         accountsKeycloakUpdateUser.updateVerifyEmail(idUser);
 
         // Revoke cache

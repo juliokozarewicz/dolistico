@@ -320,8 +320,10 @@ paths:
                     type: string
                     example: ACCOUNTS_CREATED_SUCCESSFULLY
 
-  # ACCOUNTS - UPDATE PASSWORD LINK
+  # ACCOUNTS - UPDATE PASSWORD
   "/ACCOUNTS_BASE_URL_REPLACE/update-password":
+
+    # REQUEST
     post:
       summary: Request password reset link
       description: Sends a password reset link to the provided email address.
@@ -360,7 +362,7 @@ paths:
                     type: string
                     example: ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY
 
-    # ACCOUNTS - UPDATE PASSWORD CONFIRM
+    # CONFIRM
     patch:
       summary: Update password
       description: |-
@@ -421,15 +423,18 @@ paths:
                     type: string
                     example: ACCOUNTS_UPDATE_PASSWORD_SUCCESSFULLY
 
+  # ACCOUNTS - LOGIN REQUEST
   "/ACCOUNTS_BASE_URL_REPLACE/login/request":
     post:
-      summary: Request account login
-      description: >-
-        Initiates the account authentication process using the user's email address
-        and password. The system validates the submitted credentials, checks the
-        account status, and evaluates any configured security requirements. Upon
-        successful authentication, the login request is processed and the user is
-        authorized to continue through the authentication flow.
+      summary: Login request
+      description: |-
+        First step of the two-factor authentication flow. Validates the user’s 
+        credentials (email and password). If the credentials are correct, 
+        a PIN code is generated and sent to the user’s registered email address.
+        
+        The returned userLoginToken is required for the next step and must be 
+        submitted together with the PIN to complete authentication and obtain 
+        the access and refresh tokens.
       tags:
         - Accounts
       requestBody:
@@ -446,15 +451,16 @@ paths:
                   type: string
                   format: email
                   maxLength: 256
-                  example: user@example.com
+                  example: johndoe@email.com
                 password:
                   type: string
+                  format: password
                   minLength: 12
                   maxLength: 256
-                  example: StrongPassword123!
+                  example: "MyStr0ng!Pass"
       responses:
         "200":
-          description: Login request processed successfully.
+          description: Credentials validated. A PIN was sent to the user's email.
           content:
             application/json:
               schema:
@@ -463,13 +469,20 @@ paths:
                   timestamp:
                     type: string
                     format: date-time
-                    example: "2026-03-05T11:38:17Z"
+                    example: "2026-05-21T18:47:01Z"
                   statusCode:
                     type: integer
                     example: 200
                   messageCode:
                     type: string
                     example: ACCOUNTS_LOGIN_REQUEST_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      userLoginToken:
+                        type: string
+                        description: Temporary token to be used in the login confirm step.
+                        example: "a3f9c2e1b7d04f8a..."
 
   ############################################################# ( accounts end )
 
