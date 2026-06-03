@@ -71,7 +71,7 @@ public class AccountsLoginConfirmUseCase {
     ) {
 
         // Find cached token
-        var cachedToken = tokenVerificationCache.get(accountsLoginConfirmCommand.token());
+        var cachedToken = tokenVerificationCache.get(accountsLoginConfirmCommand.userLoginToken());
 
         // If token not exist, return invalid credentials
         if ( cachedToken == null || cachedToken.get() == null ) {
@@ -158,7 +158,7 @@ public class AccountsLoginConfirmUseCase {
         accountsKeycloakUpdateUser.updateVerifyEmail(idUser);
 
         // Revoke cache
-        tokenVerificationCache.evict(accountsLoginConfirmCommand.token());
+        tokenVerificationCache.evict(accountsLoginConfirmCommand.userLoginToken());
 
         // ##### Email notification for new device login
 

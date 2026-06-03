@@ -13,7 +13,7 @@ public record AccountsLoginConfirmDTO(
         regexp = "^[a-fA-F0-9]{126,1024}$",
         message = GlobalExceptionEnum.ACCOUNTS_INVALID_TOKEN_DTO
     )
-    String token,
+    String userLoginToken,
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
     @Pattern(

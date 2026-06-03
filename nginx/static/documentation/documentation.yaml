@@ -432,7 +432,7 @@ paths:
         credentials (email and password). If the credentials are correct, 
         a PIN code is generated and sent to the user’s registered email address.
         
-        The returned userLoginToken is required for the next step and must be 
+        The returned `userLoginToken` is required for the next step and must be 
         submitted together with the PIN to complete authentication and obtain 
         the access and refresh tokens.
       tags:
