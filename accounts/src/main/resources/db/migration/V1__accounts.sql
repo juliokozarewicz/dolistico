@@ -24,6 +24,6 @@ CREATE TABLE IF NOT EXISTS accounts.accounts_event_log (
     agent VARCHAR(512) NOT NULL,
     update_type VARCHAR(256) NOT NULL,
     created_at TIMESTAMP NOT NULL,
-    old_value TEXT NOT NULL,
-    new_value TEXT NOT NULL
+    old_value TEXT,
+    new_value TEXT
 );
