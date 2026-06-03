@@ -94,7 +94,10 @@ public class AccountsLoginConfirmUseCase {
         }
 
         // Compares the provided PIN with the stored PIN (decrypted)
-        boolean pinMatch = java.util.Objects.equals(cachedData.pin(), accountsLoginConfirmCommand.pin());
+        boolean pinMatch = java.util.Objects.equals(
+            encryption.decrypt(cachedData.pin()),
+            accountsLoginConfirmCommand.pin()
+        );
 
         // If the PIN doesn't match, return a invalid PIN code
         if ( !pinMatch ) {

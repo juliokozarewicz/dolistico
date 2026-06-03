@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -55,10 +56,14 @@ public class AccountsLoginRequestController {
     ) {
 
         // Call use case
-        accountsLoginRequestUseCase.execute(
+        String userLoginToken = accountsLoginRequestUseCase.execute(
             locale,
             accountsLoginRequestDTO
         );
+
+        // User login token response
+        Map<String, Object> userLoginTokenResponse = new java.util.LinkedHashMap<>();
+        userLoginTokenResponse.put("userLoginToken", userLoginToken);
 
         // Standard response
         return ResponseEntity
@@ -69,6 +74,7 @@ public class AccountsLoginRequestController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.ACCOUNTS_LOGIN_REQUEST_SUCCESSFULLY.getStatusCode())
             .messageCode(GlobalSuccessEnum.ACCOUNTS_LOGIN_REQUEST_SUCCESSFULLY.getMessageCode())
+            .data(userLoginTokenResponse)
             .build()
         );
 

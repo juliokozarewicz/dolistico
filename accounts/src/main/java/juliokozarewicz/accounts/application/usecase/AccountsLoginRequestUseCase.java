@@ -57,7 +57,7 @@ public class AccountsLoginRequestUseCase {
 
     // ===================================================== ( constructor end )
 
-    public void execute(
+    public String execute(
 
         Locale locale,
         AccountsLoginRequestCommand accountsLoginRequestCommand
@@ -104,7 +104,7 @@ public class AccountsLoginRequestUseCase {
             }
 
             // Create user login request token
-            String generatedToken = encryption.generate512Hex();
+            String userLoginToken = encryption.generate512Hex();
 
             // Create user pin
             String generatedPinRaw = encryption.generatePin();
@@ -117,7 +117,7 @@ public class AccountsLoginRequestUseCase {
                 AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode()
             );
 
-            tokenVerificationCache.put(generatedToken, loginRequestData);
+            tokenVerificationCache.put(userLoginToken, loginRequestData);
 
             // Send email to user with url (token + pin)
             accountsLoginRequestProducer.execute(
@@ -125,6 +125,8 @@ public class AccountsLoginRequestUseCase {
                 accountsLoginRequestCommand.email(),
                 generatedPinRaw
             );
+
+            return userLoginToken;
 
         }
 
