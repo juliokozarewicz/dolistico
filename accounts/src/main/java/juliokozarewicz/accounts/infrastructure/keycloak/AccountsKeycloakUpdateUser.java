@@ -169,7 +169,7 @@ public class AccountsKeycloakUpdateUser {
                 + idUser;
 
             // Request body for email update
-            Map<String, Object> body = new LinkedHashMap<>();
+            Map<String, Object> body = new LinkedHashMap<>(user);
             body.put("email", newEmail.toLowerCase(Locale.ROOT));
             body.put("username", newEmail.toLowerCase(Locale.ROOT));
 
@@ -226,22 +226,19 @@ public class AccountsKeycloakUpdateUser {
             // Retrieves access token for authentication
             String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
-            // Retrieves current user data before update
+            // Retrieves current user data
             Map<String, Object> user = getUserById(clientToken, idUser);
-            String email = user != null ? (String) user.get("email") : null;
 
-            // Keycloak endpoint for user update
             String url = keycloakBaseURL
                 + "/admin/realms/"
                 + keycloakRealm
                 + "/users/"
                 + idUser;
 
-            // Request body for email verification update
-            Map<String, Object> body = new LinkedHashMap<>();
+            // Request body with full object merge to avoid overwriting fields
+            Map<String, Object> body = new LinkedHashMap<>(user);
             body.put("emailVerified", true);
 
-            // Executes emailVerified update request
             ResponseEntity<Void> response = webClient.put()
                 .uri(url)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
@@ -251,15 +248,12 @@ public class AccountsKeycloakUpdateUser {
                 .toBodilessEntity()
                 .block();
 
-            // Validates response success
             if (response == null || !response.getStatusCode().is2xxSuccessful()) {
-
                 logger.atError()
                 .addKeyValue("realm", keycloakRealm)
                 .log("Error updating emailVerified in Keycloak [ AccountsKeycloakUpdateUser.updateVerifyEmail() ]");
 
                 throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
-
             }
 
         } catch (Exception e) {
