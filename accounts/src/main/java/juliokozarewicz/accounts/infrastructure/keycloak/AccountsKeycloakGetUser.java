@@ -48,7 +48,7 @@ public class AccountsKeycloakGetUser {
 
     // ======================================================== ( helpers init )
 
-    private Map<String, Object> getUserById(
+    private Map<String, Object> getKeycloakUserById(
 
         String clientToken,
         String idUser
@@ -71,6 +71,31 @@ public class AccountsKeycloakGetUser {
     }
 
     // ========================================================= ( helpers end )
+
+    // Get user id by ID
+    public Map<String, Object> getUserById(
+
+        String idUser
+
+    ) {
+
+        try {
+
+            String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
+
+            return getKeycloakUserById(clientToken, idUser);
+
+        } catch (Exception e) {
+
+            logger.atError()
+                .addKeyValue("realm", keycloakRealm)
+                .log("Error getting user by id in Keycloak [ AccountsKeycloakGetUser.getUserById() ] : ", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+    }
 
     // Get user id by email
     public Map<String, Object> getUserByEmail(
@@ -128,7 +153,7 @@ public class AccountsKeycloakGetUser {
 
             String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
 
-            Map<String, Object> user = getUserById(clientToken, idUser);
+            Map<String, Object> user = getKeycloakUserById(clientToken, idUser);
 
             if (user == null || user.isEmpty()) {
                 return false;

@@ -10,6 +10,7 @@ import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogin;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsLoginDeviceInfoProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -37,6 +38,7 @@ public class AccountsLoginConfirmUseCase {
     private final Encryption encryption;
     private final AccountsEventProducer accountsEventProducer;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
+    private final AccountsLoginDeviceInfoProducer accountsLoginDeviceInfoProducer;
 
     public AccountsLoginConfirmUseCase(
 
@@ -45,7 +47,8 @@ public class AccountsLoginConfirmUseCase {
         AccountsKeycloakLogin accountsKeycloakLogin,
         Encryption encryption,
         AccountsEventProducer accountsEventProducer,
-        AccountsKeycloakGetUser accountsKeycloakGetUser
+        AccountsKeycloakGetUser accountsKeycloakGetUser,
+        AccountsLoginDeviceInfoProducer accountsLoginDeviceInfoProducer
 
     ) {
 
@@ -56,6 +59,7 @@ public class AccountsLoginConfirmUseCase {
         this.accountsKeycloakLogin = accountsKeycloakLogin;
         this.accountsEventProducer = accountsEventProducer;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
+        this.accountsLoginDeviceInfoProducer = accountsLoginDeviceInfoProducer;
 
     }
 
@@ -161,6 +165,9 @@ public class AccountsLoginConfirmUseCase {
         tokenVerificationCache.evict(accountsLoginConfirmCommand.userLoginToken());
 
         // ##### Email notification for new device login
+        Map<String, Object> user = accountsKeycloakGetUser.getUserById(idUser);
+        String email = (String) user.get("email");
+        accountsLoginDeviceInfoProducer.execute(locale, email);
 
         // Return credentials
         Map<String, Object> response = new java.util.LinkedHashMap<>();
