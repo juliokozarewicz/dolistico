@@ -14,6 +14,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 public class AccountsUpdatePasswordLinkUseCase {
@@ -62,21 +63,21 @@ public class AccountsUpdatePasswordLinkUseCase {
         String generatedToken = encryption.generate512Hex();
 
         // Get user id by email
-        String existingUserId = accountsKeycloakGetUser.getUserByEmail(
+        Map<String, Object> existingUser = accountsKeycloakGetUser.getUserByEmail(
             accountsUpdatePasswordLinkCommand.email()
         );
 
         // Null verification
-        if ( existingUserId == null ) { return; }
+        if ( existingUser == null ) { return; }
 
         // Account banned
-        if ( accountsKeycloakGetUser.isAccountBannedById(existingUserId) ) {
+        if ( Boolean.FALSE.equals(existingUser.get("enabled")) ) {
             throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
         }
 
         // Create cache command
         AccountsUpdatePasswordCacheCommand cacheCommand = new AccountsUpdatePasswordCacheCommand(
-            existingUserId,
+            (String) existingUser.get("id"),
             AccountsUpdateEnum.ACCOUNTS_UPDATE_PASSWORD.getReasonCode()
         );
 

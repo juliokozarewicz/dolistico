@@ -69,6 +69,14 @@ public class AccountsLoginRequestUseCase {
 
         try {
 
+            // Account banned (send email to user)
+            Map<String, Object> existingUser = accountsKeycloakGetUser.getUserByEmail(accountsLoginRequestCommand.email());
+
+            if ( existingUser != null && Boolean.FALSE.equals(existingUser.get("enabled")) ) {
+                accountsUserBannedProducer.execute(locale, accountsLoginRequestCommand.email());
+                throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+            }
+
             // Get user refresh token by auth (email + pass) from Keycloak
             Map<String, Object> keycloakResponse = accountsKeycloakLogin.createUserLogin(
                 accountsLoginRequestCommand.email(),
@@ -78,21 +86,6 @@ public class AccountsLoginRequestUseCase {
             // Null user verification
             if (keycloakResponse == null || keycloakResponse.isEmpty()) {
                 throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
-            }
-
-            // Extract access token
-            String accessToken = (String) keycloakResponse.get("access_token");
-
-            if (accessToken == null || accessToken.isBlank()) {
-                throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
-            }
-
-            // ##### Account banned (send email to user)
-            String existingUserId = accountsKeycloakLogin.idUserExtract(accessToken);
-
-            if ( accountsKeycloakGetUser.isAccountBannedById(existingUserId) ) {
-                accountsUserBannedProducer.execute(locale, accountsLoginRequestCommand.email());
-                throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
             }
 
             // Extract refresh token

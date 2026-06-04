@@ -12,12 +12,12 @@ import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsAlread
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsWelcomeProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+
 import java.time.Instant;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -36,7 +36,6 @@ public class AccountsCreateUseCase {
     private final AccountsProfileRepository accountsProfileRepository;
     private final AccountsAlreadyExistProducer accountsAlreadyExistProducer;
     private final AccountsWelcomeProducer accountsWelcomeProducer;
-    private final CacheManager cacheManager;
 
     public AccountsCreateUseCase (
 
@@ -45,8 +44,7 @@ public class AccountsCreateUseCase {
         AccountsKeycloakDeleteUser accountsKeycloakDeleteUser,
         AccountsProfileRepository accountsProfileRepository,
         AccountsAlreadyExistProducer accountsAlreadyExistProducer,
-        AccountsWelcomeProducer accountsWelcomeProducer,
-        CacheManager cacheManager
+        AccountsWelcomeProducer accountsWelcomeProducer
 
     ) {
 
@@ -56,7 +54,6 @@ public class AccountsCreateUseCase {
         this.accountsProfileRepository = accountsProfileRepository;
         this.accountsAlreadyExistProducer = accountsAlreadyExistProducer;
         this.accountsWelcomeProducer = accountsWelcomeProducer;
-        this.cacheManager = cacheManager;
 
     }
 
@@ -78,12 +75,12 @@ public class AccountsCreateUseCase {
         try {
 
             // Check if user already exists
-            String existingUserId = accountsKeycloakGetUser.getUserByEmail(
+            Map<String, Object> existingUser = accountsKeycloakGetUser.getUserByEmail(
                 accountsCreateCommand.email()
             );
 
             // Check if user already exists and send email notification
-            if (existingUserId != null) {
+            if (existingUser != null) {
                 accountsAlreadyExistProducer.execute(locale, accountsCreateCommand.email());
                 return;
             }

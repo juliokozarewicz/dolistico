@@ -73,7 +73,7 @@ public class AccountsKeycloakGetUser {
     // ========================================================= ( helpers end )
 
     // Get user id by email
-    public String getUserByEmail(
+    public Map<String, Object> getUserByEmail(
 
         String userEmail
 
@@ -102,7 +102,7 @@ public class AccountsKeycloakGetUser {
                 return null;
             }
 
-            return (String) users.getFirst().get("id");
+            return users.getFirst();
 
         } catch (Exception e) {
 
