@@ -269,4 +269,64 @@ public class AccountsKeycloakUpdateUser {
 
     }
 
+    // Bans user account in Keycloak by setting enabled to false
+    public void banUser(
+
+        String idUser
+
+    ) {
+
+        try {
+
+            // Retrieves access token for authentication
+            String clientToken = accountsKeycloakClientTokenProvider.getAccessToken();
+
+            // Retrieves current user data
+            Map<String, Object> user = getUserById(clientToken, idUser);
+
+            // Keycloak endpoint for user update
+            String url = keycloakBaseURL
+                + "/admin/realms/"
+                + keycloakRealm
+                + "/users/"
+                + idUser;
+
+            // Request body with full object merge to avoid overwriting fields
+            Map<String, Object> body = new LinkedHashMap<>(user);
+            body.put("enabled", false);
+
+            // Executes ban request
+            ResponseEntity<Void> response = webClient.put()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+
+            // Validates response success
+            if (response == null || !response.getStatusCode().is2xxSuccessful()) {
+
+                logger.atError()
+                .addKeyValue("realm", keycloakRealm)
+                .log("Error banning user in Keycloak [ AccountsKeycloakUpdateUser.banUser() ]");
+
+                throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+            }
+
+        } catch (Exception e) {
+
+            // Logs unexpected errors during ban
+            logger.atError()
+            .addKeyValue("realm", keycloakRealm)
+            .log("Exception banning user in Keycloak [ AccountsKeycloakUpdateUser.banUser() ] : ", e);
+
+            throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
+
+        }
+
+    }
+
 }
