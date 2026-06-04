@@ -171,7 +171,9 @@ public class AccountsKeycloakGetUser {
                 return false;
             }
 
-            return Boolean.FALSE.equals(user.get("enabled"));
+            Object enabled = user.get("enabled");
+            if (enabled == null) { return true; }
+            return Boolean.FALSE.equals(enabled);
 
         } catch (Exception e) {
 
