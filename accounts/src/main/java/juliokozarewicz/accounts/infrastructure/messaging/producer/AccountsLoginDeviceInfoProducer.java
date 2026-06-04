@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +65,12 @@ public class AccountsLoginDeviceInfoProducer {
 
         try {
 
+            // Date time
+            String loginTime = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd HH:mm:ss 'UTC'")
+                .withZone(ZoneOffset.UTC)
+                .format(Instant.now());
+
             // Main template
             ClassPathResource templateResource = new ClassPathResource(
                 "templates/email/AccountsLoginDeviceInfo.html"
@@ -89,6 +98,21 @@ public class AccountsLoginDeviceInfoProducer {
             message = message
 
                 .replace(
+                    "{{emailAddress}}",
+                    email
+                )
+
+                .replace(
+                    "{{loginTime}}",
+                    loginTime
+                )
+
+                .replace(
+                    "{{email_new_login_method_password}}",
+                    messageSource.getMessage("email_new_login_method_password", null, locale)
+                )
+
+                .replace(
                     "{{publicDomain}}",
                     publicDomain.split(",")[0].trim()
                 )
@@ -99,8 +123,8 @@ public class AccountsLoginDeviceInfoProducer {
                 )
 
                 .replace(
-                    "{{email_new_login_subject}}",
-                    messageSource.getMessage("email_new_login_subject", null, locale)
+                    "{{email_new_login_header}}",
+                    messageSource.getMessage("email_new_login_header", null, locale)
                 )
 
                 .replace(
