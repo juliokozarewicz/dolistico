@@ -89,6 +89,14 @@ public class AccountsLoginConfirmUseCase {
             throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
         }
 
+        // User ID extract
+        String idUser = cachedData.idUser();
+
+        // Account banned
+        if ( accountsKeycloakGetUser.isAccountBannedById(idUser) ) {
+            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+        }
+
         // Compares the provided PIN with the stored PIN (decrypted)
         boolean pinMatch = java.util.Objects.equals(
             encryption.decrypt(cachedData.pin()),
@@ -132,14 +140,6 @@ public class AccountsLoginConfirmUseCase {
         String refreshToken = (String) userCredentials.get("refresh_token");
         Number expiresIn = (Number) userCredentials.get("expires_in");
         Number refreshExpiresIn = (Number) userCredentials.get("refresh_expires_in");
-
-        // User ID extract
-        String idUser = accountsKeycloakLogin.idUserExtract(accessToken);
-
-        // Account banned
-        if ( accountsKeycloakGetUser.isAccountBannedById(idUser) ) {
-            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
-        }
 
         // Create user account log
         AccountsCreateLogCommand logData = new AccountsCreateLogCommand(

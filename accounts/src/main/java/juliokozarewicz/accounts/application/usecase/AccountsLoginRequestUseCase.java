@@ -104,8 +104,9 @@ public class AccountsLoginRequestUseCase {
             String generatedPinRaw = encryption.generatePin();
             String generatedPinEncrypted = encryption.encrypt(generatedPinRaw);
 
-            // Storage token + pin + user refresh token encrypted + reason in cache
+            // Storage idUser + token + pin + user refresh token encrypted + reason in cache
             AccountsLoginCacheCommand loginRequestData = new AccountsLoginCacheCommand(
+                existingUser.get("id").toString(),
                 generatedPinEncrypted,
                 refreshTokenEncrypted,
                 AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode()
