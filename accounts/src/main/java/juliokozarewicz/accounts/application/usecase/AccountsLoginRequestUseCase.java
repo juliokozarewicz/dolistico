@@ -69,6 +69,14 @@ public class AccountsLoginRequestUseCase {
 
         try {
 
+            // Account banned (send email to user)
+            String existingUserId = accountsKeycloakGetUser.getUserByEmail(accountsLoginRequestCommand.email());
+
+            if ( existingUserId != null && accountsKeycloakGetUser.isAccountBannedById(existingUserId) ) {
+                accountsUserBannedProducer.execute(locale, accountsLoginRequestCommand.email());
+                throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+            }
+
             // Get user refresh token by auth (email + pass) from Keycloak
             Map<String, Object> keycloakResponse = accountsKeycloakLogin.createUserLogin(
                 accountsLoginRequestCommand.email(),
@@ -89,19 +97,12 @@ public class AccountsLoginRequestUseCase {
 
             // Extract refresh token
             String refreshTokenRaw = (String) keycloakResponse.get("refresh_token");
-            String refreshTokenEncrypted = encryption.encrypt(refreshTokenRaw);
 
             if (refreshTokenRaw == null || refreshTokenRaw.isBlank()) {
                 throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
             }
 
-            // Account banned (send email to user)
-            String existingUserId = accountsKeycloakLogin.idUserExtract(accessToken);
-
-            if ( accountsKeycloakGetUser.isAccountBannedById(existingUserId) ) {
-                accountsUserBannedProducer.execute(locale, accountsLoginRequestCommand.email());
-                throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
-            }
+            String refreshTokenEncrypted = encryption.encrypt(refreshTokenRaw);
 
             // Create user login request token
             String userLoginToken = encryption.generate512Hex();
