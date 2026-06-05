@@ -1,11 +1,13 @@
 package juliokozarewicz.accounts.infrastructure.shared;
 
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+@Component
 public class AccountsDeviceExtractor {
 
     // ==================================================== ( constructor init )
@@ -57,14 +59,20 @@ public class AccountsDeviceExtractor {
             .bodyToMono(Map.class)
             .block();
 
+            if (geoData == null || !"success".equals(String.valueOf(geoData.get("status")))) {
+                throw new RuntimeException();
+            }
+
             String city = String.valueOf( geoData.getOrDefault("city", "") );
             String state = String.valueOf(geoData.getOrDefault("regionName", ""));
             String countryCode = String.valueOf(geoData.getOrDefault("countryCode", ""));
-            String country = new Locale("", countryCode).getDisplayCountry(locale);
+            String country = countryCode.isBlank() ? "" : new Locale("", countryCode).getDisplayCountry(locale);
             Double lat = geoData.get("lat") != null ? ((Number) geoData.get("lat")).doubleValue() : null;
             Double lon = geoData.get("lon") != null ? ((Number) geoData.get("lon")).doubleValue() : null;
+            if (city.isBlank() && state.isBlank() && country.isBlank()) { throw new RuntimeException(); }
 
             LinkedHashMap<String, Object> location = new LinkedHashMap<>();
+            location.put("status", "success");
             location.put("description", city + ", " + state + " - " + country);
             location.put("city", city);
             location.put("state", state);
@@ -77,18 +85,13 @@ public class AccountsDeviceExtractor {
         } catch (Exception e) {
 
             LinkedHashMap<String, Object> location = new LinkedHashMap<>();
+            location.put("status", "error");
             location.put(
                 "description",
                 messageSource.getMessage(
                     "email_location_error", null, locale
                 )
             );
-            location.put("city", null);
-            location.put("state", null);
-            location.put("country", null);
-            location.put("countryCode", null);
-            location.put("lat", null);
-            location.put("lon", null);
             return location;
 
         }
@@ -106,86 +109,83 @@ public class AccountsDeviceExtractor {
 
         try {
 
-            // Result map
-            LinkedHashMap<String, Object> device = new LinkedHashMap<>();
-
-            // Handle null or empty User-Agent (fallback inline)
             if (userAgent == null || userAgent.isBlank()) {
+            throw new RuntimeException();
+        }
 
-                device.put(
-                    "description",
-                    messageSource.getMessage(
-                        "email_device_error", null, locale
-                    )
-                );
-                device.put("browser", null);
-                device.put("os", null);
-                device.put("platform", null);
-                return device;
-            }
+        String ua = userAgent.toLowerCase();
 
-            // Normalize User-Agent for easier detection
-            String ua = userAgent.toLowerCase();
+        String browser = null;
+        if (ua.contains("edg")) {
+            browser = "Edge";
+        } else if (ua.contains("chrome") && !ua.contains("edg")) {
+            browser = "Chrome";
+        } else if (ua.contains("firefox")) {
+            browser = "Firefox";
+        } else if (ua.contains("safari") && !ua.contains("chrome")) {
+            browser = "Safari";
+        }
 
-            // Detect browser type
-            String browser;
-            if (ua.contains("edg")) {
-                browser = "Edge";
-            } else if (ua.contains("chrome") && !ua.contains("edg")) {
-                browser = "Chrome";
-            } else if (ua.contains("firefox")) {
-                browser = "Firefox";
-            } else if (ua.contains("safari") && !ua.contains("chrome")) {
-                browser = "Safari";
-            } else {
-                browser = "Unknown";
-            }
+        String os = null;
+        if (ua.contains("android")) {
+            os = "Android";
+        } else if (ua.contains("iphone") || ua.contains("ipad")) {
+            os = "iOS";
+        } else if (ua.contains("windows")) {
+            os = "Windows";
+        } else if (ua.contains("mac")) {
+            os = "macOS";
+        }
 
-            // Detect operating system
-            String os;
-            if (ua.contains("android")) {
-                os = "Android";
-            } else if (ua.contains("iphone") || ua.contains("ipad")) {
-                os = "iOS";
-            } else if (ua.contains("windows")) {
-                os = "Windows";
-            } else if (ua.contains("mac")) {
-                os = "macOS";
-            } else {
-                os = "Unknown";
-            }
+        String platform = null;
+        if (ua.contains("android") || ua.contains("iphone") || ua.contains("ipad")) {
+            platform = "Mobile";
+        } else if (ua.contains("windows") || ua.contains("mac") || ua.contains("linux")) {
+            platform = "Desktop";
+        }
 
-            // Detect device platform type
-            String platform;
-            if (ua.contains("android") || ua.contains("iphone") || ua.contains("ipad")) {
-                platform = "Mobile";
-            } else {
-                platform = "Desktop";
-            }
+        // se tudo falhou → fallback
+        if (browser == null && os == null && platform == null) {
+            throw new RuntimeException();
+        }
 
-            // Human-readable description
-            String description = browser + ", " + os + " - " + platform;
+        // monta descrição só com o que existe
+        String description = "";
 
-            // Fill response map
-            device.put("description", description);
-            device.put("browser", browser);
-            device.put("os", os);
-            device.put("platform", platform);
-            return device;
+        if (browser != null) {
+            description += browser;
+        }
+
+        if (os != null) {
+            if (!description.isEmpty()) description += ", ";
+            description += os;
+        }
+
+        if (platform != null) {
+            if (!description.isEmpty()) description += " - ";
+            description += platform;
+        }
+
+        LinkedHashMap<String, Object> device = new LinkedHashMap<>();
+        device.put("status", "success");
+        device.put("description", description);
+        device.put("browser", browser);
+        device.put("os", os);
+        device.put("platform", platform);
+
+        return device;
 
         } catch (Exception e) {
 
             // Fallback in case of unexpected errors
             LinkedHashMap<String, Object> device = new LinkedHashMap<>();
+            device.put("status", "error");
             device.put(
                 "description",
                 messageSource.getMessage(
                     "email_device_error", null, locale
                 )
             );
-            device.put("browser", null);
-            device.put("os", null);
-            device.put("platform", null);
             return device;
         }
     }

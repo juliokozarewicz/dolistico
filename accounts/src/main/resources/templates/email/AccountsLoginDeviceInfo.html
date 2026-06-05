@@ -37,13 +37,8 @@
 
                             <!-- HEADER -->
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;" >
-
                                 <tr>
-                                    <td style="
-                                        margin:0;
-                                        width: 100%;
-                                    ">
-
+                                    <td>
                                         <p style="
                                             margin:0;
                                             padding:0;
@@ -57,7 +52,6 @@
                                         ">
                                             {{email_new_login_header}}
                                         </p>
-
                                     </td>
                                 </tr>
                             </table>
@@ -73,285 +67,136 @@
 
                             <!-- DEVICE TABLE -->
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;" >
-                                <tr>
-                                    <td bgcolor="#E3E3E3" style="
-                                        margin:0;
-                                        padding-top:8px;
-                                        padding-bottom:8px;
-                                        padding-left:10px;
-                                        padding-right:10px;
-                                        width: 100%;
-                                        gap: 8px;
-                                        border-top-left-radius: 6px;
-                                        border-top-right-radius: 6px;
-                                    ">
 
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color: #000000 !important;
-                                            text-decoration:none !important;
-                                            font-weight:bold;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
+                                <tr>
+                                    <td bgcolor="#E3E3E3" style="padding:8px 10px;">
+                                        <p style="margin:0;font-weight:bold;font-size:12px;">
                                             {{email_new_login_device_title}}
                                         </p>
+                                    </td>
+                                </tr>
+
+                                <tr><td height="1"></td></tr>
+
+                                <!-- ACCOUNT -->
+                                <tr>
+                                    <td bgcolor="#F5F5F5" style="padding:8px 10px;">
+
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                                            <tr>
+                                                <td width="20" valign="middle">
+                                                    <img src="http://{{publicDomain}}/static/public/icon/account.png" width="15" height="15" style="display:block;border:0;">
+                                                </td>
+
+                                                <td style="padding-left:8px;font-size:12px;font-weight:bold;">
+                                                    {{email_new_login_account}}:
+                                                </td>
+
+                                                <td style="padding-left:8px;font-size:12px;color:#414141;">
+                                                    {{emailAddress}}
+                                                </td>
+                                            </tr>
+                                        </table>
 
                                     </td>
                                 </tr>
 
-                                <!-- DIVIDER -->
-                                <tr><td height="1" style="height:1px; line-height:1px; font-size:0;">&nbsp;</td></tr>
+                                <tr><td height="1"></td></tr>
 
+                                <!-- METHOD -->
                                 <tr>
+                                    <td bgcolor="#F5F5F5" style="padding:8px 10px;">
 
-                                    <td bgcolor="#F5F5F5" style="
-                                        margin:0;
-                                        padding-top:8px;
-                                        padding-bottom:8px;
-                                        padding-left:10px;
-                                        padding-right:10px;
-                                        width: 100%;
-                                        gap: 8px;
-                                    ">
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                                            <tr>
+                                                <td width="20">
+                                                    <img src="http://{{publicDomain}}/static/public/icon/method.png" width="15" height="15" style="display:block;border:0;">
+                                                </td>
 
-                                        <img src="http://{{publicDomain}}/static/public/icon/account.png" width="15px" height="15px" style="border:0; vertical-align:middle;"/>
+                                                <td style="padding-left:8px;font-size:12px;font-weight:bold;">
+                                                    {{email_new_login_method}}:
+                                                </td>
 
-                                        &nbsp;&nbsp;
-
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#000000 !important;
-                                            text-decoration:none !important;
-                                            font-weight:bold;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{email_new_login_account}}:
-                                        </p>
-
-                                        &nbsp;&nbsp;
-
-                                        <span style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#414141 !important;
-                                            text-decoration:none !important;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{emailAddress}}
-                                        </span>
+                                                <td style="padding-left:8px;font-size:12px;color:#414141;">
+                                                    {{email_new_login_method_password}}
+                                                </td>
+                                            </tr>
+                                        </table>
 
                                     </td>
                                 </tr>
 
-                                <!-- DIVIDER -->
-                                <tr><td height="1" style="height:1px; line-height:1px; font-size:0;">&nbsp;</td></tr>
+                                <tr><td height="1"></td></tr>
 
+                                <!-- LOCATION -->
                                 <tr>
-                                    <td bgcolor="#F5F5F5" style="
-                                        margin:0;
-                                        padding-top:8px;
-                                        padding-bottom:8px;
-                                        padding-left:10px;
-                                        padding-right:10px;
-                                        width: 100%;
-                                        gap: 8px;
-                                    ">
+                                    <td bgcolor="#F5F5F5" style="padding:8px 10px;">
 
-                                        <img src="http://{{publicDomain}}/static/public/icon/method.png" width="15px" height="15px" style="border:0; vertical-align:middle;"/>
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                                            <tr>
+                                                <td width="20">
+                                                    <img src="http://{{publicDomain}}/static/public/icon/location.png" width="15" height="15" style="display:block;border:0;">
+                                                </td>
 
-                                        &nbsp;&nbsp;
+                                                <td style="padding-left:8px;font-size:12px;font-weight:bold;">
+                                                    {{email_new_login_location}}:
+                                                </td>
 
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#000000 !important;
-                                            text-decoration:none !important;
-                                            font-weight:bold;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{email_new_login_method}}:
-                                        </p>
-
-                                        &nbsp;&nbsp;
-
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#414141 !important;
-                                            text-decoration:none !important;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{email_new_login_method_password}}
-                                        </p>
+                                                <td style="padding-left:8px;font-size:12px;color:#414141;">
+                                                    {{locationData}}
+                                                </td>
+                                            </tr>
+                                        </table>
 
                                     </td>
                                 </tr>
 
-                                <!-- DIVIDER -->
-                                <tr><td height="1" style="height:1px; line-height:1px; font-size:0;">&nbsp;</td></tr>
+                                <tr><td height="1"></td></tr>
 
+                                <!-- DEVICE -->
                                 <tr>
-                                    <td bgcolor="#F5F5F5" style="
-                                        margin:0;
-                                        padding-top:8px;
-                                        padding-bottom:8px;
-                                        padding-left:10px;
-                                        padding-right:10px;
-                                        width: 100%;                                        
-                                        gap: 8px;
-                                    ">
+                                    <td bgcolor="#F5F5F5" style="padding:8px 10px;">
 
-                                        <img src="http://{{publicDomain}}/static/public/icon/location.png" width="15px" height="15px" style="border:0; vertical-align:middle;"/>
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                                            <tr>
+                                                <td width="20">
+                                                    <img src="http://{{publicDomain}}/static/public/icon/device.png" width="15" height="15" style="display:block;border:0;">
+                                                </td>
 
-                                        &nbsp;&nbsp;
+                                                <td style="padding-left:8px;font-size:12px;font-weight:bold;">
+                                                    {{email_new_login_Device}}:
+                                                </td>
 
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#000000 !important;
-                                            text-decoration:none !important;
-                                            font-weight:bold;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{email_new_login_location}}:
-                                        </p>
-
-                                        &nbsp;&nbsp;
-
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#414141 !important;
-                                            text-decoration:none !important;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{locationData}}
-                                        </p>
+                                                <td style="padding-left:8px;font-size:12px;color:#414141;">
+                                                    {{deviceData}}
+                                                </td>
+                                            </tr>
+                                        </table>
 
                                     </td>
                                 </tr>
 
-                                <!-- DIVIDER -->
-                                <tr><td height="1" style="height:1px; line-height:1px; font-size:0;">&nbsp;</td></tr>
+                                <tr><td height="1"></td></tr>
 
+                                <!-- TIME -->
                                 <tr>
-                                    <td bgcolor="#F5F5F5" style="
-                                        margin:0;
-                                        padding-top:8px;
-                                        padding-bottom:8px;
-                                        padding-left:10px;
-                                        padding-right:10px;
-                                        width: 100%;                                        
-                                        gap: 8px;
-                                    ">
+                                    <td bgcolor="#F5F5F5" style="padding:8px 10px;">
 
-                                        <img src="http://{{publicDomain}}/static/public/icon/device.png" width="15px" height="15px" style="border:0; vertical-align:middle;"/>
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                                            <tr>
+                                                <td width="20">
+                                                    <img src="http://{{publicDomain}}/static/public/icon/time.png" width="15" height="15" style="display:block;border:0;">
+                                                </td>
 
-                                        &nbsp;&nbsp;
+                                                <td style="padding-left:8px;font-size:12px;font-weight:bold;">
+                                                    {{email_new_login_time}}:
+                                                </td>
 
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#000000 !important;
-                                            text-decoration:none !important;
-                                            font-weight:bold;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{email_new_login_Device}}:
-                                        </p>
-
-                                        &nbsp;&nbsp;
-
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#414141 !important;
-                                            text-decoration:none !important;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{deviceData}}
-                                        </p>
-
-                                    </td>
-                                </tr>
-
-                                <!-- DIVIDER -->
-                                <tr><td height="1" style="height:1px; line-height:1px; font-size:0;">&nbsp;</td></tr>
-
-                                <tr>
-                                    <td bgcolor="#F5F5F5" style="
-                                        margin:0;
-                                        padding-top:8px;
-                                        padding-bottom:8px;
-                                        padding-left:10px;
-                                        padding-right:10px;
-                                        width: 100%;
-                                        gap: 8px;
-                                        border-bottom-left-radius: 6px;
-                                        border-bottom-right-radius: 6px;
-                                    ">
-
-                                        <img src="http://{{publicDomain}}/static/public/icon/time.png" width="15px" height="15px" style="border:0; vertical-align:middle;"/>
-
-                                        &nbsp;&nbsp;
-
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#000000 !important;
-                                            text-decoration:none !important;
-                                            font-weight:bold;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{email_new_login_time}}:
-                                        </p>
-
-                                        &nbsp;&nbsp;
-
-                                        <p style="
-                                            margin:0;
-                                            padding:0;
-                                            color:#414141 !important;
-                                            text-decoration:none !important;
-                                            font-size:12px;
-                                            font-family:Arial,sans-serif;
-                                            display:inline-block;
-                                            border-radius:6px;
-                                        ">
-                                            {{loginTime}}
-                                        </p>
+                                                <td style="padding-left:8px;font-size:12px;color:#414141;">
+                                                    {{loginTime}}
+                                                </td>
+                                            </tr>
+                                        </table>
 
                                     </td>
                                 </tr>
@@ -360,8 +205,7 @@
 
                             <br/>
 
-                            <!-- CLOSING MESSAGE -->
-                            <p style="margin:0; padding-bottom:10px;">
+                            <p style="margin:0;">
                                 {{email_closing}}
                             </p>
 
@@ -374,7 +218,6 @@
                 </table>
 
             </td>
-
         </tr>
 
     </table>
