@@ -4,6 +4,7 @@ import juliokozarewicz.accounts.application.command.AccountsSendEmailCommand;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.messaging.enums.AccountsMessagingTopicEnum;
+import juliokozarewicz.accounts.infrastructure.shared.AccountsDeviceExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,13 +12,17 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -38,18 +43,24 @@ public class AccountsLoginDeviceInfoProducer {
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
+    private final WebClient webClient;
+    private final AccountsDeviceExtractor accountsDeviceExtractor;
 
     public AccountsLoginDeviceInfoProducer(
 
         KafkaTemplate<String, byte[]> kafkaTemplate,
         ObjectMapper objectMapper,
-        MessageSource messageSource
+        MessageSource messageSource,
+        WebClient webClient,
+        AccountsDeviceExtractor accountsDeviceExtractor
 
     ) {
 
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
         this.messageSource = messageSource;
+        this.webClient = webClient;
+        this.accountsDeviceExtractor = accountsDeviceExtractor;
 
     }
 
@@ -58,6 +69,8 @@ public class AccountsLoginDeviceInfoProducer {
     // Send simple email producer
     public void execute(
 
+        String userIp,
+        String userAgent,
         Locale locale,
         String email
 
@@ -100,6 +113,16 @@ public class AccountsLoginDeviceInfoProducer {
                 .replace(
                     "{{emailAddress}}",
                     email
+                )
+
+                .replace(
+                    "{{locationData}}",
+                    String.valueOf(accountsDeviceExtractor.getLocationByIp(userIp, locale).get("description"))
+                )
+
+                .replace(
+                    "{{deviceData}}",
+                    String.valueOf(accountsDeviceExtractor.getDeviceByUserAgent(locale, userAgent).get("description"))
                 )
 
                 .replace(

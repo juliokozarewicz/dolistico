@@ -167,7 +167,12 @@ public class AccountsLoginConfirmUseCase {
         // Email notification for new device login
         Map<String, Object> user = accountsKeycloakGetUser.getUserById(idUser);
         String email = (String) user.get("email");
-        accountsLoginDeviceInfoProducer.execute(locale, email);
+        accountsLoginDeviceInfoProducer.execute(
+            userIp,
+            userAgent,
+            locale,
+            email
+        );
 
         // Return credentials
         Map<String, Object> response = new java.util.LinkedHashMap<>();
