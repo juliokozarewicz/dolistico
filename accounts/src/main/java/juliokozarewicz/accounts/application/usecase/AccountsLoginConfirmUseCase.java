@@ -164,7 +164,7 @@ public class AccountsLoginConfirmUseCase {
         // Revoke cache
         tokenVerificationCache.evict(accountsLoginConfirmCommand.userLoginToken());
 
-        // ##### Email notification for new device login
+        // Email notification for new device login
         Map<String, Object> user = accountsKeycloakGetUser.getUserById(idUser);
         String email = (String) user.get("email");
         accountsLoginDeviceInfoProducer.execute(locale, email);

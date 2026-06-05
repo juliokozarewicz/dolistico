@@ -64,7 +64,7 @@ public class AccountsUpdateEmailProducer {
 
             // Main template
             ClassPathResource templateResource = new ClassPathResource(
-                    "templates/email/AccountsUpdateEmail.html"
+                    "templates/email/AccountsUpdatePasswordSuccess.html"
             );
 
             String message = new String(
