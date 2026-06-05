@@ -166,7 +166,9 @@ public class AccountsLoginConfirmUseCase {
 
         // Email notification for new device login
         Map<String, Object> user = accountsKeycloakGetUser.getUserById(idUser);
+
         String email = (String) user.get("email");
+
         accountsLoginDeviceInfoProducer.execute(
             userIp,
             userAgent,
