@@ -116,7 +116,6 @@ public class AccountsDeviceExtractor {
 
             // Browser
             String browser = null;
-            String browserVersion = null;
 
             if (
                 ua.contains("edg/") ||
@@ -133,7 +132,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             } else if (ua.contains("opr/") || ua.contains("opera/")) {
@@ -147,7 +145,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             } else if (ua.contains("samsungbrowser/")) {
@@ -161,7 +158,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             } else if (ua.contains("ucbrowser/")) {
@@ -175,7 +171,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             } else if (ua.contains("firefox/") || ua.contains("fxios/")) {
@@ -189,7 +184,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             } else if (ua.contains("chromium/")) {
@@ -203,7 +197,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             } else if (ua.contains("chrome/")) {
@@ -217,7 +210,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             } else if (ua.contains("safari/") && !ua.contains("chrome")) {
@@ -231,7 +223,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             } else if (ua.contains("msie") || ua.contains("trident/")) {
@@ -245,7 +236,6 @@ public class AccountsDeviceExtractor {
                         )
                         .matcher(userAgent);
 
-                    browserVersion = m.find() ? m.group(1) : null;
                 } catch (Exception ignored) {}
 
             }
@@ -354,29 +344,6 @@ public class AccountsDeviceExtractor {
                 os = "Linux";
             }
 
-            // Architecture
-            String arch = null;
-
-            if (
-                ua.contains("x86_64") ||
-                ua.contains("win64") ||
-                ua.contains("wow64")
-            ) {
-                arch = "x86_64";
-            } else if (
-                ua.contains("arm64") ||
-                ua.contains("aarch64")
-            ) {
-                arch = "ARM64";
-            } else if (ua.contains("arm")) {
-                arch = "ARM";
-            } else if (
-                ua.contains("i686") ||
-                ua.contains("i386")
-            ) {
-                arch = "x86";
-            }
-
             // Platform
             String platform = null;
 
@@ -407,13 +374,6 @@ public class AccountsDeviceExtractor {
 
             if (browser != null) {
                 description.append(browser);
-
-                if (
-                    browserVersion != null &&
-                    !browserVersion.isBlank()
-                ) {
-                    description.append(" ").append(browserVersion);
-                }
             }
 
             if (os != null) {
@@ -428,20 +388,12 @@ public class AccountsDeviceExtractor {
                 }
             }
 
-            if (arch != null) {
+            if (platform != null) {
                 if (!description.isEmpty()) {
                     description.append(" (");
                 }
 
-                description.append(arch).append(")");
-            }
-
-            if (platform != null) {
-                if (!description.isEmpty()) {
-                    description.append(" - ");
-                }
-
-                description.append(platform);
+                description.append(platform + ")");
             }
 
             LinkedHashMap<String, Object> device = new LinkedHashMap<>();
@@ -449,10 +401,8 @@ public class AccountsDeviceExtractor {
             device.put("status", "success");
             device.put("description", description.toString());
             device.put("browser", browser);
-            device.put("browserVersion", browserVersion);
             device.put("os", os);
             device.put("osVersion", osVersion);
-            device.put("arch", arch);
             device.put("platform", platform);
 
             return device;

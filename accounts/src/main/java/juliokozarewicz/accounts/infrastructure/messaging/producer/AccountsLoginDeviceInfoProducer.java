@@ -151,8 +151,13 @@ public class AccountsLoginDeviceInfoProducer {
                 )
 
                 .replace(
-                    "{{email_new_login_message}}",
-                    messageSource.getMessage("email_new_login_message", null, locale)
+                    "{{email_new_login_message_one}}",
+                    messageSource.getMessage("email_new_login_message_one", null, locale)
+                )
+
+                .replace(
+                    "{{email_new_login_message_two}}",
+                    messageSource.getMessage("email_new_login_message_two", null, locale)
                 )
 
                 .replace(

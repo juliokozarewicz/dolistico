@@ -515,7 +515,6 @@ paths:
                 pin:
                   type: string
                   description: 6-digit PIN sent to the user's email.
-                  pattern: "^\\d{6}$"
                   example: "482910"
       responses:
         "200":
