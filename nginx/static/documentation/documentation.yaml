@@ -484,6 +484,79 @@ paths:
                         description: Temporary token to be used in the login confirm step.
                         example: "a3f9c2e1b7d04f8a..."
 
+  # ACCOUNTS - LOGIN CONFIRM
+  "/ACCOUNTS_BASE_URL_REPLACE/login/confirm":
+    post:
+      summary: Login confirm
+      description: |-
+        Final step of the two-factor authentication flow. Validates the 
+        `userLoginToken` obtained in the previous step together with the PIN 
+        delivered to the user's email address. Upon successful validation, 
+        the endpoint returns the access and refresh tokens and triggers a 
+        login notification email for the authenticated device.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userLoginToken
+                - pin
+              properties:
+                userLoginToken:
+                  type: string
+                  description: Temporary token received from the login request step.
+                  minLength: 126
+                  maxLength: 1024
+                  example: "a3f9c2e1b7d04f8a..."
+                pin:
+                  type: string
+                  description: 6-digit PIN sent to the user's email.
+                  pattern: "^\\d{6}$"
+                  example: "482910"
+      responses:
+        "200":
+          description: Authentication completed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_LOGIN_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        description: Encrypted access token to be used in authenticated requests.
+                        example: "eyJhbGciOiJSUzI1NiIsInR5..."
+                      refresh:
+                        type: string
+                        description: Encrypted refresh token to obtain a new access token when expired.
+                        example: "dGhpcyBpcyBhIHJlZnJlc2g..."
+                      accessExpiresAt:
+                        type: string
+                        format: date-time
+                        description: Timestamp indicating when the access token expires.
+                        example: "2026-05-21T19:47:01Z"
+                      refreshExpiresAt:
+                        type: string
+                        format: date-time
+                        description: Timestamp indicating when the refresh token expires.
+                        example: "2026-05-28T18:47:01Z"
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
