@@ -1,5 +1,7 @@
 package juliokozarewicz.accounts.infrastructure.shared;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,16 +20,21 @@ public class AccountsDeviceExtractor {
 
     private final MessageSource messageSource;
     private final WebClient webClient;
+    private final CacheManager cacheManager;
+    private final Cache loginLocationCache;
 
     public AccountsDeviceExtractor (
 
         MessageSource messageSource,
-        WebClient webClient
+        WebClient webClient,
+        CacheManager cacheManager
 
     ) {
 
         this.messageSource = messageSource;
         this.webClient = webClient;
+        this.cacheManager = cacheManager;
+        this.loginLocationCache = cacheManager.getCache("accounts.loginLocationCache");
 
     }
 
@@ -42,6 +49,13 @@ public class AccountsDeviceExtractor {
     ) {
 
         try {
+
+            // Try cache
+            Cache.ValueWrapper cachedLocation = loginLocationCache.get(ip);
+
+            if (cachedLocation != null) {
+                return (LinkedHashMap<String, Object>) cachedLocation.get();
+            }
 
             Map<String, Object> geoData = webClient
             .get()
@@ -80,6 +94,10 @@ public class AccountsDeviceExtractor {
             location.put("countryCode", countryCode);
             location.put("lat", lat);
             location.put("lon", lon);
+
+            // Store in cache
+            loginLocationCache.put(ip, location);
+
             return location;
 
         } catch (Exception e) {
@@ -92,6 +110,7 @@ public class AccountsDeviceExtractor {
                     "email_location_error", null, locale
                 )
             );
+
             return location;
 
         }

@@ -61,7 +61,6 @@ public class AccountsKeycloakClientTokenProvider {
 
     /**
      * Returns a valid access token.
-     *
      * Strategy:
      * 1. Try Redis cache
      * 2. If not present, fetch new token
@@ -71,7 +70,7 @@ public class AccountsKeycloakClientTokenProvider {
 
         try {
 
-            // Try Redis
+            // Try Cache
             Cache.ValueWrapper cachedToken = clientKeycloakTokenCache.get(cacheKey);
 
             if (cachedToken != null) {

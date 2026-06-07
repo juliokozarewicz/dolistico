@@ -51,6 +51,9 @@ public class AccountsCacheConfig {
         // Keycloak client token
         cacheConfigs.put("accounts.clientKeycloakTokenCache", defaultCacheConfig.entryTtl( Duration.ofMinutes(4) ));
 
+        // Long-lived user data: Location by IP
+        cacheConfigs.put("accounts.loginLocationCache", defaultCacheConfig.entryTtl( Duration.ofDays(180) ));
+
         // Build the RedisCacheManager with the default config and all per-cache overrides
         return RedisCacheManager.builder(redisConnectionFactory)
         .cacheDefaults(defaultCacheConfig)
