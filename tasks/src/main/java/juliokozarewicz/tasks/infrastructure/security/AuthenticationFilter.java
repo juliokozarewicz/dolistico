@@ -1,10 +1,6 @@
 package juliokozarewicz.tasks.infrastructure.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,21 +8,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
 import java.security.MessageDigest;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -40,16 +31,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
     private SecretKey aesKey;
-    private PublicKey rsaPublicKey;
     private List<String> publicPaths;
 
     @Value("${ACCOUNTS_SECRET_KEY}")
     private String secretKey;
 
-    @Value("${PUBLIC_KEY}")
-    private String publicKey;
-
-    public AuthenticationFilter() {}
 
 // =========================================================== (Constructor end)
 
@@ -71,12 +57,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             byte[] keyBytes = sha.digest(secretKey.getBytes(StandardCharsets.UTF_8));
             this.aesKey = new SecretKeySpec(keyBytes, "AES");
 
-            // RSA public key (criada uma vez só)
-            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            this.rsaPublicKey = keyFactory.generatePublic(keySpec);
-
         } catch (Exception e) {
             throw new SecurityException("Failed to initialize AuthenticationFilter keys");
         }
@@ -90,33 +70,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 // ======================================================== (Post construct end)
 
 // ==================================================== (Assistant methods init)
-
-    public Claims parseAndValidateToken(String token) {
-
-        try {
-
-            Jws<Claims> parsedJwt = Jwts.parser()
-                .verifyWith(rsaPublicKey)
-                .clockSkewSeconds(30)
-                .build()
-                .parseSignedClaims(token);
-
-            String alg = parsedJwt.getHeader().getAlgorithm();
-
-            if (!"RS256".equals(alg)) {
-                throw new SecurityException("Invalid JWT algorithm: " + alg);
-            }
-
-            return parsedJwt.getPayload();
-
-        } catch (ExpiredJwtException e) {
-            throw new SecurityException("ACCESS_EXPIRED");
-        } catch (Exception e) {
-            log.warn("JWT validation failed: {}", e.getMessage());
-            throw new SecurityException("Invalid JWT");
-        }
-
-    }
 
     public String decrypt(String encryptedText) {
 
@@ -157,7 +110,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-// ===================================================== (Assistant methods end)
+    // ===================================================== (Assistant methods end)
 
     @Override
     protected void doFilterInternal(
@@ -173,78 +126,32 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             // ---------------------------------- (Route not authenticated init)
             String requestPath = request.getRequestURI();
 
-            boolean isNotProtected = publicPaths.stream()
-                .anyMatch(pattern -> pathMatcher.match(pattern, requestPath));
+            boolean isPublic = publicPaths.stream()
+                .anyMatch(p -> pathMatcher.match(p, requestPath));
 
-            if (isNotProtected) {
+            if (isPublic) {
                 filterChain.doFilter(request, response);
                 return;
             }
             // ----------------------------------- (Route not authenticated end)
 
-            // -------------------------------------- (Get jwt from header init)
-            String accessCredentialRaw = request.getHeader("Authorization");
-            String accessCredential = accessCredentialRaw != null
-                ? accessCredentialRaw.replace("Bearer ", "")
-                : null;
+            // ------------------------ (Replace jwt crypted for decrypted init)
+            String header = request.getHeader("Authorization");
 
-            if (
-                accessCredential == null ||
-                accessCredential.isBlank() ||
-                accessCredential.length() > 4096
-            ) {
-                buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
-                return;
-            }
-            // --------------------------------------- (Get jwt from header end)
-
-            // --------------------------------------------- (Validate JWT init)
-            Claims claims;
-            try {
-
-                claims = parseAndValidateToken(decrypt(accessCredential));
-
-            } catch (SecurityException e) {
-
-                if ("ACCESS_EXPIRED".equals(e.getMessage())) {
-                    buildErrorResponse(
-                        response, 401, "ACCESS_EXPIRED"
-                    );
-                } else {
-                    buildErrorResponse(
-                        response, 401, "INVALID_CREDENTIALS"
-                    );
-                }
-                return;
-
-            }
-            // ---------------------------------------------- (Validate JWT end)
-
-            // ---------------------------------------------- (Claim's map init)
-            if (claims.get("id") == null ||
-                claims.get("level") == null) {
-                buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
+            if (header == null || !header.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
                 return;
             }
 
-            Object idUser    = claims.get("id");
-            String levelUser = claims.get("level", String.class);
-            // ----------------------------------------------- (Claim's map end)
+            String encrypted = header.substring(7);
 
-            List<SimpleGrantedAuthority> authorities = Collections.singletonList(
-                new SimpleGrantedAuthority("ROLE_" + levelUser.toUpperCase())
-            );
+            String decryptedJwt = decrypt(encrypted);
 
-            UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(idUser, null, authorities);
+            request.setAttribute("DECRYPTED_JWT", decryptedJwt);
 
-            Map<String, Object> dataMap = new LinkedHashMap<>();
-            dataMap.put("id", idUser);
-            dataMap.put("level", levelUser);
-
-            request.setAttribute("credentialsData", dataMap);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
+            // ------------------------- (Replace jwt crypted for decrypted end)
+
 
         } catch (Exception e) {
             log.error("Unexpected error in AuthenticationFilter", e);

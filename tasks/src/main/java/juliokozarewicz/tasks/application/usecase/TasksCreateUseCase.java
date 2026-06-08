@@ -46,14 +46,10 @@ public class TasksCreateUseCase {
     @Transactional
     public String execute(
 
-        Map<String, Object> credentialsData,
+        UUID idUser,
         TasksCreateUpdateCommand tasksCreateUpdateCommand
 
     ) {
-
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
-        // String idLevelUser = credentialsData.get("level").toString();
 
         // Duplicated task
         if ( tasksRepository.existsByIdUserAndTaskNameAndDueDate(

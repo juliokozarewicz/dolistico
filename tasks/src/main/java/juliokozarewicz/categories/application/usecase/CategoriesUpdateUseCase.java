@@ -42,14 +42,11 @@ public class CategoriesUpdateUseCase {
     @Transactional
     public void execute(
 
-        Map<String, Object> credentialsData,
+        UUID idUser,
         UUID idCategory,
         CategoriesCreateUpdateCommand categoriesCreateUpdateCommand
 
     ) {
-
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // Find existing category
         CategoriesEntity existingCategory = categoriesRepository.findByIdAndUser(idCategory, idUser)

@@ -9,6 +9,8 @@ import juliokozarewicz.tasks.application.usecase.TasksGetUseCase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @Validated
@@ -61,13 +64,15 @@ public class TasksGetController {
     ) {
 
         // Data for auth
-        Map<String, Object> credentialsData;
-        credentialsData = (Map<String, Object>)
-        request.getAttribute("credentialsData");
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal();
+
+        UUID idUser = UUID.fromString(jwt.getSubject());
 
         // Call use case
         Map<String, Object> dataResponse = tasksGetUseCase.execute(
-            credentialsData,
+            idUser,
             tasksGetDTO
         );
 

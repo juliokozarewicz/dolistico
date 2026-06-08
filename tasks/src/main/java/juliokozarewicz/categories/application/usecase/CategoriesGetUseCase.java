@@ -42,13 +42,10 @@ public class CategoriesGetUseCase {
     @Transactional(readOnly = true)
     public Map<String, Object> execute (
 
-        Map<String, Object> credentialsData,
+        UUID idUser,
         CategoriesGetCommand categoriesGetCommand
 
     ) {
-
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // --------------------------------------------------- (pagination init)
         int pageNumber = categoriesGetCommand.pageNumber() != null && categoriesGetCommand.pageNumber() >= 1

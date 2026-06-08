@@ -10,6 +10,8 @@ import juliokozarewicz.tasks.domain.exception.DomainException;
 import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @Validated
@@ -59,17 +62,15 @@ public class CategoriesGetController {
     ) {
 
         // Data for auth
-        Object credentialsAttr = request.getAttribute("credentialsData");
-        if (!(credentialsAttr instanceof Map)) {
-            throw new DomainException(DomainExceptionEnum.ACCESS_EXPIRED);
-        }
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal();
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> credentialsData = (Map<String, Object>) credentialsAttr;
+        UUID idUser = UUID.fromString(jwt.getSubject());
 
         // Call use case
         Map<String, Object> dataResponse = categoriesGetUseCase.execute(
-            credentialsData,
+            idUser,
             categoriesGetDTO
         );
 

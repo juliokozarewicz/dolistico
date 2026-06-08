@@ -37,13 +37,10 @@ public class TasksGetByIdUseCase {
     @Transactional(readOnly = true)
     public TasksGetResponseCommand execute (
 
-        Map<String, Object> credentialsData,
+        UUID idUser,
         String id
 
     ) {
-
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // Task id
         UUID idTask = UUID.fromString(id);

@@ -37,16 +37,13 @@ public class CategoriesGetByIdUseCase {
     @Transactional(readOnly = true)
     public CategoriesGetResponseCommand execute (
 
-        Map<String, Object> credentialsData,
-        String id
+        UUID idUser,
+        String idTask
 
     ) {
 
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
-
         // Category id
-        UUID idCategory = UUID.fromString(id);
+        UUID idCategory = UUID.fromString(idTask);
 
         // Get Category by id
         CategoriesGetResponseCommand categoriesByID = categoriesRepository.findByIdAndUser(idCategory, idUser)

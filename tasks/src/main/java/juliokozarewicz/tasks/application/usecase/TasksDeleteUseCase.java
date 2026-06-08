@@ -38,13 +38,11 @@ public class TasksDeleteUseCase {
     @Transactional
     public void execute(
 
-        Map<String, Object> credentialsData,
+        UUID idUser,
         String idTask
 
     ) {
 
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
         UUID idDelete = UUID.fromString(idTask);
 
         // Find existing task (ensures ownership)

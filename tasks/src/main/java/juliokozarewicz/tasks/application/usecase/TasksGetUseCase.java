@@ -42,13 +42,10 @@ public class TasksGetUseCase {
     @Transactional(readOnly = true)
     public Map<String, Object> execute (
 
-        Map<String, Object> credentialsData,
+        UUID idUser,
         TasksGetCommand tasksGetCommand
 
     ) {
-
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // --------------------------------------------------- (pagination init)
         int pageNumber = tasksGetCommand.pageNumber() != null &&tasksGetCommand.pageNumber() >= 1

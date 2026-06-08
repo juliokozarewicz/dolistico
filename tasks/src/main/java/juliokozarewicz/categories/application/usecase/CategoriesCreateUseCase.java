@@ -42,13 +42,10 @@ public class CategoriesCreateUseCase {
     @Transactional
     public String execute(
 
-        Map<String, Object> credentialsData,
+        UUID idUser,
         CategoriesCreateUpdateCommand categoriesCreateUpdateCommand
 
     ) {
-
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // Duplicated
         if ( categoriesRepository.existsByIdUserAndCategoryName(

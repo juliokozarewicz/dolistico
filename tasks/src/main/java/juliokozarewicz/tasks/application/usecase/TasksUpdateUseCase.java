@@ -45,14 +45,11 @@ public class TasksUpdateUseCase {
     @Transactional
     public void execute(
 
-            Map<String, Object> credentialsData,
+            UUID idUser,
             UUID taskId,
             TasksCreateUpdateCommand tasksCreateUpdateCommand
 
     ) {
-
-        // Credentials
-        UUID idUser = UUID.fromString((String) credentialsData.get("id"));
 
         // Find existing task
         TasksEntity existingTask = tasksRepository.findByIdAndUser(taskId, idUser)

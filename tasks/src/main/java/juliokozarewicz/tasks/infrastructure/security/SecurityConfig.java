@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import java.util.List;
@@ -15,34 +16,45 @@ import java.util.List;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    // ========================================================= (Beans init)
+    // ======================================================= (Beans help init)
     @Bean
     public AuthenticationFilter authenticationFilter() {
         return new AuthenticationFilter();
     }
-    // ========================================================== (Beans end)
+
+    @Bean
+    public BearerTokenResolver bearerTokenResolver(AuthenticationFilter filter) {
+        return request -> {
+            Object token = request.getAttribute("DECRYPTED_JWT");
+            return token != null ? token.toString() : null;
+        };
+    }
+    // ======================================================= (Beans help init)
 
     // ========================================================== (Methods init)
     @Bean
-    public SecurityFilterChain securityFilterChain(
+    public SecurityFilterChain filterChain(
+
         HttpSecurity http,
+        BearerTokenResolver bearerTokenResolver,
         AuthenticationFilter authenticationFilter
+
     ) throws Exception {
 
         List<String> publicPaths = authenticationFilter.getPublicPaths();
 
-        http
+        return http
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers(publicPaths.toArray(new String[0])).permitAll()
-                .anyRequest().authenticated()
+                    .requestMatchers(publicPaths.toArray(new String[0])).permitAll()
+                    .anyRequest().authenticated()
+                )
+            .oauth2ResourceServer(
+                oauth -> oauth
+                .bearerTokenResolver(bearerTokenResolver).jwt(jwt -> {})
             )
-            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-
+            .build();
     }
     // =========================================================== (Methods end)
 

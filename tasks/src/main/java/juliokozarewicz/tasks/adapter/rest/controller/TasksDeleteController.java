@@ -11,6 +11,8 @@ import juliokozarewicz.tasks.domain.exception.DomainExceptionEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,13 +64,15 @@ public class TasksDeleteController {
     ) {
 
         // Data for auth
-        Map<String, Object> credentialsData;
-        credentialsData = (Map<String, Object>)
-        request.getAttribute("credentialsData");
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal();
+
+        UUID idUser = UUID.fromString(jwt.getSubject());
 
         // Call use case
         tasksDeleteUseCase.execute(
-            credentialsData,
+            idUser,
             validationIdentityDTO.id()
         );
 
