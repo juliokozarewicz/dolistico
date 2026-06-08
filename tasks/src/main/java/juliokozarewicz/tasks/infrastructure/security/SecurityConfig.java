@@ -59,8 +59,7 @@ public class SecurityConfig {
                     response.setStatus(401);
                     response.setContentType("application/json;charset=UTF-8");
                     response.getWriter().write(
-                        "{\"timestamp\":\"" + java.time.Instant.now()
-                            .truncatedTo(java.time.temporal.ChronoUnit.SECONDS) + "\"" +
+                        "{\"timestamp\":\"" + java.time.Instant.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS) + "\"" +
                         ",\"statusCode\":401" +
                         ",\"messageCode\":\"INVALID_CREDENTIALS\"}"
                     );
