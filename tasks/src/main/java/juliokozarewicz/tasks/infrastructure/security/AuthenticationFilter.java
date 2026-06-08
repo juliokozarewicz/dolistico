@@ -1,6 +1,7 @@
 package juliokozarewicz.tasks.infrastructure.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jwt.SignedJWT;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,14 +29,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
-
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
     private SecretKey aesKey;
     private List<String> publicPaths;
 
     @Value("${ACCOUNTS_SECRET_KEY}")
     private String secretKey;
-
 
 // =========================================================== (Constructor end)
 
@@ -110,7 +109,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    // ===================================================== (Assistant methods end)
+// ===================================================== (Assistant methods end)
 
     @Override
     protected void doFilterInternal(
@@ -145,13 +144,37 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             String encrypted = header.substring(7);
 
-            String decryptedJwt = decrypt(encrypted);
+            // Decrypt - Invalid token if fail
+            String decryptedJwt;
+
+            try {
+                decryptedJwt = decrypt(encrypted);
+            } catch (Exception e) {
+                buildErrorResponse(
+                    response,
+                    401,
+                    "INVALID_CREDENTIALS"
+                );
+                return;
+            }
+
+            // Expired token verification
+            try {
+                SignedJWT jwt = SignedJWT.parse(decryptedJwt);
+                Date exp = jwt.getJWTClaimsSet().getExpirationTime();
+                if (exp != null && exp.before(new Date())) {
+                    buildErrorResponse(response, 401, "ACCESS_EXPIRED");
+                    return;
+                }
+            } catch (Exception e) {
+                buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
+                return;
+            }
 
             request.setAttribute("DECRYPTED_JWT", decryptedJwt);
 
             filterChain.doFilter(request, response);
             // ------------------------- (Replace jwt crypted for decrypted end)
-
 
         } catch (Exception e) {
             log.error("Unexpected error in AuthenticationFilter", e);

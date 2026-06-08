@@ -46,14 +46,26 @@ public class SecurityConfig {
         return http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authz -> authz
                     .requestMatchers(publicPaths.toArray(new String[0])).permitAll()
                     .anyRequest().authenticated()
                 )
             .oauth2ResourceServer(
-                oauth -> oauth
-                .bearerTokenResolver(bearerTokenResolver).jwt(jwt -> {})
-            )
+    oauth -> oauth
+                .bearerTokenResolver(bearerTokenResolver)
+                .jwt(jwt -> {})
+                .authenticationEntryPoint((request, response, ex) -> {
+                    response.setStatus(401);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write(
+                        "{\"timestamp\":\"" + java.time.Instant.now()
+                            .truncatedTo(java.time.temporal.ChronoUnit.SECONDS) + "\"" +
+                        ",\"statusCode\":401" +
+                        ",\"messageCode\":\"INVALID_CREDENTIALS\"}"
+                    );
+                })
+        )
             .build();
     }
     // =========================================================== (Methods end)
