@@ -1,8 +1,10 @@
 package juliokozarewicz.accounts.application.usecase;
 
+import juliokozarewicz.accounts.adapter.rest.dto.AccountsLoginRefreshDTO;
 import juliokozarewicz.accounts.application.command.AccountsCreateLogCommand;
 import juliokozarewicz.accounts.application.command.AccountsLoginCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsLoginConfirmCommand;
+import juliokozarewicz.accounts.application.command.AccountsLoginRefreshCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
@@ -23,7 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Service
-public class AccountsLoginConfirmUseCase {
+public class AccountsLoginRefreshUseCase {
 
     // ==================================================== ( constructor init )
 
@@ -40,7 +42,7 @@ public class AccountsLoginConfirmUseCase {
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsLoginDeviceInfoProducer accountsLoginDeviceInfoProducer;
 
-    public AccountsLoginConfirmUseCase(
+    public AccountsLoginRefreshUseCase(
 
         CacheManager cacheManager,
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
@@ -67,62 +69,13 @@ public class AccountsLoginConfirmUseCase {
 
     public Map<String, Object> execute(
 
-        String userIp,
-        String userAgent,
         Locale locale,
-        AccountsLoginConfirmCommand accountsLoginConfirmCommand
+        AccountsLoginRefreshCommand accountsLoginRefreshCommand
 
     ) {
 
-        // Find cached token
-        var cachedToken = tokenVerificationCache.get(accountsLoginConfirmCommand.userLoginToken());
-
-        // If token not exist, return invalid credentials
-        if ( cachedToken == null || cachedToken.get() == null ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
-        }
-
-        // Reason verification
-        AccountsLoginCacheCommand cachedData = (AccountsLoginCacheCommand) cachedToken.get();
-
-        if (
-            cachedData.reason() == null ||
-            cachedData.reason().trim().isEmpty() ||
-            !AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode().equals(cachedData.reason())
-        ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
-        }
-
-        // User ID extract
-        String idUser = cachedData.idUser();
-
-        // Account banned
-        if ( accountsKeycloakGetUser.isAccountBannedById(idUser) ) {
-            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
-        }
-
-        // Compares the provided PIN with the stored PIN (decrypted)
-        boolean pinMatch = java.util.Objects.equals(
-            encryption.decrypt(cachedData.pin()),
-            accountsLoginConfirmCommand.pin()
-        );
-
-        // If the PIN doesn't match, return a invalid PIN code
-        if ( !pinMatch ) {
-            throw new DomainException(DomainExceptionEnum.ACCOUNTS_INVALID_PIN);
-        }
-
-        // Retrieve refresh token from cache and decrypt
-        String refreshTokenEncrypted = cachedData.refreshToken();
-
-        if (
-            refreshTokenEncrypted == null ||
-            refreshTokenEncrypted.trim().isEmpty()
-        ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
-        }
-
-        String refreshTokenDecrypted = encryption.decrypt(refreshTokenEncrypted);
+        // Decrypt refresh token
+        String refreshTokenDecrypted = encryption.decrypt(accountsLoginRefreshCommand.refreshToken());
 
         if (
             refreshTokenDecrypted == null ||
@@ -145,36 +98,13 @@ public class AccountsLoginConfirmUseCase {
         Number expiresIn = (Number) userCredentials.get("expires_in");
         Number refreshExpiresIn = (Number) userCredentials.get("refresh_expires_in");
 
-        // Create user account log
-        AccountsCreateLogCommand logData = new AccountsCreateLogCommand(
-            idUser,
-            userIp,
-            userAgent,
-            AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode(),
-            ZonedDateTime.now(ZoneOffset.UTC).toInstant(),
-            null,
-            null
-        );
+        // User ID extract
+        String idUser = accountsKeycloakLogin.idUserExtract(accessToken);
 
-        accountsEventProducer.accountLogProducer(logData);
-
-        // Update verify email
-        accountsKeycloakUpdateUser.updateVerifyEmail(idUser);
-
-        // Revoke cache
-        tokenVerificationCache.evict(accountsLoginConfirmCommand.userLoginToken());
-
-        // Email notification for new device login
-        Map<String, Object> user = accountsKeycloakGetUser.getUserById(idUser);
-
-        String email = (String) user.get("email");
-
-        accountsLoginDeviceInfoProducer.execute(
-            userIp,
-            userAgent,
-            locale,
-            email
-        );
+        // Account banned
+        if ( accountsKeycloakGetUser.isAccountBannedById(idUser) ) {
+            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+        }
 
         // Return credentials
         Map<String, Object> response = new java.util.LinkedHashMap<>();
