@@ -69,7 +69,6 @@ public class AccountsLoginRefreshUseCase {
 
     public Map<String, Object> execute(
 
-        Locale locale,
         AccountsLoginRefreshCommand accountsLoginRefreshCommand
 
     ) {
