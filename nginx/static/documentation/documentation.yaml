@@ -500,11 +500,11 @@ paths:
         period of 30 days and is used exclusively to obtain a new `access token` 
         when the current one expires.
 
-        When the `access token` expires, the API responds with a 401 Unauthorized 
-        status and the error code `ACCESS_EXPIRED`, indicating that the token is 
-        no longer valid. In this case, the client does not need to repeat the 
-        full login flow: it should use the `refresh` token to request a new 
-        `access token`, keeping the session active.
+        When the `access token` expires, the API returns a 401 Unauthorized status. 
+        The `messageCode` is `ACCESS_EXPIRED`, indicating that the token is no 
+        longer valid. In this case, the client does not need to repeat the 
+        full login flow; instead, it should use the `refresh token` to request 
+        a new `access token`, keeping the session active.
       tags:
         - Accounts
       requestBody:
