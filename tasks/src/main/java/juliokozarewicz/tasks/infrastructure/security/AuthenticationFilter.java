@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
@@ -57,7 +56,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             this.aesKey = new SecretKeySpec(keyBytes, "AES");
 
         } catch (Exception e) {
-            throw new SecurityException("Failed to initialize AuthenticationFilter keys");
+            throw new SecurityException("Failed to initialize AuthenticationFilter keys [AuthenticationFilter.init()]");
         }
 
     }
@@ -70,35 +69,24 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 // ==================================================== (Assistant methods init)
 
-    public String decrypt(String encryptedText) {
-
-        try {
-
+    public String decrypt(String encryptedText)  throws Exception {
             byte[] encryptedData = Base64.getUrlDecoder().decode(encryptedText);
             byte[] iv = new byte[12];
             byte[] ciphertext = new byte[encryptedData.length - iv.length];
-
             System.arraycopy(encryptedData, 0, iv, 0, iv.length);
             System.arraycopy(encryptedData, iv.length, ciphertext, 0, ciphertext.length);
-
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             cipher.init(Cipher.DECRYPT_MODE, aesKey, new GCMParameterSpec(128, iv));
-
             return new String(cipher.doFinal(ciphertext), StandardCharsets.UTF_8);
-
-        } catch (Exception e) {
-            log.warn("Token decryption failed");
-            throw new SecurityException("Error decrypting token");
-        }
-
     }
 
     private void buildErrorResponse(
 
-        HttpServletResponse response, int statusCode, String messageCode
+        HttpServletResponse response,
+        int statusCode,
+        String messageCode
 
     ) throws IOException {
-
         response.setStatus(statusCode);
         response.setContentType("application/json;charset=UTF-8");
         Map<String, Object> body = new LinkedHashMap<>();
@@ -106,7 +94,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         body.put("statusCode", statusCode);
         body.put("messageCode", messageCode);
         response.getWriter().write(objectMapper.writeValueAsString(body));
-
     }
 
 // ===================================================== (Assistant methods end)
@@ -144,17 +131,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             String encrypted = header.substring(7);
 
-            // Decrypt - Invalid token if fail
+            // Decrypt - return invalid credentials if fail
             String decryptedJwt;
 
             try {
                 decryptedJwt = decrypt(encrypted);
             } catch (Exception e) {
-                buildErrorResponse(
-                    response,
-                    401,
-                    "INVALID_CREDENTIALS"
-                );
+                buildErrorResponse(response, 401, "INVALID_CREDENTIALS");
                 return;
             }
 
@@ -177,7 +160,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             // ------------------------- (Replace jwt crypted for decrypted end)
 
         } catch (Exception e) {
-            log.error("Unexpected error in AuthenticationFilter", e);
+            log.error("Unexpected error in AuthenticationFilter [AuthenticationFilter.doFilterInternal()] : ", e);
             buildErrorResponse(response, 500, "INTERNAL_SERVER_ERROR");
         }
 

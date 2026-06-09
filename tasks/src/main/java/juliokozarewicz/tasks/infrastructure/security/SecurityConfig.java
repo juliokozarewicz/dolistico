@@ -48,11 +48,10 @@ public class SecurityConfig {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authz -> authz
-                    .requestMatchers(publicPaths.toArray(new String[0])).permitAll()
-                    .anyRequest().authenticated()
-                )
-            .oauth2ResourceServer(
-    oauth -> oauth
+                .requestMatchers(publicPaths.toArray(new String[0])).permitAll()
+                .anyRequest().authenticated()
+            )
+            .oauth2ResourceServer(oauth -> oauth
                 .bearerTokenResolver(bearerTokenResolver)
                 .jwt(jwt -> {})
                 .authenticationEntryPoint((request, response, ex) -> {
@@ -64,7 +63,7 @@ public class SecurityConfig {
                         ",\"messageCode\":\"INVALID_CREDENTIALS\"}"
                     );
                 })
-        )
+            )
             .build();
     }
     // =========================================================== (Methods end)
