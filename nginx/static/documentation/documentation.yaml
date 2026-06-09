@@ -489,14 +489,22 @@ paths:
     post:
       summary: Login confirm
       description: |-
-        Final step of the two-factor authentication flow. Validates the 
-        `userLoginToken` obtained in the previous step together with the PIN 
-        delivered to the user's email address. Upon successful validation, 
-        the endpoint returns the access and refresh tokens and triggers a 
-        login notification email for the authenticated device. When the 
-        access token has expired, the API will return a 401 Unauthorized 
-        response with an error message code `ACCESS_EXPIRED`, indicating that 
-        the token is no longer valid and the user must obtain a new one.
+        In this final step, the endpoint validates the `userLoginToken` obtained 
+        in the previous step together with the PIN sent via email. If the 
+        validation is successful, the API returns an `access token` and a `refresh
+         token`, and also sends a notification email informing the user about 
+         a login from a new device.
+
+        The `access token` has a short lifespan, lasting a few minutes, and is used 
+        to authenticate API requests. The `refresh token` has a longer validity 
+        period of 30 days and is used exclusively to obtain a new `access token` 
+        when the current one expires.
+
+        When the `access token` expires, the API responds with a 401 Unauthorized 
+        status and the error code `ACCESS_EXPIRED`, indicating that the token is 
+        no longer valid. In this case, the client does not need to repeat the 
+        full login flow: it should use the `refresh` token to request a new 
+        `access token`, keeping the session active.
       tags:
         - Accounts
       requestBody:
