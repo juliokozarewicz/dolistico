@@ -567,6 +567,71 @@ paths:
                         description: Timestamp indicating when the refresh token expires.
                         example: "2026-05-28T18:47:01Z"
 
+  # ACCOUNTS - LOGIN REFRESH
+  "/ACCOUNTS_BASE_URL_REPLACE/login/refresh":
+    post:
+      summary: Login refresh
+      description: >-
+        Obtains a new access token using a valid refresh token,
+        without requiring the user to go through the full two-factor authentication flow again.
+        Returns a new access token and a rotated refresh token with updated expiration times.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: Encrypted refresh token obtained from the login confirm step.
+                  minLength: 128
+                  maxLength: 2048
+                  example: "dGhpcyBpcyBhIHJlZnJlc2g..."
+      responses:
+        "200":
+          description: Token refreshed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_LOGIN_REFRESH_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      access:
+                        type: string
+                        description: New encrypted access token to be used in authenticated requests.
+                        example: "eyJhbGciOiJSUzI1NiIsInR5..."
+                      refresh:
+                        type: string
+                        description: New encrypted refresh token replacing the previous one.
+                        example: "dGhpcyBpcyBhIHJlZnJlc2g..."
+                      accessExpiresAt:
+                        type: string
+                        format: date-time
+                        description: Timestamp indicating when the new access token expires.
+                        example: "2026-05-21T19:47:01Z"
+                      refreshExpiresAt:
+                        type: string
+                        format: date-time
+                        description: Timestamp indicating when the new refresh token expires.
+                        example: "2026-05-28T18:47:01Z"
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
