@@ -9,7 +9,7 @@ public record AccountsLoginRefreshDTO(
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
     @Pattern(
-        regexp = "^[A-Za-z0-9_-]{128,1024}$",
+        regexp = "^[A-Za-z0-9_-]{128,2048}$",
         message = GlobalExceptionEnum.ACCOUNTS_INVALID_TOKEN_DTO
     )
     String refreshToken
