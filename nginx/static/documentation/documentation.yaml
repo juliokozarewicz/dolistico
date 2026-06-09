@@ -493,7 +493,10 @@ paths:
         `userLoginToken` obtained in the previous step together with the PIN 
         delivered to the user's email address. Upon successful validation, 
         the endpoint returns the access and refresh tokens and triggers a 
-        login notification email for the authenticated device.
+        login notification email for the authenticated device. When the 
+        access token has expired, the API will return a 401 Unauthorized 
+        response with an error message code `ACCESS_EXPIRED`, indicating that 
+        the token is no longer valid and the user must obtain a new one.
       tags:
         - Accounts
       requestBody:
