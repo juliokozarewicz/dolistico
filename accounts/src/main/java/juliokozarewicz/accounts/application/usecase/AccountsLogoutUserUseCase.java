@@ -58,7 +58,7 @@ public class AccountsLogoutUserUseCase {
             throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
         }
 
-        // Refresh credentials in Keycloak
+        // Logout credential
         accountsKeycloakLogin.logoutUser(refreshTokenDecrypted);
 
     }
