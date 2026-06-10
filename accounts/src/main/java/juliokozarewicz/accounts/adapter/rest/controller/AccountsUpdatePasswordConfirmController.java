@@ -3,10 +3,10 @@ package juliokozarewicz.accounts.adapter.rest.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.accounts.adapter.rest.dto.AccountsRequestDTO;
-import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordDTO;
+import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordConfirmConfirmDTO;
 import juliokozarewicz.accounts.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalSuccessEnum;
-import juliokozarewicz.accounts.application.usecase.AccountsUpdatePasswordUseCase;
+import juliokozarewicz.accounts.application.usecase.AccountsUpdatePasswordConfirmUseCase;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequestMapping("${ACCOUNTS_BASE_URL}")
-public class AccountsUpdatePasswordController {
+public class AccountsUpdatePasswordConfirmController {
 
     // ==================================================== ( constructor init )
 
@@ -28,31 +28,31 @@ public class AccountsUpdatePasswordController {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final AccountsUpdatePasswordUseCase accountsUpdatePasswordUseCase;
+    private final AccountsUpdatePasswordConfirmUseCase accountsUpdatePasswordConfirmUseCase;
     private final AccountsRequestDTO accountsRequestDTO;
 
-    public AccountsUpdatePasswordController(
+    public AccountsUpdatePasswordConfirmController(
 
-        AccountsUpdatePasswordUseCase accountsUpdatePasswordUseCase,
+        AccountsUpdatePasswordConfirmUseCase accountsUpdatePasswordConfirmUseCase,
         AccountsRequestDTO accountsRequestDTO
 
     ) {
 
-        this.accountsUpdatePasswordUseCase = accountsUpdatePasswordUseCase;
+        this.accountsUpdatePasswordConfirmUseCase = accountsUpdatePasswordConfirmUseCase;
         this.accountsRequestDTO = accountsRequestDTO;
 
     }
 
     // ===================================================== ( constructor end )
 
-    @PatchMapping("/update-password")
+    @PatchMapping("/update-password/confirm")
     public ResponseEntity<StandardResponseDTO> handle (
 
         // Locale from Accept-Language
         Locale locale,
 
         // DTO error
-        @Valid @RequestBody AccountsUpdatePasswordDTO accountsUpdatePasswordDTO,
+        @Valid @RequestBody AccountsUpdatePasswordConfirmConfirmDTO accountsUpdatePasswordConfirmDTO,
         BindingResult bindingResult,
 
         HttpServletRequest request
@@ -74,11 +74,11 @@ public class AccountsUpdatePasswordController {
         // ---------------------------------------------------------------------
 
         // Call use case
-        accountsUpdatePasswordUseCase.execute(
+        accountsUpdatePasswordConfirmUseCase.execute(
             userIp,
             userAgent,
             locale,
-            accountsUpdatePasswordDTO
+                accountsUpdatePasswordConfirmDTO
         );
 
         // Standard response

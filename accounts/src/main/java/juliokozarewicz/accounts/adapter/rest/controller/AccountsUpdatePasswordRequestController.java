@@ -1,10 +1,10 @@
 package juliokozarewicz.accounts.adapter.rest.controller;
 
 import jakarta.validation.Valid;
-import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordLinkDTO;
+import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordRequestDTO;
 import juliokozarewicz.accounts.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalSuccessEnum;
-import juliokozarewicz.accounts.application.usecase.AccountsUpdatePasswordLinkUseCase;
+import juliokozarewicz.accounts.application.usecase.AccountsUpdatePasswordRequestUseCase;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,7 +20,7 @@ import java.util.Locale;
 @RestController
 @Validated
 @RequestMapping("${ACCOUNTS_BASE_URL}")
-public class AccountsUpdatePasswordLinkController {
+public class AccountsUpdatePasswordRequestController {
 
     // ==================================================== ( constructor init )
 
@@ -28,36 +28,36 @@ public class AccountsUpdatePasswordLinkController {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    private final AccountsUpdatePasswordLinkUseCase accountsUpdatePasswordLinkUseCase;
+    private final AccountsUpdatePasswordRequestUseCase accountsUpdatePasswordRequestUseCase;
 
-    public AccountsUpdatePasswordLinkController(
+    public AccountsUpdatePasswordRequestController(
 
-        AccountsUpdatePasswordLinkUseCase accountsUpdatePasswordLinkUseCase
+        AccountsUpdatePasswordRequestUseCase accountsUpdatePasswordRequestUseCase
 
     ) {
 
-        this.accountsUpdatePasswordLinkUseCase = accountsUpdatePasswordLinkUseCase;
+        this.accountsUpdatePasswordRequestUseCase = accountsUpdatePasswordRequestUseCase;
 
     }
 
     // ===================================================== ( constructor end )
 
-    @PostMapping("/update-password")
+    @PostMapping("/update-password/request")
     public ResponseEntity<StandardResponseDTO> handle (
 
         // Locale from Accept-Language
         Locale locale,
 
         // DTO error
-        @Valid @RequestBody AccountsUpdatePasswordLinkDTO accountsUpdatePasswordLinkDTO,
+        @Valid @RequestBody AccountsUpdatePasswordRequestDTO accountsUpdatePasswordRequestDTO,
         BindingResult bindingResult
 
     ) {
 
         // Call use case
-        accountsUpdatePasswordLinkUseCase.execute(
+        accountsUpdatePasswordRequestUseCase.execute(
             locale,
-            accountsUpdatePasswordLinkDTO
+            accountsUpdatePasswordRequestDTO
         );
 
         // Standard response

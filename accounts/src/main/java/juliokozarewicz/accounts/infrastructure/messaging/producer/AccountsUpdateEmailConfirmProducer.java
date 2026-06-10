@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class AccountsUpdateEmailProducer {
+public class AccountsUpdateEmailConfirmProducer {
 
     // ==================================================== ( constructor init )
 
@@ -31,12 +31,12 @@ public class AccountsUpdateEmailProducer {
     private String publicDomain;
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdateEmailProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdateEmailConfirmProducer.class);
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
 
-    public AccountsUpdateEmailProducer(
+    public AccountsUpdateEmailConfirmProducer(
 
         KafkaTemplate<String, byte[]> kafkaTemplate,
         ObjectMapper objectMapper,
@@ -144,7 +144,7 @@ public class AccountsUpdateEmailProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsUpdateEmailProducer.execute() ] : ", e);
+            .log("Error producing message: [ AccountsUpdateEmailConfirmProducer.execute() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

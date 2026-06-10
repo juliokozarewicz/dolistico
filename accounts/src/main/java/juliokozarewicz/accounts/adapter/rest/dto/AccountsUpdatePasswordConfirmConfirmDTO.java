@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalExceptionEnum;
-import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCommand;
+import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordConfirmCommand;
 
-public record AccountsUpdatePasswordDTO(
+public record AccountsUpdatePasswordConfirmConfirmDTO(
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
     @Pattern(
@@ -28,7 +28,7 @@ public record AccountsUpdatePasswordDTO(
     )
     String newPassword
 
-) implements AccountsUpdatePasswordCommand {
+) implements AccountsUpdatePasswordConfirmCommand {
 
     @Override
     public char[] userPassword() {

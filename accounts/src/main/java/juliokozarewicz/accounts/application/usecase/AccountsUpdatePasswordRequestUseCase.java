@@ -1,12 +1,12 @@
 package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheCommand;
-import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordLinkCommand;
+import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordRequestCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
-import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordLinkProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordRequestProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Service
-public class AccountsUpdatePasswordLinkUseCase {
+public class AccountsUpdatePasswordRequestUseCase {
 
     // ==================================================== ( constructor init )
 
@@ -31,14 +31,14 @@ public class AccountsUpdatePasswordLinkUseCase {
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
-    private final AccountsUpdatePasswordLinkProducer accountsUpdatePasswordLinkProducer;
+    private final AccountsUpdatePasswordRequestProducer accountsUpdatePasswordRequestProducer;
 
-    public AccountsUpdatePasswordLinkUseCase(
+    public AccountsUpdatePasswordRequestUseCase(
 
         Encryption encryption,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         CacheManager cacheManager,
-        AccountsUpdatePasswordLinkProducer accountsUpdatePasswordLinkProducer
+        AccountsUpdatePasswordRequestProducer accountsUpdatePasswordRequestProducer
 
     ) {
 
@@ -46,7 +46,7 @@ public class AccountsUpdatePasswordLinkUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.cacheManager = cacheManager;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
-        this.accountsUpdatePasswordLinkProducer = accountsUpdatePasswordLinkProducer;
+        this.accountsUpdatePasswordRequestProducer = accountsUpdatePasswordRequestProducer;
 
     }
 
@@ -55,7 +55,7 @@ public class AccountsUpdatePasswordLinkUseCase {
     public void execute(
 
         Locale locale,
-        AccountsUpdatePasswordLinkCommand accountsUpdatePasswordLinkCommand
+        AccountsUpdatePasswordRequestCommand accountsUpdatePasswordRequestCommand
 
     ) {
 
@@ -64,7 +64,7 @@ public class AccountsUpdatePasswordLinkUseCase {
 
         // Get user id by email
         Map<String, Object> existingUser = accountsKeycloakGetUser.getUserByEmail(
-            accountsUpdatePasswordLinkCommand.email()
+            accountsUpdatePasswordRequestCommand.email()
         );
 
         // Null verification
@@ -92,9 +92,9 @@ public class AccountsUpdatePasswordLinkUseCase {
             .toUriString();
 
         // Create email message with URL
-        accountsUpdatePasswordLinkProducer.execute(
+        accountsUpdatePasswordRequestProducer.execute(
             locale,
-            accountsUpdatePasswordLinkCommand.email(),
+            accountsUpdatePasswordRequestCommand.email(),
             updatePasswordURL
         );
 

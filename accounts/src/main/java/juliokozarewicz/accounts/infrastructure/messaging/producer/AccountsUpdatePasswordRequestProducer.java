@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class AccountsUpdatePasswordLinkProducer {
+public class AccountsUpdatePasswordRequestProducer {
 
     // ==================================================== ( constructor init )
 
@@ -31,12 +31,12 @@ public class AccountsUpdatePasswordLinkProducer {
     private String publicDomain;
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdatePasswordLinkProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdatePasswordRequestProducer.class);
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
 
-    public AccountsUpdatePasswordLinkProducer(
+    public AccountsUpdatePasswordRequestProducer(
 
         KafkaTemplate<String, byte[]> kafkaTemplate,
         ObjectMapper objectMapper,
@@ -155,7 +155,7 @@ public class AccountsUpdatePasswordLinkProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsUpdatePasswordLinkProducer.execute() ] : ", e);
+            .log("Error producing message: [ AccountsUpdatePasswordRequestProducer.execute() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

@@ -1,6 +1,6 @@
 package juliokozarewicz.accounts.application.command;
 
-public interface AccountsUpdatePasswordLinkCommand {
+public interface AccountsUpdatePasswordRequestCommand {
 
     String email();
 

@@ -1,6 +1,6 @@
 package juliokozarewicz.accounts.application.command;
 
-public interface AccountsUpdatePasswordCommand {
+public interface AccountsUpdatePasswordConfirmCommand {
 
     String token();
     String newPassword();

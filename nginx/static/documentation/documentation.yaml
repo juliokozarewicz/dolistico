@@ -320,10 +320,8 @@ paths:
                     type: string
                     example: ACCOUNTS_CREATED_SUCCESSFULLY
 
-  # ACCOUNTS - UPDATE PASSWORD
-  "/ACCOUNTS_BASE_URL_REPLACE/update-password":
-
-    # REQUEST
+  # ACCOUNTS - UPDATE PASSWORD REQUEST
+  "/ACCOUNTS_BASE_URL_REPLACE/update-password/request":
     post:
       summary: Request password reset link
       description: Sends a password reset link to the provided email address.
@@ -362,7 +360,8 @@ paths:
                     type: string
                     example: ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY
 
-    # CONFIRM
+  # ACCOUNTS - UPDATE PASSWORD CONFIRM
+  "/ACCOUNTS_BASE_URL_REPLACE/update-password/confirm":
     patch:
       summary: Update password
       description: |-
@@ -372,9 +371,6 @@ paths:
         After a successful update:
         - The token is immediately invalidated (single use).
         - A confirmation email is sent to the user.
-
-        **Business rules:**
-        - If the token is expired, not found, or was issued for a different purpose, the request is rejected.
       tags:
         - Accounts
       requestBody:

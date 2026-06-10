@@ -2,7 +2,7 @@ package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsCreateLogCommand;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheCommand;
-import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCommand;
+import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordConfirmCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
@@ -10,7 +10,7 @@ import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogoutUserGlobally;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
-import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailConfirmProducer;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Locale;
 
 @Service
-public class AccountsUpdatePasswordUseCase {
+public class AccountsUpdatePasswordConfirmUseCase {
 
     // ==================================================== ( constructor init )
 
@@ -30,16 +30,16 @@ public class AccountsUpdatePasswordUseCase {
 
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
-    private final AccountsUpdateEmailProducer accountsUpdateEmailProducer;
+    private final AccountsUpdateEmailConfirmProducer accountsUpdateEmailConfirmProducer;
     private final AccountsKeycloakUpdateUser accountsKeycloakUpdateUser;
     private final AccountsEventProducer accountsEventProducer;
     private final AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
 
-    public AccountsUpdatePasswordUseCase(
+    public AccountsUpdatePasswordConfirmUseCase(
 
         CacheManager cacheManager,
-        AccountsUpdateEmailProducer accountsUpdateEmailProducer,
+        AccountsUpdateEmailConfirmProducer accountsUpdateEmailConfirmProducer,
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
         AccountsEventProducer accountsEventProducer,
         AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally,
@@ -48,7 +48,7 @@ public class AccountsUpdatePasswordUseCase {
     ) {
 
         this.cacheManager = cacheManager;
-        this.accountsUpdateEmailProducer = accountsUpdateEmailProducer;
+        this.accountsUpdateEmailConfirmProducer = accountsUpdateEmailConfirmProducer;
         this.accountsKeycloakUpdateUser = accountsKeycloakUpdateUser;
         this.accountsEventProducer = accountsEventProducer;
         this.accountsKeycloakLogoutUserGlobally = accountsKeycloakLogoutUserGlobally;
@@ -64,17 +64,17 @@ public class AccountsUpdatePasswordUseCase {
         String userIp,
         String userAgent,
         Locale locale,
-        AccountsUpdatePasswordCommand accountsUpdatePasswordCommand
+        AccountsUpdatePasswordConfirmCommand accountsUpdatePasswordConfirmCommand
 
     ) {
 
         // Password cleanup
-        char[] newPassword = accountsUpdatePasswordCommand.userPassword();
+        char[] newPassword = accountsUpdatePasswordConfirmCommand.userPassword();
 
         try {
 
             // Retrieve stored token cache
-            var cachedToken = tokenVerificationCache.get(accountsUpdatePasswordCommand.token());
+            var cachedToken = tokenVerificationCache.get(accountsUpdatePasswordConfirmCommand.token());
 
             // Null verification
             if (cachedToken == null) {
@@ -102,17 +102,17 @@ public class AccountsUpdatePasswordUseCase {
             // Update password via Keycloak
             var result = accountsKeycloakUpdateUser.updatePassword(
                 idUser,
-                accountsUpdatePasswordCommand.newPassword()
+                accountsUpdatePasswordConfirmCommand.newPassword()
             );
 
             // Clean token cache
-            tokenVerificationCache.evict(accountsUpdatePasswordCommand.token());
+            tokenVerificationCache.evict(accountsUpdatePasswordConfirmCommand.token());
 
             // Update verify email
             accountsKeycloakUpdateUser.updateVerifyEmail(idUser);
 
             // Send email notification
-            accountsUpdateEmailProducer.execute(
+            accountsUpdateEmailConfirmProducer.execute(
                 locale,
                 result.get("email").toString()
             );
@@ -134,7 +134,7 @@ public class AccountsUpdatePasswordUseCase {
             accountsKeycloakLogoutUserGlobally.execute(idUser);
 
             // Revoke cache
-            tokenVerificationCache.evict(accountsUpdatePasswordCommand.token());
+            tokenVerificationCache.evict(accountsUpdatePasswordConfirmCommand.token());
 
         }
 
