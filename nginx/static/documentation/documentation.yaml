@@ -632,6 +632,49 @@ paths:
                         description: Timestamp indicating when the new refresh token expires.
                         example: "2026-05-28T18:47:01Z"
 
+  # ACCOUNTS - LOGOUT
+  "/ACCOUNTS_BASE_URL_REPLACE/logout":
+    post:
+      summary: Logout
+      description: >-
+        Invalidates the user's session globally by revoking the provided refresh token. 
+        After a successful logout, both the access and refresh tokens are no longer valid.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: Refresh token obtained from the login confirm or login refresh step.
+                  minLength: 128
+                  maxLength: 2048
+                  example: "dGhpcyBpcyBhIHJlZnJlc2g..."
+      responses:
+        "200":
+          description: Logout completed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_LOGOUT_SUCCESSFULLY
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
