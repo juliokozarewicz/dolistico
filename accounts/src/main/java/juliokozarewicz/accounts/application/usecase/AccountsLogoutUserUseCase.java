@@ -59,12 +59,7 @@ public class AccountsLogoutUserUseCase {
         }
 
         // Refresh credentials in Keycloak
-        boolean logoutSuccess  = accountsKeycloakLogin.logoutUser(refreshTokenDecrypted);
-
-        // Keycloak error
-        if (!logoutSuccess ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
-        }
+        accountsKeycloakLogin.logoutUser(refreshTokenDecrypted);
 
     }
 
