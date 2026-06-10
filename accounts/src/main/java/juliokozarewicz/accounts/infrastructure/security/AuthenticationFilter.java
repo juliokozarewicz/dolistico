@@ -51,14 +51,14 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         // -------------------------------------------- ( Public endpoints init)
         publicPaths = Arrays.asList(
             "/actuator/**",
-            "/" + accountsBaseURL,
-            "/" + accountsBaseURL + "/update-password/request",
-            "/" + accountsBaseURL + "/update-password/confirm",
+            "/" + accountsBaseURL + "/create",
+            "/" + accountsBaseURL + "/password/update/request",
+            "/" + accountsBaseURL + "/password/update/confirm",
             "/" + accountsBaseURL + "/login/request",
             "/" + accountsBaseURL + "/login/confirm",
             "/" + accountsBaseURL + "/login/refresh",
             "/" + accountsBaseURL + "/logout",
-            "/" + accountsBaseURL + "/update-email/confirm",
+            "/" + accountsBaseURL + "/email/update/confirm",
             "/" + accountsBaseURL + "/delete/confirm"
         );
         // --------------------------------------------- ( Public endpoints end)

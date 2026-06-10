@@ -45,7 +45,7 @@ public class AccountsUpdatePasswordConfirmController {
 
     // ===================================================== ( constructor end )
 
-    @PatchMapping("/update-password/confirm")
+    @PatchMapping("/password/update/confirm")
     public ResponseEntity<StandardResponseDTO> handle (
 
         // Locale from Accept-Language

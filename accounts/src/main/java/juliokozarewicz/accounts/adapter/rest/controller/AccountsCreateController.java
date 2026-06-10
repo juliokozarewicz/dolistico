@@ -27,8 +27,6 @@ public class AccountsCreateController {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${ACCOUNTS_BASE_URL}")
-    private String accountsBaseURL;
     // -------------------------------------------------------------------------
 
     private final AccountsCreateUseCase accountsCreateUseCase;
@@ -45,7 +43,7 @@ public class AccountsCreateController {
 
     // ===================================================== ( constructor end )
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseEntity<StandardResponseDTO> handle (
 
         // Locale from Accept-Language

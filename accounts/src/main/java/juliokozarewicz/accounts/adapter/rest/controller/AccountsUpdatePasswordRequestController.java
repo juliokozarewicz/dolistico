@@ -42,7 +42,7 @@ public class AccountsUpdatePasswordRequestController {
 
     // ===================================================== ( constructor end )
 
-    @PostMapping("/update-password/request")
+    @PostMapping("/password/update/request")
     public ResponseEntity<StandardResponseDTO> handle (
 
         // Locale from Accept-Language

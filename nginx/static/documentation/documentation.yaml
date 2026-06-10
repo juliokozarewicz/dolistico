@@ -256,7 +256,7 @@ paths:
   ############################################################ ( accounts init )
 
   # ACCOUNTS - CREATE
-  "/ACCOUNTS_BASE_URL_REPLACE":
+  "/ACCOUNTS_BASE_URL_REPLACE/create":
     post:
       summary: Create account
       description: |-
@@ -321,7 +321,7 @@ paths:
                     example: ACCOUNTS_CREATED_SUCCESSFULLY
 
   # ACCOUNTS - UPDATE PASSWORD REQUEST
-  "/ACCOUNTS_BASE_URL_REPLACE/update-password/request":
+  "/ACCOUNTS_BASE_URL_REPLACE/password/update/request":
     post:
       summary: Request password reset link
       description: Sends a password reset link to the provided email address.
@@ -361,7 +361,7 @@ paths:
                     example: ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY
 
   # ACCOUNTS - UPDATE PASSWORD CONFIRM
-  "/ACCOUNTS_BASE_URL_REPLACE/update-password/confirm":
+  "/ACCOUNTS_BASE_URL_REPLACE/password/update/confirm":
     patch:
       summary: Update password
       description: |-
