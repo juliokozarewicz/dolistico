@@ -211,7 +211,7 @@ public class AccountsKeycloakLogin {
     }
 
     // Logout current session (invalidate refresh token)
-    public void logoutUser(
+    public boolean logoutUser(
 
         String refreshToken
 
@@ -222,24 +222,35 @@ public class AccountsKeycloakLogin {
             MultiValueMap<String, String> formData = baseFormData();
             formData.add("refresh_token", refreshToken);
 
-            webClient.post()
+            return Boolean.TRUE.equals(webClient.post()
             .uri(UriComponentsBuilder
-                .fromUriString(keycloakBaseURL)
-                .pathSegment(
-                    "realms",
-                    keycloakRealm,
-                    "protocol",
-                    "openid-connect",
-                    "logout"
-                )
-                .build()
-                .toUri()
+                    .fromUriString(keycloakBaseURL)
+                    .pathSegment(
+                            "realms",
+                            keycloakRealm,
+                            "protocol",
+                            "openid-connect",
+                            "logout"
+                    )
+                    .build()
+                    .toUri()
             )
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(BodyInserters.fromFormData(formData))
-            .retrieve()
-            .toBodilessEntity()
-            .block();
+            .exchangeToMono(response -> {
+
+                if (response.statusCode().is2xxSuccessful()) {
+                    return Mono.just(true);
+                }
+
+                if (response.statusCode().is4xxClientError()) {
+                    return Mono.just(false);
+                }
+
+                return response.createException().flatMap(Mono::error);
+
+            })
+            .block());
 
         } catch (Exception e) {
 
