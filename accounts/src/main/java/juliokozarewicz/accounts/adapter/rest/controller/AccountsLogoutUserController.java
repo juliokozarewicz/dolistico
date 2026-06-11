@@ -52,9 +52,7 @@ public class AccountsLogoutUserController {
     ) {
 
         // Call use case
-        accountsLogoutUserUseCase.execute(
-            accountsLogoutUserDTO
-        );
+        accountsLogoutUserUseCase.execute(accountsLogoutUserDTO);
 
         // Standard response
         return ResponseEntity

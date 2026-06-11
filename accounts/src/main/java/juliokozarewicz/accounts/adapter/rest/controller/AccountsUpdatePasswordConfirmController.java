@@ -78,7 +78,7 @@ public class AccountsUpdatePasswordConfirmController {
             userIp,
             userAgent,
             locale,
-                accountsUpdatePasswordConfirmDTO
+            accountsUpdatePasswordConfirmDTO
         );
 
         // Standard response
