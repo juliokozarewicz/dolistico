@@ -671,6 +671,82 @@ paths:
                     type: string
                     example: ACCOUNTS_LOGOUT_SUCCESSFULLY
 
+  # ACCOUNTS - GET PROFILE
+  "/ACCOUNTS_BASE_URL_REPLACE/profile":
+    get:
+      summary: Get profile
+      description: >-
+        Retrieves the profile information of the authenticated user.
+      tags:
+        - Accounts
+      security:
+        - BearerAuth: [ ]
+      responses:
+        "200":
+          description: Profile retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_PROFILE_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2026-05-01T10:00:00Z"
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: "2026-05-21T18:47:01Z"
+                      profileImage:
+                        type: string
+                        nullable: true
+                        example: "https://cdn.example.com/profiles/avatar.jpg"
+                      fullName:
+                        type: string
+                        nullable: true
+                        example: "Jane Doe"
+                      phone:
+                        type: string
+                        nullable: true
+                        example: "+5541999999999"
+                      identityDocument:
+                        type: string
+                        nullable: true
+                        example: "123.456.789-00"
+                      gender:
+                        type: string
+                        nullable: true
+                        example: "female"
+                      birthdate:
+                        type: string
+                        nullable: true
+                        example: "1990-06-15"
+                      biography:
+                        type: string
+                        nullable: true
+                        example: "Software engineer and coffee enthusiast."
+                      language:
+                        type: string
+                        nullable: true
+                        example: "en-US"
+                      theme:
+                        type: string
+                        nullable: true
+                        example: "dark"
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
