@@ -716,11 +716,9 @@ paths:
                         example: "https://cdn.example.com/profiles/avatar.jpg"
                       email:
                         type: string
-                        nullable: true
                         example: "janedoe@email.com"
                       fullName:
                         type: string
-                        nullable: true
                         example: "Jane Doe"
                       phone:
                         type: string
