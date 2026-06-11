@@ -714,6 +714,10 @@ paths:
                         type: string
                         nullable: true
                         example: "https://cdn.example.com/profiles/avatar.jpg"
+                      email:
+                        type: string
+                        nullable: true
+                        example: "janedoe@email.com"
                       fullName:
                         type: string
                         nullable: true
@@ -746,6 +750,85 @@ paths:
                         type: string
                         nullable: true
                         example: "dark"
+
+    # ACCOUNTS - UPDATE PROFILE
+    patch:
+      summary: Update profile
+      description: >-
+        Updates the profile information of the authenticated user.
+        All fields are optional. Only the fields provided will be updated.
+      tags:
+        - Accounts
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                  minLength: 3
+                  maxLength: 256
+                  example: Jane Doe
+                phone:
+                  type: string
+                  description: Digits, spaces, parentheses, hyphens, and leading + are allowed.
+                  minLength: 1
+                  maxLength: 25
+                  example: "+5541999999999"
+                identityDocument:
+                  type: string
+                  minLength: 1
+                  maxLength: 256
+                  example: "123.456.789-00"
+                gender:
+                  type: string
+                  minLength: 1
+                  maxLength: 256
+                  example: female
+                birthdate:
+                  type: string
+                  description: Date in YYYY-MM-DD format.
+                  pattern: "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$"
+                  example: "1990-06-15"
+                biography:
+                  type: string
+                  minLength: 1
+                  maxLength: 256
+                  example: Software engineer and coffee enthusiast.
+                language:
+                  type: string
+                  description: Letters and hyphens only.
+                  minLength: 1
+                  maxLength: 50
+                  example: en-US
+                theme:
+                  type: string
+                  description: Letters and hyphens only.
+                  minLength: 1
+                  maxLength: 100
+                  example: dark
+      responses:
+        "200":
+          description: Profile updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_PROFILE_UPDATED_SUCCESSFULLY
 
   ############################################################# ( accounts end )
 

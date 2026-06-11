@@ -4,6 +4,7 @@ import juliokozarewicz.accounts.domain.entity.AccountsProfileEntity;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.domain.repository.AccountsProfileRepository;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -19,14 +20,17 @@ public class AccountsProfileUseCase {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
     private final AccountsProfileRepository accountsProfileRepository;
+    private final AccountsKeycloakGetUser accountsKeycloakGetUser;
 
     public AccountsProfileUseCase(
 
-        AccountsProfileRepository accountsProfileRepository
+        AccountsProfileRepository accountsProfileRepository,
+        AccountsKeycloakGetUser accountsKeycloakGetUser
 
     ) {
 
         this.accountsProfileRepository = accountsProfileRepository;
+        this.accountsKeycloakGetUser = accountsKeycloakGetUser;
 
     }
 
@@ -37,6 +41,17 @@ public class AccountsProfileUseCase {
         UUID idUser
 
     ) {
+
+        // get user data
+        Map<String, Object> user = accountsKeycloakGetUser.getUserById(idUser.toString());
+
+        // Extract email
+        String userEmail = user != null ? (String) user.get("email") : null;
+
+        // Email verify
+        if (userEmail == null) {
+            throw new DomainException(DomainExceptionEnum.BAD_REQUEST);
+        }
 
         // Get profile
         AccountsProfileEntity profile = accountsProfileRepository.findByIdUser(idUser)
@@ -49,6 +64,7 @@ public class AccountsProfileUseCase {
         response.put("createdAt", profile.getCreatedAt());
         response.put("updatedAt", profile.getUpdatedAt());
         response.put("profileImage", profile.getProfileImage());
+        response.put("email", userEmail);
         response.put("fullName", profile.getFullName());
         response.put("phone", profile.getPhone());
         response.put("identityDocument", profile.getIdentityDocument());
