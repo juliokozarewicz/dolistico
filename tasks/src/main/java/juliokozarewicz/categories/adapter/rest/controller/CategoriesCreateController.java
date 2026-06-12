@@ -63,10 +63,7 @@ public class CategoriesCreateController {
     ) {
 
         // Data for auth
-        Jwt jwt = (Jwt) SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
-
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UUID idUser = UUID.fromString(jwt.getSubject());
 
         // Call use case
