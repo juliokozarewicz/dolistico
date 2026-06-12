@@ -53,184 +53,141 @@ public class AccountsAvatarUseCase {
         UUID idUser,
         MultipartFile[] file
 
-    ) throws IOException {
+    ) {
 
-        // Get profile
-        AccountsProfileEntity profile = accountsProfileRepository.findByIdUser(idUser)
-        .orElseThrow(() ->
-            new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS)
-        );
+        try {
 
-        // If user call the endpoint with nothing, delete the existing image
-        // ---------------------------------------------------------------------
-        String existingImagePath = profile.getAvatar();
+            // Get profile
+            AccountsProfileEntity profile = accountsProfileRepository.findByIdUser(idUser)
+            .orElseThrow(() ->
+                    new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS)
+            );
 
-        if (file == null || file.length == 0 || file[0].isEmpty()) {
+            // If user call the endpoint with nothing, delete the existing image
+            // ---------------------------------------------------------------------
+            String existingImagePath = profile.getAvatar();
 
+            if (file == null || file.length == 0 || file[0].isEmpty()) {
+
+                if (
+                    existingImagePath != null &&
+                    !existingImagePath.isBlank()
+                ) {
+
+                    String[] parts = existingImagePath.split("/");
+                    String existingImageFilename = parts[parts.length - 1];
+                    Path existingImageFullPath = uploadDir.resolve(existingImageFilename);
+                    Files.deleteIfExists(existingImageFullPath);
+                    profile.removeAvatar();
+                    accountsProfileRepository.save(profile);
+
+                }
+
+                // Return response avatar null
+                Map<String, Object> response =
+                        new LinkedHashMap<>();
+
+                response.put("avatar", null);
+
+                return response;
+
+            }
+            // ---------------------------------------------------------------------
+
+            // Only one image
+            // ---------------------------------------------------------------------
+            if (file.length != 1) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+            }
+            // ---------------------------------------------------------------------
+
+            // Images only
+            // ---------------------------------------------------------------------
+            String contentType = file[0].getContentType();
+
+            if (
+                contentType == null ||
+                (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))
+            ) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+            }
+            // ---------------------------------------------------------------------
+
+            // Image too large
+            // ---------------------------------------------------------------------
+            long maxSizeInBytes = 1 * 1024 * 1024;
+
+            if (file[0].getSize() > maxSizeInBytes) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+            }
+            // ---------------------------------------------------------------------
+
+            // If user pass a new image, delete the existing one
+            // ---------------------------------------------------------------------
             if (
                 existingImagePath != null &&
                 !existingImagePath.isBlank()
             ) {
 
+                // Extract only the image filename
                 String[] parts = existingImagePath.split("/");
-                String existingImageFilename =
-                    parts[parts.length - 1];
+                String existingImageFilename = parts[parts.length - 1];
 
-                Path existingImageFullPath =
-                    uploadDir.resolve(existingImageFilename);
-
+                // Build full path to the existing image file
+                Path existingImageFullPath = uploadDir.resolve(existingImageFilename);
                 Files.deleteIfExists(existingImageFullPath);
 
-                profile.removeAvatar();
+            }
+            // ---------------------------------------------------------------------
 
-                accountsProfileRepository.save(profile);
+            // Image validation
+            // ---------------------------------------------------------------------
+            BufferedImage bufferedImage;
 
+            try (InputStream inputStream = file[0].getInputStream()) {
+                bufferedImage = ImageIO.read(inputStream);
             }
 
-            // Return response avatar null
-            Map<String, Object> response =
-                new LinkedHashMap<>();
+            if (bufferedImage == null) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+            }
 
-            response.put("avatar", null);
+            if (bufferedImage.getWidth() < 32 || bufferedImage.getHeight() < 32 ) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+            }
 
+            if (bufferedImage.getWidth() > 4000 || bufferedImage.getHeight() > 4000) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+            }
+            // ---------------------------------------------------------------------
+
+            // Save image
+            // ---------------------------------------------------------------------
+            String generatedName = UUID.randomUUID() + ".png";
+            Path targetPath = uploadDir.resolve(generatedName).normalize();
+
+            if (!targetPath.startsWith(uploadDir)) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+            }
+
+            ImageIO.write(bufferedImage, "png", targetPath.toFile() );
+            // ---------------------------------------------------------------------
+
+            // Save the generated image ID to the user's profile
+            // ---------------------------------------------------------------------
+            String avatarUrl = "/static/uploads/avatar/" + generatedName;
+            profile.updateAvatar(avatarUrl);
+            accountsProfileRepository.save(profile);
+            // ---------------------------------------------------------------------
+
+            // Return
+            Map<String, Object> response =new LinkedHashMap<>();
+            response.put("avatar", avatarUrl);
             return response;
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        // ---------------------------------------------------------------------
-
-        // Only one image
-        // ---------------------------------------------------------------------
-        if (file.length != 1) {
-            throw new DomainException(
-                DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR
-            );
-        }
-        // ---------------------------------------------------------------------
-
-        // Images only
-        // ---------------------------------------------------------------------
-        String contentType = file[0].getContentType();
-
-        if (
-            contentType == null ||
-            (
-                !contentType.equals("image/jpeg") &&
-                !contentType.equals("image/png")
-            )
-        ) {
-            throw new DomainException(
-                DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR
-            );
-        }
-        // ---------------------------------------------------------------------
-
-        // Image too large
-        // ---------------------------------------------------------------------
-        long maxSizeInBytes = 1 * 1024 * 1024;
-
-        if (file[0].getSize() > maxSizeInBytes) {
-            throw new DomainException(
-                DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR
-            );
-        }
-        // ---------------------------------------------------------------------
-
-        // If user pass a new image, delete the existing one
-        // ---------------------------------------------------------------------
-        if (
-            existingImagePath != null &&
-            !existingImagePath.isBlank()
-        ) {
-
-            // Extract only the image filename
-            String[] parts = existingImagePath.split("/");
-            String existingImageFilename =
-                parts[parts.length - 1];
-
-            // Build full path to the existing image file
-            Path existingImageFullPath =
-                uploadDir.resolve(existingImageFilename);
-
-            Files.deleteIfExists(existingImageFullPath);
-
-        }
-        // ---------------------------------------------------------------------
-
-        // Image validation
-        // ---------------------------------------------------------------------
-        BufferedImage bufferedImage;
-
-        try (InputStream inputStream =
-                 file[0].getInputStream()) {
-
-            bufferedImage = ImageIO.read(inputStream);
-
-        }
-
-        if (bufferedImage == null) {
-            throw new DomainException(
-                DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR
-            );
-        }
-
-        if (
-            bufferedImage.getWidth() < 32 ||
-            bufferedImage.getHeight() < 32
-        ) {
-            throw new DomainException(
-                DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR
-            );
-        }
-
-        if (
-            bufferedImage.getWidth() > 4000 ||
-            bufferedImage.getHeight() > 4000
-        ) {
-            throw new DomainException(
-                DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR
-            );
-        }
-        // ---------------------------------------------------------------------
-
-        // Save image
-        // ---------------------------------------------------------------------
-        String generatedName =
-            UUID.randomUUID() + ".png";
-
-        Path targetPath =
-            uploadDir.resolve(generatedName)
-            .normalize();
-
-        if (!targetPath.startsWith(uploadDir)) {
-            throw new DomainException(
-                DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR
-            );
-        }
-
-        ImageIO.write(
-            bufferedImage,
-            "png",
-            targetPath.toFile()
-        );
-        // ---------------------------------------------------------------------
-
-        // Save the generated image ID to the user's profile
-        // ---------------------------------------------------------------------
-        String avatarUrl =
-            "/static/uploads/avatar/" + generatedName;
-
-        profile.updateAvatar(avatarUrl);
-
-        accountsProfileRepository.save(profile);
-        // ---------------------------------------------------------------------
-
-        // Return
-        Map<String, Object> response =
-            new LinkedHashMap<>();
-
-        response.put("avatar", avatarUrl);
-
-        return response;
 
     }
 
