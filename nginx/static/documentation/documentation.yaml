@@ -828,6 +828,64 @@ paths:
                     type: string
                     example: ACCOUNTS_PROFILE_UPDATED_SUCCESSFULLY
 
+  # ACCOUNTS - AVATAR
+  "/ACCOUNTS_BASE_URL_REPLACE/profile/avatar":
+    put:
+      summary: Update avatar
+      description: |-
+        Uploads or removes the profile avatar of the authenticated user.
+
+        If a valid image file is provided, it replaces any existing avatar and returns the new URL.
+        If no file is provided, the existing avatar is deleted and `null` is returned.
+
+        **File requirements:**
+
+        - Accepted formats: `image/jpeg` and `image/png`.
+        - Maximum file size: 1 MB.
+        - Minimum dimensions: 32 × 32 pixels.
+        - Maximum dimensions: 4000 × 4000 pixels.
+        - Only one file is accepted per request.
+      tags:
+        - Accounts
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: Image file to upload (JPEG or PNG). Omit this field to remove the existing avatar.
+      responses:
+        "200":
+          description: Avatar updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_AVATAR_SUCCESSFULLY
+                  data:
+                    type: object
+                    properties:
+                      avatar:
+                        type: string
+                        nullable: true
+                        description: URL of the uploaded avatar, or null if the avatar was removed.
+                        example: "/static/public/uploads/avatar/a3f9c2e1-b7d0-4f8a-9c2e-1b7d04f8a9c2.png"
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
