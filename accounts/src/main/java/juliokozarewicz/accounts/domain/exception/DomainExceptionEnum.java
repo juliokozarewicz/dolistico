@@ -25,6 +25,9 @@ public enum DomainExceptionEnum {
     ACCOUNTS_EXPIRED_LINK,
     ACCOUNTS_INVALID_PIN,
     ACCOUNTS_UPLOAD_AVATAR_ERROR,
+    ACCOUNTS_AVATAR_ONLY_ONE_IMAGE_ERROR,
+    ACCOUNTS_AVATAR_ONLY_IMAGE_ERROR,
+    ACCOUNTS_AVATAR_IMAGE_TOO_LARGE_ERROR,
 
     // ============================================== ( domain error codes end )
 

@@ -97,7 +97,7 @@ public class AccountsAvatarUseCase {
             // Only one image
             // ---------------------------------------------------------------------
             if (file.length != 1) {
-                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_AVATAR_ONLY_ONE_IMAGE_ERROR);
             }
             // ---------------------------------------------------------------------
 
@@ -109,7 +109,7 @@ public class AccountsAvatarUseCase {
                 contentType == null ||
                 (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))
             ) {
-                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_AVATAR_ONLY_IMAGE_ERROR);
             }
             // ---------------------------------------------------------------------
 
@@ -118,7 +118,7 @@ public class AccountsAvatarUseCase {
             long maxSizeInBytes = 1 * 1024 * 1024;
 
             if (file[0].getSize() > maxSizeInBytes) {
-                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_AVATAR_IMAGE_TOO_LARGE_ERROR);
             }
             // ---------------------------------------------------------------------
 
@@ -157,7 +157,7 @@ public class AccountsAvatarUseCase {
             }
 
             if (bufferedImage.getWidth() > 4000 || bufferedImage.getHeight() > 4000) {
-                throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_AVATAR_IMAGE_TOO_LARGE_ERROR);
             }
             // ---------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ public class AccountsAvatarUseCase {
             return response;
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DomainException(DomainExceptionEnum.ACCOUNTS_UPLOAD_AVATAR_ERROR);
         }
 
     }
