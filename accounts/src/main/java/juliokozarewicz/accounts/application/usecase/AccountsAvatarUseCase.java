@@ -82,11 +82,8 @@ public class AccountsAvatarUseCase {
             }
 
             // Return response avatar null
-            Map<String, Object> response =
-                    new LinkedHashMap<>();
-
+            Map<String, Object> response = new LinkedHashMap<>();
             response.put("avatar", null);
-
             return response;
 
         }
