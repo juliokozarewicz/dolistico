@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class AccountsProfileDTO {
 
-    private String profileImage;
+    private String avatar;
     private String name;
     private String phone;
     private String identityDocument;

@@ -40,7 +40,7 @@ public class AccountsProfileRepositoryImpl implements AccountsProfileRepository 
         .idUser(entity.getIdUser())
         .createdAt(entity.getCreatedAt())
         .updatedAt(entity.getUpdatedAt())
-        .profileImage(entity.getProfileImage())
+        .avatar(entity.getAvatar())
         .fullName(entity.getFullName())
         .phone(entity.getPhone())
         .identityDocument(entity.getIdentityDocument())
@@ -59,7 +59,7 @@ public class AccountsProfileRepositoryImpl implements AccountsProfileRepository 
             model.getIdUser(),
             model.getCreatedAt(),
             model.getUpdatedAt(),
-            model.getProfileImage(),
+            model.getAvatar(),
             model.getFullName(),
             model.getPhone(),
             model.getIdentityDocument(),

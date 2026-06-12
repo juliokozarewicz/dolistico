@@ -99,7 +99,7 @@ public class AccountsProfileService {
             dtoProfile.setGender(entity.getGender());
             dtoProfile.setBirthdate(entity.getBirthdate());
             dtoProfile.setBiography(entity.getBiography());
-            dtoProfile.setProfileImage(entity.getProfileImage());
+            dtoProfile.setProfileImage(entity.getAvatar());
             dtoProfile.setLanguage(entity.getLanguage());
             dtoProfile.setTheme(entity.getTheme());
 

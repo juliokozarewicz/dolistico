@@ -24,7 +24,7 @@ public class AccountsProfileModel {
     private Instant updatedAt;
 
     @Column(length = 512)
-    private String profileImage;
+    private String avatar;
 
     @Column(length = 256)
     private String fullName;

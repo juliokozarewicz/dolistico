@@ -98,7 +98,7 @@ public class AccountsAvatarCreateService {
             // If user call the endpoint with nothing, delete the existing image
             // ---------------------------------------------------------------------
             AccountsProfileEntity profile = findProfileUser.get();
-            String existingImagePath = profile.getProfileImage();
+            String existingImagePath = profile.getAvatar();
 
             if ( file == null || file.length == 0 || file[0].isEmpty() ) {
 

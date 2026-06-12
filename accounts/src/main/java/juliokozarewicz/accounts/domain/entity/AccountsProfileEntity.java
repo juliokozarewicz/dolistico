@@ -35,7 +35,7 @@ public class AccountsProfileEntity {
     private UUID idUser;
     private Instant createdAt;
     private Instant updatedAt;
-    private String profileImage;
+    private String avatar;
     private String fullName;
     private String phone;
     private String identityDocument;
@@ -50,7 +50,7 @@ public class AccountsProfileEntity {
         UUID idUser,
         Instant createdAt,
         Instant updatedAt,
-        String profileImage,
+        String avatar,
         String fullName,
         String phone,
         String identityDocument,
@@ -65,7 +65,7 @@ public class AccountsProfileEntity {
         this.idUser = idUser;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.profileImage = profileImage;
+        this.avatar = avatar;
         this.fullName = fullName;
         this.phone = phone;
         this.identityDocument = identityDocument;
@@ -365,6 +365,18 @@ public class AccountsProfileEntity {
             throw new DomainException(DomainExceptionEnum.BUSINESS_RULES_VIOLATION);
         }
 
+    }
+
+    // Remove avatar
+    public void removeAvatar() {
+        this.avatar = null;
+        this.updatedAt = Instant.now();
+    }
+
+    // Update avatar
+    public void updateAvatar(String avatar) {
+        this.avatar = avatar;
+        this.updatedAt = Instant.now();
     }
 
     // ====================================================== ( validation end )

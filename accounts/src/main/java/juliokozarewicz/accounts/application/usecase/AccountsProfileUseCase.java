@@ -63,7 +63,7 @@ public class AccountsProfileUseCase {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("createdAt", profile.getCreatedAt());
         response.put("updatedAt", profile.getUpdatedAt());
-        response.put("profileImage", profile.getProfileImage());
+        response.put("avatar", profile.getAvatar());
         response.put("email", userEmail);
         response.put("fullName", profile.getFullName());
         response.put("phone", profile.getPhone());

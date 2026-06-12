@@ -24,6 +24,7 @@ public enum DomainExceptionEnum {
     ACCOUNTS_USER_ALREADY_EXISTS,
     ACCOUNTS_EXPIRED_LINK,
     ACCOUNTS_INVALID_PIN,
+    ACCOUNTS_UPLOAD_AVATAR_ERROR,
 
     // ============================================== ( domain error codes end )
 

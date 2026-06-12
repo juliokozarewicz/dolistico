@@ -30,7 +30,7 @@ public class AccountsProfileEntity {
     private Instant updatedAt;
 
     @Column(length = 555, nullable = true)
-    private String profileImage;
+    private String avatar;
 
     @Column(length = 256, nullable = true)
     private String name;
