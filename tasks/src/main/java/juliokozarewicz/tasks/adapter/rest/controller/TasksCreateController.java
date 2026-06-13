@@ -57,10 +57,7 @@ public class TasksCreateController {
 
         // DTO error
         @Valid @RequestBody TasksCreateUpadateDTO tasksCreateUpadateDTO,
-        BindingResult bindingResult,
-
-        // Request for auth
-        HttpServletRequest request
+        BindingResult bindingResult
 
     ) {
 

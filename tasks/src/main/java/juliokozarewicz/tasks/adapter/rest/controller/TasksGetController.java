@@ -56,10 +56,7 @@ public class TasksGetController {
 
         // DTO error
         @Valid TasksGetDTO tasksGetDTO,
-        BindingResult bindingResult,
-
-        // Request for auth
-        HttpServletRequest request
+        BindingResult bindingResult
 
     ) {
 

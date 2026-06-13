@@ -51,10 +51,7 @@ public class AccountsProfileUpdateController {
 
         // DTO error
         @Valid @RequestBody AccountsProfileUpdateDTO accountsProfileUpdateDTO,
-        BindingResult bindingResult,
-
-        // Request for auth
-        HttpServletRequest request
+        BindingResult bindingResult
 
     ) {
 

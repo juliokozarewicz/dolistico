@@ -56,10 +56,7 @@ public class TasksDeleteController {
     public ResponseEntity delete(
 
         // DTO error
-        @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
-
-        // Request for auth
-        HttpServletRequest request
+        @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO
 
     ) {
 

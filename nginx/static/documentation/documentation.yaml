@@ -358,7 +358,7 @@ paths:
                     example: 200
                   messageCode:
                     type: string
-                    example: ACCOUNTS_PASSWORD_LINK_SUCCESSFULLY
+                    example: ACCOUNTS_UPDATE_PASSWORD_REQUEST_SUCCESSFULLY
 
   # ACCOUNTS - UPDATE PASSWORD CONFIRM
   "/ACCOUNTS_BASE_URL_REPLACE/password/update/confirm":

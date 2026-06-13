@@ -56,10 +56,7 @@ TasksUpdateController {
         // DTO error
         @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
         @Valid @RequestBody TasksCreateUpadateDTO tasksCreateUpadateDTO,
-        BindingResult bindingResult,
-
-        // Request for auth
-        HttpServletRequest request
+        BindingResult bindingResult
 
     ) {
 

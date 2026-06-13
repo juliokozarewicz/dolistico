@@ -52,10 +52,7 @@ public class CategoriesGetByIdController {
     public ResponseEntity create (
 
         // DTO error
-        @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
-
-        // Request for auth
-        HttpServletRequest request
+        @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO
 
     ) {
 

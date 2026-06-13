@@ -3,7 +3,7 @@ package juliokozarewicz.accounts.adapter.rest.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import juliokozarewicz.accounts.adapter.rest.dto.AccountsRequestDTO;
-import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordConfirmConfirmDTO;
+import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdatePasswordConfirmDTO;
 import juliokozarewicz.accounts.adapter.rest.dto.StandardResponseDTO;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalSuccessEnum;
 import juliokozarewicz.accounts.application.usecase.AccountsUpdatePasswordConfirmUseCase;
@@ -52,7 +52,7 @@ public class AccountsUpdatePasswordConfirmController {
         Locale locale,
 
         // DTO error
-        @Valid @RequestBody AccountsUpdatePasswordConfirmConfirmDTO accountsUpdatePasswordConfirmDTO,
+        @Valid @RequestBody AccountsUpdatePasswordConfirmDTO accountsUpdatePasswordConfirmDTO,
         BindingResult bindingResult,
 
         HttpServletRequest request

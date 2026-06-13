@@ -54,10 +54,7 @@ public class CategoriesGetController {
 
         // DTO error
         @Valid CategoriesGetDTO categoriesGetDTO,
-        BindingResult bindingResult,
-
-        // Request for auth
-        HttpServletRequest request
+        BindingResult bindingResult
 
     ) {
 

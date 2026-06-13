@@ -51,10 +51,7 @@ public class CategoriesUpdateController {
         // DTO error
         @Valid @PathVariable ValidationIdentityDTO validationIdentityDTO,
         @Valid @RequestBody CategoriesCreateUpdateDTO categoriesCreateUpdateDTO,
-        BindingResult bindingResult,
-
-        // Request for auth
-        HttpServletRequest request
+        BindingResult bindingResult
 
     ) {
 

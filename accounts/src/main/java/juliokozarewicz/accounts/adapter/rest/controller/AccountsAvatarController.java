@@ -50,8 +50,7 @@ public class AccountsAvatarController {
     public ResponseEntity<StandardResponseDTO> handle (
 
         // Request for auth
-        @RequestParam(value = "avatar", required = false) MultipartFile[] file,
-        HttpServletRequest request
+        @RequestParam(value = "avatar", required = false) MultipartFile[] file
 
     ) throws IOException {
 

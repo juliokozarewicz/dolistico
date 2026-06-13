@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import juliokozarewicz.accounts.adapter.rest.enums.GlobalExceptionEnum;
 import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordConfirmCommand;
 
-public record AccountsUpdatePasswordConfirmConfirmDTO(
+public record AccountsUpdatePasswordConfirmDTO(
 
     @NotBlank(message = GlobalExceptionEnum.ACCOUNTS_FIELD_CANNOT_BE_EMPTY_DTO)
     @Pattern(
