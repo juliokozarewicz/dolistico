@@ -886,6 +886,55 @@ paths:
                         description: URL of the uploaded avatar, or null if the avatar was removed.
                         example: "/static/public/uploads/avatar/a3f9c2e1-b7d0-4f8a-9c2e-1b7d04f8a9c2.png"
 
+  # ACCOUNTS - UPDATE EMAIL REQUEST
+  "/ACCOUNTS_BASE_URL_REPLACE/email/update/request":
+    post:
+      summary: Email update request
+      description: |-
+        Initiates the email update flow for the authenticated user.
+
+        Upon request, two messages are sent simultaneously:
+        - A confirmation link with a token is sent to the **current** email address.
+        - A PIN code is sent to the **new** email address.
+
+        Both the token and the PIN must be provided together in the confirm step to complete the email update.
+      tags:
+        - Accounts
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newEmail
+              properties:
+                newEmail:
+                  type: string
+                  format: email
+                  maxLength: 256
+                  example: new.email@example.com
+      responses:
+        "200":
+          description: Email update request processed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_UPDATE_EMAIL_REQUEST_SUCCESSFULLY
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
