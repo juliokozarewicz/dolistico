@@ -103,7 +103,7 @@ public class AccountsUpdateEmailRequestUseCase {
             (String) oldUser.get("id"),
             generatedPinEncrypted,
             accountsUpdateEmailRequestCommand.newEmail(),
-            AccountsUpdateEnum.ACCOUNTS_UPDATE_PASSWORD.getReasonCode()
+            AccountsUpdateEnum.ACCOUNTS_UPDATE_EMAIL.getReasonCode()
         );
 
         // save token with email in cache
