@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class AccountsUpdatePasswordRequestProducer {
+public class AccountsUpdateEmailRequestPINProducer {
 
     // ==================================================== ( constructor init )
 
@@ -31,12 +31,12 @@ public class AccountsUpdatePasswordRequestProducer {
     private String publicDomain;
     // -------------------------------------------------------------------------
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdatePasswordRequestProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountsUpdateEmailRequestPINProducer.class);
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
 
-    public AccountsUpdatePasswordRequestProducer(
+    public AccountsUpdateEmailRequestPINProducer(
 
         KafkaTemplate<String, byte[]> kafkaTemplate,
         ObjectMapper objectMapper,
@@ -57,7 +57,7 @@ public class AccountsUpdatePasswordRequestProducer {
 
         Locale locale,
         String email,
-        String commandURL
+        String commandPIN
 
     ) {
 
@@ -65,7 +65,7 @@ public class AccountsUpdatePasswordRequestProducer {
 
             // Main template
             ClassPathResource templateResource = new ClassPathResource(
-                "templates/email/AccountsUpdatePasswordRequest.html"
+                "templates/email/accountsUpdateEmailRequestPIN.html"
             );
 
             String message = new String(
@@ -105,13 +105,13 @@ public class AccountsUpdatePasswordRequestProducer {
                 )
 
                 .replace(
-                    "{{email_account_reset_password_click}}",
-                    messageSource.getMessage("email_account_reset_password_click", null, locale)
+                    "{{email_account_update_email_request_pin_message}}",
+                    messageSource.getMessage("email_account_update_email_request_pin_message", null, locale)
                 )
 
                 .replace(
-                    "{{email_click_here_link}}",
-                    messageSource.getMessage("email_click_here_link", null, locale)
+                    "{{commandPIN}}",
+                    commandPIN
                 )
 
                 .replace(
@@ -127,17 +127,12 @@ public class AccountsUpdatePasswordRequestProducer {
                 .replace(
                     "{{email_footer_message}}",
                     messageSource.getMessage("email_footer_message", null, locale)
-                )
-
-                .replace(
-                    "{{commandURL}}",
-                    commandURL
                 );
 
             // Create JSON payload
             AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(
                 email,
-                messageSource.getMessage("email_account_subject_update_password", null, locale),
+                messageSource.getMessage("email_account_update_email_subject", null, locale),
                 message.toString()
             );
 
@@ -155,7 +150,7 @@ public class AccountsUpdatePasswordRequestProducer {
             // Logs
             logger.atError()
             .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
-            .log("Error producing message: [ AccountsUpdatePasswordRequestProducer.execute() ] : ", e);
+            .log("Error producing message: [ AccountsLoginRequestProducer.execute() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
 

@@ -2,12 +2,12 @@ package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsUpdateEmailCacheCommand;
 import juliokozarewicz.accounts.application.command.AccountsUpdateEmailRequestCommand;
-import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordCacheCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
-import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordRequestProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailRequestPINProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailRequestURLProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -34,12 +34,16 @@ public class AccountsUpdateEmailRequestUseCase {
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
+    private final AccountsUpdateEmailRequestURLProducer accountsUpdateEmailRequestURLProducer;
+    private final AccountsUpdateEmailRequestPINProducer accountsUpdateEmailRequestPINProducer;
 
     public AccountsUpdateEmailRequestUseCase(
 
         Encryption encryption,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        AccountsUpdateEmailRequestURLProducer accountsUpdateEmailRequestURLProducer,
+        AccountsUpdateEmailRequestPINProducer accountsUpdateEmailRequestPINProducer
 
     ) {
 
@@ -47,6 +51,8 @@ public class AccountsUpdateEmailRequestUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.cacheManager = cacheManager;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
+        this.accountsUpdateEmailRequestURLProducer = accountsUpdateEmailRequestURLProducer;
+        this.accountsUpdateEmailRequestPINProducer = accountsUpdateEmailRequestPINProducer;
 
     }
 
@@ -110,11 +116,16 @@ public class AccountsUpdateEmailRequestUseCase {
             .build()
             .toUriString();
 
-        // ##### Create email message with URL
-        accountsUpdateEmailRequestProducer.execute(
+        // Create email message with URL to old email
+        accountsUpdateEmailRequestURLProducer.execute(
             locale,
-            oldUser.get("email"),
-            updateEmailURL,
+            oldUser.get("email").toString(),
+            updateEmailURL
+        );
+
+        // Create email message with PIN to the new email
+        accountsUpdateEmailRequestPINProducer.execute(
+            locale,
             accountsUpdateEmailRequestCommand.newEmail(),
             generatedPinRaw
         );
