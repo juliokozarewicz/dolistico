@@ -7,6 +7,7 @@ import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogoutUserGlobally;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
@@ -34,6 +35,7 @@ public class AccountsUpdateEmailConfirmUseCase {
     private final Encryption encryption;
     private final AccountsEventProducer accountsEventProducer;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
+    private final AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally;
 
     public AccountsUpdateEmailConfirmUseCase(
 
@@ -41,7 +43,8 @@ public class AccountsUpdateEmailConfirmUseCase {
         AccountsKeycloakUpdateUser accountsKeycloakUpdateUser,
         Encryption encryption,
         AccountsEventProducer accountsEventProducer,
-        AccountsKeycloakGetUser accountsKeycloakGetUser
+        AccountsKeycloakGetUser accountsKeycloakGetUser,
+        AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally
 
     ) {
 
@@ -51,6 +54,7 @@ public class AccountsUpdateEmailConfirmUseCase {
         this.encryption = encryption;
         this.accountsEventProducer = accountsEventProducer;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
+        this.accountsKeycloakLogoutUserGlobally = accountsKeycloakLogoutUserGlobally;
 
     }
 
@@ -103,8 +107,12 @@ public class AccountsUpdateEmailConfirmUseCase {
             throw new DomainException(DomainExceptionEnum.ACCOUNTS_INVALID_PIN);
         }
 
-        // Retrieve current user data by ID
+        // Retrieve current user data by ID and verify
         Map<String, Object> user = accountsKeycloakGetUser.getUserById(idUser);
+
+        if (user == null || user.isEmpty()) {
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
 
         // Validate that the new email is different from the current email
         String oldEmail = (String) user.get("email");
@@ -139,12 +147,13 @@ public class AccountsUpdateEmailConfirmUseCase {
 
         accountsEventProducer.accountLogProducer(logData);
 
-        // Revoke cache
-        tokenVerificationCache.evict(accountsUpdateEmailConfirmDTO.token());
-
         // ##### Notification for both email
 
-        // ##### Revoke all active sessions to enforce re-authentication
+        // Revoke all active sessions to enforce re-authentication
+        accountsKeycloakLogoutUserGlobally.execute(idUser);
+
+        // Revoke cache
+        tokenVerificationCache.evict(accountsUpdateEmailConfirmDTO.token());
 
     }
 
