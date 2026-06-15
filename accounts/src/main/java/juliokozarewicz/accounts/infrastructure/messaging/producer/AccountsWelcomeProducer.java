@@ -88,40 +88,40 @@ public class AccountsWelcomeProducer {
             // Replace variables
             message = message
 
-                    .replace(
-                            "{{publicDomain}}",
-                            publicDomain.split(",")[0].trim()
-                    )
+                .replace(
+                        "{{publicDomain}}",
+                        publicDomain.split(",")[0].trim()
+                )
 
-                    .replace(
-                            "{{language}}",
-                            locale.getLanguage()
-                    )
+                .replace(
+                        "{{language}}",
+                        locale.getLanguage()
+                )
 
-                    .replace(
-                            "{{email_greeting}}",
-                            messageSource.getMessage("email_greeting", null, locale)
-                    )
+                .replace(
+                        "{{email_greeting}}",
+                        messageSource.getMessage("email_greeting", null, locale)
+                )
 
-                    .replace(
-                            "{{email_account_welcome_message}}",
-                            messageSource.getMessage("email_account_welcome_message", null, locale)
-                    )
+                .replace(
+                        "{{email_account_welcome_message}}",
+                        messageSource.getMessage("email_account_welcome_message", null, locale)
+                )
 
-                    .replace(
-                            "{{email_closing}}",
-                            messageSource.getMessage("email_closing", null, locale)
-                    )
+                .replace(
+                        "{{email_closing}}",
+                        messageSource.getMessage("email_closing", null, locale)
+                )
 
-                    .replace(
-                            "{{applicationTitle}}",
-                            applicationTitle.toUpperCase()
-                    )
+                .replace(
+                        "{{applicationTitle}}",
+                        applicationTitle.toUpperCase()
+                )
 
-                    .replace(
-                            "{{email_footer_message}}",
-                            messageSource.getMessage("email_footer_message", null, locale)
-                    );
+                .replace(
+                        "{{email_footer_message}}",
+                        messageSource.getMessage("email_footer_message", null, locale)
+                );
 
             // Create JSON payload
             AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(

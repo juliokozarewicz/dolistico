@@ -790,7 +790,6 @@ paths:
                 birthdate:
                   type: string
                   description: Date in YYYY-MM-DD format.
-                  pattern: "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$"
                   example: "1990-06-15"
                 biography:
                   type: string
@@ -934,6 +933,59 @@ paths:
                   messageCode:
                     type: string
                     example: ACCOUNTS_UPDATE_EMAIL_REQUEST_SUCCESSFULLY
+
+  # ACCOUNTS - UPDATE EMAIL CONFIRM
+  "/ACCOUNTS_BASE_URL_REPLACE/email/update/confirm":
+    patch:
+      summary: Email update confirm
+      description: |-
+        Finalizes the email update flow by validating the token received in the current email
+        and the PIN received in the new email.
+
+        After a successful confirmation:
+        - The email address is updated in the system.
+        - All active sessions are revoked, requiring the user to log in again.
+        - A notification email is sent to both the old and the new email address.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - pin
+              properties:
+                token:
+                  type: string
+                  description: Hexadecimal token received via the confirmation link sent to the current email address.
+                  minLength: 126
+                  maxLength: 1024
+                  example: "a3f9c2e1b7d04f8a..."
+                pin:
+                  type: string
+                  description: 6-digit PIN received at the new email address.
+                  example: "482910"
+      responses:
+        "200":
+          description: Email updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_UPDATE_EMAIL_SUCCESSFULLY
 
   ############################################################# ( accounts end )
 

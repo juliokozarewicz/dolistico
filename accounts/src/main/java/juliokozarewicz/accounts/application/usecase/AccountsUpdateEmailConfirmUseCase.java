@@ -10,6 +10,7 @@ import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogoutUserGlobally;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakUpdateUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -36,6 +37,7 @@ public class AccountsUpdateEmailConfirmUseCase {
     private final AccountsEventProducer accountsEventProducer;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally;
+    private final AccountsUpdateEmailProducer accountsUpdateEmailProducer;
 
     public AccountsUpdateEmailConfirmUseCase(
 
@@ -44,7 +46,8 @@ public class AccountsUpdateEmailConfirmUseCase {
         Encryption encryption,
         AccountsEventProducer accountsEventProducer,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
-        AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally
+        AccountsKeycloakLogoutUserGlobally accountsKeycloakLogoutUserGlobally,
+        AccountsUpdateEmailProducer accountsUpdateEmailProducer
 
     ) {
 
@@ -55,6 +58,7 @@ public class AccountsUpdateEmailConfirmUseCase {
         this.accountsEventProducer = accountsEventProducer;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsKeycloakLogoutUserGlobally = accountsKeycloakLogoutUserGlobally;
+        this.accountsUpdateEmailProducer = accountsUpdateEmailProducer;
 
     }
 
@@ -74,7 +78,7 @@ public class AccountsUpdateEmailConfirmUseCase {
 
         // If token not exist, return invalid credentials
         if ( cachedToken == null || cachedToken.get() == null ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+            throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
         }
 
         // Reason verification
@@ -85,7 +89,7 @@ public class AccountsUpdateEmailConfirmUseCase {
             cachedData.reason().trim().isEmpty() ||
             !AccountsUpdateEnum.ACCOUNTS_UPDATE_EMAIL.getReasonCode().equals(cachedData.reason())
         ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+            throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
         }
 
         // User ID extract
@@ -147,7 +151,12 @@ public class AccountsUpdateEmailConfirmUseCase {
 
         accountsEventProducer.accountLogProducer(logData);
 
-        // ##### Notification for both email
+        // Notification for both email
+        accountsUpdateEmailProducer.execute(
+            locale,
+            oldEmail,
+            cachedData.newEmail()
+        );
 
         // Revoke all active sessions to enforce re-authentication
         accountsKeycloakLogoutUserGlobally.execute(idUser);
