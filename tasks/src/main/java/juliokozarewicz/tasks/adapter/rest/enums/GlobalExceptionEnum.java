@@ -45,6 +45,7 @@ public enum GlobalExceptionEnum {
     public static final String TASKS_TOO_FEW_CHARACTERS_DTO = "TASKS_TOO_FEW_CHARACTERS_DTO";
     public static final String TASKS_FORBIDDEN_CHARACTERS_DTO = "TASKS_FORBIDDEN_CHARACTERS_DTO";
     public static final String TASKS_INVALID_ID_DTO = "TASKS_INVALID_ID_DTO";
+    public static final String TASKS_INVALID_COLOR_DTO = "TASKS_INVALID_COLOR_DTO";
     // ================================================= ( dto error codes end )
 
     public final int statusCode;

@@ -1377,9 +1377,8 @@ paths:
                   example: 0f5b7c74-9c3b-4c3a-9a45-bcfd3c6d7a1e
                 color:
                   type: string
-                  description: Optional color label for the task.
-                  maxLength: 20
-                  example: blue
+                  description: Optional HEX color label for the task.
+                  example: "#3498DB"
                 priority:
                   type: integer
                   description: Priority level of the task ranging from 1 (lowest) to 5 (highest).

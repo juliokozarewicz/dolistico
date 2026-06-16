@@ -31,8 +31,8 @@ public record TasksCreateUpadateDTO(
     @Size(min = 1, message = GlobalExceptionEnum.TASKS_FIELD_CANNOT_BE_EMPTY_DTO)
     @Size(max = 20, message = GlobalExceptionEnum.TASKS_TOO_MANY_CHARACTERS_DTO)
     @Pattern(
-        regexp = "^[^<>&'\"/]*$",
-        message = GlobalExceptionEnum.TASKS_FORBIDDEN_CHARACTERS_DTO
+        regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+        message = GlobalExceptionEnum.TASKS_INVALID_COLOR_DTO
     )
     String color,
 
