@@ -5,7 +5,7 @@ import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
-import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordRequestProducer;
+import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsDeleteRequestProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -24,22 +24,22 @@ public class AccountsDeleteRequestUseCase {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${UPDATE_PASSWORD_URL}")
-    private String updatePasswordBaseURL;
+    @Value("${DELETE_ACCOUNT_URL}")
+    private String deleteAccountBaseURL;
     // -------------------------------------------------------------------------
 
     private final Encryption encryption;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
-    private final AccountsUpdatePasswordRequestProducer accountsUpdatePasswordRequestProducer;
+    private final AccountsDeleteRequestProducer accountsDeleteRequestProducer;
 
     public AccountsDeleteRequestUseCase(
 
         Encryption encryption,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         CacheManager cacheManager,
-        AccountsUpdatePasswordRequestProducer accountsUpdatePasswordRequestProducer
+        AccountsDeleteRequestProducer accountsDeleteRequestProducer
 
     ) {
 
@@ -47,7 +47,7 @@ public class AccountsDeleteRequestUseCase {
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.cacheManager = cacheManager;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
-        this.accountsUpdatePasswordRequestProducer = accountsUpdatePasswordRequestProducer;
+        this.accountsDeleteRequestProducer = accountsDeleteRequestProducer;
 
     }
 
@@ -89,13 +89,13 @@ public class AccountsDeleteRequestUseCase {
 
         // Create URL with token
         String DeleteAccountdURL = UriComponentsBuilder
-            .fromUriString(updatePasswordBaseURL)
+            .fromUriString(deleteAccountBaseURL)
             .queryParam("token", generatedToken)
             .build()
             .toUriString();
 
         // Create email message with URL
-        accountsUpdatePasswordRequestProducer.execute(
+        accountsDeleteRequestProducer.execute(
             locale,
             (String) existingUser.get("email"),
             DeleteAccountdURL

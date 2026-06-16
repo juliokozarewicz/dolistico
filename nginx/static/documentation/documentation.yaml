@@ -987,6 +987,37 @@ paths:
                     type: string
                     example: ACCOUNTS_UPDATE_EMAIL_SUCCESSFULLY
 
+  # ACCOUNTS - DELETE REQUEST
+  "/ACCOUNTS_BASE_URL_REPLACE/delete/request":
+    post:
+      summary: Delete account request
+      description: >-
+        Initiates the account deletion flow for the authenticated user.
+        A confirmation link with a token is sent to the registered email address.
+        The token must be used in the confirm step to complete the deletion.
+      tags:
+        - Accounts
+      security:
+        - BearerAuth: [ ]
+      responses:
+        "200":
+          description: Delete request processed successfully. A confirmation link was sent to the user's email.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_DELETE_REQUEST_SUCCESSFULLY
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
