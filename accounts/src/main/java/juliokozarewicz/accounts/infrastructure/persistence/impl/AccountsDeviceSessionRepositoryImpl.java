@@ -4,8 +4,12 @@ import juliokozarewicz.accounts.domain.entity.AccountsDeviceSessionEntity;
 import juliokozarewicz.accounts.domain.repository.AccountsDeviceSessionRepository;
 import juliokozarewicz.accounts.infrastructure.persistence.jpa.AccountsDeviceSessionRepositoryJPA;
 import juliokozarewicz.accounts.infrastructure.persistence.model.AccountsDeviceSessionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -56,12 +60,23 @@ public class AccountsDeviceSessionRepositoryImpl implements AccountsDeviceSessio
     }
 
     @Override
-    public void delete(String id) {
-        accountsDeviceSessionRepositoryJPA.deleteById(UUID.fromString(id));
+    public Page<AccountsDeviceSessionEntity> findByIdUser(
+
+        UUID idUser,
+        Pageable pageable
+
+    ) {
+
+        Instant last31Days = Instant.now().minus(31, ChronoUnit.DAYS);
+
+        return accountsDeviceSessionRepositoryJPA
+        .findByIdUserAndCreatedAtGreaterThanEqual(
+            idUser,
+            last31Days,
+            pageable
+        )
+        .map(this::toEntity);
+
     }
 
-    @Override
-    public Optional<AccountsDeviceSessionEntity> findById(UUID id) {
-        return accountsDeviceSessionRepositoryJPA.findById(id).map(this::toEntity);
-    }
 }
