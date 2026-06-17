@@ -96,11 +96,6 @@ public class AccountsLoginConfirmUseCase {
         // User ID extract
         String idUser = cachedData.idUser();
 
-        // Account banned
-        if ( accountsKeycloakGetUser.isAccountBannedById(idUser) ) {
-            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
-        }
-
         // Compares the provided PIN with the stored PIN (decrypted)
         boolean pinMatch = java.util.Objects.equals(
             encryption.decrypt(cachedData.pin()),
@@ -167,13 +162,20 @@ public class AccountsLoginConfirmUseCase {
         // Email notification for new device login
         Map<String, Object> user = accountsKeycloakGetUser.getUserById(idUser);
 
-        String email = (String) user.get("email");
+        if (user == null || user.isEmpty()) {
+            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
+
+        // Account banned
+        if ( Boolean.FALSE.equals(user.get("enabled") ) ) {
+            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
+        }
 
         accountsLoginDeviceInfoProducer.execute(
             userIp,
             userAgent,
             locale,
-            email
+            (String) user.get("email")
         );
 
         // Return credentials

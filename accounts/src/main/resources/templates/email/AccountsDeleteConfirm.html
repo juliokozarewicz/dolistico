@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="{{language}}">
+
+<head>
+    <meta charset="UTF-8" />
+</head>
+
+<body style="
+    margin: 0;
+    padding: 0;
+    width: 100%;
+">
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+
+        <tr>
+            <td align="center">
+
+                <!-- MAIN CONTAINER -->
+                <table role="presentation"
+                    cellspacing="0"
+                    cellpadding="0"
+                    border="0"
+                    style="width:100%; max-width:1200px">
+
+                    <!-- EMAIL CONTENT -->
+                    <tr>
+                        <td style="
+                            font-size:15px;
+                            font-family:Arial,sans-serif;
+                            line-height:24px;
+                            color:#000000;
+                        ">
+
+                            <!-- GREETING -->
+                            <p style="margin:0;">
+                                {{email_greeting}}
+                            </p>
+
+                            <br/>
+
+                            <!-- MESSAGE -->
+                            <p style="margin:0; padding-bottom:10px;">
+                                {{email_account_delete_confirm_message}}
+                            </p>
+
+                            <br/>
+
+                            <!-- CLOSING MESSAGE -->
+                            <p style="margin:0; padding-bottom:10px;">
+                                {{email_closing}}
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    {{footer}}
+
+                </table>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</body>
+</html>

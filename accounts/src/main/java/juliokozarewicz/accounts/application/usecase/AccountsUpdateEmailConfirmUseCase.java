@@ -95,11 +95,6 @@ public class AccountsUpdateEmailConfirmUseCase {
         // User ID extract
         String idUser = cachedData.idUser();
 
-        // Account banned
-        if ( accountsKeycloakGetUser.isAccountBannedById(idUser) ) {
-            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
-        }
-
         // Compares the provided PIN with the stored PIN (decrypted)
         boolean pinMatch = java.util.Objects.equals(
             encryption.decrypt(cachedData.pin()),
@@ -116,6 +111,11 @@ public class AccountsUpdateEmailConfirmUseCase {
 
         if (user == null || user.isEmpty()) {
             throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        }
+
+        // Account banned
+        if ( Boolean.FALSE.equals(user.get("enabled") ) ) {
+            throw new DomainException(DomainExceptionEnum.NO_PERMISSION_TO_ACCESS);
         }
 
         // Validate that the new email is different from the current email
