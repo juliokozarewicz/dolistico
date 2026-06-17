@@ -27,3 +27,14 @@ CREATE TABLE IF NOT EXISTS accounts.accounts_event_log (
     old_value TEXT,
     new_value TEXT
 );
+
+-- ACCOUNT DEVICE
+CREATE TABLE IF NOT EXISTS accounts.accounts_devices (
+    id UUID PRIMARY KEY,
+    id_user UUID NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    ip_address VARCHAR(256) NOT NULL,
+    location VARCHAR(256) NOT NULL,
+    device VARCHAR(256) NOT NULL,
+    method VARCHAR(256) NOT NULL
+);

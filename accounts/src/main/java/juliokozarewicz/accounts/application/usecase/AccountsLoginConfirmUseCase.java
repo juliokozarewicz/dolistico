@@ -14,6 +14,7 @@ import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsLoginD
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -39,6 +40,7 @@ public class AccountsLoginConfirmUseCase {
     private final AccountsEventProducer accountsEventProducer;
     private final AccountsKeycloakGetUser accountsKeycloakGetUser;
     private final AccountsLoginDeviceInfoProducer accountsLoginDeviceInfoProducer;
+    private final MessageSource messageSource;
 
     public AccountsLoginConfirmUseCase(
 
@@ -48,7 +50,8 @@ public class AccountsLoginConfirmUseCase {
         Encryption encryption,
         AccountsEventProducer accountsEventProducer,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
-        AccountsLoginDeviceInfoProducer accountsLoginDeviceInfoProducer
+        AccountsLoginDeviceInfoProducer accountsLoginDeviceInfoProducer,
+        MessageSource messageSource
 
     ) {
 
@@ -60,6 +63,7 @@ public class AccountsLoginConfirmUseCase {
         this.accountsEventProducer = accountsEventProducer;
         this.accountsKeycloakGetUser = accountsKeycloakGetUser;
         this.accountsLoginDeviceInfoProducer = accountsLoginDeviceInfoProducer;
+        this.messageSource = messageSource;
 
     }
 
@@ -175,7 +179,9 @@ public class AccountsLoginConfirmUseCase {
             userIp,
             userAgent,
             locale,
-            (String) user.get("email")
+            idUser,
+            (String) user.get("email"),
+            messageSource.getMessage("email_new_login_method_password", null, locale)
         );
 
         // Return credentials

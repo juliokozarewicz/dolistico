@@ -1,5 +1,6 @@
 package juliokozarewicz.accounts.infrastructure.messaging.producer;
 
+import juliokozarewicz.accounts.application.command.AccountsDeviceSessionsCommand;
 import juliokozarewicz.accounts.application.command.AccountsSendEmailCommand;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
@@ -13,16 +14,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.databind.ObjectMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -43,7 +42,6 @@ public class AccountsLoginDeviceInfoProducer {
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
-    private final WebClient webClient;
     private final AccountsDeviceExtractor accountsDeviceExtractor;
 
     public AccountsLoginDeviceInfoProducer(
@@ -51,7 +49,6 @@ public class AccountsLoginDeviceInfoProducer {
         KafkaTemplate<String, byte[]> kafkaTemplate,
         ObjectMapper objectMapper,
         MessageSource messageSource,
-        WebClient webClient,
         AccountsDeviceExtractor accountsDeviceExtractor
 
     ) {
@@ -59,7 +56,6 @@ public class AccountsLoginDeviceInfoProducer {
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
         this.messageSource = messageSource;
-        this.webClient = webClient;
         this.accountsDeviceExtractor = accountsDeviceExtractor;
 
     }
@@ -72,17 +68,26 @@ public class AccountsLoginDeviceInfoProducer {
         String userIp,
         String userAgent,
         Locale locale,
-        String email
+        String userId,
+        String email,
+        String method
 
     ) {
 
         try {
 
-            // Date time
+            // Location
+            String loginLocation = String.valueOf(accountsDeviceExtractor.getLocationByIp(userIp, locale).get("description"));
+
+            // Device
+            String loginDevice = String.valueOf(accountsDeviceExtractor.getDeviceByUserAgent(locale, userAgent).get("description"));
+
+            // Login time
+            Instant loginInstant = Instant.now();
             String loginTime = DateTimeFormatter
                 .ofPattern("yyyy-MM-dd HH:mm:ss 'UTC'")
                 .withZone(ZoneOffset.UTC)
-                .format(Instant.now());
+                .format(loginInstant);
 
             // Main template
             ClassPathResource templateResource = new ClassPathResource(
@@ -117,12 +122,12 @@ public class AccountsLoginDeviceInfoProducer {
 
                 .replace(
                     "{{locationData}}",
-                    String.valueOf(accountsDeviceExtractor.getLocationByIp(userIp, locale).get("description"))
+                    loginLocation
                 )
 
                 .replace(
                     "{{deviceData}}",
-                    String.valueOf(accountsDeviceExtractor.getDeviceByUserAgent(locale, userAgent).get("description"))
+                    loginDevice
                 )
 
                 .replace(
@@ -131,8 +136,8 @@ public class AccountsLoginDeviceInfoProducer {
                 )
 
                 .replace(
-                    "{{email_new_login_method_password}}",
-                    messageSource.getMessage("email_new_login_method_password", null, locale)
+                    "{{email_new_login_method_message}}",
+                    method
                 )
 
                 .replace(
@@ -210,6 +215,8 @@ public class AccountsLoginDeviceInfoProducer {
                     messageSource.getMessage("email_footer_message", null, locale)
                 );
 
+            // --------------------------------------------- ( send email init )
+
             // Create JSON payload
             AccountsSendEmailCommand emailMessageMap = new AccountsSendEmailCommand(
                 email,
@@ -218,19 +225,46 @@ public class AccountsLoginDeviceInfoProducer {
             );
 
             // Convert object to bytes
-            byte[] payload = objectMapper.writeValueAsBytes(emailMessageMap);
+            byte[] payloadEmail = objectMapper.writeValueAsBytes(emailMessageMap);
 
             // Send as raw bytes
             kafkaTemplate.send(
                 AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL,
-                payload
+                payloadEmail
             ).get(5, TimeUnit.SECONDS);
+
+            // --------------------------------------------- ( send email init )
+
+            // ------------------------------------------ ( create device init )
+
+            // Create JSON payload
+            AccountsDeviceSessionsCommand deviceCommand = new AccountsDeviceSessionsCommand(
+                UUID.randomUUID(),
+                UUID.fromString(userId),
+                loginInstant,
+                userIp,
+                loginLocation,
+                loginDevice,
+                method
+            );
+
+            // Convert object to bytes
+            byte[] payloadDevice = objectMapper.writeValueAsBytes(deviceCommand);
+
+            // Send as raw bytes
+            kafkaTemplate.send(
+                AccountsMessagingTopicEnum.ACCOUNTS_CREATE_LOGIN_DEVICE,
+                payloadDevice
+            ).get(5, TimeUnit.SECONDS);
+
+            // ------------------------------------------ ( create device init )
 
         } catch (Exception e) {
 
             // Logs
             logger.atError()
-            .addKeyValue("topic", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
+            .addKeyValue("topicEmail", AccountsMessagingTopicEnum.SEND_SIMPLE_EMAIL)
+            .addKeyValue("topicDevice", AccountsMessagingTopicEnum.ACCOUNTS_CREATE_LOGIN_DEVICE)
             .log("Error producing message: [ AccountsLoginDeviceInfoProducer.execute() ] : ", e);
 
             throw new DomainException(DomainExceptionEnum.INTERNAL_INSTABILITY);
