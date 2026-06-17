@@ -1018,6 +1018,64 @@ paths:
                     type: string
                     example: ACCOUNTS_DELETE_REQUEST_SUCCESSFULLY
 
+  # ACCOUNTS - DELETE REQUEST
+  "/ACCOUNTS_BASE_URL_REPLACE/delete/confirm":
+    delete:
+      summary: Delete account confirm
+      description: |-
+        Finalizes the account deletion flow by validating the token received by email
+        and the user's current password.
+    
+        After a successful confirmation:
+        - The account is permanently deleted.
+        - A notification email is sent to the user's email address.
+      tags:
+        - Accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - password
+              properties:
+                token:
+                  type: string
+                  description: Hexadecimal token received via the confirmation link sent to the registered email address.
+                  minLength: 126
+                  maxLength: 1024
+                  example: "a3f9c2e1b7d04f8a..."
+                password:
+                  type: string
+                  format: password
+                  description: >-
+                    Current account password. Must be between 12 and 256 characters and contain at least
+                    one uppercase letter, one lowercase letter, one digit, and one special character
+                    (! @ # $ % ^ & *). The characters < > & ' " / are not allowed.
+                  minLength: 12
+                  maxLength: 256
+                  example: "MyStr0ng!Pass"
+      responses:
+        "200":
+          description: Account deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-05-21T18:47:01Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_DELETE_SUCCESSFULLY
+
   ############################################################# ( accounts end )
 
   ############################################################### ( tasks init )
@@ -1333,9 +1391,9 @@ paths:
         Creates a new task for the authenticated user. Every task belongs exclusively 
         to the authenticated user — it is not possible to access or modify another 
         user's data.
-        
+
         **Business rules:**
-        
+
         - `priority` must be between `1` (lowest) and `5` (highest).
         - `startTime` and `endTime` must always be provided together. Both must fall on the same calendar day, and `startTime` must be before `endTime`. When `dueDate` is also provided, all three must fall on the same day.
         - When `allDay` is `true`, `startTime` and `endTime` must not be provided.

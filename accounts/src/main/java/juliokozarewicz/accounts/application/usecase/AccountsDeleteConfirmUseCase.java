@@ -1,17 +1,16 @@
 package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.adapter.rest.dto.AccountsDeleteConfirmDTO;
-import juliokozarewicz.accounts.adapter.rest.dto.AccountsUpdateEmailConfirmDTO;
 import juliokozarewicz.accounts.application.command.AccountsCreateLogCommand;
-import juliokozarewicz.accounts.application.command.AccountsUpdateEmailCacheCommand;
+import juliokozarewicz.accounts.application.command.AccountsDeleteCacheCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
-import juliokozarewicz.accounts.infrastructure.keycloak.*;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakDeleteUser;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
+import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakLogin;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsDeleteConfirmProducer;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsEventProducer;
-import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailProducer;
-import juliokozarewicz.accounts.infrastructure.security.Encryption;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -84,7 +83,7 @@ public class AccountsDeleteConfirmUseCase {
             }
 
             // Reason verification
-            AccountsUpdateEmailCacheCommand cachedData = (AccountsUpdateEmailCacheCommand) cachedToken.get();
+            AccountsDeleteCacheCommand cachedData = (AccountsDeleteCacheCommand) cachedToken.get();
 
             if (
                 cachedData.reason() == null ||
