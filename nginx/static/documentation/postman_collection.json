@@ -1,1278 +1,1170 @@
 {
-  "info": {
-    "_postman_id": "42e78f1d-4460-4b99-a7d5-b9a04327b5ce",
-    "name": "DOLISTICO",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "34562005"
-  },
-  "item": [
-    {
-      "name": "1 - HELLO WORLD",
-      "item": [
-        {
-          "name": "helloworld",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/v1/helloworld?message=test_message",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "helloworld"
-              ],
-              "query": [
-                {
-                  "key": "message",
-                  "value": "test_message"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "2 - ACCOUNTS",
-      "item": [
-        {
-          "name": "signup",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"My Name\",\n    \"email\": \"email@email.com\",\n    \"password\": \"Test123456!\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/signup",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "signup"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "activate-account",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"token\": \"405c614d794628c578068d2d1b903e5346a71672b34905bec55ef2f5a33fd0e9dfb6ef2b4ba0b282f806cff37bdd95c8bf4e92327d5fc96e0ef672b15cbdce0e\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/activate-account",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "activate-account"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update-password-link",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"email@email.com\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/update-password-link",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "update-password-link"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update-password",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"password\": \"Test123456789!\",\n  \"token\": \"ff0aecc9606800403377b1ee18415d9ecab5f9749b136cadfd4c2ac10b2e94a4712bf1bc9a017efb48f703beb7a88e676cbe5e431d29555b32351534eb288c9e\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/update-password",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "update-password"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {\r",
-                  "    var jsonData = pm.response.json();\r",
-                  "    pm.collectionVariables.set(\"userLoginToken\", jsonData.data.userLoginToken);\r",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"email@email.com\",\n    \"password\": \"Test123456!\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "login-confirmation",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {\r",
-                  "    var jsonData = pm.response.json();\r",
-                  "    pm.collectionVariables.set(\"access\", jsonData.data.access);\r",
-                  "    pm.collectionVariables.set(\"refresh\", jsonData.data.refresh);\r",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"userLoginToken\": \"{{userLoginToken}}\",\n    \"pin\": \"832557\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/login-confirmation",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "login-confirmation"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "refresh-login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {\r",
-                  "    var jsonData = pm.response.json();\r",
-                  "    pm.collectionVariables.set(\"access\", jsonData.data.access);\r",
-                  "    pm.collectionVariables.set(\"refresh\", jsonData.data.refresh);\r",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"refreshToken\": \"{{refresh}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/refresh-login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "refresh-login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get-profile",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/get-profile",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "get-profile"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "upload-avatar",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "avatarImage",
-                  "type": "file",
-                  "value": null
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/upload-avatar",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "upload-avatar"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update-profile",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"name\": \"Updated Name\",\r\n    \"phone\": \"+55 00 99999-9999\",\r\n    \"identityDocument\": \"123456789\",\r\n    \"gender\": \"male\",\r\n    \"birthdate\": \"2000-01-01\",\r\n    \"biography\": \"abc\",\r\n    \"language\": \"en-US\",\r\n    \"theme\": \"dark\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/update-profile",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "update-profile"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create-address",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"addressName\": \"home\",\r\n  \"zipCode\": \"90210\",\r\n  \"street\": \"Sunset Boulevard\",\r\n  \"number\": \"123\",\r\n  \"addressLineTwo\": \"Apt 4B\",\r\n  \"neighborhood\": \"Beverly Hills\",\r\n  \"city\": \"Los Angeles\",\r\n  \"state\": \"California\",\r\n  \"country\": \"USA\",\r\n  \"addressType\": \"Home\",\r\n  \"isPrimary\": true,\r\n  \"landmark\": \"Near Rodeo Drive\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/create-address",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "create-address"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get-address",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/get-address",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "get-address"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete-address",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/delete-address/019c3300-eea1-7745-83ab-4f9b634413d6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "delete-address",
-                "019c3300-eea1-7745-83ab-4f9b634413d6"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update-email-link",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"newEmail\": \"email@email.com\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/update-email-link",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "update-email-link"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update-email",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"pin\": \"579335\",\n  \"token\": \"fHauDV8xe7pBYdb5yB5Ljn6yfIPBsmGVCXK_oyqZjrR0CMFAW4I19H38wZfHkvDE744UwGXOm4bytO2gVsag0bCwV4CR95cvdAYo5YI3-DUt8v8kFhnAN8DIMGnaPdm_\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/update-email",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "update-email"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "connected-devices",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "pt",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/connected-devices",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "connected-devices"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete-account-link",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{access}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/delete-account-link",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "delete-account-link"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete-account",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept-Language",
-                "value": "en",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"token\": \"yVEGeiA17tUzATtBcT9SoIiLOg5aZSb6ctt6pZWh9NYWAlWm5Glf9wVElJWLoRFiFh2XWrO1h_1ru4NTq16nGUWxRKtNdxHA0Rnx9Qz2F1CkSVAby4qIfBas_ttldKCW\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/v1/accounts/delete",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "accounts",
-                "delete"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "3 - TASKS",
-      "item": [
-        {
-          "name": "Category",
-          "item": [
-            {
-              "name": "create category",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept-Language",
-                    "value": "pt",
-                    "type": "text"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"categoryName\": \"credit card\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks/category",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks",
-                    "category"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "get categories",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept-Language",
-                    "value": "pt",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks/category?pageSize=10&pageNumber=1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks",
-                    "category"
-                  ],
-                  "query": [
-                    {
-                      "key": "categoryName",
-                      "value": "test",
-                      "disabled": true
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10"
-                    },
-                    {
-                      "key": "pageNumber",
-                      "value": "1"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "get category by ID",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept-Language",
-                    "value": "pt",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks/category/d7d95895-2ec0-4ecf-bf22-75bdcc699440",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks",
-                    "category",
-                    "d7d95895-2ec0-4ecf-bf22-75bdcc699440"
-                  ],
-                  "query": [
-                    {
-                      "key": "categoryName",
-                      "value": "test",
-                      "disabled": true
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "update category by ID",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Accept-Language",
-                    "value": "pt",
-                    "type": "text"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"categoryName\": \"updated category\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks/category/d7d95895-2ec0-4ecf-bf22-75bdcc699440",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks",
-                    "category",
-                    "d7d95895-2ec0-4ecf-bf22-75bdcc699440"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "delete category by ID",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks/category/43578e00-f0bc-446b-8265-019d9dfe22a1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks",
-                    "category",
-                    "43578e00-f0bc-446b-8265-019d9dfe22a1"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Tasks",
-          "item": [
-            {
-              "name": "create task",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"taskName\": \"supermarket shopping\",\r\n  \"description\": \"Purchase fruits, vegetables, and cleaning supplies\",\r\n  \"category\": \"0ad995a9-aa8c-4f7d-955c-fbfa2ca2509a\",\r\n  \"color\": \"blue\",\r\n  \"priority\": 5,\r\n  \"startTime\": \"2026-03-02T08:00:00\",\r\n  \"endTime\": \"2026-03-02T12:00:00\",\r\n  \"location\": \"Supermarket Downtown\",\r\n  \"allDay\": false,\r\n  \"reminderTime\": \"2026-03-02T09:30:00\",\r\n  \"notifyActive\": true,\r\n  \"status\": \"PENDING\",\r\n  \"dueDate\": \"2026-03-02T12:00:00\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "get tasks",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks?pageNumber=1&pageSize=10",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks"
-                  ],
-                  "query": [
-                    {
-                      "key": "taskName",
-                      "value": "name",
-                      "disabled": true
-                    },
-                    {
-                      "key": "category",
-                      "value": "finance",
-                      "disabled": true
-                    },
-                    {
-                      "key": "priority",
-                      "value": "2",
-                      "disabled": true
-                    },
-                    {
-                      "key": "location",
-                      "value": "cine",
-                      "disabled": true
-                    },
-                    {
-                      "key": "status",
-                      "value": "pending",
-                      "disabled": true
-                    },
-                    {
-                      "key": "dueDateInit",
-                      "value": "2026-03-07",
-                      "disabled": true
-                    },
-                    {
-                      "key": "dueDateEnd",
-                      "value": "2026-03-08",
-                      "disabled": true
-                    },
-                    {
-                      "key": "pageNumber",
-                      "value": "1"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "get one task",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks/08fe85ec-7418-462d-b9f2-8faed4035722",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks",
-                    "08fe85ec-7418-462d-b9f2-8faed4035722"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "update task",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"taskName\": \"Updated Task\",\r\n  \"description\": \"Purchase fruits, vegetables, and cleaning supplies\",\r\n  \"category\": \"4d372a5c-bfe9-47af-8128-d5eb86c3e074\",\r\n  \"color\": \"blue\",\r\n  \"priority\": 5,\r\n  \"startTime\": \"2026-03-02T08:00:00\",\r\n  \"endTime\": \"2026-03-02T12:00:00\",\r\n  \"location\": \"Supermarket Downtown\",\r\n  \"allDay\": false,\r\n  \"reminderTime\": \"2026-03-02T09:30:00\",\r\n  \"notifyActive\": true,\r\n  \"status\": \"PENDING\",\r\n  \"dueDate\": \"2026-03-02T12:00:00\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks/48a260be-9c66-4fc3-a89e-10a0afef380f",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks",
-                    "48a260be-9c66-4fc3-a89e-10a0afef380f"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "delete task",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{access}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/v1/tasks/996fd74b-8825-443a-9cbc-5745ff1f773b",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "tasks",
-                    "996fd74b-8825-443a-9cbc-5745ff1f773b"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "base_url",
-      "value": "https://request.juliokozarewicz.com"
-    },
-    {
-      "key": "access",
-      "value": "v7DRq6Vb_rMpUkc0g55313bdHlpBNYneBke5w_EYmNDomcqUpSdD9kVCEeLjA9PE0pxOaqaxtnpi-wIQbkE96WtAr8SGyEx_ZB_Kb3QLEy7OtR5imxqogV0WmrzoAKiJbAr0GgBAApQHml4Mi6wF6t9F66VaXcVUl8STWhvVI1lgxqxUolj6Xy8HttpPZbcgYONMpWRo4MVMAtKLqQavEP2vKpXpaZtxMGdBD_cnEv60l1V1umM8eW-9Vaa1_ZyJDFXzPAVOxqcLYeq96hE9rtALVOk6-jui34gMTtFnHoZNwpBl0kJRXfV8ISLIa2DHgyofdG76Yln2dtJeQS2t8vC069Zf62tq9TaAWpqTK6BcaZoXMdLISVcB5xwmz5htFy_HSXYU336CQTBaTLF66EU_ipPPBFoNIvikfWfCvqZt2USxgSzR7d85PqJ2aXKmx3bLrAyz0XXMJ8nRP5sB8uS4qBY-LBVVuVw046vJYlexn2dwm79yfSctDF6HEWxmygLKf5rppXcum2KaVqwQAk_jyCYYOn-tAnHuSEiruG1OZXgkSct37a06lahUTSvM4vdOdZlpOqZGl4YebYXsOFQLwHrkXYDYHZmPp-cbxZjQdAfLuB6WH6dEeY1bQjFS3AywoSl5ZIMku0sLOmlLsfp6QXpPtphZx-pODHlb5ElgVXIfzFhO44KGGRJRcN-m_zsojl374N8SGzz88hgf7twQE5CoXeKIpurEPO20sYrCYNALvg-kUDkibKx3VNNd1nk9ReRI3ChC7ijLg3HYUdeXK7DzCW2FYcsu8MfMzIqTB_jHGeTWOHK5x7ryn0RfwhKtjyuVtptAPvuN07RgMtoqvAsQMda0DUuhWHPGDVF5qITxTx2iXkxcH3Ll_6E2nQ5lHB2SUCXp1hI_D-bMktWdraq1c8JOF3HUAp0qMQDTMGHbNRd5wsglBPP9FjynPRgYSe7ZF0Snjt2HXP6gy4fNhydcMR71ApBgdMWQsh90fh1cNZFlaoTMGxLrqv7xyNM8_yhzk1u4HcllK2ljnP6dJ7q3PqYszZWBph18yUeXou81MiDPjj0Y7RvBERZb8k7LGP6RF_R_FKdt1M0TGAF2nVCl2i3OspMwItk0ZFSf2aT5EsHWu65nT41vOKmIR72-3TZ7J5SVl0MQRU-1HTNf3r6v3VX414ZzPlURicsnQZC3"
-    },
-    {
-      "key": "refresh",
-      "value": "tKzrFdN-p-Td7pyB5Lkt5TgAZ0vbnLM6Mzz9EZrszDM-Nsijtu9SWm7ZOyfJdjA6ug-2kDPKREnqFCwh-VIYOQ1NzUUao3FIkMdvgRPXRs4G9lQKRLfQw7kfHJgPO2sd1Qru1_QQ553f-4ApiOoVfs9AQzVFla3OySiXC1lG2cPmL9hPcFe6q-kt0TcgQJwImzcIdCbzF9VB3Aps"
-    },
-    {
-      "key": "userLoginToken",
-      "value": "DFpwP_rPk2mKQDuUFcAIaiir1o6bS9DKK0VGPGAKkttk55Kpt5AB15tWOBkBv2u2WJHgbJJDkA9qyYTa_XYnTtqA8Za9BfCNzHV_DAaP_MJH55sH5Odj547Vx88Kacte"
-    }
-  ]
+	"info": {
+		"_postman_id": "42e78f1d-4460-4b99-a7d5-b9a04327b5ce",
+		"name": "DOLISTICO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34562005"
+	},
+	"item": [
+		{
+			"name": "HELLO WORLD",
+			"item": [
+				{
+					"name": "helloworld",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/v1/helloworld?message=test_message",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"helloworld"
+							],
+							"query": [
+								{
+									"key": "message",
+									"value": "test_message"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ACCOUNTS",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"My Name\",\n    \"email\": \"email@email.com\",\n    \"password\": \"Test123456789!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update password request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"email@email.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/password/update/request",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"password",
+								"update",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update password confirm",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"64d092964171e018213847d304407a07687c27f6bb9d581840fa5242ad5e581a02b604506f3810f39336a6c752e89c1302b51e182b66b0ac95b31b46e46660be12f9cf6d6b9af846a3dbe999b17b8276c02730845aa534b6642300c2fb2b8d4a3fda47d39f08188302fc087087fe062e3161c2a0a3073a35c9a0404416a7bb3833c2eb28598ca74020fee9e21add2c1b3ec57cb9f587095c05e746e6cc9d8e9bd3cb94314b75bf14c62eb5669407427965061aa9bedf350cb368beb0ddf5aa813253cd3649a05e9f974091cfd04ee0e9593433fa34a3c5e9a5145de5e071458df772dbc9c826e5a23df398800dd5e3fe9ab790edb3b9b715a116ea9c9a5b12e6\",\n  \"newPassword\": \"Test123456789100!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/password/update/confirm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"password",
+								"update",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"userLoginToken\", jsonData.data.userLoginToken);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"email@email.com\",\n    \"password\": \"Test123456789!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/login/request",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"login",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login confirm",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"access\", jsonData.data.access);\r",
+									"    pm.collectionVariables.set(\"refresh\", jsonData.data.refresh);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userLoginToken\": \"{{userLoginToken}}\",\n    \"pin\": \"786062\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/login/confirm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"login",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"access\", jsonData.data.access);\r",
+									"    pm.collectionVariables.set(\"refresh\", jsonData.data.refresh);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"{{refresh}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/login/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"login",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"access\", jsonData.data.access);\r",
+									"    pm.collectionVariables.set(\"refresh\", jsonData.data.refresh);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"{{refresh}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "connected devices",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/devices?pageNumber=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"devices"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Updated Name\",\r\n    \"phone\": \"+55 00 99999-9999\",\r\n    \"identityDocument\": \"123456789\",\r\n    \"gender\": \"male\",\r\n    \"birthdate\": \"2000-01-01\",\r\n    \"biography\": \"abc\",\r\n    \"language\": \"en-US\",\r\n    \"theme\": \"dark\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload avatar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatarImage",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/profile/avatar",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"profile",
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update email request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"newEmail\": \"email@email.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/email/update/request",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"email",
+								"update",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update email confirm",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"2319999709208c7780ac2068bf7a3e43454960e1b3a2cd5bce9585e4167700780c13b753a6d327f9995f845d7bb5d1f6a00d648fbd41cc65fcbaa9d859f2f1d6ceff3c4b232129fe93e24a163ec13e7e3340721fdd1fff97b1b93a494f3e32969c56d519e57ed61a486a77448b2e472ee3dc243ddab7367e787dea5e781c35f9978f823a84c9848103f8e3cf89f938f8392ba1674910f14e43716453201e5533985df0f43f7efc144186fa29c5b78cf09bbe3b0d09f840b4db1d98005e6d172458dec18c93afbc45f28326c0fa0d5d8137578985b11b7b33a236a1ee07778f6707d33e3751367b8af5ad9e13af1a0716c190f6aaa028227b8214cc3c6f80e63f\",\n  \"pin\": \"579335\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/email/update/confirm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"email",
+								"update",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete account request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/delete/request",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"delete",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete account confirm",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"4da6cbe823e41638738b813df74283fccc43e52d178c27a112b862b391ed8a1440780c8f4e952f3c5ed3746b25d34286b29bbbb2d3fa7a18f594d0917a3684e32144f564a8eacc723417fa0462a2e59e926089a94d8965ab1d44f44c4b5d335a5c16c336ad62755532c4fbbcde1e4aa00289a2da95b5e11fd8a8ea04b1598ac603c2f156f376fe0c54b0b67f28b3796f4ccb6fe10c9b634136372eb83c336839fafd6d53ace9de7e1b14ec8012790a395e9e61cc50f34c849d8c378baf1bd46c35f55d695c720a64b756966d8861c6b97f3c4feb035bf9c44b1a32290cfa2d898443f23b5a8fd9239e66b31fd65f76639e8fc07e784895ce4c7734c33f4f241a\",\n    \"password\": \"Test123456789!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/accounts/delete/confirm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"v1",
+								"accounts",
+								"delete",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TASKS",
+			"item": [
+				{
+					"name": "Category",
+					"item": [
+						{
+							"name": "create category",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept-Language",
+										"value": "pt",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"categoryName\": \"credit card\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/tasks/category",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks",
+										"category"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get categories",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept-Language",
+										"value": "pt",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/v1/tasks/category?pageSize=10&pageNumber=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks",
+										"category"
+									],
+									"query": [
+										{
+											"key": "categoryName",
+											"value": "test",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										},
+										{
+											"key": "pageNumber",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get category by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept-Language",
+										"value": "pt",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/v1/tasks/category/d7d95895-2ec0-4ecf-bf22-75bdcc699440",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks",
+										"category",
+										"d7d95895-2ec0-4ecf-bf22-75bdcc699440"
+									],
+									"query": [
+										{
+											"key": "categoryName",
+											"value": "test",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update category by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept-Language",
+										"value": "pt",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"categoryName\": \"updated category\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/tasks/category/d7d95895-2ec0-4ecf-bf22-75bdcc699440",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks",
+										"category",
+										"d7d95895-2ec0-4ecf-bf22-75bdcc699440"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete category by ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/tasks/category/43578e00-f0bc-446b-8265-019d9dfe22a1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks",
+										"category",
+										"43578e00-f0bc-446b-8265-019d9dfe22a1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Tasks",
+					"item": [
+						{
+							"name": "create task",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"taskName\": \"supermarket shopping\",\r\n  \"description\": \"Purchase fruits, vegetables, and cleaning supplies\",\r\n  \"category\": \"0ad995a9-aa8c-4f7d-955c-fbfa2ca2509a\",\r\n  \"color\": \"blue\",\r\n  \"priority\": 5,\r\n  \"startTime\": \"2026-03-02T08:00:00\",\r\n  \"endTime\": \"2026-03-02T12:00:00\",\r\n  \"location\": \"Supermarket Downtown\",\r\n  \"allDay\": false,\r\n  \"reminderTime\": \"2026-03-02T09:30:00\",\r\n  \"notifyActive\": true,\r\n  \"status\": \"PENDING\",\r\n  \"dueDate\": \"2026-03-02T12:00:00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/tasks",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get tasks",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/tasks?pageNumber=1&pageSize=10",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "taskName",
+											"value": "name",
+											"disabled": true
+										},
+										{
+											"key": "category",
+											"value": "finance",
+											"disabled": true
+										},
+										{
+											"key": "priority",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "location",
+											"value": "cine",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "pending",
+											"disabled": true
+										},
+										{
+											"key": "dueDateInit",
+											"value": "2026-03-07",
+											"disabled": true
+										},
+										{
+											"key": "dueDateEnd",
+											"value": "2026-03-08",
+											"disabled": true
+										},
+										{
+											"key": "pageNumber",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one task",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/tasks/08fe85ec-7418-462d-b9f2-8faed4035722",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks",
+										"08fe85ec-7418-462d-b9f2-8faed4035722"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update task",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"taskName\": \"Updated Task\",\r\n  \"description\": \"Purchase fruits, vegetables, and cleaning supplies\",\r\n  \"category\": \"4d372a5c-bfe9-47af-8128-d5eb86c3e074\",\r\n  \"color\": \"blue\",\r\n  \"priority\": 5,\r\n  \"startTime\": \"2026-03-02T08:00:00\",\r\n  \"endTime\": \"2026-03-02T12:00:00\",\r\n  \"location\": \"Supermarket Downtown\",\r\n  \"allDay\": false,\r\n  \"reminderTime\": \"2026-03-02T09:30:00\",\r\n  \"notifyActive\": true,\r\n  \"status\": \"PENDING\",\r\n  \"dueDate\": \"2026-03-02T12:00:00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/v1/tasks/48a260be-9c66-4fc3-a89e-10a0afef380f",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks",
+										"48a260be-9c66-4fc3-a89e-10a0afef380f"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete task",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/v1/tasks/996fd74b-8825-443a-9cbc-5745ff1f773b",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"v1",
+										"tasks",
+										"996fd74b-8825-443a-9cbc-5745ff1f773b"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://localhost"
+		},
+		{
+			"key": "access",
+			"value": "SLTkshaqm6yXnytQhhK7h_mvLNh_T3jBiWE4a8PMK0vrz2HgSKItlEIxTY2LxPGp5QDfKmLOfUeFPK3515IXkF4tKBxvABFujcjuXS0_bMM_FxmXYC2pI8MYgQpWyjJDMrvQqYKyALvHWg3r_SWcgRQt9-0kZLfpV1VnQwUo2E8T0z9dVhldpsG14FBZgcy4GddJu2NZ2s8JSG4hCXetacBBgRPLdQRnvSR4uJ1w1pH-k4hnIsr6kg2MdgkjSMZxTeMsGaYepaa8oi_eY2mTDMxvfmNhjwKUIlRle97kZtNdJrnYVycM_8OrrF9QCwiGukfX8uvq9NOE7sBxXE86Lgp54GR6lYlnlsoKD0s5wxiA9xjlW43QneUcHH4VxDhfsIPP2IXaeX6ZT-NIfuHSt-Da92HEKFA9o399QowYO-i78yCozUS_bAPArD_-oC-O5pqtiSumFO5IAw63i6MTT0m-hNLhFdT24HEjYFf0wXgyz9EDeukKTJpWRBk7W0uZH8D7JEd8QH2SyUoRnJovo8sr8e5uKe0fdQ6CVAi1jn4jH6a4excGOqP9GhNdGFer0VutaSEFQpyVYJHla5mp0FcJE1jk0T_nrGKK_lfOn5f3tL8p7B_tHG28uhcm10_26TdQNFj0ELTzLF_dRczoW3mwaMD44vf2UCA3WJV4_5PRfT5HtE7jKzVpvb45UyDj5oaneHH-aCsrX--e9wstUP_hmcgfsRvUPeu48jiq05TK4kUJlCKFYzVumDaQx_CtU5psRaOa-oNSawnfdiTpYUinA3IVSyTYe34t5jI3HIVlJjuv3yHx-8c2gCc52JEaRzTHBpj_zEImHuK17UosjNij4apqc9KP-2UdzHwjoTTTuMo7H9ms6gKuMa-IV-IjhepljaZ5da7fDjoUTf2a3Af4o9onwSCcNxfV1qsSf_1xch2E4oGN5PU_TZ-C15wG4WQ-xX94YG33yFQVb8csrT7TlMhcxUEjtbEXvgOZ9lH_xAjjloJCCtUEaYS7XUI25lGtDVw1QcY50UQkH86vBfYfouxYT9Z5O4kuqGwI_MFVfTpr83fXkHHYyCgqf4IhnFaZTMtIZyRhRZ4M0iwG5U93TEc-ErIosNrE-lmYMxQoQdBWUZsuwnTCC7-3XY2GCnOG7mSBezl8SO9vB1QjtVxQsWOZBCNlLikrgw_v-Nd9StrpqSNQx2LcZlWDGhA6jtwpXLRLlYNMTa8uYU9Fd2Co26DwY0d1nOLXX5Ll8-YnNH01_FBAQVlIyT6PTGRa4ue6Q7WXWoQTOr1zR_W3naGJBz749redIQ7spM-EqU07dAeHIRw7IolQvh2mX8jtsgklMwV9NcEMtyGWlBMH5ucDuMyj6_hdEsh7gR-SmK0zMIdPz5qucHSZoxSZ6Jm7Yykvm_oQnpQW0lKaWU3xmYev_Q8UNSOrbgzd3cg_r7OKzge4EdmAgA0VNwQY4364bmC9oR7wRXbFZXgSWzv_qvCUGrlJu4I2saPqjwQorLEIghFMcKu399NLD0yQ1toesAyhKrh-e7UpO-xiKz5ibM6G8gQcvkJagGVr8kYHkJgoUsblOwRA62-K0pZ0X-DjbRlM7OJATZd5tbRDRO1cS0NMSruCvpV6DqgEaEoYX4nR0VjyZVenV5F7gqx2ctYVMOrBSKKEJhIVYEE"
+		},
+		{
+			"key": "refresh",
+			"value": "dXBez3j-kE8g4N1KsMAEGJ2U-MG6dcp6WCitH42GOLS5MDsfcrlH_BuGstgMRXoRCQgCagzxtOVR6sv5HYQqH_2ymPUAA7wHaQpWNn7yBY-gIIS3k4qqc2VdRZGUbkL8CYx5e-zpJxQ1EpLHMGe4KaCXeun-ERyb6FssqDgA7E79VWoszXb0n84OGastIAEJgePW51mzuxREd2m4yZUDOwXTuTf-aBdoMpzWUnXY4e6tLPP4LfcDTFS56OBo_9GEC2SFXP9vCZL8bjQFxuN8l0DjMCsD57P1G41A7u9FbxylSyrpk_6VD2PciH1MHzlubvM6makVo9JPfBovEmLOFspaFBhm3VC-14cGW8frfhZfP6N_l9KiTehTTCjU96tcKU0E6llYPcb99txYL-23o8UHd4R68A5YieM-zAWK8iEXVQJzTwac4vlGXrDhEAkH9JmJW6LKyDRmmUJakpzqWfgpM4y9AYmH6qat0V3TqmXowcTkL0PJgLeHaTimO09XiZDU-7fVHVxbab_Q9bOAhhAapbLaHAlC500BfQuKtHwVDI4BZurGmPn65AsaFeGWExUnr7QpYnwTGgsxygrzIgtxK7AJankX2QejrfjhxJVeY1N4hag4Ax03RAmSioI7MLpcw7EXDHqDxrin-ALI9JnrlY2m7V1nFod-AoTgPvOMaVzMlSh90vG-J3e6CMnGeCB_oO4CUJlgkqCN6LHtwQUBcfNTHCnsm2rgt523PdNIMxmfXQMWS57EQRv10sz7Ttr7ziLKuITc1iS9dGAKN0xDVucEFmLVMeGW7e4V8AfbfhW6O_v3RAJkZkB9vpaOn9_uc7U2jf9f4cWatuThY_WsfzsoPGh3k811Pbn_YqsVYpbSBDOA1mqmZPshnPkeBREFonK2KGn-NuU9l6tH81wTCpuJL_wW-ENMW2_iXLoOOXsykibneFsoqmB_8_ZCMerKsCTIvYPMAafVGfXGU6Jc3ZP6PEzerqEoclGinY320eHAS1IgpQp0nMNGWzhsIC8GLzMdh4dZC2cfQJ0ct7BNMXl3_fSdUJADMv8"
+		},
+		{
+			"key": "userLoginToken",
+			"value": "30d4ed315d86c0d51a1f175fa0684d2f03b6e68932ab7383f4d3b5353955dee7a1aeb5d471b7d5a2b4685e5a8696b83ae437c31b66a54a3096ba64aeb5c9f0aa120092931fbdf39781396e9cfd53b9c4de3830133a2675c5f0a160c36c6b87e7a28707cfbdd02edc53d7d22a3dd30009fe95c010d1ac9e0074e62f5e92c6cbd51cfafc297edbb1f996f75f9c0e406354d20897a5b970dd530fdc485839b490cff10b326f7cfdf97bd835c8013675753caa97d23213d174fc08dabc223fc35b8873eb5a5454cd6d56ee8cd120aed2e7af7da95063bac8d5db99a49b7e4ab8c79ec1f651282e19c9533d2beb5d5287d519b5ab8ce2eb26276d30721ff743b99554"
+		}
+	]
 }
