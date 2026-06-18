@@ -9,13 +9,10 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Kafka](https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Keycloak](https://img.shields.io/badge/Keycloak-4D4D4D?style=for-the-badge&logo=keycloak&logoColor=white)
 
 </div>
-
----
 
 ## About
 
@@ -29,7 +26,13 @@ Security is treated as a first-class concern: all requests are authenticated via
 
 Observability is built in from the ground up, with structured logging ready for integration with modern monitoring stacks. Well-defined test and production profiles, combined with Kubernetes deployment using Kustomize overlays, make the transition from local development to production straightforward and reliable.
 
----
+## Microservices
+
+Dolistico is not a single application — it is a system composed of independent services, each with its own responsibility, codebase, and data. They communicate through Kafka events and expose their functionality through a unified entry point managed by the NGINX API Gateway.
+
+This design means each service can be developed, deployed, and scaled independently. A spike in scheduling requests does not affect the email service. A new feature in the account service does not require touching the task engine. The system grows without becoming a monolith.
+
+Every service is built with the same principles: Clean Architecture, DDD, structured error handling, input validation, full test coverage, and OpenAPI documentation. They all share the same deployment strategy — containerized with Docker and orchestrated with Kubernetes using Kustomize overlays for dev and prod environments.
 
 ## Architecture
 
@@ -38,8 +41,6 @@ Observability is built in from the ground up, with structured logging ready for 
 - **Clean Architecture** + **Domain-Driven Design (DDD)**
 - **Clean Code**
 - Well-defined **test** and **production** profiles
-
----
 
 ## Tech Stack
 
@@ -75,18 +76,6 @@ Observability is built in from the ground up, with structured logging ready for 
 | Kubernetes | Deploy (dev and prod with Kustomize) |
 | NGINX | API Gateway |
 
----
-
-## Microservices
-
-### 🔐 Account Service
-Handles user management and authentication, integrated with Keycloak.
-
-### 📧 Email Service
-Responsible for sending transactional emails, triggered asynchronously via Kafka events.
-
----
-
 ## Quality & Observability
 
 - **Testing:** JUnit · Mockito · JaCoCo (code coverage)
@@ -94,46 +83,10 @@ Responsible for sending transactional emails, triggered asynchronously via Kafka
 - **Error Handler** with robust, centralized error management
 - **Input validation** on all endpoints
 
----
-
 ## Documentation
 
 - **OpenAPI** — full endpoint documentation
 - **UML** — Sequence, Class, and Activity diagrams
-
----
-
-## Running Locally
-
-### Prerequisites
-
-- Docker and Docker Compose installed
-
-### Starting the environment
-
-```bash
-docker compose up -d
-```
-
-The API will be available at `http://localhost:8080`.
-
-The OpenAPI documentation will be available at `http://localhost:8080/swagger-ui.html`.
-
----
-
-## Deploy
-
-Deployment is handled with **Kubernetes**, using **Kustomize** to manage environment profiles:
-
-```bash
-# Development environment
-kubectl apply -k k8s/overlays/dev
-
-# Production environment
-kubectl apply -k k8s/overlays/prod
-```
-
----
 
 <div align="center">
   <sub>Dolistico — Built with Java & Spring</sub>
