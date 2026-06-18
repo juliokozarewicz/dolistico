@@ -17,16 +17,20 @@ import java.util.UUID;
 public class AccountsDeviceSessionRepositoryImpl implements AccountsDeviceSessionRepository {
 
     // ==================================================== ( constructor init )
-
     private final AccountsDeviceSessionRepositoryJPA accountsDeviceSessionRepositoryJPA;
 
     public AccountsDeviceSessionRepositoryImpl(
-        AccountsDeviceSessionRepositoryJPA accountsDeviceSessionRepositoryJPA
-    ) {
-        this.accountsDeviceSessionRepositoryJPA = accountsDeviceSessionRepositoryJPA;
-    }
 
-    // ==================================================== ( mapping helpers )
+        AccountsDeviceSessionRepositoryJPA accountsDeviceSessionRepositoryJPA
+
+    ) {
+
+        this.accountsDeviceSessionRepositoryJPA = accountsDeviceSessionRepositoryJPA;
+
+    }
+    // ===================================================== ( constructor end )
+
+    // ======================================================== ( helpers init )
 
     private AccountsDeviceSessionModel toModel(AccountsDeviceSessionEntity entity) {
         return AccountsDeviceSessionModel.builder()
@@ -51,8 +55,7 @@ public class AccountsDeviceSessionRepositoryImpl implements AccountsDeviceSessio
         model.getMethod()
         );
     }
-
-    // ==================================================== ( operations )
+    // ========================================================= ( helpers end )
 
     @Override
     public void save(AccountsDeviceSessionEntity entity) {

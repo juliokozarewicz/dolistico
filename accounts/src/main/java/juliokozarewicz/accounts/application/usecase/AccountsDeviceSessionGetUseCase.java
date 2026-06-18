@@ -43,8 +43,9 @@ public class AccountsDeviceSessionGetUseCase {
             Sort.by("createdAt").descending()
         );
 
-        Page<AccountsDeviceSessionEntity> page = accountsDeviceSessionRepository
-            .findByIdUser(idUser, pageable);
+        Page<AccountsDeviceSessionEntity> page = accountsDeviceSessionRepository.findByIdUser(
+            idUser, pageable
+        );
 
         List<AccountsDeviceSessionsResponseCommand> content = page.getContent()
             .stream()
