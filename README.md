@@ -26,6 +26,10 @@ Security is treated as a first-class concern: all requests are authenticated via
 
 Observability is built in from the ground up, with structured logging ready for integration with modern monitoring stacks. Well-defined test and production profiles, combined with Kubernetes deployment using Kustomize overlays, make the transition from local development to production straightforward and reliable.
 
+<br>
+<img src="0_files/design/cover.png" >
+<br>
+
 ## Microservices
 
 Dolistico is not a single application — it is a system composed of independent services, each with its own responsibility, codebase, and data. They communicate through Kafka events and expose their functionality through a unified entry point managed by the NGINX API Gateway.
