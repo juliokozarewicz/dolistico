@@ -1,7 +1,6 @@
 package juliokozarewicz.accounts.application.usecase;
 
 import juliokozarewicz.accounts.application.command.AccountsDeviceSessionGetCommand;
-import juliokozarewicz.accounts.application.command.AccountsDeviceSessionsCommand;
 import juliokozarewicz.accounts.application.command.AccountsDeviceSessionsResponseCommand;
 import juliokozarewicz.accounts.domain.entity.AccountsDeviceSessionEntity;
 import juliokozarewicz.accounts.domain.repository.AccountsDeviceSessionRepository;
