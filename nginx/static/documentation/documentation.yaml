@@ -682,13 +682,13 @@ paths:
                           example: "2026-06-18T13:27:54.377286Z"
                         ipAddress:
                           type: string
-                          example: "172.18.0.1"
+                          example: "126.216.136.94"
                         location:
                           type: string
-                          example: "Location unavailable"
+                          example: "New York, New York - United States"
                         device:
                           type: string
-                          example: "Unknown device"
+                          example: "Chrome, Windows 10/11 (Desktop)"
                         method:
                           type: string
                           example: "Email address and password"
