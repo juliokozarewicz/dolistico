@@ -1,88 +1,140 @@
-# Dolistico
+<div align="center">
 
-Dolistico is a lightweight and scalable microservice for managing to-do tasks, built with Java and Spring. Designed to integrate seamlessly into a microservices architecture, it allows users to create, update, delete, and organize personal tasks and agendas securely. With support for JWT authentication, user account management, and features like due dates, categorization, and ownership enforcement, Dolistico ensures that task management is both secure and efficient.
+# 📅 Dolistico
 
-## 🛠️ Technologies Used
+**Personal Task & Event Scheduling API — Microservices Architecture**
 
-- **Java**: The main programming language for the project.
-- **Spring**: Framework for building scalable and robust applications with a focus on microservices.
-- **Hibernate**: ORM framework for efficient database interaction.
-- **Flyway**: Tool for database versioning and migration.
-- **Lombok**: Library that reduces boilerplate code in Java (like getters, setters, toString, etc.).
-- **API Gateway (NGINX)**: Manages traffic and routing of microservices.
-- **Microservices**: Decoupled architecture for better scalability and maintainability.
-- **PostgreSQL**: Relational database for data persistence.
-- **Redis**: Caching system to optimize performance.
-- **Kafka**: Messaging system for asynchronous communication between microservices.
-- **Logs**: Logging system for monitoring and tracing the application.
-- **Error Handler**: Robust error management for stability and reliability.
-- **Documentation**: The service is documented via **Elements**, **Swagger** and **Redocly**, allowing API interactivity.
-- **Input Validation**: Server-side validation to ensure data integrity.
-- **Docker**: Containerization of the application for easy deployment and consistent environments.
-- **Docker Compose**: Orchestration of multiple containers, simplifying service execution.
-- **Internationalization**: Server-side management for translating content into different languages.
-- **Rate Limiter (DDOS Protection)**: Protection against Distributed Denial of Service (DDOS) attacks through request limiting.
-- **Account Management Service**: A microservice for handling user accounts.
-- **Email Service**: A dedicated microservice for sending emails (e.g., account confirmation, password reset).
-- **Authentication with JWT and Refresh Token**: Secure authentication with **JWT** and session renewal via **Refresh Token**.
-- **Advanced Encryption**: Protection of sensitive data using modern encryption techniques.
-- **Hashicorp Vault**: Secure management of secrets like API keys and passwords.
-- **Performance**: Optimizations for ensuring high application performance.
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Kafka](https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
+![Keycloak](https://img.shields.io/badge/Keycloak-4D4D4D?style=for-the-badge&logo=keycloak&logoColor=white)
 
-## 🚀 Features
+</div>
 
-### 1. **Authentication and Authorization**
-- Secure authentication with **JWT (JSON Web Token)**.
-- **Refresh Token** for secure session renewal.
-- **Role-based access control** (RBAC) for fine-grained authorization.
+---
 
-### 2. **Account Management**
-- **Create, update, and delete user accounts**.
-- **Password recovery** and **reset via email**.
-- **Secure password storage** with strong encryption.
+## About
 
-### 3. **Email Service**
-- A dedicated **email service** for sending various emails like account confirmation and password recovery.
+**Dolistico** is a REST API for personal task and event scheduling — built for individuals who want a reliable backend to manage their agenda, track to-dos, and organize events in one place.
 
-### 4. **Scalability and Resilience**
-- **Microservices architecture** for enhanced scalability and maintainability.
-- **Kafka** for asynchronous communication between microservices.
-- **Redis** for caching and improving response times.
+Under the hood, it runs on a microservices architecture designed with a strong focus on performance, scalability, and security. Services communicate asynchronously through Apache Kafka, ensuring loose coupling and high resilience across the platform.
 
-### 5. **Security**
-- Protection against **DDOS** with a **Rate Limiter**.
-- **Advanced encryption** techniques for protecting sensitive data.
-- **Hashicorp Vault** for secure secret management.
-- **JWT** and **Refresh Tokens** for secure user sessions.
+The codebase is structured around Clean Architecture and Domain-Driven Design principles, keeping business logic isolated from infrastructure concerns and making the system easy to extend and maintain over time. Each microservice owns its own domain, data, and lifecycle — from account management and authentication to email dispatch and scheduling.
 
-### 6. **API Documentation**
-- The API is fully documented using **Elements**, **Swagger** and **Redocly**, making it easy to test and understand the endpoints.
+Security is treated as a first-class concern: all requests are authenticated via JWT with Refresh Token support, identity is managed through Keycloak, and sensitive data is protected with advanced encryption. A rate limiter sits at the gateway level to guard against abuse and DDoS attempts.
 
-### 7. **Error Management**
-- Robust **error handling** system with proper exception capture and responses for client requests.
+Observability is built in from the ground up, with structured logging ready for integration with modern monitoring stacks. Well-defined test and production profiles, combined with Kubernetes deployment using Kustomize overlays, make the transition from local development to production straightforward and reliable.
 
-## 🔧 How to Run the Project
+---
+
+## Architecture
+
+- **Microservices** with API Gateway via **NGINX**
+- **Event-driven** with **Apache Kafka**
+- **Clean Architecture** + **Domain-Driven Design (DDD)**
+- **Clean Code**
+- Well-defined **test** and **production** profiles
+
+---
+
+## Tech Stack
+
+### Backend
+| Technology | Purpose |
+|---|---|
+| Java | Primary language |
+| Spring | Core framework |
+| Hibernate + Spring Data JPA | Persistence layer |
+| Flyway | Database migrations |
+| Lombok | Boilerplate reduction |
+
+### Databases
+| Technology | Purpose |
+|---|---|
+| PostgreSQL | Primary database |
+| H2 Database | Testing |
+| Redis | Caching |
+
+### Security
+| Technology | Purpose |
+|---|---|
+| JWT + Refresh Token | Authentication |
+| Keycloak | Identity management |
+| Advanced encryption | Sensitive data protection |
+| Rate Limiter | DDoS protection |
+
+### Infrastructure
+| Technology | Purpose |
+|---|---|
+| Docker | Containerization |
+| Docker Compose | Local environment |
+| Kubernetes | Deploy (dev and prod with Kustomize) |
+| NGINX | API Gateway |
+
+---
+
+## Microservices
+
+### 🔐 Account Service
+Handles user management and authentication, integrated with Keycloak.
+
+### 📧 Email Service
+Responsible for sending transactional emails, triggered asynchronously via Kafka events.
+
+---
+
+## Quality & Observability
+
+- **Testing:** JUnit · Mockito · JaCoCo (code coverage)
+- **Structured logging** ready for integration with modern monitoring tools
+- **Error Handler** with robust, centralized error management
+- **Input validation** on all endpoints
+
+---
+
+## Documentation
+
+- **OpenAPI** — full endpoint documentation
+- **UML** — Sequence, Class, and Activity diagrams
+
+---
+
+## Running Locally
 
 ### Prerequisites
 
-1. **Java 17** or higher.
-2. **Docker** and **Docker Compose**.
-3. **PostgreSQL** (or use the Docker Compose configuration).
-4. **Redis** (or use the Docker Compose configuration).
-5. **Kafka** (optional, if you're using messaging between microservices).
+- Docker and Docker Compose installed
 
-### Step 1: Clone the Repository
-### Step 2: Set up Environment Variables
-### Step 3: Start Docker Containers
+### Starting the environment
 
-## 📚 API Documentation
-The API is fully documented using **Swagger** and **Redocly**, providing easy access to all available endpoints and their usage.
+```bash
+docker compose up -d
+```
 
-## 🔒 Security
-This project includes multiple layers of security, such as **JWT authentication**, **Rate Limiter** for protection against attacks, and **Hashicorp Vault** for secure management of secrets. The application follows best practices for securing sensitive data and ensuring integrity.
+The API will be available at `http://localhost:8080`.
 
-## 🐳 Containerization
-With **Docker** and **Docker Compose**, all services can be run in isolated containers, ensuring consistency across different environments and simplifying deployment.
+The OpenAPI documentation will be available at `http://localhost:8080/swagger-ui.html`.
 
-## ⚡ Performance
-The project is optimized for performance, utilizing **Redis** for caching, **Rate Limiter** for traffic control, and a **microservices architecture** for horizontal scalability.
+---
+
+## Deploy
+
+Deployment is handled with **Kubernetes**, using **Kustomize** to manage environment profiles:
+
+```bash
+# Development environment
+kubectl apply -k k8s/overlays/dev
+
+# Production environment
+kubectl apply -k k8s/overlays/prod
+```
+
+---
+
+<div align="center">
+  <sub>Dolistico — Built with Java & Spring</sub>
+</div>
