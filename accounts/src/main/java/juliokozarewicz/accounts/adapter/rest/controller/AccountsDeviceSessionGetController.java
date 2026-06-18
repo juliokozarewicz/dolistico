@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @Validated
@@ -67,6 +65,17 @@ public class AccountsDeviceSessionGetController {
             accountsDeviceSessionGetDTO
         );
 
+        // Content
+        List<?> content = (List<?>) userDevices.get("content");
+
+        // Meta data
+        Map<String, Object> metaData = new LinkedHashMap<>();
+        metaData.put("currentPage", userDevices.get("currentPage"));
+        metaData.put("totalPages", userDevices.get("totalPages"));
+        metaData.put("totalElementsCurrentPage",  content.size());
+        metaData.put("pageSize", userDevices.get("pageSize"));
+        metaData.put("totalElements", userDevices.get("totalElements"));
+
         // Standard response
         return ResponseEntity
         .status(GlobalSuccessEnum.ACCOUNTS_GET_DEVICE_SUCCESSFULLY.getStatusCode())
@@ -76,7 +85,8 @@ public class AccountsDeviceSessionGetController {
             .timestamp(Instant.now().truncatedTo(ChronoUnit.SECONDS))
             .statusCode(GlobalSuccessEnum.ACCOUNTS_GET_DEVICE_SUCCESSFULLY.getStatusCode())
             .messageCode(GlobalSuccessEnum.ACCOUNTS_GET_DEVICE_SUCCESSFULLY.getMessageCode())
-            .data(userDevices)
+            .data(content)
+            .meta(metaData)
             .build()
         );
 
