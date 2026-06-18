@@ -70,6 +70,10 @@ public class AccountsDeleteConfirmController {
             .map(ip -> ip.contains(",") ? ip.split(",")[0].trim() : ip)
             .orElse(request.getRemoteAddr());
 
+        if (userIp.startsWith("[") && userIp.endsWith("]")) {
+            userIp = userIp.substring(1, userIp.length() - 1);
+        }
+
         String userAgent = request.getHeader("User-Agent");
 
         //validation request data
