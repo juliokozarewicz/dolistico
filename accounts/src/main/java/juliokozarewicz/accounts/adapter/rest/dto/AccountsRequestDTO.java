@@ -4,51 +4,59 @@ import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
 import org.springframework.stereotype.Component;
 
-import java.util.regex.Pattern;
+import java.net.InetAddress;
 
 @Component
 public class AccountsRequestDTO {
 
-    // Validate IP
     public void validateUserIp(String userIp) {
 
-        // Regex
-        Pattern IP_PATTERN = Pattern.compile(
-            "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4]" +
-            "[0-9]|[01]?[0-9][0-9]?)$|^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$"
-        );
-
-        if (
-            userIp == null ||
-            userIp.isEmpty() ||
-            !IP_PATTERN.matcher(userIp).matches()
-        ) {
-
-            // call custom error
+        if (userIp == null || userIp.isBlank()) {
             throw new DomainException(DomainExceptionEnum.BAD_REQUEST);
+        }
 
+        userIp = userIp.trim();
+
+        if (userIp.length() > 45) {
+            throw new DomainException(DomainExceptionEnum.BAD_REQUEST);
+        }
+
+        try {
+            InetAddress.getByName(userIp);
+        } catch (Exception e) {
+            throw new DomainException(DomainExceptionEnum.BAD_REQUEST);
         }
 
     }
 
-    // Validate Agent
     public void validateUserAgent(String userAgent) {
 
-        // Regex
-        Pattern USER_AGENT_PATTERN = Pattern.compile(
-            "^[\\w\\d\\s\\.\\/\\-\\(\\)\\;\\,\\:]+$"
-        );
+        if (userAgent == null || userAgent.isBlank()) {
+            throw new DomainException(DomainExceptionEnum.BAD_REQUEST);
+        }
+
+        userAgent = userAgent.trim();
+
+        if (userAgent.length() > 512) {
+            throw new DomainException(DomainExceptionEnum.BAD_REQUEST);
+        }
 
         if (
-            userAgent == null ||
-            userAgent.isEmpty() ||
-            !USER_AGENT_PATTERN.matcher(userAgent).matches()
+            userAgent.contains("\r") ||
+            userAgent.contains("\n") ||
+            userAgent.indexOf('\0') >= 0
         ) {
-
-            // call custom error
             throw new DomainException(DomainExceptionEnum.BAD_REQUEST);
+        }
+
+        for (char c : userAgent.toCharArray()) {
+
+            if (Character.isISOControl(c) && c != '\t') {
+                throw new DomainException(DomainExceptionEnum.BAD_REQUEST);
+            }
 
         }
+
     }
 
 }

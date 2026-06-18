@@ -628,6 +628,89 @@ paths:
                         description: Timestamp indicating when the new refresh token expires.
                         example: "2026-05-28T18:47:01Z"
 
+  # ACCOUNTS - CONNECTED DEVICES
+  "/ACCOUNTS_BASE_URL_REPLACE/devices":
+    get:
+      summary: Get connected devices
+      description: >-
+        Retrieves a paginated list of device sessions for the authenticated user,
+        sorted by most recent login. Each entry represents a login event, including
+        IP address, location resolved from the IP, device information, and the
+        authentication method used.
+      tags:
+        - Accounts
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: pageNumber
+          in: query
+          required: false
+          description: Page number to retrieve. Must be at most 100. Defaults to 1.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Device sessions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-06-18T13:46:38Z"
+                  statusCode:
+                    type: integer
+                    example: 200
+                  messageCode:
+                    type: string
+                    example: ACCOUNTS_GET_DEVICE_SUCCESSFULLY
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          example: 1f991369-f9aa-4e83-9ccc-facc65d26315
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2026-06-18T13:27:54.377286Z"
+                        ipAddress:
+                          type: string
+                          example: "172.18.0.1"
+                        location:
+                          type: string
+                          example: "Location unavailable"
+                        device:
+                          type: string
+                          example: "Unknown device"
+                        method:
+                          type: string
+                          example: "Email address and password"
+                  meta:
+                    type: object
+                    properties:
+                      currentPage:
+                        type: integer
+                        example: 1
+                      totalPages:
+                        type: integer
+                        example: 1
+                      totalElementsCurrentPage:
+                        type: integer
+                        example: 2
+                      pageSize:
+                        type: integer
+                        example: 10
+                      totalElements:
+                        type: integer
+                        example: 2
+
   # ACCOUNTS - LOGOUT
   "/ACCOUNTS_BASE_URL_REPLACE/logout":
     post:
@@ -1164,7 +1247,6 @@ paths:
           description: Page number to retrieve. Must be at most 100. Defaults to 1.
           schema:
             type: integer
-            maximum: 100
             example: 1
         - name: categoryName
           in: query
@@ -1535,7 +1617,6 @@ paths:
           description: Page number to retrieve. Must be at most 100. Defaults to 1.
           schema:
             type: integer
-            maximum: 100
             example: 1
         - name: taskName
           in: query

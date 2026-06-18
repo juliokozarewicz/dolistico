@@ -14,7 +14,7 @@ public record TasksGetDTO(
     @Max(value = 100, message = GlobalExceptionEnum.TASKS_TOO_MANY_CHARACTERS_DTO)
     Integer pageSize,
 
-    @Max(value = 100, message = GlobalExceptionEnum.TASKS_TOO_MANY_CHARACTERS_DTO)
+    @Max(value = 10000, message = GlobalExceptionEnum.TASKS_TOO_MANY_CHARACTERS_DTO)
     Integer pageNumber,
 
     @Size(min = 3, message = GlobalExceptionEnum.TASKS_TOO_FEW_CHARACTERS_DTO)

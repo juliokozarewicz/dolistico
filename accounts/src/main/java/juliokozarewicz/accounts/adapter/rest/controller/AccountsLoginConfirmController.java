@@ -80,8 +80,8 @@ public class AccountsLoginConfirmController {
 
         // Call use case
         Map<String, Object> credentials = accountsLoginConfirmUseCase.execute(
-            userIp,
-            userAgent,
+            "userIp",
+            "userAgent",
             locale,
             accountsLoginConfirmDTO
         );

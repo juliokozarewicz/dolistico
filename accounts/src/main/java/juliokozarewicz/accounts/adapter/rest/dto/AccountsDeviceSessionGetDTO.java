@@ -6,7 +6,7 @@ import juliokozarewicz.accounts.application.command.AccountsDeviceSessionGetComm
 
 public record AccountsDeviceSessionGetDTO (
 
-    @Max(value = 100, message = GlobalExceptionEnum.ACCOUNTS_INVALID_PAGE_NUMBER)
+    @Max(value = 10000, message = GlobalExceptionEnum.ACCOUNTS_INVALID_PAGE_NUMBER)
     Integer pageNumber
 
 ) implements AccountsDeviceSessionGetCommand {}
