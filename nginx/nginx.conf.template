@@ -309,13 +309,13 @@ http {
         # [ ACCOUNTS ]
         location /${ACCOUNTS_BASE_URL} {
             proxy_pass http://accounts_backend;
-            limit_req zone=critical_zone burst=1 nodelay;
+            limit_req zone=critical_zone burst=5 nodelay;
         }
 
         # [ ACCOUNTS - refresh token ]
         location /${ACCOUNTS_BASE_URL}/login/refresh {
             proxy_pass http://accounts_backend;
-            limit_req zone=almost_free_zone burst=1 nodelay;
+            limit_req zone=almost_free_zone burst=10 nodelay;
         }
 
         # ------------------------------------------------------- (accounts end)
