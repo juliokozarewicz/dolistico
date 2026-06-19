@@ -235,8 +235,7 @@ http {
 
         # ----------------------------------------------------- ( STATICS init )
 
-        # ----------------------------------------------- ( icons statics init )
-
+        # [ ICONS ]
         location /static/public/icon/ {
             alias /static/public/icon/;
             autoindex off;
@@ -244,10 +243,7 @@ http {
             add_header Cache-Control "public";
         }
 
-        # ----------------------------------------------- ( icons statics init )
-
-        # --------------------------------------- ( documentation statics init )
-
+        # [ DOCUMENTATION ]
         location = /${DOCUMENTATION_BASE_URL} {
             return 301 /${DOCUMENTATION_BASE_URL}/;
         }
@@ -260,19 +256,45 @@ http {
             add_header X-Frame-Options "SAMEORIGIN";
             add_header X-Content-Type-Options "nosniff";
             limit_req zone=general_zone burst=50 nodelay;
-
         }
-        # ---------------------------------------- ( documentation statics end )
 
-        # ------------------------------------------------------ ( STATICS end )
+        # [ DOCUMENTATION - MESSAGE CODE ]
+        location = /${DOCUMENTATION_BASE_URL}/message_code.json {
+            alias /static/public/documentation/message_code.json;
+            default_type application/json;
+            add_header Content-Disposition 'attachment; filename="message_code.json"' always;
+            add_header Cache-Control "public";
+            add_header X-Frame-Options "SAMEORIGIN";
+            add_header X-Content-Type-Options "nosniff";
+        }
 
-        # --------------------------------------------------- (hello world init)
+        # [ DOCUMENTATION - POSTMAN FILE ]
+        location = /${DOCUMENTATION_BASE_URL}/postman_collection.json {
+            alias /static/public/documentation/postman_collection.json;
+            default_type application/json;
+            add_header Content-Disposition 'attachment; filename="message_code.json"' always;
+            add_header Cache-Control "public";
+            add_header X-Frame-Options "SAMEORIGIN";
+            add_header X-Content-Type-Options "nosniff";
+        }
 
-        # [ HELLO WORLD - Static Files ]
-        location /${HELLO_WORLD_BASE_URL}/static {
-            proxy_pass http://hello_world_backend;
+        # [ ACCOUNTS - AVATAR ]
+        location /${ACCOUNTS_BASE_URL}/static/uploads/avatar/ {
+            alias /static/public/uploads/avatar/;
+            add_header Cache-Control "public";
             limit_req zone=general_zone burst=5 nodelay;
         }
+
+        # [ ACCOUNTS - UPDATE PASSWORD ]
+        location /${ACCOUNTS_BASE_URL}/static/update-password/ {
+            alias /static/public/update-password/;
+            index index.html;
+            try_files $uri /index.html;
+            add_header Cache-Control "public";
+            limit_req zone=general_zone burst=50 nodelay;
+        }
+
+        # --------------------------------------------------- (hello world init)
 
         # [ HELLO WORLD - Helloworld ]
         location /${HELLO_WORLD_BASE_URL} {

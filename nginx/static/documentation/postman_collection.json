@@ -509,9 +509,9 @@
               "mode": "formdata",
               "formdata": [
                 {
-                  "key": "avatarImage",
+                  "key": "avatar\n",
                   "type": "file",
-                  "value": null
+                  "src": "/C:/Users/cadastro/OneDrive/Desktop/Screenshot_1.png"
                 }
               ]
             },
