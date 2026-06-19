@@ -279,7 +279,7 @@ http {
         }
 
         # [ ACCOUNTS - AVATAR ]
-        location /${ACCOUNTS_BASE_URL}/static/uploads/avatar/ {
+        location /static/public/uploads/avatar/ {
             alias /static/public/uploads/avatar/;
             add_header Cache-Control "public";
             limit_req zone=general_zone burst=5 nodelay;
