@@ -323,7 +323,7 @@ paths:
   # ACCOUNTS - UPDATE PASSWORD REQUEST
   "/ACCOUNTS_BASE_URL_REPLACE/password/update/request":
     post:
-      summary: Request password reset link
+      summary: Update password request
       description: Sends a password reset link to the provided email address.
       tags:
         - Accounts
@@ -363,7 +363,7 @@ paths:
   # ACCOUNTS - UPDATE PASSWORD CONFIRM
   "/ACCOUNTS_BASE_URL_REPLACE/password/update/confirm":
     patch:
-      summary: Update password
+      summary: Update password confirm
       description: |-
         Finalizes the password reset flow by validating the token received by email
         and updating the user's password.
@@ -631,7 +631,7 @@ paths:
   # ACCOUNTS - CONNECTED DEVICES
   "/ACCOUNTS_BASE_URL_REPLACE/devices":
     get:
-      summary: Get connected devices
+      summary: List connected devices
       description: >-
         Retrieves a paginated list of device sessions for the authenticated user,
         sorted by most recent login. Each entry represents a login event, including
@@ -971,7 +971,7 @@ paths:
   # ACCOUNTS - UPDATE EMAIL REQUEST
   "/ACCOUNTS_BASE_URL_REPLACE/email/update/request":
     post:
-      summary: Email update request
+      summary: Update email request
       description: |-
         Initiates the email update flow for the authenticated user.
 
@@ -1000,7 +1000,7 @@ paths:
                   example: new.email@example.com
       responses:
         "200":
-          description: Email update request processed successfully.
+          description: Update email request processed successfully.
           content:
             application/json:
               schema:
@@ -1020,7 +1020,7 @@ paths:
   # ACCOUNTS - UPDATE EMAIL CONFIRM
   "/ACCOUNTS_BASE_URL_REPLACE/email/update/confirm":
     patch:
-      summary: Email update confirm
+      summary: Update email confirm
       description: |-
         Finalizes the email update flow by validating the token received in the current email
         and the PIN received in the new email.
@@ -1222,7 +1222,7 @@ paths:
 
     # CATEGORIES - GET
     get:
-      summary: Get categories
+      summary: List categories
       description: >-
         Retrieves a paginated list of categories for the authenticated user.
         All query parameters are optional and act as filters.
@@ -1318,7 +1318,7 @@ paths:
   # CATEGORIES - GET BY ID
   "/TASKS_BASE_URL_REPLACE/category/{id}":
     get:
-      summary: Get category by ID
+      summary: Get category
       description: >-
         Retrieves a specific category by its unique identifier.
         The category must belong to the authenticated user.
@@ -1592,7 +1592,7 @@ paths:
 
     # Tasks - GET
     get:
-      summary: Get tasks
+      summary: List tasks
       description: >-
         Retrieves a paginated list of tasks for the authenticated user.
         All query parameters are optional and act as filters.
@@ -1785,7 +1785,7 @@ paths:
   # Tasks - GET BY ID
   "/TASKS_BASE_URL_REPLACE/{id}":
     get:
-      summary: Get task by ID
+      summary: Get task
       description: >-
         Retrieves a specific task by its unique identifier.
         The task must belong to the authenticated user.
@@ -1891,7 +1891,7 @@ paths:
 
     # Tasks - UPDATE
     put:
-      summary: Update task by ID
+      summary: Update task
       description: >-
         This endpoint updates an existing task for the authenticated user.
         The task is identified by its unique UUID provided in the path.
@@ -2019,7 +2019,7 @@ paths:
 
     # Tasks - DELETE
     delete:
-      summary: Delete task by ID
+      summary: Delete task
       description: >-
         Deletes a specific task belonging to the authenticated user.
         The task is identified by its unique UUID provided in the path.
