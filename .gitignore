@@ -58,6 +58,7 @@ yarn-error.log
 /connect.lock
 /libpeerconnection.log
 testem.log
+**/.angular/
 
 # =========================
 # VISUAL STUDIO CODE
