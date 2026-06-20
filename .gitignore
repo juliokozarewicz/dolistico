@@ -1,9 +1,25 @@
+# =========================
+# HELP / DOC
+# =========================
 HELP.md
+
+# =========================
+# JAVA / GRADLE
+# =========================
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
 .apt_generated
 .classpath
 .factorypath
@@ -11,30 +27,77 @@ build/
 .settings
 .springBeans
 .sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+
+# =========================
+# INTELLIJ / IDEs
+# =========================
 .idea
 *.iws
 *.iml
 *.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+
+# =========================
+# ECLIPSE / OTHER IDEs
+# =========================
+.c9/
+*.launch
+
+# =========================
+# NODE / FRONTEND
+# =========================
+node_modules
+npm-debug.log
+yarn-error.log
+/tmp
+/out-tsc
+/bazel-out
+/typings
+/.angular/cache
+.sass-cache/
+/coverage
+/connect.lock
+/libpeerconnection.log
+testem.log
+
+# =========================
+# VISUAL STUDIO CODE
+# =========================
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# =========================
+# ENV / CONFIG
+# =========================
+.env
+*.env
+*.pem
+
+# =========================
+# LOGS
+# =========================
+logfile.*
+
+# =========================
+# SYSTEM
+# =========================
+.DS_Store
+
+# =========================
+# OUTPUT / PACKAGES
+# =========================
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-.vscode/
-logfile.*
-*.pem
 
-### ENV ###
-.env
-*.env
-
-### OTHERS ###
+# =========================
+# OTHERS
+# =========================
 */static/uploads/*
 *.tar
 *.gz
