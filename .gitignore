@@ -59,6 +59,7 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 **/.angular/
+**/.angular/cache/
 
 # =========================
 # VISUAL STUDIO CODE
