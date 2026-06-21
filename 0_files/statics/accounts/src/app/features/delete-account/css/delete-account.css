@@ -1,17 +1,8 @@
-@import url("./assets/config.css");
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
 main {
     width: 100%;
-    min-height: 100%;
+    height: 100%;
+    min-height: 400px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: var(--gray5);
@@ -25,7 +16,7 @@ main {
 .spinner {
     width: 100%;
     height: 100%;
-    background-image: url("./assets/spin-loading.svg");
+    background-image: url("../assets/spin-loading.svg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -121,7 +112,6 @@ input#password.passworderror {
 #sendbtn {
     height: 100%;
     width: 100%;
-    background-image: url("./assets/sendbtn.svg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -144,7 +134,7 @@ input#password.passworderror {
     height: 100%;
     background-color: var(--gray1);
     border-radius: 8px;
-    background-image: url("./assets/reset-password.svg");
+    background-image: url("../assets/reset-password.svg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -232,7 +222,7 @@ body.success-background {
     display: none;
     width: 10vh;
     height: 10vh;
-    background-image: url("./assets/success.svg");
+    background-image: url("../assets/success.svg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
