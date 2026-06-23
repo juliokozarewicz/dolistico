@@ -78,5 +78,7 @@
   "TASKS_CATEGORIES_CREATED_SUCCESSFULLY": "Categoria criada com sucesso.",
   "TASKS_CATEGORIES_UPDATED_SUCCESSFULLY": "Categoria atualizada com sucesso.",
   "TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY": "Categorias carregadas com sucesso.",
-  "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Categoria removida com sucesso."
+  "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Categoria removida com sucesso.",
+
+  "UPDATE_PASSWORD": "atualizar senha"
 }

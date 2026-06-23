@@ -78,5 +78,7 @@
   "TASKS_CATEGORIES_CREATED_SUCCESSFULLY": "Category created successfully.",
   "TASKS_CATEGORIES_UPDATED_SUCCESSFULLY": "Category updated successfully.",
   "TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY": "Categories retrieved successfully.",
-  "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Category deleted successfully."
+  "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Category deleted successfully.",
+
+  "UPDATE_PASSWORD": "update pasword"
 }
