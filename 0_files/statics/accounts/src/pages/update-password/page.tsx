@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import './css/page.css';
+import { updatePassword } from "../../api/update-password";
+import eyeOpen from "../../assets/images/open-eye.svg";
+import eyeClosed from "../../assets/images/closed-eye.svg";
 
 function App() {
 
     // locale
     const { t } = useTranslation();
 
-    // ======================================================== ( states init )
-    // ========================================================= ( states end )
+    // Retrive token from URL
+    const token = new URLSearchParams(window.location.hash.split("?")[1]).get("token");
 
-    // ======================================================== ( efects init )
+    // Sstates
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
 
     // Initial loading
     useEffect(() => {
@@ -30,7 +36,36 @@ function App() {
         return () => clearTimeout(timer);
     }, []);
 
-    // ========================================================= ( efects end )
+    // Submit form
+    async function handleSubmit(e: React.FormEvent) {
+
+        e.preventDefault();
+
+        console.log(token)
+
+        if (!token) {
+            alert("Token inválido");
+            return;
+        }
+
+        try {
+
+            await updatePassword(token, password);
+            alert("Senha atualizada com sucesso!");
+
+        } catch (err) {
+            
+            // Input error
+            if (err.response?.status === 422) {
+                setPasswordError(true);
+                return;
+            }
+
+            console.error(err);
+            alert("Erro ao atualizar senha:" + err);
+        }
+
+    }
 
     return (
 
@@ -38,40 +73,58 @@ function App() {
 
             <main>
 
-                <div id="loading"><div className="spinner"></div></div>
+                <div id="loading">
+                    <div className="spinner"></div>
+                </div>
 
                 <div id="formUpdatepasswordFrame">
+                    <form id="updatePasswordForm" onSubmit={handleSubmit}>
+                    
+                    <div id="userIcon">
+                        <div id="userIconHead"></div>
+                        <div id="userIconBody"></div>
+                    </div>
 
-                    <form id="updatePasswordForm" method="post">
+                    <div id="passwordBox">
 
-                        <div id="userIcon">
-                            <div id="userIconHead"></div>
-                            <div id="userIconBody"></div>
-                        </div>
-                        
-                        <div id="passwordBox">
-                            <div id="passIcon"></div>
+                        <div id="passIcon"></div>
 
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                placeholder="*************"
-                                required
-                            />
-                        </div>
-                        
-                        <div id="errorFrame"></div>
+                        <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        name="password"
+                        placeholder="*************"
+                        required
+                        value={password}
+                        className={passwordError ? "passworderror" : ""}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            setPasswordError(false);
+                        }}
+                        />
 
-                        <button id="sendButtom">{t('UPDATE_PASSWORD')}</button>
+                        <button
+                            type="button"
+                            id="hidepassword"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            <img id="hidepasswordimg" src={showPassword ? eyeClosed : eyeOpen} />
+                        </button>
+
+                    </div>
+
+                    <div id="errorFrame"></div>
+
+                    <button id="sendButtom" type="submit">
+                        {t("UPDATE_PASSWORD")}
+                    </button>
 
                     </form>
-
                 </div>
 
                 <div id="successicon"></div>
                 <p id="textResponse"></p>
-                
+
             </main>
 
         </>
