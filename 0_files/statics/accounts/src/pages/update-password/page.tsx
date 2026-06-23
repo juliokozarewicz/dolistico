@@ -45,8 +45,6 @@ function App() {
 
         e.preventDefault();
 
-        console.log(token)
-
         if (!token) {
             alert("Token inválido");
             return;
@@ -59,30 +57,49 @@ function App() {
 
         } catch (err: any) {
 
-            if (err.response?.status === 422) {
-                setPasswordError(true);
+            // Safely extract response data (works with axios, fetch wrappers, interceptors)
+            const status = err?.response?.status ?? err?.status;
+            const data = err?.response?.data ?? err?.data;
+
+            // 429 - rate limit (primary + fallback by messageCode)
+            if (
+                status === 429 ||
+                data?.messageCode === "TOO_MANY_REQUESTS"
+            ) {
+                setErrors(["TOO_MANY_REQUESTS"]);
+                return;
             }
 
-            if (err.response?.data) {
-
-                const data = err.response.data;
+            // 422 - validation error
+            if (status === 422) {
+                setPasswordError(true);
 
                 const errorMessages: string[] = [];
 
-                // Erro geral
-                if (data.messageCode) {
+                if (data?.messageCode) {
                     errorMessages.push(data.messageCode);
                 }
 
-                // Erros de campos
-                if (Array.isArray(data.fieldErrors)) {
+                if (Array.isArray(data?.fieldErrors)) {
                     data.fieldErrors.forEach((fieldError: any) => {
-                        errorMessages.push(fieldError.fieldMessageCode);
+                        if (fieldError.fieldMessageCode) {
+                            errorMessages.push(fieldError.fieldMessageCode);
+                        }
                     });
                 }
 
                 setErrors(errorMessages);
+                return;
             }
+
+            // Backend controlled error (translation key)
+            if (data?.messageCode) {
+                setErrors([data.messageCode]);
+                return;
+            }
+
+            // Fallback
+            setErrors(["INTERNAL_SERVER_ERROR"]);
         }
 
     }
