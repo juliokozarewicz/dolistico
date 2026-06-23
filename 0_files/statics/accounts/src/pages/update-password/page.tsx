@@ -85,6 +85,8 @@ function App() {
                         <div id="userIconBody"></div>
                     </div>
 
+                    <p id="text-info">{t("UPDATE_PASSWORD_INFO_TEXT")}</p>
+
                     <div id="passwordBox">
 
                         <div id="passIcon"></div>
@@ -115,9 +117,7 @@ function App() {
 
                     <div id="errorFrame"></div>
 
-                    <button id="sendButtom" type="submit">
-                        {t("UPDATE_PASSWORD")}
-                    </button>
+                    <button id="sendButtom" type="submit">{t("UPDATE_PASSWORD_BTN")}</button>
 
                     </form>
                 </div>

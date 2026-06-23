@@ -79,6 +79,6 @@
   "TASKS_CATEGORIES_UPDATED_SUCCESSFULLY": "Category updated successfully.",
   "TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY": "Categories retrieved successfully.",
   "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Category deleted successfully.",
-
-  "UPDATE_PASSWORD": "update pasword"
+  "UPDATE_PASSWORD_BTN": "update pasword",
+  "UPDATE_PASSWORD_INFO_TEXT": "To continue, please enter your new password below and submit your request."
 }

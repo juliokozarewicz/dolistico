@@ -17,6 +17,15 @@
     to { transform: rotate(360deg); }
 }
 
+
+#text-info {
+    margin-bottom: 10px;
+    text-align: center;
+    color: var(--gray1);
+    padding: 5px;
+    font-size: 12px;
+}
+
 #formUpdatepasswordFrame {
     display: none;
     align-items: center;
@@ -54,6 +63,7 @@
     padding-left: 12px;
     border-radius: 8px;
     border: 2px solid var(--gray3);
+    font-size: 12px;
 }
 
 input#password.passworderror {
@@ -124,6 +134,7 @@ input#password.passworderror {
     font-size: 14px;
     text-transform: uppercase;
     margin-top: 5px;
+    font-size: 14px;
 }
 
 #sendButtom:hover {
