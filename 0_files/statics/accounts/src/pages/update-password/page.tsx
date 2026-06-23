@@ -13,10 +13,15 @@ function App() {
     // Retrive token from URL
     const token = new URLSearchParams(window.location.hash.split("?")[1]).get("token");
 
-    // Sstates
+    // States
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+
+    // Errors
+    const [errors, setErrors] = useState<string[]>([]);
+    const [index, setIndex] = useState(0);
+    const [leaving, setLeaving] = useState(false);
 
     // Initial loading
     useEffect(() => {
@@ -53,19 +58,56 @@ function App() {
             await updatePassword(token, password);
             alert("Senha atualizada com sucesso!");
 
-        } catch (err) {
-            
-            // Input error
+        } catch (err: any) {
+
             if (err.response?.status === 422) {
                 setPasswordError(true);
-                return;
             }
 
-            console.error(err);
-            alert("Erro ao atualizar senha:" + err);
+            if (err.response?.data) {
+
+                const data = err.response.data;
+
+                const errorMessages: string[] = [];
+
+                // Erro geral
+                if (data.messageCode) {
+                    errorMessages.push(data.messageCode);
+                }
+
+                // Erros de campos
+                if (Array.isArray(data.fieldErrors)) {
+                    data.fieldErrors.forEach((fieldError: any) => {
+                        errorMessages.push(fieldError.fieldMessageCode);
+                    });
+                }
+
+                setErrors(errorMessages);
+            }
         }
 
     }
+
+    // Fade out error
+    useEffect(() => {
+        setIndex(0);
+        setLeaving(false);
+    }, [errors]);
+
+    useEffect(() => {
+        if (index >= errors.length) return;
+
+        const show = setTimeout(() => {
+            setLeaving(true);
+
+            setTimeout(() => {
+                setIndex(i => i + 1);
+                setLeaving(false);
+            }, 1000);
+        }, 3000);
+
+        return () => clearTimeout(show);
+    }, [index, errors]);
 
     return (
 
@@ -73,53 +115,59 @@ function App() {
 
             <main>
 
-                <div id="loading">
-                    <div className="spinner"></div>
-                </div>
+                <div id="loading"><div className="spinner"></div></div>
 
                 <div id="formUpdatepasswordFrame">
+
                     <form id="updatePasswordForm" onSubmit={handleSubmit}>
                     
-                    <div id="userIcon">
-                        <div id="userIconHead"></div>
-                        <div id="userIconBody"></div>
-                    </div>
+                        <div id="userIcon">
+                            <div id="userIconHead"></div>
+                            <div id="userIconBody"></div>
+                        </div>
 
-                    <p id="text-info">{t("UPDATE_PASSWORD_INFO_TEXT")}</p>
+                        <p id="text-info">{t("UPDATE_PASSWORD_INFO_TEXT")}</p>
 
-                    <div id="passwordBox">
+                        <div id="passwordBox">
 
-                        <div id="passIcon"></div>
+                            <div id="passIcon"></div>
 
-                        <input
-                        type={showPassword ? "text" : "password"}
-                        id="password"
-                        name="password"
-                        placeholder="*************"
-                        required
-                        value={password}
-                        className={passwordError ? "passworderror" : ""}
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                            setPasswordError(false);
-                        }}
-                        />
+                            <input
+                            type={showPassword ? "text" : "password"}
+                            id="password"
+                            name="password"
+                            placeholder="*************"
+                            required
+                            value={password}
+                            className={passwordError ? "passworderror" : ""}
+                            onChange={(e) => {
+                                setPassword(e.target.value);
+                                setPasswordError(false);
+                            }}
+                            />
 
-                        <button
-                            type="button"
-                            id="hidepassword"
-                            onClick={() => setShowPassword(!showPassword)}
-                        >
-                            <img id="hidepasswordimg" src={showPassword ? eyeClosed : eyeOpen} />
-                        </button>
+                            <button
+                                type="button"
+                                id="hidepassword"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                <img id="hidepasswordimg" src={showPassword ? eyeClosed : eyeOpen} />
+                            </button>
 
-                    </div>
+                        </div>
 
-                    <div id="errorFrame"></div>
-
-                    <button id="sendButtom" type="submit">{t("UPDATE_PASSWORD_BTN")}</button>
+                        <button id="sendButtom" type="submit">{t("UPDATE_PASSWORD_BTN")}</button>
 
                     </form>
+
+                </div>
+                
+                <div id="errorFrame">
+                    {errors[index] && (
+                        <div className={`errortext ${leaving ? "fadeOut" : ""}`}>
+                            {t(errors[index])}
+                        </div>
+                    )}
                 </div>
 
                 <div id="successicon"></div>
