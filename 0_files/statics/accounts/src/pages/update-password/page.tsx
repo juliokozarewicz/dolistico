@@ -20,8 +20,7 @@ function App() {
 
     // Errors
     const [errors, setErrors] = useState<string[]>([]);
-    const [index, setIndex] = useState(0);
-    const [leaving, setLeaving] = useState(false);
+    const [removing, setRemoving] = useState<number | null>(null);
 
     // Initial loading
     useEffect(() => {
@@ -90,24 +89,19 @@ function App() {
 
     // Fade out error
     useEffect(() => {
-        setIndex(0);
-        setLeaving(false);
-    }, [errors]);
+        if (errors.length === 0) return;
 
-    useEffect(() => {
-        if (index >= errors.length) return;
-
-        const show = setTimeout(() => {
-            setLeaving(true);
+        const interval = setInterval(() => {
+            setRemoving(0);
 
             setTimeout(() => {
-                setIndex(i => i + 1);
-                setLeaving(false);
-            }, 1000);
-        }, 3000);
+                setErrors(prev => prev.slice(1));
+                setRemoving(null);
+            }, 500);
+        }, 2000); 
 
-        return () => clearTimeout(show);
-    }, [index, errors]);
+        return () => clearInterval(interval);
+    }, [errors]);
 
     return (
 
@@ -163,11 +157,17 @@ function App() {
                 </div>
                 
                 <div id="errorFrame">
-                    {errors[index] && (
-                        <div className={`errortext ${leaving ? "fadeOut" : ""}`}>
-                            {t(errors[index])}
+                    {errors.map((err, index) => (
+                        <div
+                            key={err + index}
+                            className={`errortext ${index === 0 && removing !== null ? "fadeOutUp" : "fadeIn"}`}
+                            style={{
+                                zIndex: 100 - index
+                            }}
+                        >
+                            {t(err)}
                         </div>
-                    )}
+                    ))}
                 </div>
 
                 <div id="successicon"></div>

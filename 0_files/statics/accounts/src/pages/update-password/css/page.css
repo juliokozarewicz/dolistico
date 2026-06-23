@@ -242,7 +242,19 @@ body.success-background {
     to { opacity: 0; }
 }
 
+#errorFrame {
+    position: absolute;
+    top: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
 .errortext {
+    position: relative;
+    margin-bottom: 5px;
     width: 100%;
     padding: 10px;
     color: var(--gray5);
@@ -250,18 +262,16 @@ body.success-background {
     background-color: var(--darkred);
     border-radius: 6px;
     font-size: 12px;
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 1s ease, transform 1s ease;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.fadeOutUp {
+    opacity: 0;
+    transform: translateY(-20px);
 }
 
 .errorText::first-letter {
     text-transform: uppercase;
-}
-
-.fadeOut {
-    opacity: 0;
-    transform: translateY(-10px);
 }
 
 /* >>> MOBILE <<< */
