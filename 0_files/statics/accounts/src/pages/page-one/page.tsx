@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 function App() {
+
+    const { t } = useTranslation();
 
     return (
 
@@ -6,7 +10,7 @@ function App() {
 
             <main id="center">
 
-                <h1>PAGE ONE</h1>
+                <h1>{t('NO_PERMISSION_TO_ACCESS')}</h1>
                 
             </main>
 
