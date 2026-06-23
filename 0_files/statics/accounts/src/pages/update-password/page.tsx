@@ -57,6 +57,8 @@ function App() {
 
         } catch (err: any) {
 
+            alert(err);
+
             // Safely extract response data (works with axios, fetch wrappers, interceptors)
             const status = err?.response?.status ?? err?.status;
             const data = err?.response?.data ?? err?.data;
