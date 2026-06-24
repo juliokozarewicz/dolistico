@@ -281,6 +281,15 @@ body.success-background {
     text-transform: uppercase;
 }
 
+.updateInfo {
+    color: var(--black);
+    font-size: 14px;
+    width: 90%;
+    max-width: 400px;
+    text-transform: initial;
+    text-align: center;
+}
+
 /* >>> MOBILE <<< */
 @media (max-width: 768px) {
     

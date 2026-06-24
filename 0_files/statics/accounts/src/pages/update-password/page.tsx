@@ -22,7 +22,7 @@ function App() {
     const [passwordError, setPasswordError] = useState(false);
 
     // UI state
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [isSuccess, setIsSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -232,8 +232,10 @@ function App() {
                     <p id="textResponse" style={{ display: "block" }}>
                         {t(successMessage)}
                     </p>
+                    <p className="updateInfo">{t("UPDATE_PASSWORD_INFO_SUCCESS")}</p>
                 </>
             )}
+
         </main>
     );
 }

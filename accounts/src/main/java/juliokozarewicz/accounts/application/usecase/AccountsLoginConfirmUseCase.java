@@ -81,20 +81,15 @@ public class AccountsLoginConfirmUseCase {
         // Find cached token
         var cachedToken = tokenVerificationCache.get(accountsLoginConfirmCommand.userLoginToken());
 
-        // If token not exist, return invalid credentials
-        if ( cachedToken == null || cachedToken.get() == null ) {
+        // Null + type safety check
+        if (cachedToken == null || cachedToken.get() == null) {
             throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
         }
 
-        // Reason verification
-        AccountsLoginCacheCommand cachedData = (AccountsLoginCacheCommand) cachedToken.get();
+        Object raw = cachedToken.get();
 
-        if (
-            cachedData.reason() == null ||
-            cachedData.reason().trim().isEmpty() ||
-            !AccountsUpdateEnum.ACCOUNTS_LOGIN.getReasonCode().equals(cachedData.reason())
-        ) {
-            throw new DomainException(DomainExceptionEnum.INVALID_CREDENTIALS);
+        if (!(raw instanceof AccountsLoginCacheCommand cachedData)) {
+            throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
         }
 
         // User ID extract

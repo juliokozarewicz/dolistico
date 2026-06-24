@@ -83,7 +83,11 @@ public class AccountsDeleteConfirmUseCase {
             }
 
             // Reason verification
-            AccountsDeleteCacheCommand cachedData = (AccountsDeleteCacheCommand) cachedToken.get();
+            Object cachedObject = cachedToken.get();
+
+            if (!(cachedObject instanceof AccountsDeleteCacheCommand cachedData)) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
+            }
 
             if (
                 cachedData.reason() == null ||

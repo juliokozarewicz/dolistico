@@ -82,7 +82,11 @@ public class AccountsUpdatePasswordConfirmUseCase {
             }
 
             // Reason verification
-            AccountsUpdatePasswordCacheCommand cachedData = (AccountsUpdatePasswordCacheCommand) cachedToken.get();
+            Object raw = cachedToken.get();
+
+            if (!(raw instanceof AccountsUpdatePasswordCacheCommand cachedData)) {
+                throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
+            }
 
             if (
                 !AccountsUpdateEnum.ACCOUNTS_UPDATE_PASSWORD.getReasonCode()

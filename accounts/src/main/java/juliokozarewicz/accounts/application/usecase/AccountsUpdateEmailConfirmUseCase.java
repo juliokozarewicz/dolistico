@@ -82,7 +82,11 @@ public class AccountsUpdateEmailConfirmUseCase {
         }
 
         // Reason verification
-        AccountsUpdateEmailCacheCommand cachedData = (AccountsUpdateEmailCacheCommand) cachedToken.get();
+        Object cachedObject = cachedToken.get();
+
+        if (!(cachedObject instanceof AccountsUpdateEmailCacheCommand cachedData)) {
+            throw new DomainException(DomainExceptionEnum.ACCOUNTS_EXPIRED_LINK);
+        }
 
         if (
             cachedData.reason() == null ||

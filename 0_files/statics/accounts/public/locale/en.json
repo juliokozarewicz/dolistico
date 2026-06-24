@@ -80,5 +80,6 @@
   "TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY": "Categories retrieved successfully.",
   "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Category deleted successfully.",
   "UPDATE_PASSWORD_BTN": "update pasword",
-  "UPDATE_PASSWORD_INFO_TEXT": "The password must be at least 12 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (! @ # $ % ^ & *)."
+  "UPDATE_PASSWORD_INFO_TEXT": "The password must be at least 12 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (! @ # $ % ^ & *).",
+  "UPDATE_PASSWORD_INFO_SUCCESS": "All set! You can now close this page and sign in with your new credentials."
 }
