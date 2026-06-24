@@ -17,6 +17,7 @@ function App() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     // Errors
     const [errors, setErrors] = useState<string[]>([]);
@@ -42,7 +43,6 @@ function App() {
 
     // Submit form
     async function handleSubmit(e: React.FormEvent) {
-
         e.preventDefault();
 
         if (!token) {
@@ -50,14 +50,20 @@ function App() {
             return;
         }
 
+        const loadingElement = document.getElementById("loading");
+        const formElement = document.getElementById("formUpdatepasswordFrame");
+
+        setLoading(true);
+
+        if (loadingElement) loadingElement.style.display = "flex";
+        if (formElement) formElement.style.display = "none";
+
         try {
 
             await updatePassword(token, password);
             alert("Senha atualizada com sucesso!");
 
         } catch (err: any) {
-
-            alert(err);
 
             // Safely extract response data (works with axios, fetch wrappers, interceptors)
             const status = err?.response?.status ?? err?.status;
@@ -102,6 +108,13 @@ function App() {
 
             // Fallback
             setErrors(["INTERNAL_SERVER_ERROR"]);
+
+        } finally {
+
+            setLoading(false);
+
+            if (loadingElement) loadingElement.style.display = "none";
+            if (formElement) formElement.style.display = "flex";
         }
 
     }
