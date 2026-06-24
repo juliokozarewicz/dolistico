@@ -6,5 +6,5 @@ const config = require('./src/config.json')
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: config.BASE_PATH_FRONT_END
+  base: config.BASE_PATH
 })
