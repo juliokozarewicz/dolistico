@@ -245,7 +245,7 @@ http {
 
         # --------------------------------------------------------- (end errors)
 
-        # ----------------------------------------------------- ( STATICS init )
+        # --------------------------------------------- ( *** STATICS *** init )
 
         # [ ICONS ]
         location /static/public/icon/ {
@@ -298,13 +298,12 @@ http {
         }
 
         # [ ACCOUNTS - UPDATE PASSWORD ]
-        location /${ACCOUNTS_BASE_URL}/static/update-password/ {
-            alias /static/public/update-password/;
+        location /static/public/accounts/ {
+            alias /static/public/accounts/;
             index index.html;
-            try_files $uri /index.html;
-            add_header Cache-Control "public";
-            limit_req zone=general_zone burst=50 nodelay;
+            try_files $uri $uri/ /static/public/accounts/index.html;
         }
+        # ---------------------------------------------- ( *** STATICS *** end )
 
         # --------------------------------------------------- (hello world init)
 
