@@ -1,4 +1,7 @@
-import { api } from "./config";
+import axios from "axios";
+import config from "../config.json";
+
+const baseURL = axios.create({baseURL: config.BASE_URL_API,});
 
 export async function updatePassword(
     
@@ -7,7 +10,7 @@ export async function updatePassword(
 
 ) {
 
-    const response = await api.patch("/v1/accounts/password/update/confirm", {
+    const response = await baseURL.patch("/v1/accounts/password/update/confirm", {
         token,
         newPassword,
     });
