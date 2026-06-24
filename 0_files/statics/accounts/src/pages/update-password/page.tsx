@@ -145,7 +145,7 @@ function App() {
                 setErrors((prev) => prev.slice(1));
                 setRemoving(null);
             }, 500);
-        }, 2000);
+        }, 3000);
 
         return () => clearInterval(interval);
     }, [errors]);
