@@ -270,6 +270,7 @@ body.success-background {
     border-radius: 6px;
     font-size: 12px;
     transition: transform 0.35s ease, opacity 0.35s ease;
+    text-align: center;
 }
 
 .fadeOutUp {
@@ -292,7 +293,7 @@ body.success-background {
 
 /* >>> MOBILE <<< */
 @media (max-width: 768px) {
-    
+
     #updatePasswordForm {
         width: 75%;
         height: 90%;
@@ -320,6 +321,7 @@ body.success-background {
     width: 90%;
     display: flex;
     flex-direction: column;
+
 }
 
 
