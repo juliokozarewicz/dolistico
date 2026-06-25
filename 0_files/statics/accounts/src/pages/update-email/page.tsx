@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./css/page.css";
-import { updatePassword } from "../../api/update-password";
-import eyeOpen from "../../assets/images/open-eye.svg";
-import eyeClosed from "../../assets/images/closed-eye.svg";
+import { updateEmail } from "../../api/update-email";
 
 function App() {
     const { t } = useTranslation();
@@ -17,9 +15,9 @@ function App() {
     const token = new URLSearchParams(window.location.search).get("token") ?? "";
 
     // Form state
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
+    const [pin, setPin] = useState<string[]>(["", "", "", "", "", ""]);
+    const [pinError, setPinError] = useState(false);
+    const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
     // UI state
     const [loading, setLoading] = useState(true);
@@ -59,18 +57,83 @@ function App() {
     }, [isSuccess]);
 
     /**
-     * Handle password update submit
+     * Focus the first empty pin input (or the last one if all filled)
+     */
+    function focusFirstEmpty() {
+        const firstEmptyIndex = pin.findIndex((digit) => digit === "");
+
+        if (firstEmptyIndex !== -1) {
+            inputsRef.current[firstEmptyIndex]?.focus();
+        } else {
+            inputsRef.current[pin.length - 1]?.focus();
+        }
+    }
+
+    /**
+     * Handle pin digit change
+     */
+    function handlePinChange(index: number, value: string) {
+        const digit = value.replace(/\D/g, "").slice(-1);
+
+        const newPin = [...pin];
+        newPin[index] = digit;
+        setPin(newPin);
+        setPinError(false);
+
+        if (digit) {
+            const nextEmptyIndex = newPin.findIndex((d) => d === "");
+
+            if (nextEmptyIndex !== -1) {
+                inputsRef.current[nextEmptyIndex]?.focus();
+            } else {
+                inputsRef.current[newPin.length - 1]?.focus();
+            }
+        }
+    }
+
+    /**
+     * Handle backspace: clears the whole pin (same behavior as the old vanilla JS version)
+     */
+    function handlePinKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === "Backspace") {
+            setPin(["", "", "", "", "", ""]);
+            inputsRef.current[0]?.focus();
+        }
+    }
+
+    /**
+     * Handle paste on the pin boxes
+     */
+    function handlePinPaste(e: React.ClipboardEvent<HTMLInputElement>) {
+        e.preventDefault();
+
+        const paste = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+
+        if (!paste) return;
+
+        const newPin = ["", "", "", "", "", ""];
+        paste.split("").forEach((digit, i) => {
+            newPin[i] = digit;
+        });
+
+        setPin(newPin);
+        setPinError(false);
+        focusFirstEmpty();
+    }
+
+    /**
+     * Handle email update submit
      */
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
         setLoading(true);
         setErrors([]);
-        setPasswordError(false);
+        setPinError(false);
 
         try {
 
-            const response = await updatePassword(token, password);
+            const response = await updateEmail(token, pin.join(""));
 
             const messageCode =
                 response?.messageCode ?? response?.data?.messageCode;
@@ -98,7 +161,7 @@ function App() {
 
             // Validation error
             if (status === 422) {
-                setPasswordError(true);
+                setPinError(true);
 
                 const errorMessages: string[] = [];
 
@@ -161,48 +224,36 @@ function App() {
 
             {/* FORM */}
             {!isSuccess && !loading && (
-                <div id="formUpdatepasswordFrame" style={{ display: isSuccess || loading ? "none" : "flex" }}
+                <div id="formUpdateEmailFrame" style={{ display: isSuccess || loading ? "none" : "flex" }}
         >
-                    <form id="updatePasswordForm" onSubmit={handleSubmit}>
+                    <form id="updateEmailForm" onSubmit={handleSubmit}>
                         <div id="userIcon">
                             <div id="userIconHead"></div>
                             <div id="userIconBody"></div>
                         </div>
 
-                        {/* Password input box */}
-                        <div id="passwordBox">
-                            <div id="passIcon"></div>
+                        <p id="text-info">{t("UPDATE_EMAIL_INFO_TEXT")} </p>
 
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                name="password"
-                                placeholder="*************"
-                                required
-                                value={password}
-                                className={passwordError ? "passworderror" : ""}
-                                onChange={(e) => {
-                                    setPassword(e.target.value);
-                                    setPasswordError(false);
-                                }}
-                            />
-
-                            {/* Toggle password visibility */}
-                            <button
-                                type="button"
-                                id="hidepassword"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                <img
-                                    id="hidepasswordimg"
-                                    src={showPassword ? eyeClosed : eyeOpen}
+                        {/* Pin input box */}
+                        <div id="pinBox" onPaste={handlePinPaste}>
+                            {pin.map((digit, index) => (
+                                <input
+                                    key={index}
+                                    ref={(el) => { inputsRef.current[index] = el; }}
+                                    type="text"
+                                    maxLength={1}
+                                    inputMode="numeric"
+                                    required
+                                    value={digit}
+                                    className={pinError ? "input-error" : ""}
+                                    onClick={focusFirstEmpty}
+                                    onChange={(e) => handlePinChange(index, e.target.value)}
+                                    onKeyDown={handlePinKeyDown}
                                 />
-                            </button>
+                            ))}
                         </div>
 
-                        <button id="sendButtom" type="submit">{t("UPDATE_PASSWORD_BTN")}</button>
-                        
-                        <p id="text-info">{t("UPDATE_PASSWORD_INFO_TEXT")} </p>
+                        <button id="sendButtom" type="submit">{t("UPDATE_EMAIL_BTN")}</button>
 
                     </form>
                 </div>
@@ -232,7 +283,7 @@ function App() {
                     <p id="textResponse" style={{ display: "block" }}>
                         {t(successMessage)}
                     </p>
-                    <p className="updateInfo">{t("UPDATE_PASSWORD_INFO_SUCCESS")}</p>
+                    <p className="updateInfo">{t("UPDATE_EMAIL_INFO_SUCCESS")}</p>
                 </>
             )}
 

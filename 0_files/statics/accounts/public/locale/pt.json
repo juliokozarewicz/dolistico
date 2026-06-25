@@ -82,5 +82,7 @@
   "UPDATE_PASSWORD_BTN": "atualizar senha",
   "UPDATE_EMAIL_BTN": "atualizar email",
   "UPDATE_PASSWORD_INFO_TEXT": "A senha deve ter no mínimo 12 caracteres, incluindo letra maiúscula, minúscula, número e um caractere especial (! @ # $ % ^ & *).",
-  "UPDATE_PASSWORD_INFO_SUCCESS": "Tudo certo! Você já pode fechar esta página e acessar o sistema com suas novas credenciais."
+  "UPDATE_EMAIL_INFO_TEXT": "Digite o código que enviamos para o seu novo endereço de e-mail e finalize a solicitação para atualizar seus dados.",
+  "UPDATE_PASSWORD_INFO_SUCCESS": "Tudo certo! Você já pode fechar esta página e acessar o sistema com suas novas credenciais.",
+  "UPDATE_EMAIL_INFO_SUCCESS": "Tudo certo! Você já pode fechar esta página e acessar o sistema com suas novas credenciais."
 }
