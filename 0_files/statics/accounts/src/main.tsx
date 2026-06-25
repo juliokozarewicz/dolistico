@@ -1,16 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
 import { AppRoutes } from './router';
 import './i18n';
 import './main.css'
+import { BrowserRouter } from 'react-router-dom';
+import config from './config.json';
 
 ReactDOM.createRoot(
     document.getElementById('root')!
 ).render(
     <React.StrictMode>
-        <HashRouter>
+        <BrowserRouter basename={config.BASE_PATH}>
             <AppRoutes />
-        </HashRouter>
+        </BrowserRouter>
     </React.StrictMode>
 );

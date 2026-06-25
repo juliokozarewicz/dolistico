@@ -14,7 +14,7 @@ function App() {
     }, [t]);
 
     // Extract token from URL hash
-    const token = new URLSearchParams(window.location.hash.split("?")[1]).get("token") ?? "";
+    const token = new URLSearchParams(window.location.search).get("token") ?? "";
 
     // Form state
     const [password, setPassword] = useState("");
