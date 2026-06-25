@@ -232,8 +232,8 @@ body.success-background {
 
 #successicon{
     display: none;
-    width: 10vh;
-    height: 10vh;
+    width: 4rem;
+    height: 4rem;
     background-image: url("../../../assets/images/success.svg");
     background-repeat: no-repeat;
     background-position: center;
