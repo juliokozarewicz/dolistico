@@ -80,6 +80,7 @@
   "TASKS_CATEGORIES_RETRIEVED_SUCCESSFULLY": "Categorias carregadas com sucesso.",
   "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Categoria removida com sucesso.",
   "UPDATE_PASSWORD_BTN": "atualizar senha",
+  "UPDATE_EMAIL_BTN": "atualizar email",
   "UPDATE_PASSWORD_INFO_TEXT": "A senha deve ter no mínimo 12 caracteres, incluindo letra maiúscula, minúscula, número e um caractere especial (! @ # $ % ^ & *).",
   "UPDATE_PASSWORD_INFO_SUCCESS": "Tudo certo! Você já pode fechar esta página e acessar o sistema com suas novas credenciais."
 }
