@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 
-import UpdatePassword from './pages/update-password/page';
-import UpdateEmail from './pages/update-email/page';
+import UpdatePassword from './pages/update-password';
+import UpdateEmail from './pages/update-email';
 
 export function AppRoutes() {
   return (
