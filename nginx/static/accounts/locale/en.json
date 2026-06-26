@@ -81,8 +81,11 @@
   "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Category deleted successfully.",
   "UPDATE_PASSWORD_BTN": "update pasword",
   "UPDATE_EMAIL_BTN": "update email",
+  "DELETE_ACCOUNT_BTN": "delete account",
   "UPDATE_PASSWORD_INFO_TEXT": "The password must be at least 12 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (! @ # $ % ^ & *).",
+  "DELETE_ACCOUNT_INFO_TEXT": "After entering your password, your account will be deleted and your data cannot be recovered.",
   "UPDATE_EMAIL_INFO_TEXT": "Enter the code we sent to your new email address and complete the request to update your information.",
   "UPDATE_PASSWORD_INFO_SUCCESS": "All set! You can now close this page and sign in with your new credentials.",
-  "UPDATE_EMAIL_INFO_SUCCESS": "All set! You can now close this page and sign in with your new credentials."
+  "UPDATE_EMAIL_INFO_SUCCESS": "All set! You can now close this page and sign in with your new credentials.",
+  "DELETE_ACCOUNT_INFO_SUCCESS": "Your account has been successfully deleted. All your data has been permanently removed and cannot be recovered. You can now close this page."
 }

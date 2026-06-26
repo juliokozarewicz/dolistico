@@ -81,8 +81,11 @@
   "TASKS_CATEGORIES_DELETED_SUCCESSFULLY": "Categoria removida com sucesso.",
   "UPDATE_PASSWORD_BTN": "atualizar senha",
   "UPDATE_EMAIL_BTN": "atualizar email",
+  "DELETE_ACCOUNT_BTN": "excluir conta",
   "UPDATE_PASSWORD_INFO_TEXT": "A senha deve ter no mínimo 12 caracteres, incluindo letra maiúscula, minúscula, número e um caractere especial (! @ # $ % ^ & *).",
+  "DELETE_ACCOUNT_INFO_TEXT": "Após informar sua senha, sua conta será excluída e seus dados não poderão ser recuperados.",
   "UPDATE_EMAIL_INFO_TEXT": "Digite o código que enviamos para o seu novo endereço de e-mail e finalize a solicitação para atualizar seus dados.",
-  "UPDATE_PASSWORD_INFO_SUCCESS": "Tudo certo! Você já pode fechar esta página e acessar o sistema com suas novas credenciais.",
-  "UPDATE_EMAIL_INFO_SUCCESS": "Tudo certo! Você já pode fechar esta página e acessar o sistema com suas novas credenciais."
+  "UPDATE_PASSWORD_INFO_SUCCESS": "Tudo certo! Você já pode fechar esta página e acessar a nossa plataforma com suas novas credenciais.",
+  "UPDATE_EMAIL_INFO_SUCCESS": "Tudo certo! Você já pode fechar esta página e acessar a nossa plataforma com suas novas credenciais.",
+  "DELETE_ACCOUNT_INFO_SUCCESS": "Sua conta foi excluída com sucesso. Todos os seus dados foram removidos permanentemente e não podem ser recuperados. Você já pode fechar esta página."
 }

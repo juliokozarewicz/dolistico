@@ -1,18 +1,26 @@
 ################################################################################
-# SETTINGS
+# DEPLOY CHECKLIST
 ################################################################################
 
-# CONFIG MAP (These are no secrets; they are variables common to all services.)
+# API:
+    # CONFIG MAP (These are no secrets; they are variables common to all services.)
 
-# ENV (secrets and sensitive variables of each service.)
-    # Define each variable within ${} in the environment.
-
-# STATICS "./nginx/statics_files/documentation/<UI_NAME>":
-    # Define the "config.json" and "documentation.yaml" files for each UI folder.
+    # ENV (secrets and sensitive variables of each service.)
+        # Define each variable within ${} in the environment.
 
 # NGINX:
     # Server;
     # upstream load balancer.
+
+    # STATIC:
+        # "./nginx/static/documentation":
+            # config.json
+            # documentation.yaml
+            # message_code.json
+            # postman_collection.json
+
+        # "./nginx/static/accounts":
+            # /src/config.json
 
 ################################################################################
 
