@@ -38,3 +38,17 @@ CREATE TABLE IF NOT EXISTS accounts.accounts_devices (
     device VARCHAR(256) NOT NULL,
     method VARCHAR(256) NOT NULL
 );
+
+------------------------------------------------------- ( ACCOUNTS CONFIG INIT )
+CREATE TABLE IF NOT EXISTS accounts.accounts_config (
+    id UUID PRIMARY KEY,
+    config_name VARCHAR(256) NOT NULL,
+    config_value VARCHAR(512) NOT NULL
+);
+
+INSERT INTO accounts.accounts_config (config_name, config_value)
+VALUES
+    ('update_password_url', 'http://localhost/static/public/accounts/update-password'),
+    ('update_email_url', 'http://localhost/static/public/accounts/update-email'),
+    ('delete_account_url', 'http://localhost/static/public/accounts/delete-account');
+-------------------------------------------------------- ( ACCOUNTS CONFIG END )
