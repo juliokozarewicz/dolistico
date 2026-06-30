@@ -4,6 +4,7 @@ import juliokozarewicz.accounts.application.command.AccountsDeleteCacheCommand;
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.domain.repository.AccountsConfigRepository;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsDeleteRequestProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
@@ -24,8 +25,6 @@ public class AccountsDeleteRequestUseCase {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${DELETE_ACCOUNT_URL}")
-    private String deleteAccountBaseURL;
     // -------------------------------------------------------------------------
 
     private final Encryption encryption;
@@ -33,13 +32,15 @@ public class AccountsDeleteRequestUseCase {
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
     private final AccountsDeleteRequestProducer accountsDeleteRequestProducer;
+    private final AccountsConfigRepository accountsConfigRepository;
 
     public AccountsDeleteRequestUseCase(
 
         Encryption encryption,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         CacheManager cacheManager,
-        AccountsDeleteRequestProducer accountsDeleteRequestProducer
+        AccountsDeleteRequestProducer accountsDeleteRequestProducer,
+        AccountsConfigRepository accountsConfigRepository
 
     ) {
 
@@ -48,6 +49,7 @@ public class AccountsDeleteRequestUseCase {
         this.cacheManager = cacheManager;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
         this.accountsDeleteRequestProducer = accountsDeleteRequestProducer;
+        this.accountsConfigRepository = accountsConfigRepository;
 
     }
 
@@ -88,6 +90,12 @@ public class AccountsDeleteRequestUseCase {
         tokenVerificationCache.put(generatedToken, cacheCommand);
 
         // Create URL with token
+        String deleteAccountBaseURL = accountsConfigRepository.findByConfigName("delete_account_url")
+            .orElseThrow(() ->
+                new DomainException(DomainExceptionEnum.INTERNAL_SERVER_ERROR)
+            )
+        .getConfigValue();
+
         String DeleteAccountdURL = UriComponentsBuilder
             .fromUriString(deleteAccountBaseURL)
             .queryParam("token", generatedToken)

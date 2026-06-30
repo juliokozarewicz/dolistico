@@ -5,6 +5,7 @@ import juliokozarewicz.accounts.application.command.AccountsUpdatePasswordReques
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.domain.repository.AccountsConfigRepository;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdatePasswordRequestProducer;
 import juliokozarewicz.accounts.infrastructure.security.Encryption;
@@ -23,8 +24,6 @@ public class AccountsUpdatePasswordRequestUseCase {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${UPDATE_PASSWORD_URL}")
-    private String updatePasswordBaseURL;
     // -------------------------------------------------------------------------
 
     private final Encryption encryption;
@@ -32,13 +31,15 @@ public class AccountsUpdatePasswordRequestUseCase {
     private final CacheManager cacheManager;
     private final Cache tokenVerificationCache;
     private final AccountsUpdatePasswordRequestProducer accountsUpdatePasswordRequestProducer;
+    private final AccountsConfigRepository accountsConfigRepository;
 
     public AccountsUpdatePasswordRequestUseCase(
 
         Encryption encryption,
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         CacheManager cacheManager,
-        AccountsUpdatePasswordRequestProducer accountsUpdatePasswordRequestProducer
+        AccountsUpdatePasswordRequestProducer accountsUpdatePasswordRequestProducer,
+        AccountsConfigRepository accountsConfigRepository
 
     ) {
 
@@ -47,6 +48,7 @@ public class AccountsUpdatePasswordRequestUseCase {
         this.cacheManager = cacheManager;
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
         this.accountsUpdatePasswordRequestProducer = accountsUpdatePasswordRequestProducer;
+        this.accountsConfigRepository = accountsConfigRepository;
 
     }
 
@@ -85,6 +87,12 @@ public class AccountsUpdatePasswordRequestUseCase {
         tokenVerificationCache.put(generatedToken, cacheCommand);
 
         // Create URL with token
+        String updatePasswordBaseURL = accountsConfigRepository.findByConfigName("update_password_url")
+            .orElseThrow(() ->
+                new DomainException(DomainExceptionEnum.INTERNAL_SERVER_ERROR)
+            )
+        .getConfigValue();
+
         String updatePasswordURL = UriComponentsBuilder
             .fromUriString(updatePasswordBaseURL)
             .queryParam("token", generatedToken)

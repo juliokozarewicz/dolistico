@@ -5,6 +5,7 @@ import juliokozarewicz.accounts.application.command.AccountsUpdateEmailRequestCo
 import juliokozarewicz.accounts.application.enums.AccountsUpdateEnum;
 import juliokozarewicz.accounts.domain.exception.DomainException;
 import juliokozarewicz.accounts.domain.exception.DomainExceptionEnum;
+import juliokozarewicz.accounts.domain.repository.AccountsConfigRepository;
 import juliokozarewicz.accounts.infrastructure.keycloak.AccountsKeycloakGetUser;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailRequestPINProducer;
 import juliokozarewicz.accounts.infrastructure.messaging.producer.AccountsUpdateEmailRequestURLProducer;
@@ -26,8 +27,6 @@ public class AccountsUpdateEmailRequestUseCase {
 
     // Env
     // -------------------------------------------------------------------------
-    @Value("${UPDATE_EMAIL_URL}")
-    private String updateEmailBaseURL;
     // -------------------------------------------------------------------------
 
     private final Encryption encryption;
@@ -36,6 +35,7 @@ public class AccountsUpdateEmailRequestUseCase {
     private final Cache tokenVerificationCache;
     private final AccountsUpdateEmailRequestURLProducer accountsUpdateEmailRequestURLProducer;
     private final AccountsUpdateEmailRequestPINProducer accountsUpdateEmailRequestPINProducer;
+    private final AccountsConfigRepository accountsConfigRepository;
 
     public AccountsUpdateEmailRequestUseCase(
 
@@ -43,7 +43,8 @@ public class AccountsUpdateEmailRequestUseCase {
         AccountsKeycloakGetUser accountsKeycloakGetUser,
         CacheManager cacheManager,
         AccountsUpdateEmailRequestURLProducer accountsUpdateEmailRequestURLProducer,
-        AccountsUpdateEmailRequestPINProducer accountsUpdateEmailRequestPINProducer
+        AccountsUpdateEmailRequestPINProducer accountsUpdateEmailRequestPINProducer,
+        AccountsConfigRepository accountsConfigRepository
 
     ) {
 
@@ -53,6 +54,7 @@ public class AccountsUpdateEmailRequestUseCase {
         this.tokenVerificationCache = cacheManager.getCache("accounts.tokenVerificationCache");
         this.accountsUpdateEmailRequestURLProducer = accountsUpdateEmailRequestURLProducer;
         this.accountsUpdateEmailRequestPINProducer = accountsUpdateEmailRequestPINProducer;
+        this.accountsConfigRepository = accountsConfigRepository;
 
     }
 
@@ -110,6 +112,12 @@ public class AccountsUpdateEmailRequestUseCase {
         tokenVerificationCache.put(generatedToken, cacheCommand);
 
         // Create URL with token
+        String updateEmailBaseURL = accountsConfigRepository.findByConfigName("update_email_url")
+            .orElseThrow(() ->
+                new DomainException(DomainExceptionEnum.INTERNAL_SERVER_ERROR)
+            )
+        .getConfigValue();
+
         String updateEmailURL = UriComponentsBuilder
             .fromUriString(updateEmailBaseURL)
             .queryParam("token", generatedToken)
