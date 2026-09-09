@@ -86,7 +86,7 @@ public class TasksCreateUseCase {
             tasksCreateUpdateCommand.description(),
             idCategory,
             null,
-            tasksCreateUpdateCommand.color().toLowerCase().trim(),
+            tasksCreateUpdateCommand.color(),
             tasksCreateUpdateCommand.priority(),
             tasksCreateUpdateCommand.startTime(),
             tasksCreateUpdateCommand.endTime(),
